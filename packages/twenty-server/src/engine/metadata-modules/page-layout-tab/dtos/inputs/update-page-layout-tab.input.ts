@@ -3,6 +3,7 @@ import { Field, Float, InputType } from '@nestjs/graphql';
 import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
 import { PageLayoutTabLayoutMode } from 'twenty-shared/types';
 
+// GraphQL/REST input for partially updating an existing page layout tab.
 @InputType()
 export class UpdatePageLayoutTabInput {
   @Field({ nullable: true })

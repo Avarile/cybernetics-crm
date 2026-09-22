@@ -9,6 +9,7 @@ import { parseCorePath } from 'src/engine/api/rest/input-request-parsers/path-pa
 import { AuthenticatedRequest } from 'src/engine/api/rest/types/authenticated-request';
 import { workspaceQueryRunnerRestApiExceptionHandler } from 'src/engine/api/rest/utils/workspace-query-runner-rest-api-exception-handler.util';
 
+// REST handler for DELETE /rest/{objects}/{id}: deletes a single record.
 @Injectable()
 export class RestApiDeleteOneHandler extends RestApiBaseHandler {
   constructor(
@@ -17,6 +18,8 @@ export class RestApiDeleteOneHandler extends RestApiBaseHandler {
     super();
   }
 
+  // Resolves the id from the path, runs the common deleteOne query
+  // runner, and formats the deleted record as a REST response.
   async handle(request: AuthenticatedRequest) {
     try {
       const { id } = this.parseRequestArgs(request);

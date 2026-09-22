@@ -2,6 +2,7 @@ import { assertUnreachable } from 'twenty-shared/utils';
 
 import { FieldMetadataExceptionCode } from 'src/engine/metadata-modules/field-metadata/field-metadata.exception';
 
+// Maps each field metadata exception code to its REST HTTP status code.
 export const fieldMetadataExceptionCodeToHttpStatus = (
   code: keyof typeof FieldMetadataExceptionCode,
 ): number => {

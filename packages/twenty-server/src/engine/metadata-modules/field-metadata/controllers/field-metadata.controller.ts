@@ -1,3 +1,5 @@
+// REST CRUD controller for field metadata, supporting both the current and
+// legacy (pre-flat-entity) response formats behind a feature flag.
 import {
   Body,
   Controller,
@@ -79,6 +81,8 @@ export class FieldMetadataController {
     private readonly flatEntityMapsCacheService: WorkspaceManyOrAllFlatEntityMapsCacheService,
   ) {}
 
+  // Computes which field metadata ids participate in a unique index, needed
+  // to populate the DTO's uniqueness info.
   private async loadUniqueFieldMetadataIds(
     workspaceId: string,
   ): Promise<ReadonlySet<string>> {
@@ -90,6 +94,7 @@ export class FieldMetadataController {
     return computeUniqueFieldMetadataIdsFromFlatIndexMaps(flatIndexMaps);
   }
 
+  // Lists field metadata with cursor pagination, in the current or legacy response format.
   @Get()
   async findMany(
     @Req() request: AuthenticatedRequest,
@@ -123,6 +128,7 @@ export class FieldMetadataController {
       : toLegacyFieldMetadataListResponse(result);
   }
 
+  // Fetches a single field metadata by id, in the current or legacy response format.
   @Get(':id')
   async findOne(
     @Param('id', new ParseUUIDPipe()) id: string,
@@ -151,6 +157,7 @@ export class FieldMetadataController {
       : toLegacyFieldMetadataFindOneResponse(result);
   }
 
+  // Creates a field via the flat field metadata service, in the current or legacy response format.
   @Post()
   async createOne(
     @Body() input: CreateFieldInput,
@@ -168,6 +175,7 @@ export class FieldMetadataController {
       : toLegacyFieldMetadataCreateResponse(result);
   }
 
+  // Partially updates a field.
   @Patch(':id')
   async updateOnePatch(
     @Param('id', new ParseUUIDPipe()) id: string,
@@ -177,6 +185,7 @@ export class FieldMetadataController {
     return this.handleUpdate({ id, update, workspaceId });
   }
 
+  // Replaces a field's editable fields (same handling as PATCH here).
   @Put(':id')
   async updateOnePut(
     @Param('id', new ParseUUIDPipe()) id: string,
@@ -186,6 +195,7 @@ export class FieldMetadataController {
     return this.handleUpdate({ id, update, workspaceId });
   }
 
+  // Deletes a field via the flat field metadata service.
   @Delete(':id')
   async deleteOne(
     @Param('id', new ParseUUIDPipe()) id: string,
@@ -203,6 +213,7 @@ export class FieldMetadataController {
       : toLegacyFieldMetadataDeleteResponse(result);
   }
 
+  // Shared update path for PATCH/PUT: runs the update then formats the response.
   private async handleUpdate({
     id,
     update,
@@ -224,6 +235,7 @@ export class FieldMetadataController {
       : toLegacyFieldMetadataUpdateResponse(result);
   }
 
+  // Checks the feature flag controlling which REST response shape to return.
   private async isNewMetadataFormat(workspaceId: string): Promise<boolean> {
     return this.featureFlagService.isFeatureEnabled(
       FeatureFlagKey.IS_REST_METADATA_API_NEW_FORMAT_DIRECT,

@@ -14,6 +14,9 @@ type FromIndexMetadataEntityToFlatIndexMetadataArgs =
     fieldMetadataIdToUniversalIdentifierMap: Map<string, string>;
   };
 
+// Converts an IndexMetadataEntity (with its loaded indexFieldMetadatas) into its flat
+// representation, resolving relation ids to universal identifiers and throwing if a
+// referenced field metadata can't be resolved.
 export const fromIndexMetadataEntityToFlatIndexMetadata = (
   args: FromIndexMetadataEntityToFlatIndexMetadataArgs,
 ): FlatIndexMetadata => {

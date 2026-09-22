@@ -8,6 +8,8 @@ import { type Observable } from 'rxjs';
 
 import { getRequest } from 'src/utils/extract-request';
 
+// Restricts a resolver to requests that resolved a workspace (rejects
+// requests with no workspace context).
 @Injectable()
 export class WorkspaceAuthGuard implements CanActivate {
   canActivate(

@@ -1,6 +1,7 @@
 import { type UserWorkspaceEntity } from 'src/engine/core-modules/user-workspace/user-workspace.entity';
 import { type FlatUserWorkspace } from 'src/engine/core-modules/user-workspace/types/flat-user-workspace.type';
 
+// Maps a UserWorkspaceEntity to its cache-friendly FlatUserWorkspace shape.
 export const fromUserWorkspaceEntityToFlat = (
   entity: UserWorkspaceEntity,
 ): FlatUserWorkspace => ({

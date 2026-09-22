@@ -1,3 +1,7 @@
+// TypeORM entity for a logic function: its runtime, build/handler paths,
+// execution mode, and per-trigger-type settings (cron, database event,
+// HTTP/server route, tool, workflow action).
+
 import {
   Check,
   Column,

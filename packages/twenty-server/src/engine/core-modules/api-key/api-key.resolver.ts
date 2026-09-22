@@ -1,3 +1,5 @@
+// GraphQL resolver exposing queries/mutations to list, create, update,
+// revoke API keys and assign roles to them within the current workspace.
 import { UseFilters, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField } from '@nestjs/graphql';
 
@@ -36,6 +38,7 @@ export class ApiKeyResolver {
     private readonly apiKeyRoleService: ApiKeyRoleService,
   ) {}
 
+  // Lists all active (non-revoked) API keys for the current workspace.
   @Query(() => [ApiKeyEntity])
   async apiKeys(
     @AuthWorkspace() workspace: WorkspaceEntity,
@@ -43,6 +46,7 @@ export class ApiKeyResolver {
     return this.apiKeyService.findActiveByWorkspaceId(workspace.id);
   }
 
+  // Looks up a single API key by id, scoped to the current workspace.
   @Query(() => ApiKeyEntity, { nullable: true })
   async apiKey(
     @Args('input') input: GetApiKeyInput,
@@ -64,6 +68,7 @@ export class ApiKeyResolver {
 
   // Minting an API key requires an ACCESS token — derived PLAYGROUND tokens
   // and API keys must not escalate into a long-lived credential.
+  // Creates a new API key for the workspace, optionally assigning it a role.
   @UseGuards(RequireAccessTokenGuard)
   @Mutation(() => ApiKeyEntity)
   async createApiKey(
@@ -79,6 +84,8 @@ export class ApiKeyResolver {
     });
   }
 
+  // Applies a partial update to an existing API key's name, expiry, or
+  // revocation timestamp.
   @UseGuards(RequireAccessTokenGuard)
   @Mutation(() => ApiKeyEntity, { nullable: true })
   async updateApiKey(
@@ -97,6 +104,7 @@ export class ApiKeyResolver {
     return this.apiKeyService.update(input.id, workspace.id, updateData);
   }
 
+  // Revokes an API key, immediately invalidating it for authentication.
   @UseGuards(RequireAccessTokenGuard)
   @Mutation(() => ApiKeyEntity, { nullable: true })
   async revokeApiKey(
@@ -106,6 +114,7 @@ export class ApiKeyResolver {
     return this.apiKeyService.revoke(input.id, workspace.id);
   }
 
+  // Assigns a role to an API key, determining its effective permissions.
   @UseGuards(RequireAccessTokenGuard)
   @Mutation(() => Boolean)
   async assignRoleToApiKey(
@@ -127,6 +136,7 @@ export class ApiKeyResolver {
     }
   }
 
+  // Resolves the role currently assigned to an API key.
   @ResolveField(() => RoleDTO)
   async role(
     @Parent() apiKey: ApiKeyEntity,

@@ -29,6 +29,9 @@ import {
 import { API_KEY_DATA_SEED_IDS } from 'src/engine/workspace-manager/dev-seeder/data/constants/api-key-data-seeds.constant';
 import { STANDARD_ROLE } from 'src/engine/workspace-manager/twenty-standard-application/constants/standard-role.constant';
 
+// Sets up roles, role assignments, and object/field permissions for the
+// dev-seeded demo workspaces (admin/member/limited/guest/impersonate-only
+// users), and activates the workspace once permissions are initialized.
 @Injectable()
 export class DevSeederPermissionsService {
   private readonly logger = new Logger(DevSeederPermissionsService.name);
@@ -48,6 +51,9 @@ export class DevSeederPermissionsService {
     private readonly coreDataSource: DataSource,
   ) {}
 
+  // Assigns the admin role plus workspace-specific demo roles (member,
+  // limited, guest, impersonate-only) to the seeded users of a workspace,
+  // then activates the workspace once minimal permissions are in place.
   public async initPermissions({
     twentyStandardFlatApplication,
     workspaceCustomFlatApplication,
@@ -177,6 +183,8 @@ export class DevSeederPermissionsService {
     }
   }
 
+  // Creates the default member role, sets it as the workspace's default
+  // role, and marks the workspace as active.
   public async initMinimalPermissionsAndActivateWorkspace({
     workspaceId,
     workspaceCustomFlatApplication,
@@ -237,6 +245,9 @@ export class DevSeederPermissionsService {
     return impersonateOnlyRole;
   }
 
+  // Creates a role with full object permissions except read on Rockets and
+  // update on Pets, plus field-level restrictions on Person.jobTitle and
+  // Company.linkedinLink, to exercise fine-grained permission checks.
   private async createLimitedRoleForSeedWorkspace({
     ownerFlatApplication,
     workspaceId,

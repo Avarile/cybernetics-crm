@@ -1,3 +1,5 @@
+// Builders for analytics event payloads (pageview/track), validated against
+// their Zod schemas and stamped with common timestamp/version fields.
 import { formatDateTimeForClickHouse } from 'src/database/clickHouse/clickHouse.util';
 import { type EventCommonPropertiesType } from 'src/engine/core-modules/event-logs/emit/common.type';
 import {
@@ -18,6 +20,7 @@ const common = (): Record<EventCommonPropertiesType, string> => ({
   version: '1',
 });
 
+// Builds and validates a pageview event payload.
 export function makePageview(
   name: string,
   properties: Partial<PageviewProperties> = {},
@@ -30,6 +33,8 @@ export function makePageview(
   });
 }
 
+// Builds and validates a track event payload against its registered schema,
+// throwing if the event has no registered schema.
 export function makeTrackEvent<T extends TrackEventName>(
   event: T,
   properties: TrackEventProperties<T>,

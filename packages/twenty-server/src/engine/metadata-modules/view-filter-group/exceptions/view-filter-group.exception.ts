@@ -4,6 +4,9 @@ import { assertUnreachable } from 'twenty-shared/utils';
 
 import { CustomException } from 'src/utils/custom-exception';
 
+// Exception thrown by the view filter group module for missing records,
+// invalid input, or structural violations (circular parent chains, max
+// nesting depth exceeded).
 export class ViewFilterGroupException extends CustomException<ViewFilterGroupExceptionCode> {
   constructor(
     message: string,
@@ -34,6 +37,8 @@ export enum ViewFilterGroupExceptionMessageKey {
   VIEW_NOT_FOUND = 'VIEW_NOT_FOUND',
 }
 
+// Builds the internal (developer-facing) exception message for a given
+// error key, optionally including the offending record's id.
 export const generateViewFilterGroupExceptionMessage = (
   key: ViewFilterGroupExceptionMessageKey,
   id?: string,
@@ -56,6 +61,7 @@ export const generateViewFilterGroupExceptionMessage = (
   }
 };
 
+// Builds the localized, user-facing message for a given error key.
 export const generateViewFilterGroupUserFriendlyExceptionMessage = (
   key: ViewFilterGroupExceptionMessageKey,
 ): MessageDescriptor | undefined => {

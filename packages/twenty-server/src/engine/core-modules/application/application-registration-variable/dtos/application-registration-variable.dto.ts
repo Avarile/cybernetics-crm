@@ -1,3 +1,5 @@
+// GraphQL DTO for an application registration variable, with its value
+// obfuscated (masked or decrypted) rather than the raw encrypted string.
 import { Field, ObjectType } from '@nestjs/graphql';
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';
 import { IsBoolean, IsOptional, IsString } from 'class-validator';

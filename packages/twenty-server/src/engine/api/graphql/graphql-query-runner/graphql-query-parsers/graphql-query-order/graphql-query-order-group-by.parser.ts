@@ -1,3 +1,7 @@
+// Parses the `orderBy` argument for group-by/aggregate queries: validates
+// that each ordered field is either an aggregate or already part of the
+// groupBy criteria, and produces the SQL ORDER BY expression/direction
+// for scalar, composite, relation, and date-granularity group-by fields.
 import { isObject } from 'class-validator';
 import {
   type AggregateOrderByWithGroupByField,
@@ -66,6 +70,10 @@ export class GraphqlQueryOrderGroupByParser {
     this.fieldIdByName = fieldMaps.fieldIdByName;
   }
 
+  // Walks each orderBy entry, classifies it (aggregate, scalar,
+  // date-granularity group-by, relation, or composite field) and
+  // converts it to an ORDER BY clause, throwing on ambiguous or
+  // unsupported combinations.
   parse({
     orderBy,
     groupByFields,
@@ -336,6 +344,8 @@ export class GraphqlQueryOrderGroupByParser {
     return Object.keys(relationFieldOrderByValue).length > 0;
   };
 
+  // Converts an `{ aggregate: { fieldName: direction } }` orderBy entry
+  // into its SQL aggregate expression and direction.
   private parseAggregateOrderByArg = (
     availableAggregations: Record<string, AggregationField>,
     orderByArg: AggregateOrderByWithGroupByField,
@@ -375,6 +385,9 @@ export class GraphqlQueryOrderGroupByParser {
     };
   };
 
+  // Orders by a plain scalar field that must already appear in
+  // groupByFields (grouped fields are the only non-aggregate fields
+  // allowed in orderBy for a group-by query).
   private parseObjectRecordOrderByForScalarField = ({
     groupByFields,
     orderByArg,
@@ -414,6 +427,8 @@ export class GraphqlQueryOrderGroupByParser {
     };
   };
 
+  // Orders by a single sub-field of a composite field that must already
+  // be present in groupByFields.
   private parseObjectRecordOrderByForCompositeField = ({
     groupByFields,
     orderByArg,
@@ -457,6 +472,9 @@ export class GraphqlQueryOrderGroupByParser {
     );
   };
 
+  // Orders by a date/date-time field grouped by a specific granularity
+  // (e.g. month, year), matching it against the corresponding date
+  // group-by field.
   private parseObjectRecordOrderByWithGroupByDateField = ({
     groupByFields,
     orderByArg,
@@ -511,6 +529,9 @@ export class GraphqlQueryOrderGroupByParser {
     };
   };
 
+  // Orders by a field on a related (joined) object, handling the
+  // composite, date-granularity, and plain-scalar cases for the nested
+  // field.
   private parseObjectRecordOrderByForRelationField = ({
     groupByFields,
     orderByArg,

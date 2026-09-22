@@ -1,3 +1,4 @@
+// Maps ThrottlerException codes to GraphQL UserInputErrors.
 import { assertUnreachable } from 'twenty-shared/utils';
 
 import { UserInputError } from 'src/engine/core-modules/graphql/utils/graphql-errors.util';
@@ -6,6 +7,7 @@ import {
   ThrottlerExceptionCode,
 } from 'src/engine/core-modules/throttler/throttler.exception';
 
+// Maps a ThrottlerException to a GraphQL UserInputError.
 export const throttlerToGraphqlApiExceptionHandler = (
   error: ThrottlerException,
 ) => {

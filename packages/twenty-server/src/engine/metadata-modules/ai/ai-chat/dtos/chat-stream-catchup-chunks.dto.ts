@@ -1,3 +1,5 @@
+// GraphQL result used to replay buffered stream chunks a client missed
+// (e.g. after reconnecting), up to a max sequence number.
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 
 import GraphQLJSON from 'graphql-type-json';

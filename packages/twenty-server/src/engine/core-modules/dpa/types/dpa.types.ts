@@ -1,5 +1,7 @@
 import { DpaRegion } from 'src/engine/core-modules/dpa/enums/dpa-region.enum';
 
+// Shared types for the DPA template merge/resolve pipeline: raw template blocks
+// are resolved with region config and signatory context into a renderable document
 export { DpaRegion };
 
 export type DpaMergeField =

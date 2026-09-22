@@ -16,7 +16,7 @@ import { isUndefinedOrNull } from '~/utils/isUndefinedOrNull';
 
 const isDebugMode = process.env.IS_DEBUG_MODE === 'true';
 
-const logger = loggerLink(() => 'Twenty-Refresh');
+const logger = loggerLink(() => 'Cybernetics-Refresh');
 
 const renewTokenMutation = async (
   uri: string | undefined,

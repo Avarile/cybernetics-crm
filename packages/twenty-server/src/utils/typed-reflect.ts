@@ -6,6 +6,8 @@ import { type Gate } from 'src/engine/twenty-orm/interfaces/gate.interface';
 import { type WorkspaceEntityDuplicateCriteria } from 'src/engine/api/graphql/workspace-query-builder/types/workspace-entity-duplicate-criteria.type';
 import { type ConfigVariablesMetadataMap } from 'src/engine/core-modules/twenty-config/decorators/config-variables-metadata.decorator';
 
+// Maps each reflect-metadata key used across the workspace/ORM decorators to its
+// value type, so TypedReflect can type-check metadata reads/writes by key.
 export interface ReflectMetadataTypeMap {
   ['workspace:is-nullable-metadata-args']: true;
   ['workspace:gate-metadata-args']: Gate;
@@ -22,6 +24,8 @@ export interface ReflectMetadataTypeMap {
   ['feature-flag-metadata-args']: FeatureFlagKey;
 }
 
+// Type-safe wrapper around reflect-metadata's defineMetadata/getMetadata, keyed
+// by ReflectMetadataTypeMap so callers get the correct value type per metadata key.
 export class TypedReflect {
   static defineMetadata<T extends keyof ReflectMetadataTypeMap>(
     metadataKey: T,

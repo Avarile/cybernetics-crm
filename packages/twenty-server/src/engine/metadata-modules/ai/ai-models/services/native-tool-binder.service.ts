@@ -1,3 +1,4 @@
+// Default NativeToolBinder implementation delegating to AiModelConfigService.
 import { Injectable } from '@nestjs/common';
 
 import { type ToolSet } from 'ai';
@@ -11,6 +12,7 @@ import { type NativeModelToolOptions } from 'src/engine/metadata-modules/ai/ai-m
 export class NativeToolBinderService implements NativeToolBinder {
   constructor(private readonly aiModelConfigService: AiModelConfigService) {}
 
+  // Resolves the model's native tools for the requested capabilities.
   bind(
     model: RegisteredAiModel,
     options: NativeModelToolOptions = {},

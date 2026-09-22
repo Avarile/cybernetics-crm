@@ -1,3 +1,5 @@
+// Admin-panel service assembling a workspace's billing snapshot (Stripe
+// customer/subscription details, credit balance and resource usage) for display.
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -37,6 +39,8 @@ export class AdminPanelBillingService {
     private readonly twentyConfigService: TwentyConfigService,
   ) {}
 
+  // Builds a workspace's billing DTO (customer, subscription, prices, usage);
+  // returns null when billing is disabled or the workspace has no billing data.
   async getWorkspaceBilling(
     workspaceId: string,
   ): Promise<AdminPanelWorkspaceBillingDTO | null> {
@@ -126,6 +130,8 @@ export class AdminPanelBillingService {
     };
   }
 
+  // Computes a workspace's current credit usage; swallows errors and returns
+  // null so a usage-service failure doesn't break the billing view.
   private async getWorkspaceUsage(
     workspaceId: string,
   ): Promise<AdminPanelWorkspaceUsageDTO | null> {

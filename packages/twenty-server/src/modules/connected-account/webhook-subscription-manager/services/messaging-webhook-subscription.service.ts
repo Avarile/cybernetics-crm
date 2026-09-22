@@ -15,6 +15,9 @@ import { MessageChannelEntity } from 'src/engine/metadata-modules/message-channe
 import { WebhookSubscriptionDriverFactory } from 'src/modules/connected-account/webhook-subscription-manager/services/webhook-subscription-driver-factory.service';
 import { type WebhookSubscriptionContext } from 'src/modules/connected-account/webhook-subscription-manager/types/webhook-subscription-driver.type';
 
+// Manages the lifecycle of a message channel's provider webhook
+// subscription: creating, renewing, and deleting it, and persisting the
+// resulting subscription state on the channel.
 @Injectable()
 export class MessagingWebhookSubscriptionService {
   constructor(
@@ -26,6 +29,8 @@ export class MessagingWebhookSubscriptionService {
     private readonly exceptionHandlerService: ExceptionHandlerService,
   ) {}
 
+  // Creates a webhook subscription for the channel (replacing any existing
+  // one first), skipping if the provider isn't supported or a subscription is already active.
   async createSubscription(
     messageChannelId: string,
     workspaceId: string,
@@ -95,6 +100,7 @@ export class MessagingWebhookSubscriptionService {
     }
   }
 
+  // Renews the channel's existing webhook subscription before it expires.
   async renewSubscription(messageChannel: MessageChannelEntity): Promise<void> {
     const connectedAccount = await this.connectedAccountRepository.findOne({
       where: {
@@ -132,6 +138,7 @@ export class MessagingWebhookSubscriptionService {
     }
   }
 
+  // Deletes the channel's provider webhook subscription.
   async deleteSubscription(
     messageChannelId: string,
     workspaceId: string,
@@ -168,6 +175,7 @@ export class MessagingWebhookSubscriptionService {
     }
   }
 
+  // Builds the driver-facing subscription context from a message channel entity.
   private toContext(
     messageChannel: MessageChannelEntity,
   ): WebhookSubscriptionContext {

@@ -1,3 +1,5 @@
+// Input shapes for select/multi-select field options, with an optional color
+// variant for fields that render as colored tags.
 import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 import { IsValidGraphQLEnumName } from 'twenty-shared/types';
 

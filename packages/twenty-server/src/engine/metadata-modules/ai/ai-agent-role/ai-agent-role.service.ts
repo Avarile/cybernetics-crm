@@ -1,3 +1,5 @@
+// Manages the role-target link between agents and permission roles, including
+// cleanup of agent-only roles that become unused.
 import { Injectable } from '@nestjs/common';
 
 import { isDefined } from 'twenty-shared/utils';
@@ -25,6 +27,8 @@ export class AiAgentRoleService {
     private readonly roleTargetService: RoleTargetService,
   ) {}
 
+  // Assigns a role to an agent via a role target, validating both exist and
+  // the role is assignable, and no-oping if the agent already has that role.
   public async assignRoleToAgent({
     workspaceId,
     agentId,
@@ -54,6 +58,7 @@ export class AiAgentRoleService {
     });
   }
 
+  // Deletes the role target linking the agent to its current role.
   public async removeRoleFromAgent({
     workspaceId,
     agentId,
@@ -83,6 +88,7 @@ export class AiAgentRoleService {
     });
   }
 
+  // Returns the agents currently assigned to the given role.
   public async getAgentsAssignedToRole(
     roleId: string,
     workspaceId: string,
@@ -109,6 +115,8 @@ export class AiAgentRoleService {
     return agents;
   }
 
+  // Validates the agent, role, and assignability before a role assignment,
+  // returning whether the agent is already assigned this exact role.
   private async validateAssignRoleInput({
     agentId,
     workspaceId,
@@ -162,6 +170,8 @@ export class AiAgentRoleService {
     };
   }
 
+  // Deletes a role if it exists only to be assigned to agents (not users or
+  // API keys) and this was its last remaining role-target assignment.
   public async deleteAgentOnlyRoleIfUnused({
     roleId,
     roleTargetId,

@@ -7,9 +7,14 @@ import {
 } from 'src/engine/metadata-modules/flat-entity/exceptions/flat-entity-maps.exception';
 import { type ViewFieldOverrides } from 'src/engine/metadata-modules/view-field/entities/view-field.entity';
 
+// Overrides shape with the viewFieldGroupId foreign key replaced by its
+// universal-identifier equivalent, portable across workspace migrations.
 type UniversalViewFieldOverrides =
   FormatRecordSerializedRelationProperties<ViewFieldOverrides>;
 
+// Converts a view field's overrides blob to its universal form by
+// replacing a viewFieldGroupId override with the matching group's
+// universal identifier (or null if missing, unless configured to throw).
 export const fromViewFieldOverridesToUniversalOverrides = ({
   overrides,
   viewFieldGroupUniversalIdentifierById,

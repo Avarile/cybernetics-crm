@@ -1,3 +1,6 @@
+// Converts a manifest-declared connection provider (including its OAuth
+// config, when applicable) into the universal flat entity shape used to
+// build workspace migrations.
 import {
   type ConnectionProviderManifest,
   type StoredOAuthConnectionProviderConfig,

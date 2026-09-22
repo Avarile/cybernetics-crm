@@ -6,6 +6,8 @@ import { type FlatWebhook } from 'src/engine/metadata-modules/flat-webhook/types
 import { type CreateWebhookInput } from 'src/engine/metadata-modules/webhook/dtos/create-webhook.input';
 import { generateWebhookSecret } from 'src/engine/metadata-modules/webhook/utils/generate-webhook-secret.util';
 
+// Builds a new flat webhook from a create-webhook input, generating an id and a
+// signing secret when not provided.
 export const fromCreateWebhookInputToFlatWebhookToCreate = ({
   createWebhookInput,
   workspaceId,

@@ -30,12 +30,19 @@ import { AuthWorkspace } from 'src/engine/decorators/auth/auth-workspace.decorat
 import { NoPermissionGuard } from 'src/engine/guards/no-permission.guard';
 import { WorkspaceAuthGuard } from 'src/engine/guards/workspace-auth.guard';
 
+// HTTP entry point for the MCP server: a single JSON-RPC endpoint that
+// dispatches to McpProtocolService and, depending on the client's Accept
+// header, responds either as plain JSON or as a Server-Sent Events stream.
 @Controller('mcp')
 @UseGuards(McpAuthGuard, WorkspaceAuthGuard, NoPermissionGuard)
 @UseFilters(RestApiExceptionFilter)
 export class McpCoreController {
   constructor(private readonly mcpProtocolService: McpProtocolService) {}
 
+  // Handles a single JSON-RPC request: no-id notifications return 202 with
+  // no body, SSE-accepting clients get a streamed response (with
+  // intermediate progress events), and other clients get a plain JSON
+  // response.
   @Post()
   @HttpCode(HttpStatus.OK)
   @UsePipes(

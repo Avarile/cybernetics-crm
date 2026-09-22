@@ -26,6 +26,9 @@ import { addFlatEntityToFlatEntityMapsThroughMutationOrThrow } from 'src/engine/
 
 @Injectable()
 @WorkspaceCache('flatRoleMaps')
+// Computes and caches the workspace's roles in their flat (denormalized)
+// form, each carrying the ids of its role targets, permission flags, and
+// object/field/row-level permissions.
 export class WorkspaceFlatRoleMapCacheService extends WorkspaceCacheProvider<
   FlatEntityMaps<FlatRole>
 > {
@@ -50,6 +53,9 @@ export class WorkspaceFlatRoleMapCacheService extends WorkspaceCacheProvider<
     super();
   }
 
+  // Loads all roles and their related child entities in parallel, regroups
+  // children by parent role id, then flattens each role by resolving its
+  // foreign keys and attaching its children's ids.
   async computeForCache(
     workspaceId: string,
   ): Promise<FlatEntityMaps<FlatRole>> {

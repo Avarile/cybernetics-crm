@@ -2,6 +2,8 @@ import type { FlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-m
 
 import { validateAndTransformValueByFieldType } from './validate-and-transform-value-by-field-type.util';
 
+// Validates and transforms each item of an array filter value (e.g. for
+// the "in" operator) against the field's type, passing nulls through.
 export const validateAndTransformArrayItems = (
   values: unknown[],
   fieldMetadata: FlatFieldMetadata,

@@ -1,3 +1,4 @@
+// Strips passwords from IMAP/SMTP/CALDAV connection parameters for the client.
 import { ACCOUNT_TYPES } from 'twenty-shared/constants';
 import { isDefined } from 'twenty-shared/utils';
 
@@ -20,6 +21,8 @@ type PublicConnectionParameters = {
   CALDAV?: PublicConnectionParams;
 } | null;
 
+// Strips the password out of each protocol's connection parameters before
+// they're returned to the client.
 export const buildPublicConnectionParameters = (
   connectionParameters: ImapSmtpCaldavParams | null | undefined,
 ): PublicConnectionParameters => {

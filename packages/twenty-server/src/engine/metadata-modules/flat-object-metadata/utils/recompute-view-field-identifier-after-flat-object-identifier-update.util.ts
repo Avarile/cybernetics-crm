@@ -1,3 +1,7 @@
+// Ensures every view of an object exposes its new label identifier field:
+// creates a view field for it if missing, or unhides/repositions it to the
+// front if it already exists but isn't visible or first.
+
 import { isDefined } from 'twenty-shared/utils';
 import { v4 } from 'uuid';
 
@@ -20,6 +24,9 @@ type FlatViewFieldToCreateAndUpdate = {
   flatViewFieldsToCreate: FlatViewField[];
   flatViewFieldsToUpdate: FlatViewField[];
 };
+// For each view of the object, creates a view field for the new label
+// identifier field if none exists, or updates its position/visibility so it
+// is shown first when it exists but is hidden or not the leftmost field.
 export const recomputeViewFieldIdentifierAfterFlatObjectIdentifierUpdate = ({
   existingFlatObjectMetadata,
   flatViewFieldMaps,

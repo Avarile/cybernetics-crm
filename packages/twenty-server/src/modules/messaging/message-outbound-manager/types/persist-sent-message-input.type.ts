@@ -1,6 +1,7 @@
 import { type ConnectedAccountEntity } from 'src/engine/metadata-modules/connected-account/entities/connected-account.entity';
 import { type SendMessageResult } from 'src/modules/messaging/message-outbound-manager/types/send-message-result.type';
 
+// Input for saving a just-sent message locally.
 export type PersistSentMessageInput = {
   sendResult: SendMessageResult;
   subject: string;

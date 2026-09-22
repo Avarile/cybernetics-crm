@@ -15,6 +15,8 @@ import { CalendarWebhookSubscriptionService } from 'src/modules/connected-accoun
 import { MessagingWebhookSubscriptionService } from 'src/modules/connected-account/webhook-subscription-manager/services/messaging-webhook-subscription.service';
 import { WebhookSubscriptionManagerModule } from 'src/modules/connected-account/webhook-subscription-manager/webhook-subscription-manager.module';
 
+// Wires up webhook subscription creation/renewal (cron + jobs), and
+// cleanup on channel deletion, for message and calendar channels.
 @Module({
   imports: [
     WebhookSubscriptionManagerModule,

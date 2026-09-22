@@ -3,6 +3,7 @@ import { createCipheriv, createHash, randomBytes } from 'crypto';
 const deriveCtrKey = (rawKey: string): string =>
   createHash('sha512').update(rawKey).digest('hex').substring(0, 32);
 
+// Legacy AES-CTR encryption, prefixing the ciphertext with its random IV
 export const encryptAesCtr = ({
   plaintext,
   rawKey,

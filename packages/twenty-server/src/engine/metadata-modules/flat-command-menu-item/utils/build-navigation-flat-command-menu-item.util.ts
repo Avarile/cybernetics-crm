@@ -7,6 +7,8 @@ import { CommandMenuItemAvailabilityType } from 'src/engine/metadata-modules/com
 import { EngineComponentKey } from 'src/engine/metadata-modules/command-menu-item/enums/engine-component-key.enum';
 import { type FlatCommandMenuItem } from 'src/engine/metadata-modules/flat-command-menu-item/types/flat-command-menu-item.type';
 
+// Fixed namespace used to deterministically derive a navigation command
+// menu item's universal identifier from its target object's identifier.
 export const NAVIGATION_COMMAND_UUID_NAMESPACE =
   'b31830da-2ae0-48eb-a915-12fa4ab96dd3';
 
@@ -17,6 +19,8 @@ export const NAVIGATION_INTERPOLATED_SHORT_LABEL =
 export const NAVIGATION_INTERPOLATED_ICON =
   '${navigateToObjectMetadataItem.icon}';
 
+// Restricts auto-generated navigation items for certain standard objects
+// to workspaces where the matching feature flag is enabled.
 const NAVIGATION_FEATURE_FLAG_GATE_BY_OBJECT_UNIVERSAL_IDENTIFIER: Partial<
   Record<string, FeatureFlagKey>
 > = {
@@ -26,6 +30,9 @@ const NAVIGATION_FEATURE_FLAG_GATE_BY_OBJECT_UNIVERSAL_IDENTIFIER: Partial<
     FeatureFlagKey.IS_EMAIL_GROUP_ENABLED,
 };
 
+// Builds the conditional-availability expression gating a navigation
+// command menu item: requires read permission on the target object, plus
+// an optional feature flag check for gated objects.
 export const buildNavigationConditionalAvailabilityExpression = ({
   universalIdentifier,
   nameSingular,
@@ -44,6 +51,9 @@ export const buildNavigationConditionalAvailabilityExpression = ({
     : targetObjectReadPermissionExpression;
 };
 
+// Builds the auto-generated, system-side-effect flat command menu item
+// that lets users navigate to a given object metadata's list view,
+// including its interpolated label/icon templates and keyboard shortcut.
 export const buildNavigationFlatCommandMenuItem = ({
   objectMetadata,
   commandMenuItemId,

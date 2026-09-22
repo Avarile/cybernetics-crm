@@ -28,6 +28,8 @@ import { FlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-metada
 import { FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object-metadata/types/flat-object-metadata.type';
 import { assertMutationNotOnRemoteObject } from 'src/engine/metadata-modules/object-metadata/utils/assert-mutation-not-on-remote-object.util';
 
+// Handles updateMany: applies the given field changes to every record
+// matching the filter and optionally hydrates nested relations.
 @Injectable()
 export class CommonUpdateManyQueryRunnerService extends CommonBaseQueryRunnerService<
   UpdateManyQueryArgs,
@@ -35,6 +37,8 @@ export class CommonUpdateManyQueryRunnerService extends CommonBaseQueryRunnerSer
 > {
   protected readonly operationName = CommonQueryNames.UPDATE_MANY;
 
+  // Builds the filtered query, updates matching records with the given
+  // data, and hydrates any requested nested relations.
   async run(
     args: CommonExtendedInput<UpdateManyQueryArgs>,
     queryRunnerContext: CommonExtendedQueryRunnerContext,
@@ -94,6 +98,8 @@ export class CommonUpdateManyQueryRunnerService extends CommonBaseQueryRunnerSer
     return updatedRecords;
   }
 
+  // Validates/normalizes the filter and runs the update data through the
+  // data-arg-processor (without backfilling position).
   async computeArgs(
     args: CommonInput<UpdateManyQueryArgs>,
     queryRunnerContext: CommonBaseQueryRunnerContext,
@@ -126,6 +132,8 @@ export class CommonUpdateManyQueryRunnerService extends CommonBaseQueryRunnerSer
     };
   }
 
+  // Rejects mutations on remote objects, requires a filter to be present
+  // (to prevent accidental update-all), and validates any id-in-list values.
   async validate(
     args: CommonInput<UpdateManyQueryArgs>,
     queryRunnerContext: CommonBaseQueryRunnerContext,
@@ -144,6 +152,7 @@ export class CommonUpdateManyQueryRunnerService extends CommonBaseQueryRunnerSer
     args.filter.id?.in?.forEach((id: string) => assertIsValidUuid(id));
   }
 
+  // Runs the updated records through the common result-getter pipeline.
   async processQueryResult(
     queryResult: ObjectRecord[],
     flatObjectMetadata: FlatObjectMetadata,

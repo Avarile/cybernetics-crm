@@ -19,6 +19,11 @@ import {
 import { type BillingSubscriptionWithSubscriptionItems } from 'src/engine/core-modules/billing/types/billing-subscription-with-subscription-items';
 import { type MeterBillingPriceTiers } from 'src/engine/core-modules/billing/types/meter-billing-price-tier.type';
 
+// Type-guards and assertions for billing entities (metered tiers, licensed
+// vs metered subscription items, resource-credit pricing), plus the
+// `billingValidator` namespace object exposing them.
+
+// Throws unless `tiers` matches the two-tier metered pricing schema.
 const assertIsMeteredTiersSchemaOrThrow = (
   tiers: BillingPriceEntity['tiers'] | undefined | null,
 ): asserts tiers is MeterBillingPriceTiers => {
@@ -34,6 +39,8 @@ const assertIsMeteredTiersSchemaOrThrow = (
   return;
 };
 
+// True when `tiers` has exactly two entries, the first with a numeric
+// `up_to` limit and the second unbounded (null).
 const isMeteredTiersSchema = (
   tiers: BillingPriceEntity['tiers'] | undefined | null,
 ): tiers is MeterBillingPriceTiers => {
@@ -52,6 +59,7 @@ const isMeteredTiersSchema = (
   return true;
 };
 
+// Throws unless the subscription item is a quantity-based licensed item.
 const assertIsLicensedSubscriptionItem = (
   subscriptionItem: BillingSubscriptionItemEntity,
 ): asserts subscriptionItem is LicensedBillingSubscriptionItem => {
@@ -68,6 +76,7 @@ const assertIsLicensedSubscriptionItem = (
   );
 };
 
+// Throws unless the subscription item is a usage-metered item.
 const assertIsMeteredSubscriptionItem = (
   subscriptionItem: BillingSubscriptionItemEntity,
 ): asserts subscriptionItem is MeteredBillingSubscriptionItem => {
@@ -84,6 +93,7 @@ const assertIsMeteredSubscriptionItem = (
   );
 };
 
+// Throws unless the price is metered and its tiers match the expected schema.
 const assertIsMeteredPrice = (
   price: BillingPriceEntity,
 ): asserts price is BillingMeterPrice => {
@@ -106,6 +116,7 @@ const assertIsMeteredPrice = (
   return;
 };
 
+// Non-throwing version of assertIsMeteredPrice's check.
 const isMeteredPrice = (
   price: BillingPriceEntity,
 ): price is BillingMeterPrice => {
@@ -120,6 +131,8 @@ const isMeteredPrice = (
   return true;
 };
 
+// Throws unless the subscription exists and has exactly two subscription
+// items loaded (the invariant expected by V1 licensed+metered billing).
 const assertIsSubscription = (
   subscription: BillingSubscriptionEntity | undefined,
 ): asserts subscription is BillingSubscriptionEntity &
@@ -152,6 +165,7 @@ const assertIsSubscription = (
 
 // V2 validators — do not throw for V1 items; only used on V2 code paths
 
+// True when the subscription item is the RESOURCE_CREDIT product.
 const isLicensedResourceCreditItem = (
   subscriptionItem: BillingSubscriptionItemEntity,
 ): boolean => {
@@ -161,6 +175,8 @@ const isLicensedResourceCreditItem = (
   );
 };
 
+// Throws unless the price is a RESOURCE_CREDIT price with a numeric
+// `credit_amount` in its metadata.
 const assertIsLicensedResourceCreditPrice = (
   price: BillingPriceEntity,
 ): void => {
@@ -184,6 +200,7 @@ const assertIsLicensedResourceCreditPrice = (
   }
 };
 
+// Reads the credit cap encoded in a RESOURCE_CREDIT price's metadata.
 const getCapFromCreditMetadata = (price: BillingPriceEntity): number => {
   assertIsLicensedResourceCreditPrice(price);
   return Number(price.metadata?.credit_amount);

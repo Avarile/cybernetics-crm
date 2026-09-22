@@ -28,6 +28,8 @@ import { buildFieldMapsFromFlatObjectMetadata } from 'src/engine/metadata-module
 import { isMorphOrRelationFlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-metadata/utils/is-morph-or-relation-flat-field-metadata.util';
 import { type FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object-metadata/types/flat-object-metadata.type';
 
+// Resolves a groupBy field name (or join-column name) to its field
+// metadata; throws if the object has no such field.
 const getFieldMetadataForGroupByOrThrow = ({
   fieldName,
   fieldIdByName,
@@ -59,6 +61,9 @@ const getFieldMetadataForGroupByOrThrow = ({
   return fieldMetadata;
 };
 
+// Validates a groupBy definition on a composite field: exactly one
+// supported subfield must be selected (set to true); appends the resolved
+// GroupByField entries.
 const validateAndTransformCompositeGroupByDefinitionOrThrow = ({
   fieldName,
   fieldMetadata,
@@ -115,6 +120,11 @@ const validateAndTransformCompositeGroupByDefinitionOrThrow = ({
   }
 };
 
+// Validates and dispatches a single groupBy field definition: relation
+// fields (nested or by join column), date fields with granularity, unnest
+// requests, plain `true` selections, and composite-field subfield
+// selections are each handled and pushed onto groupByFields; anything else
+// throws.
 const validateAndTransformSingleGroupByFieldOrThrow = ({
   fieldNames,
   fieldName,
@@ -238,6 +248,9 @@ const validateAndTransformSingleGroupByFieldOrThrow = ({
   );
 };
 
+// Validates a full groupBy arg (one field per entry, no duplicates) against
+// object/field metadata and returns the resolved list of GroupByField
+// definitions used by the query runners.
 export const validateAndTransformGroupByFieldsOrThrow = ({
   groupBy,
   flatObjectMetadata,

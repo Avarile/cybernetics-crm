@@ -1,3 +1,7 @@
+// Builds the shared execution context (query runner context, selectable
+// fields, object metadata, permissions) that every record CRUD service needs
+// before delegating to the Common API query runners.
+
 import { Injectable } from '@nestjs/common';
 
 import { type ObjectsPermissions } from 'twenty-shared/types';
@@ -42,6 +46,8 @@ export class CommonApiContextBuilderService {
     private readonly apiKeyRoleService: ApiKeyRoleService,
   ) {}
 
+  // Resolves object metadata, selectable fields, and the caller's effective
+  // permissions for the given object, throwing if the object or workspace metadata is missing.
   async build({
     authContext,
     objectName,
@@ -122,6 +128,8 @@ export class CommonApiContextBuilderService {
     };
   }
 
+  // Resolves the role applicable to the current auth context (API key,
+  // application, or user) and returns that role's permissions map.
   private async getObjectsPermissions(
     authContext: WorkspaceAuthContext,
   ): Promise<ObjectsPermissions> {

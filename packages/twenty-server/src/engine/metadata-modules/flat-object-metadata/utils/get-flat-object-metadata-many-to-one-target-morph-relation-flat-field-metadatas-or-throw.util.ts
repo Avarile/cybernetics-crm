@@ -1,3 +1,6 @@
+// Given an object's flat field metadatas, resolves the morph-relation target
+// fields reached through its many-to-one RELATION fields.
+
 import { FieldMetadataType } from 'twenty-shared/types';
 
 import { type AllFlatEntityMaps } from 'src/engine/metadata-modules/flat-entity/types/all-flat-entity-maps.type';
@@ -8,6 +11,8 @@ import { isFlatFieldMetadataOfType } from 'src/engine/metadata-modules/flat-fiel
 type GetFlatObjectMetadataTargetMorphRelationFlatFieldMetadatasOrThrowArgs = {
   objectFlatFieldMetadatas: FlatFieldMetadata[];
 } & Pick<AllFlatEntityMaps, 'flatFieldMetadataMaps'>;
+// Filters the object's fields down to RELATION fields, resolves each one's
+// target field, and keeps only those targets that are MORPH_RELATION fields.
 export const getFlatObjectMetadataTargetMorphRelationFlatFieldMetadatasOrThrow =
   ({
     objectFlatFieldMetadatas,

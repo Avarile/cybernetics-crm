@@ -31,6 +31,11 @@ const NOT_FOUND_SENTINEL = '__CORE_ENTITY_NOT_FOUND__';
 type CacheDataType = CoreEntityCacheDataMap[CoreEntityCacheKeyName];
 type CacheableValue = CacheDataType | typeof NOT_FOUND_SENTINEL;
 
+// Multi-tier cache for frequently-read core entities (workspace, user,
+// etc.): a short-TTL in-process cache backed by a hash-versioned Redis
+// cache, falling back to the registered CoreEntityCacheProvider to
+// recompute on a miss. Coalesces concurrent lookups for the same key via
+// a promise memoizer.
 @Injectable()
 export class CoreEntityCacheService implements OnModuleInit {
   private readonly localCache = new Map<
@@ -54,6 +59,8 @@ export class CoreEntityCacheService implements OnModuleInit {
     private readonly reflector: Reflector,
   ) {}
 
+  // Discovers every NestJS provider decorated with @CoreEntityCache and
+  // registers it as the compute source for its cache key.
   async onModuleInit() {
     const providers = this.discoveryService.getProviders();
 
@@ -78,6 +85,10 @@ export class CoreEntityCacheService implements OnModuleInit {
     }
   }
 
+  // Reads a cached entity by key name and id, walking the tiers in order
+  // (fresh local entry, Redis-hash-validated local entry, raw Redis
+  // fetch, provider recompute) and coalescing concurrent callers for the
+  // same key.
   public async get<K extends CoreEntityCacheKeyName>(
     cacheKeyName: K,
     entityId: string,
@@ -158,6 +169,8 @@ export class CoreEntityCacheService implements OnModuleInit {
     return result as CoreEntityCacheDataMap[K];
   }
 
+  // Clears the cached entry (Redis and local) for a key/entity without
+  // recomputing it.
   public async invalidate(
     cacheKeyName: CoreEntityCacheKeyName,
     entityId: string,
@@ -167,6 +180,7 @@ export class CoreEntityCacheService implements OnModuleInit {
     await this.memoizer.clearKeys(`${cacheKeyName}-${entityId}`);
   }
 
+  // Clears then eagerly recomputes and re-caches a key/entity's value.
   public async invalidateAndRecompute(
     cacheKeyName: CoreEntityCacheKeyName,
     entityId: string,
@@ -177,6 +191,8 @@ export class CoreEntityCacheService implements OnModuleInit {
     await this.memoizer.clearKeys(`${cacheKeyName}-${entityId}`);
   }
 
+  // Calls the registered provider to compute fresh data, writes it (or a
+  // not-found sentinel) to Redis and the local cache under a new hash.
   private async recomputeFromProvider(
     entityId: string,
     cacheKeyName: CoreEntityCacheKeyName,
@@ -200,6 +216,8 @@ export class CoreEntityCacheService implements OnModuleInit {
     return valueToCache;
   }
 
+  // Deletes the Redis entry and marks the local entry stale (so the next
+  // read revalidates instead of trusting its TTL).
   private async flush(
     entityId: string,
     cacheKeyName: CoreEntityCacheKeyName,
@@ -215,6 +233,8 @@ export class CoreEntityCacheService implements OnModuleInit {
     }
   }
 
+  // Writes a new version into the local cache entry for a key/entity and
+  // triggers stale-version/LRU cleanup.
   private setInLocalCache(
     entityId: string,
     keyName: CoreEntityCacheKeyName,
@@ -237,6 +257,8 @@ export class CoreEntityCacheService implements OnModuleInit {
     this.evictLRUEntriesIfNeeded();
   }
 
+  // Evicts the least-recently-checked local entries once the cache
+  // exceeds its max size.
   private evictLRUEntriesIfNeeded(): void {
     if (this.localCache.size <= MAX_LOCAL_CACHE_ENTRIES) {
       return;
@@ -256,6 +278,8 @@ export class CoreEntityCacheService implements OnModuleInit {
     }
   }
 
+  // Drops old (non-latest) cached versions for an entry once they've gone
+  // unread past their TTL or the entry holds too many stale versions.
   private cleanupStaleVersions(
     entry: CoreEntityLocalCacheEntry<CacheableValue>,
   ): void {
@@ -288,6 +312,8 @@ export class CoreEntityCacheService implements OnModuleInit {
     }
   }
 
+  // Removes local cache entries whose versions have all expired or whose
+  // latest version is missing.
   private evictExpiredLocalEntries(): void {
     const now = Date.now();
 
@@ -309,6 +335,8 @@ export class CoreEntityCacheService implements OnModuleInit {
     }
   }
 
+  // Looks up the registered provider for a cache key name; throws if none
+  // was registered.
   private getProviderOrThrow(
     keyName: CoreEntityCacheKeyName,
   ): CoreEntityCacheProvider<CacheDataType> {
@@ -323,6 +351,8 @@ export class CoreEntityCacheService implements OnModuleInit {
     return provider;
   }
 
+  // Builds the local/Redis cache key for a given entity id and cache key
+  // name.
   private buildCacheKey(
     entityId: string,
     keyName: CoreEntityCacheKeyName,

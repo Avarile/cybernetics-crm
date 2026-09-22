@@ -16,6 +16,8 @@ import { WorkspaceCacheModule } from 'src/engine/workspace-cache/workspace-cache
 import { WorkspaceMigrationGraphqlApiExceptionInterceptor } from 'src/engine/workspace-manager/workspace-migration/interceptors/workspace-migration-graphql-api-exception.interceptor';
 import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace-migration/workspace-migration.module';
 
+// Wires up the front component CRUD service, its REST controller (which
+// serves built JS bundles), and GraphQL resolver.
 @Module({
   imports: [
     WorkspaceManyOrAllFlatEntityMapsCacheModule,

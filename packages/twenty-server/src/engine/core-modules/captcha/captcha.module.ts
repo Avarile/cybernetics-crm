@@ -1,3 +1,5 @@
+// Global module exposing CaptchaService for verifying captcha tokens across
+// the app.
 import { type DynamicModule, Global } from '@nestjs/common';
 
 import { CaptchaDriverFactory } from 'src/engine/core-modules/captcha/captcha-driver.factory';
@@ -7,6 +9,7 @@ import { TwentyConfigModule } from 'src/engine/core-modules/twenty-config/twenty
 
 @Global()
 export class CaptchaModule {
+  // Registers the captcha driver factory and service globally.
   static forRoot(): DynamicModule {
     return {
       module: CaptchaModule,

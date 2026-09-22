@@ -13,6 +13,9 @@ import { getDefaultViewFilterOperand } from 'src/engine/metadata-modules/flat-vi
 import { type CreateViewFilterInput } from 'src/engine/metadata-modules/view-filter/dtos/inputs/create-view-filter.input';
 import { type UniversalFlatViewFilter } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-view-filter.type';
 
+// Builds a new universal flat view filter from a create input: resolves referenced
+// entities to universal identifiers and, when no operand was given, derives a sensible
+// default from the target field's (or relation target's) type.
 export const fromCreateViewFilterInputToFlatViewFilterToCreate = ({
   createViewFilterInput: rawCreateViewFilterInput,
   flatApplication,

@@ -25,6 +25,7 @@ import { PermissionsGraphqlApiExceptionFilter } from 'src/engine/metadata-module
   WorkspaceAuthGuard,
   SettingsPermissionGuard(PermissionFlagType.WORKSPACE),
 )
+// GraphQL resolver for previewing, listing, and generating signed workspace DPAs
 @UsePipes(ResolverValidationPipe)
 export class DpaResolver {
   constructor(private readonly dpaService: DpaService) {}
@@ -36,6 +37,7 @@ export class DpaResolver {
     return this.dpaService.getPreviewForWorkspace(workspace);
   }
 
+  // Lists previously generated/signed DPA agreements for the workspace
   @Query(() => [DpaAgreementEntity])
   async dpaAgreements(
     @AuthWorkspace() workspace: WorkspaceEntity,
@@ -43,6 +45,7 @@ export class DpaResolver {
     return this.dpaService.listAgreements(workspace.id);
   }
 
+  // Generates and stores a signed DPA PDF for the workspace using the given signatory details
   @Mutation(() => GenerateSignedDpaResult)
   async generateSignedDpa(
     @AuthWorkspace() workspace: WorkspaceEntity,

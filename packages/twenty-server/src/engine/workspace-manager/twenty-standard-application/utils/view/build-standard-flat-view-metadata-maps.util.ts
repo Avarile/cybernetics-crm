@@ -36,6 +36,7 @@ type StandardViewBuilder<P extends AllStandardObjectName> = (
   args: Omit<CreateStandardViewArgs<P>, 'context'>,
 ) => Record<string, FlatView>;
 
+// Registry of per-object view builders, one per standard object that declares views
 const STANDARD_FLAT_VIEW_METADATA_BUILDERS_BY_OBJECT_NAME = {
   attachment: computeStandardAttachmentViews,
   blocklist: computeStandardBlocklistViews,
@@ -76,6 +77,8 @@ export type BuildStandardFlatViewMetadataMapsArgs = Omit<
   'context' | 'objectName'
 >;
 
+// Builds every standard object's fixed view set and assembles them into a single FlatEntityMaps,
+// used as the "target" state when seeding or syncing a workspace's standard views
 export const buildStandardFlatViewMetadataMaps = (
   args: BuildStandardFlatViewMetadataMapsArgs,
 ): FlatEntityMaps<FlatView> => {

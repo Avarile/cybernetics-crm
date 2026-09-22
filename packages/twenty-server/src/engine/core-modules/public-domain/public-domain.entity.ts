@@ -1,3 +1,5 @@
+// TypeORM entity for a custom public-facing domain registered by a
+// workspace's application (e.g. for a public site/portal).
 import { ObjectType } from '@nestjs/graphql';
 
 import {

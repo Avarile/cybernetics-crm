@@ -18,6 +18,8 @@ import { BillingEntitlementKey } from 'src/engine/core-modules/billing/enums/bil
 import { RowLevelPermissionPredicateGroupService } from 'src/engine/metadata-modules/row-level-permission-predicate/services/row-level-permission-predicate-group.service';
 import { InjectWorkspaceScopedRepository } from 'src/engine/twenty-orm/workspace-scoped-repository/inject-workspace-scoped-repository.decorator';
 import { WorkspaceScopedRepository } from 'src/engine/twenty-orm/workspace-scoped-repository/workspace-scoped-repository';
+// Syncs Stripe entitlement summary updates to BillingEntitlement rows, and cleans up
+// row-level permission predicates when RLS entitlement is revoked
 @Injectable()
 export class BillingWebhookEntitlementService {
   constructor(
@@ -30,6 +32,8 @@ export class BillingWebhookEntitlementService {
     private readonly rowLevelPermissionPredicateGroupService: RowLevelPermissionPredicateGroupService,
   ) {}
 
+  // Upserts entitlements from the Stripe event and, if RLS was disabled, removes
+  // the workspace's row-level permission predicate groups
   async processStripeEvent(
     data: Stripe.EntitlementsActiveEntitlementSummaryUpdatedEvent.Data,
   ) {

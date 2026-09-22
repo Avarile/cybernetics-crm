@@ -1,5 +1,7 @@
 /* @license Enterprise */
 
+// Cron job (enterprise-only) that rotates the current JWT signing key once
+// it's due, no-op if the instance has no valid enterprise plan.
 import { Injectable, Logger } from '@nestjs/common';
 
 import { SentryCronMonitor } from 'src/engine/core-modules/cron/sentry-cron-monitor.decorator';
@@ -25,6 +27,8 @@ export class RotateSigningKeysCronJob {
     RotateSigningKeysCronJob.name,
     ROTATE_SIGNING_KEYS_CRON_PATTERN,
   )
+  // Skips rotation when the enterprise plan isn't valid; otherwise triggers
+  // a rotation if one is due and logs the outcome.
   async handle(): Promise<void> {
     if (!this.enterprisePlanService.isValid()) {
       this.logger.log(

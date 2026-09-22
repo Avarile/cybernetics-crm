@@ -1,3 +1,6 @@
+// Talks to the external npm-compatible app registry and its CDN: searches
+// for published apps tagged as Twenty apps, and fetches a package's
+// manifest or individual asset files.
 import { Injectable, Logger } from '@nestjs/common';
 
 import axios from 'axios';
@@ -43,6 +46,8 @@ export class MarketplaceService {
 
   constructor(private readonly twentyConfigService: TwentyConfigService) {}
 
+  // Fetches and parses manifest.json for a package version from the
+  // registry CDN, returning null if it's missing or malformed.
   async fetchManifestFromRegistryCdn(
     packageName: string,
     version: string,
@@ -75,6 +80,8 @@ export class MarketplaceService {
     }
   }
 
+  // Fetches an arbitrary asset file for a package version from the
+  // registry CDN, enforcing a max size, returning null on failure.
   async fetchAssetFromRegistryCdn(
     packageName: string,
     version: string,
@@ -106,6 +113,8 @@ export class MarketplaceService {
     }
   }
 
+  // Searches the registry for packages tagged as Twenty apps and returns
+  // their basic package info, validating the response shape.
   async fetchAppsFromRegistry(): Promise<RegistryPackageInfo[]> {
     const registryUrl = this.twentyConfigService.get('APP_REGISTRY_URL');
 

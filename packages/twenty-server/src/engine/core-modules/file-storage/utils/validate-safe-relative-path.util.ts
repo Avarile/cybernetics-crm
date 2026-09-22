@@ -4,6 +4,8 @@ import { t } from '@lingui/core/macro';
 
 import { type ResourcePathValidationResult } from 'src/engine/core-modules/file-storage/types/resource-path-validation-result.type';
 
+// Validates a resource path is non-empty, relative, and free of null bytes,
+// backslashes, and ".." traversal, returning a descriptive error otherwise
 export const validateSafeRelativePath = ({
   resourcePath,
 }: {

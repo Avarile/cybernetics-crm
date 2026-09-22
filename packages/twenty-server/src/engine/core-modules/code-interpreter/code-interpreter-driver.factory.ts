@@ -12,6 +12,8 @@ import { ConfigVariablesGroup } from 'src/engine/core-modules/twenty-config/enum
 import { ConfigGroupHashService } from 'src/engine/core-modules/twenty-config/services/config-group-hash.service';
 import { TwentyConfigService } from 'src/engine/core-modules/twenty-config/twenty-config.service';
 
+// Builds and caches the active code interpreter driver (disabled, local, or E2B)
+// based on config, rebuilding when the relevant config group changes
 @Injectable()
 export class CodeInterpreterDriverFactory extends DriverFactoryBase<CodeInterpreterDriver> {
   constructor(
@@ -21,6 +23,7 @@ export class CodeInterpreterDriverFactory extends DriverFactoryBase<CodeInterpre
     super(twentyConfigService, configGroupHashService);
   }
 
+  // Cache key for the current driver config, so a config change forces a rebuild
   protected buildConfigKey(): string {
     const driverType = this.twentyConfigService.get('CODE_INTERPRETER_TYPE');
 
@@ -31,6 +34,8 @@ export class CodeInterpreterDriverFactory extends DriverFactoryBase<CodeInterpre
     return driverType;
   }
 
+  // Instantiates the driver matching CODE_INTERPRETER_TYPE, refusing the LOCAL
+  // driver in production since it executes code in-process
   protected createDriver(): CodeInterpreterDriver {
     const driverType = this.twentyConfigService.get('CODE_INTERPRETER_TYPE');
     const timeoutMs = this.twentyConfigService.get(

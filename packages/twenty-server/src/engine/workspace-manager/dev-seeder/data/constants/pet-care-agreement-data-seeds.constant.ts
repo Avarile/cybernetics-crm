@@ -1,3 +1,4 @@
+// Seed data linking sample pets to their caretaker (a person or company).
 import { COMPANY_DATA_SEED_IDS } from 'src/engine/workspace-manager/dev-seeder/data/constants/company-data-seeds.constant';
 import { PERSON_DATA_SEED_IDS } from 'src/engine/workspace-manager/dev-seeder/data/constants/person-data-seeds.constant';
 import { PET_DATA_SEED_IDS } from 'src/engine/workspace-manager/dev-seeder/data/constants/pet-data-seeds.constant';

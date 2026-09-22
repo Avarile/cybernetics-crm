@@ -7,6 +7,8 @@ registerEnumType(ViewFilterGroupLogicalOperator, {
   name: 'ViewFilterGroupLogicalOperator',
 });
 
+// GraphQL representation of a view filter group: a logical (AND/OR/NOT)
+// node in a view's filter tree, optionally nested under a parent group.
 @ObjectType('ViewFilterGroup')
 export class ViewFilterGroupDTO {
   @Field(() => UUIDScalarType)

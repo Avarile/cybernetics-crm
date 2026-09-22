@@ -13,6 +13,8 @@ import { type CalendarEventParticipantWorkspaceEntity } from 'src/modules/calend
 import { TimelineActivityRepository } from 'src/modules/timeline/repositories/timeline-activity.repository';
 import { TimelineActivityWorkspaceEntity } from 'src/modules/timeline/standard-objects/timeline-activity.workspace-entity';
 
+// Records a "calendarEvent.linked" timeline activity on the person record
+// whenever calendar event participants get matched to a person.
 @Injectable()
 export class CalendarEventParticipantListener {
   constructor(
@@ -23,6 +25,7 @@ export class CalendarEventParticipantListener {
     private readonly featureFlagService: FeatureFlagService,
   ) {}
 
+  // Builds and upserts one timeline activity per matched participant that has a personId.
   @OnCustomBatchEvent('calendarEventParticipant_matched')
   public async handleCalendarEventParticipantMatchedEvent(
     batchEvent: CustomWorkspaceEventBatch<{

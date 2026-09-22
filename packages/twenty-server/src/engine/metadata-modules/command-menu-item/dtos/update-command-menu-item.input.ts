@@ -14,6 +14,7 @@ import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/
 import { CommandMenuItemAvailabilityType } from 'src/engine/metadata-modules/command-menu-item/enums/command-menu-item-availability-type.enum';
 import { EngineComponentKey } from 'src/engine/metadata-modules/command-menu-item/enums/engine-component-key.enum';
 
+// GraphQL input for partially updating an existing command menu item.
 @InputType()
 export class UpdateCommandMenuItemInput {
   @IsUUID()

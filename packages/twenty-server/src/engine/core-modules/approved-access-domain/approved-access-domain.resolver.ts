@@ -1,3 +1,5 @@
+// GraphQL resolver exposing mutations/query to create, delete, validate and
+// list approved access domains for the current workspace.
 import { UseFilters, UseGuards, UsePipes } from '@nestjs/common';
 import { Args, Mutation, Query } from '@nestjs/graphql';
 
@@ -38,6 +40,8 @@ export class ApprovedAccessDomainResolver {
     private readonly approvedAccessDomainService: ApprovedAccessDomainService,
   ) {}
 
+  // Registers a new approved access domain for the workspace and sends a
+  // validation email to the given address to confirm domain ownership.
   @Mutation(() => ApprovedAccessDomainDTO)
   async createApprovedAccessDomain(
     @Args('input') { domain, email }: CreateApprovedAccessDomainInput,
@@ -73,6 +77,7 @@ export class ApprovedAccessDomainResolver {
     );
   }
 
+  // Deletes an approved access domain from the workspace.
   @Mutation(() => Boolean)
   async deleteApprovedAccessDomain(
     @Args('input') { id }: DeleteApprovedAccessDomainInput,
@@ -86,6 +91,8 @@ export class ApprovedAccessDomainResolver {
     return true;
   }
 
+  // Confirms domain ownership using the validation token emailed to the
+  // requesting user, marking the domain as validated.
   @Mutation(() => ApprovedAccessDomainDTO)
   async validateApprovedAccessDomain(
     @Args('input')
@@ -100,6 +107,7 @@ export class ApprovedAccessDomainResolver {
     });
   }
 
+  // Lists all approved access domains registered for the workspace.
   @Query(() => [ApprovedAccessDomainDTO])
   async getApprovedAccessDomains(
     @AuthWorkspace() currentWorkspace: WorkspaceEntity,

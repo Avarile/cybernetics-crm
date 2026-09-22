@@ -24,6 +24,8 @@ type VersionedOptions = {
   workspaceId?: string;
 };
 
+// Encrypts and decrypts secrets at rest: legacy unversioned AES-CTR for old
+// callers, and the current versioned enc:v2 AES-GCM envelope for new ones
 @Injectable()
 export class SecretEncryptionService {
   private readonly logger = new Logger(SecretEncryptionService.name);
@@ -63,6 +65,7 @@ export class SecretEncryptionService {
     return decryptAesCtrOrThrow({ ciphertext: value, rawKey: primary });
   }
 
+  // Decrypts a legacy value and masks it for display, revealing only a short prefix
   public decryptAndMask({
     value,
     mask,
@@ -77,6 +80,7 @@ export class SecretEncryptionService {
     return this.maskDecryptedValue(this.decrypt(value), mask);
   }
 
+  // Decrypts a versioned (enc:v2) value and masks it for display
   public decryptAndMaskVersioned({
     value,
     mask,
@@ -107,6 +111,7 @@ export class SecretEncryptionService {
     return `${decryptedValue.slice(0, visibleCharsCount)}${mask}`;
   }
 
+  // Encrypts plaintext into the current enc:v2 envelope using the primary key
   public encryptVersioned(
     value: PlaintextString,
     opts: VersionedOptions = {},
@@ -131,6 +136,8 @@ export class SecretEncryptionService {
     }) as EncryptedString;
   }
 
+  // Decrypts an enc:v2 envelope, throwing if the value isn't a v2 envelope or
+  // its key id doesn't match any configured encryption key
   public decryptVersionedOrThrow(
     value: EncryptedString,
     opts: VersionedOptions = {},
@@ -200,6 +207,7 @@ export class SecretEncryptionService {
     return this.decrypt(value) as PlaintextString;
   }
 
+  // Logs the legacy-CTR-decryption warning once per process, to avoid log spam
   private warnLegacyCtrDecryptionOnce(): void {
     if (this.hasLoggedLegacyCtrDecryption) {
       return;

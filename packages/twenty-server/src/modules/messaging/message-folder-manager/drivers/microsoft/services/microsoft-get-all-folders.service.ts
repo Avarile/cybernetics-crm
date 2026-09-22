@@ -1,3 +1,7 @@
+// Microsoft Graph implementation of MessageFolderDriver: lists the
+// account's mail folders and maps well-known folders to discovered
+// folders, stripping the synthetic root folder Graph reports as the
+// parent of top-level standard folders.
 import { Injectable, Logger } from '@nestjs/common';
 
 import { isDefined } from 'twenty-shared/utils';
@@ -35,6 +39,9 @@ export class MicrosoftGetAllFoldersService implements MessageFolderDriver {
     private readonly microsoftMessageListFetchErrorHandler: MicrosoftMessageListFetchErrorHandler,
   ) {}
 
+  // Fetches all mail folders via Graph and converts each one whose
+  // standard-folder classification says it should be created by default
+  // into a DiscoveredMessageFolder.
   async getAllMessageFolders(
     connectedAccount: Pick<
       ConnectedAccountEntity,
@@ -117,6 +124,8 @@ export class MicrosoftGetAllFoldersService implements MessageFolderDriver {
    * which point to root node which doesn't exits in the API response.
    * We remove this to simplify the folder hierarchy on frontend.
    */
+  // Finds the implicit root folder id by taking the parentFolderId of the
+  // first well-known (standard) folder encountered.
   private getRootFolderId(folders: MicrosoftGraphFolder[]): string | null {
     for (const folder of folders) {
       if (isDefined(folder.wellKnownName) && isDefined(folder.parentFolderId)) {
@@ -127,6 +136,8 @@ export class MicrosoftGetAllFoldersService implements MessageFolderDriver {
     return null;
   }
 
+  // Returns the parent folder id, or null when there is none or it is the
+  // synthetic root folder.
   private getParentFolderId(
     parentFolderId: string | undefined,
     rootFolderId: string | null,

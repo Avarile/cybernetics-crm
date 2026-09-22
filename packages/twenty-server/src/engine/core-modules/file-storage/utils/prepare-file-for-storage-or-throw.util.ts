@@ -1,6 +1,8 @@
 import { extractFileInfoOrThrow } from 'src/engine/core-modules/file/utils/extract-file-info-or-throw.utils';
 import { sanitizeFile } from 'src/engine/core-modules/file/utils/sanitize-file.utils';
 
+// Detects the file's real mime type/extension from its content and sanitizes it
+// before it's written to storage
 export const prepareFileForStorageOrThrow = async ({
   sourceFile,
   resourcePath,

@@ -1,3 +1,5 @@
+// Builds the AI agent tool set for managing field metadata (list/create/
+// update/delete, including bulk and relation-field variants).
 import { Injectable } from '@nestjs/common';
 
 import { type ToolSet } from 'ai';
@@ -139,6 +141,8 @@ export class FieldMetadataToolsFactory {
     private readonly flatEntityMapsCacheService: WorkspaceManyOrAllFlatEntityMapsCacheService,
   ) {}
 
+  // Resolves an object name (singular or plural) to its metadata id, for
+  // tools that accept a friendlier objectName parameter.
   private async getObjectMetadataIdOrThrow(
     workspaceId: string,
     objectName: string,
@@ -165,8 +169,10 @@ export class FieldMetadataToolsFactory {
     return objectMetadataId;
   }
 
+  // Builds all field-metadata tools bound to this workspace.
   generateTools(workspaceId: string): ToolSet {
     return {
+      // Lists/looks up fields, compacting system fields to id/name/type by default.
       get_field_metadata: {
         description:
           "Returns an array of fields. System fields are returned as compact {id, name, type} — enough to know which fields exist and their types. Keep includeFullSystemFields at its default (false); only set it true when you specifically need a system field's full configuration (settings, defaultValue, relation targets). Internal fields (searchVector, position, updatedBy) are excluded.",
@@ -229,6 +235,7 @@ export class FieldMetadataToolsFactory {
           return compactedFields;
         },
       },
+      // Creates a single field.
       create_field_metadata: {
         description: 'Create a new field on an object.',
         inputSchema: CreateFieldMetadataInputSchema,
@@ -272,6 +279,7 @@ export class FieldMetadataToolsFactory {
           }
         },
       },
+      // Updates a single field's properties.
       update_field_metadata: {
         description:
           'Update a field. Provide field ID and properties to change.',
@@ -315,6 +323,7 @@ export class FieldMetadataToolsFactory {
           }
         },
       },
+      // Deletes a single field.
       delete_field_metadata: {
         description: 'Delete a field by ID.',
         inputSchema: DeleteFieldMetadataInputSchema,
@@ -335,6 +344,7 @@ export class FieldMetadataToolsFactory {
           }
         },
       },
+      // Creates multiple fields (possibly across objects) in one call.
       create_many_field_metadata: {
         description:
           'Create multiple field metadata at once on one or more objects. More efficient than calling create_field_metadata multiple times. Each item follows the same schema as create_field_metadata.',
@@ -374,6 +384,7 @@ export class FieldMetadataToolsFactory {
           }
         },
       },
+      // Updates multiple fields in parallel in one call.
       update_many_field_metadata: {
         description:
           'Update multiple field metadata at once. More efficient than calling update_field_metadata multiple times. Each item must include the field ID and the properties to update.',
@@ -415,6 +426,7 @@ export class FieldMetadataToolsFactory {
           }
         },
       },
+      // Creates multiple relation fields (and their inverse fields) between objects.
       create_many_relation_fields: {
         description: 'Create multiple relation fields between objects at once.',
         inputSchema: CreateManyRelationFieldsInputSchema,

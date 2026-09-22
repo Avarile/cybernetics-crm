@@ -1,3 +1,4 @@
+// GraphQL args for updating a user's server-admin access/impersonation rights.
 import { ArgsType, Field } from '@nestjs/graphql';
 
 import {

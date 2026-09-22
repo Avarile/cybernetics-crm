@@ -1,3 +1,7 @@
+// Runs per-folder pending sync actions (deletion or a one-off import)
+// queued by folder sync, deleting or fetching-for-import each folder in
+// turn; folders that error are left with their pending action intact so
+// they're retried on the next sync rather than silently dropped.
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -30,6 +34,11 @@ export class MessagingProcessFolderActionsService {
     private readonly messagingImportFolderMessagesService: MessagingImportFolderMessagesService,
   ) {}
 
+  // For each folder with a pending action, deletes its messages
+  // (FOLDER_DELETION) or fetches its message ids to import
+  // (FOLDER_IMPORT); on success clears the folder's pendingSyncAction (or
+  // deletes the folder row for FOLDER_DELETION), leaving failed folders
+  // untouched for retry.
   async processFolderActions(
     messageChannel: MessageChannelEntity,
     messageFolders: MessageFolderEntity[],

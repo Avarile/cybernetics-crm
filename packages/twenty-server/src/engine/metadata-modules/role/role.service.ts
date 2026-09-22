@@ -47,6 +47,9 @@ import { WorkspaceMigrationBuilderException } from 'src/engine/workspace-manager
 import { WorkspaceMigrationValidateBuildAndRunService } from 'src/engine/workspace-manager/workspace-migration/services/workspace-migration-validate-build-and-run-service';
 
 @Injectable()
+// CRUD for roles, including built-in Member/Guest role creation and
+// safe role deletion (rebinding assigned members, API keys, and agents
+// to the workspace default role before removing the deleted role).
 export class RoleService {
   constructor(
     private readonly workspaceMigrationValidateBuildAndRunService: WorkspaceMigrationValidateBuildAndRunService,
@@ -61,6 +64,8 @@ export class RoleService {
     private readonly aiAgentRoleService: AiAgentRoleService,
   ) {}
 
+  // Returns all roles in the workspace with their permission-flag,
+  // object-permission, and field-permission relations populated.
   public async getWorkspaceRoles(workspaceId: string): Promise<RoleDTO[]> {
     const { flatRoleMaps } =
       await this.flatEntityMapsCacheService.getOrRecomputeManyOrAllFlatEntityMaps(
@@ -76,6 +81,8 @@ export class RoleService {
     );
   }
 
+  // Enriches flat roles with their permission-flag, object-permission, and
+  // field-permission DTOs resolved from the flat entity maps cache.
   private async findManyWithRelationsFromCache(
     flatRoles: FlatRole[],
     workspaceId: string,
@@ -125,6 +132,7 @@ export class RoleService {
     });
   }
 
+  // Finds a role entity by id with its full set of relations loaded.
   public async getRoleById(
     id: string,
     workspaceId: string,
@@ -144,6 +152,7 @@ export class RoleService {
     });
   }
 
+  // Finds a role by its universal (cross-workspace-portable) identifier.
   public async getRoleByUniversalIdentifier({
     universalIdentifier,
     workspaceId,
@@ -169,6 +178,8 @@ export class RoleService {
       : null;
   }
 
+  // Creates a role via a validated workspace migration and returns the
+  // persisted DTO.
   public async createRole({
     input,
     workspaceId,
@@ -224,6 +235,8 @@ export class RoleService {
     );
   }
 
+  // Updates a role via a validated workspace migration and returns the
+  // updated DTO.
   public async updateRole({
     input,
     workspaceId,
@@ -294,6 +307,7 @@ export class RoleService {
     );
   }
 
+  // Deletes a single role (thin wrapper over deleteManyRoles).
   public async deleteRole({
     roleId,
     workspaceId,
@@ -315,6 +329,9 @@ export class RoleService {
     return deletedRole;
   }
 
+  // Deletes multiple roles in one migration. Rejects deleting the
+  // workspace's default role, and rebinds every assigned member/API
+  // key/agent to the default role first so nothing is left without a role.
   public async deleteManyRoles({
     ids,
     workspaceId,
@@ -419,6 +436,8 @@ export class RoleService {
     return rolesToDelete.map(fromFlatRoleToRoleDto);
   }
 
+  // Creates the built-in "Member" role with its standard default
+  // permissions, used when initializing a new workspace.
   public async createMemberRole({
     workspaceId,
     ownerFlatApplication,
@@ -446,6 +465,7 @@ export class RoleService {
     });
   }
 
+  // Creates the built-in "Guest" role with restricted default permissions.
   public async createGuestRole({
     workspaceId,
     ownerFlatApplication,
@@ -474,6 +494,8 @@ export class RoleService {
   }
 
   // TODO: Move to migration side effect / To address for rollback of role deletion
+  // Reassigns every member, API key, and agent bound to a role being
+  // deleted over to the default role, so nothing is left unassigned.
   private async rebindTargetsOfRoleToDeleteToDefaultRole({
     roleId,
     roleLabel,
@@ -552,6 +574,8 @@ export class RoleService {
     }
   }
 
+  // Builds the error raised when rebinding to the default role fails
+  // because the default role itself can't be assigned to that target kind.
   private toRoleDeleteRebindException({
     roleLabel,
     targetKind,

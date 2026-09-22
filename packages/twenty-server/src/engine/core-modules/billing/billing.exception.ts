@@ -6,6 +6,7 @@ import { assertUnreachable } from 'twenty-shared/utils';
 
 import { CustomException } from 'src/utils/custom-exception';
 
+// All error codes billing code can throw, each mapped to a user-facing message.
 export enum BillingExceptionCode {
   BILLING_CUSTOMER_NOT_FOUND = 'BILLING_CUSTOMER_NOT_FOUND',
   BILLING_PLAN_NOT_FOUND = 'BILLING_PLAN_NOT_FOUND',
@@ -36,6 +37,7 @@ export enum BillingExceptionCode {
   BILLING_CREDIT_AMOUNT_INVALID = 'BILLING_CREDIT_AMOUNT_INVALID',
 }
 
+// Maps an exception code to the message shown to the end user.
 const getBillingExceptionUserFriendlyMessage = (code: BillingExceptionCode) => {
   switch (code) {
     case BillingExceptionCode.BILLING_CUSTOMER_NOT_FOUND:
@@ -97,6 +99,8 @@ const getBillingExceptionUserFriendlyMessage = (code: BillingExceptionCode) => {
   }
 };
 
+// Typed exception for billing errors; resolves a user-friendly message from
+// the code unless one is explicitly provided.
 export class BillingException extends CustomException<BillingExceptionCode> {
   constructor(
     message: string,

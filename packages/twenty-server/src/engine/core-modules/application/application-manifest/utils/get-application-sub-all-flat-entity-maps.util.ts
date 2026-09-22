@@ -1,3 +1,5 @@
+// Filters a full set of flat entity maps down to only the entities owned
+// by the given application ids, across every metadata kind.
 import { ALL_METADATA_NAME } from 'twenty-shared/metadata';
 
 import { type AllFlatEntityMaps } from 'src/engine/metadata-modules/flat-entity/types/all-flat-entity-maps.type';

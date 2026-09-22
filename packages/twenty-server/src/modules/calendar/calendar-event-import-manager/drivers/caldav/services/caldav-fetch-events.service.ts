@@ -26,6 +26,8 @@ type CalendarSyncResult = {
   newEtags?: Record<string, string>;
 };
 
+// Discovers and syncs CalDAV calendars, using sync-collection when a server
+// supports it and falling back to ctag/etag comparison otherwise.
 @Injectable()
 export class CalDavFetchEventsService {
   private readonly logger = new Logger(CalDavFetchEventsService.name);
@@ -33,6 +35,7 @@ export class CalDavFetchEventsService {
   private static readonly PAST_DAYS_WINDOW = 365 * 5;
   private static readonly FUTURE_DAYS_WINDOW = 365;
 
+  // Lists calendars on the account that support VEVENT (i.e. can hold events).
   async listEventCalendars(client: DAVClient): Promise<DAVCalendar[]> {
     const calendars = await client.fetchCalendars();
 
@@ -41,6 +44,8 @@ export class CalDavFetchEventsService {
     );
   }
 
+  // Syncs every event calendar and returns the hrefs that changed or were
+  // cancelled since the last cursor, plus the merged cursor to persist next.
   async fetchChangedEventHrefs(
     client: DAVClient,
     syncCursor?: CalDavSyncCursor,
@@ -64,6 +69,8 @@ export class CalDavFetchEventsService {
     };
   }
 
+  // Fetches full event data for a set of hrefs via calendar-multiget, grouped
+  // by collection, and filters out results outside the fetch time window.
   async fetchEventsByHrefs(
     client: DAVClient,
     eventHrefs: string[],
@@ -121,6 +128,8 @@ export class CalDavFetchEventsService {
     return new URL(collectionPath, client.serverUrl).href;
   }
 
+  // Syncs a single calendar, preferring sync-collection and falling back to
+  // ctag/etag comparison if unsupported or if the per-calendar sync fails.
   private async syncCalendar(
     client: DAVClient,
     calendar: DAVCalendar,
@@ -147,6 +156,8 @@ export class CalDavFetchEventsService {
     }
   }
 
+  // Syncs a calendar using WebDAV sync-collection (RFC 6578), separating
+  // changed hrefs from cancelled (404) ones and returning the new sync token.
   private async fetchHrefsViaSyncCollection(
     client: DAVClient,
     calendar: DAVCalendar,
@@ -185,6 +196,8 @@ export class CalDavFetchEventsService {
     };
   }
 
+  // Runs sync-collection with the previous token, retrying a full re-sync
+  // (no token) if the server reports the token as invalidated.
   private async runSyncCollection(
     client: DAVClient,
     url: string,
@@ -217,6 +230,9 @@ export class CalDavFetchEventsService {
     return result;
   }
 
+  // Fallback sync strategy for servers without sync-collection support: skips
+  // entirely if the calendar's ctag is unchanged, otherwise diffs stored vs.
+  // current etags per event to find changed/cancelled hrefs.
   private async fetchHrefsViaCtagEtag(
     client: DAVClient,
     calendar: DAVCalendar,
@@ -256,6 +272,7 @@ export class CalDavFetchEventsService {
     };
   }
 
+  // Combines each calendar's sync results into one cursor to persist.
   private mergeSyncCursor(results: CalendarSyncResult[]): CalDavSyncCursor {
     const syncTokens: Record<string, string> = {};
     const ctags: Record<string, string> = {};
@@ -275,6 +292,7 @@ export class CalDavFetchEventsService {
     };
   }
 
+  // Fetches the current etag for every event href in a calendar via PROPFIND.
   private async fetchEtagsByHref(
     client: DAVClient,
     calendarUrl: string,

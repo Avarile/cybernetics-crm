@@ -4,6 +4,8 @@ type GetPreviousVersionFromArrayArgs = {
   versions: string[];
   currentVersion: string;
 };
+// Finds the highest version in `versions` that is still lower than `currentVersion`.
+// Returns undefined if none qualify or if any version string fails to parse.
 export const getPreviousVersion = ({
   versions,
   currentVersion,

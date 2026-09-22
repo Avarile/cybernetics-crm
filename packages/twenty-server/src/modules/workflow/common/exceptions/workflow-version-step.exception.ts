@@ -1,3 +1,5 @@
+// Exception for errors operating on a workflow version's steps, including
+// code/AI agent step execution failures.
 import { type MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { assertUnreachable } from 'twenty-shared/utils';

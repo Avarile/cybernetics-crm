@@ -29,6 +29,8 @@ type ResolvedCalendarAccount =
     }
   | { error: string };
 
+// Validates and normalizes raw calendar event creation input, and resolves
+// which connected account/calendar channel the event should be created on.
 @Injectable()
 export class CalendarEventComposerService {
   private readonly emailSchema = z.string().trim().pipe(z.email());
@@ -40,6 +42,8 @@ export class CalendarEventComposerService {
     private readonly calendarChannelRepository: Repository<CalendarChannelEntity>,
   ) {}
 
+  // Validates the input and resolves the target account/channel, returning
+  // either a ready-to-create composed event or an error message.
   async composeCalendarEvent(
     params: ComposeCalendarEventParams,
     workspaceId: string,
@@ -76,6 +80,8 @@ export class CalendarEventComposerService {
     };
   }
 
+  // Validates title, dates, time zone, and (if invitations are requested)
+  // attendee emails, returning the normalized input or an error message.
   private normalizeAndValidateInput(
     params: ComposeCalendarEventParams,
   ): CalendarEventToCreate | { error: string } {
@@ -186,6 +192,8 @@ export class CalendarEventComposerService {
       .filter((email) => email.length > 0);
   }
 
+  // Resolves the connected account and sync-enabled calendar channel to
+  // create the event on, either from an explicit id or the workspace default.
   private async resolveCalendarAccount(
     connectedAccountId: string | undefined,
     workspaceId: string,

@@ -2,6 +2,7 @@ import { Field, Int, ObjectType } from '@nestjs/graphql';
 
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';
 
+// Summary of a workspace ranked by user count for the admin panel's top-workspaces list
 @ObjectType('AdminPanelTopWorkspace')
 export class AdminPanelTopWorkspaceDTO {
   @Field(() => UUIDScalarType)

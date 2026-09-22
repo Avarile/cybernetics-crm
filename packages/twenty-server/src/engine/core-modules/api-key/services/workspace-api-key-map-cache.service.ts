@@ -9,6 +9,7 @@ import { InjectWorkspaceScopedRepository } from 'src/engine/twenty-orm/workspace
 import { WorkspaceScopedRepository } from 'src/engine/twenty-orm/workspace-scoped-repository/workspace-scoped-repository';
 import { WorkspaceCache } from 'src/engine/workspace-cache/decorators/workspace-cache.decorator';
 
+// Workspace cache provider that maps API key id to its flat representation
 @Injectable()
 @WorkspaceCache('apiKeyMap')
 export class WorkspaceApiKeyMapCacheService extends WorkspaceCacheProvider<
@@ -21,6 +22,7 @@ export class WorkspaceApiKeyMapCacheService extends WorkspaceCacheProvider<
     super();
   }
 
+  // Rebuilds the apiKeyMap cache entry from the workspace's current API keys
   async computeForCache(
     workspaceId: string,
   ): Promise<Record<string, FlatApiKey>> {

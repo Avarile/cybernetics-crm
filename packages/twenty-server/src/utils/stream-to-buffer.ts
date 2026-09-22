@@ -1,5 +1,7 @@
 import { type Readable } from 'stream';
 
+// Buffers an entire readable stream into memory, rejecting if it's already
+// ended/unreadable, closes before ending, errors, or exceeds `maxSizeBytes`.
 export const streamToBuffer = async (
   stream: Readable,
   maxSizeBytes?: number,

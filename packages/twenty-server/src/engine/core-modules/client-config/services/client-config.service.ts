@@ -1,3 +1,6 @@
+// Assembles the ClientConfig payload served to the frontend by reading
+// feature toggles and settings from TwentyConfigService and related
+// services (domain, AI model registry, maintenance mode).
 import { Injectable } from '@nestjs/common';
 
 import { isNonEmptyString } from '@sniptt/guards';
@@ -34,6 +37,8 @@ export class ClientConfigService {
     private maintenanceModeService: MaintenanceModeService,
   ) {}
 
+  // Cloudflare integration is considered enabled when both its API key and
+  // zone id are configured.
   private isCloudflareIntegrationEnabled(): boolean {
     return (
       !!this.twentyConfigService.get('CLOUDFLARE_API_KEY') &&
@@ -41,6 +46,9 @@ export class ClientConfigService {
     );
   }
 
+  // Builds the full public client configuration: available AI models (with
+  // an "auto" smart/fast entry prepended), billing/support/captcha settings,
+  // feature flags, and current maintenance mode window if any.
   async getClientConfig(): Promise<ClientConfig> {
     const captchaProvider = this.twentyConfigService.get('CAPTCHA_DRIVER');
     const supportDriver = this.twentyConfigService.get('SUPPORT_DRIVER');

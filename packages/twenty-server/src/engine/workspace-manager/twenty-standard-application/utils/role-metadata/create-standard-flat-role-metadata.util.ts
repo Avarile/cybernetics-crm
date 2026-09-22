@@ -5,6 +5,8 @@ import {
   createStandardRoleFlatMetadata,
 } from 'src/engine/workspace-manager/twenty-standard-application/utils/role-metadata/create-standard-role-flat-metadata.util';
 
+// Registry of builder functions, one per standard role, each producing that role's fixed permission
+// content via createStandardRoleFlatMetadata
 export const STANDARD_FLAT_ROLE_METADATA_BUILDERS_BY_ROLE_NAME = {
   admin: (args: Omit<CreateStandardRoleArgs, 'context'>) =>
     createStandardRoleFlatMetadata({

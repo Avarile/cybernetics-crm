@@ -1,3 +1,8 @@
+// GraphQL Yoga request plugin that intercepts incoming requests before
+// they hit the normal execution pipeline: if the query only touches
+// workspace/introspection fields (not core/metadata fields), it is
+// short-circuited through DirectExecutionService's faster path and the
+// response is written directly, skipping standard schema execution.
 import * as Sentry from '@sentry/node';
 import { type Request } from 'express';
 import { DocumentNode, parse } from 'graphql';
@@ -16,6 +21,11 @@ export type DirectExecutionPluginConfig = {
   featureFlagService: FeatureFlagService;
 };
 
+// Creates the Yoga plugin. On each request: parses the query, bails out
+// early for subscriptions or queries mixing core and workspace fields
+// (those must go through the normal pipeline / be split by the client),
+// then delegates eligible workspace queries to direct execution and
+// ends the response with its result.
 export function useDirectExecution(
   config: DirectExecutionPluginConfig,
 ): Plugin {

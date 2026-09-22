@@ -1,3 +1,5 @@
+// Registers an OpenTelemetry observable gauge reporting how many workspaces
+// each application is installed in, for the top installed apps.
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 
 import { ApplicationService } from 'src/engine/core-modules/application/application.service';
@@ -14,6 +16,8 @@ export class ApplicationGaugeService implements OnModuleInit {
     private readonly applicationService: ApplicationService,
   ) {}
 
+  // Registers the gauge callback that fetches and reports install counts
+  // per application, swallowing errors so metrics collection never crashes.
   onModuleInit() {
     this.metricsService.createMultiObservableGauge({
       metricName: 'twenty_app_installed_workspaces_total',

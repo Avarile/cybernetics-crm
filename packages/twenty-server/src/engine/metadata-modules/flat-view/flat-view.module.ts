@@ -14,6 +14,8 @@ import { ViewEntity } from 'src/engine/metadata-modules/view/entities/view.entit
 import { ViewSortEntity } from 'src/engine/metadata-modules/view-sort/entities/view-sort.entity';
 import { provideWorkspaceScopedRepository } from 'src/engine/twenty-orm/workspace-scoped-repository/provide-workspace-scoped-repository';
 
+// Wires up the cache service that computes flat (denormalized) views from
+// view entities and their children (fields, filters, groups, sorts).
 @Module({
   imports: [
     TypeOrmModule.forFeature([

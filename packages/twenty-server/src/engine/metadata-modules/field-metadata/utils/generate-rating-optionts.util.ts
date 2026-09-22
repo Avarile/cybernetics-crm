@@ -7,6 +7,7 @@ const range = {
   end: 5,
 };
 
+// Generates the default 1-5 star rating options for a new RATING field.
 export function generateRatingOptions(): FieldMetadataDefaultOption[] {
   const options: FieldMetadataDefaultOption[] = [];
 

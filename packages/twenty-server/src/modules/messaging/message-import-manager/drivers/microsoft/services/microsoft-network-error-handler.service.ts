@@ -1,3 +1,6 @@
+// Detects whether a Microsoft Graph error's body indicates a known
+// temporary/transient failure and, if so, wraps it as a retryable
+// exception; returns null for anything else.
 import { Injectable, Logger } from '@nestjs/common';
 
 import {
@@ -11,6 +14,8 @@ export class MicrosoftNetworkErrorHandler {
   private readonly logger = new Logger(MicrosoftNetworkErrorHandler.name);
 
   // oxlint-disable-next-line typescript/no-explicit-any
+  // Returns a TEMPORARY_ERROR exception when the error body matches a
+  // known transient Microsoft error pattern, null otherwise.
   public handleError(error: any): MessageImportDriverException | null {
     const isBodyString = error.body && typeof error.body === 'string';
     const isTemporaryError =

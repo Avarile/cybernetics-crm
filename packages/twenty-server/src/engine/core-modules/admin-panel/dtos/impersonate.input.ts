@@ -1,3 +1,4 @@
+// GraphQL args for starting impersonation of a user within a workspace.
 import { ArgsType, Field } from '@nestjs/graphql';
 
 import { IsNotEmpty, IsUUID } from 'class-validator';

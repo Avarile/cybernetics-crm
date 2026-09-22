@@ -1,3 +1,8 @@
+// Resolves group-by queries that also need to return a page of the
+// underlying records per group (not just aggregates): re-runs the
+// filtered query without GROUP BY, partitions it by the group-by
+// columns using a ROW_NUMBER() window function to page records within
+// each group, then attaches the paginated records to each aggregate row.
 import { Inject, Injectable } from '@nestjs/common';
 
 import { isNonEmptyString } from '@sniptt/guards';
@@ -39,6 +44,9 @@ export class GroupByWithRecordsService {
   protected readonly commonResultGettersService: CommonResultGettersService;
   constructor() {}
 
+  // Runs the group-by aggregate query, then a partitioned sub-query to
+  // fetch each group's page of records, processes their nested relations,
+  // and formats everything into the final group-by output items.
   public async resolveWithRecords({
     queryBuilderWithGroupBy,
     queryBuilderWithFiltersAndWithoutGroupBy,
@@ -152,6 +160,11 @@ export class GroupByWithRecordsService {
     });
   }
 
+  // Builds a sub-query selecting each record alongside its group-by
+  // column values, restricted to the exact groups already returned by
+  // the aggregate query, then wraps it in an outer query that ranks
+  // records within each group (via ROW_NUMBER) and JSON-aggregates the
+  // requested page of records per group.
   private addPartitionByToQueryBuilder({
     queryBuilderForSubQuery,
     columnsToSelect,
@@ -246,6 +259,9 @@ export class GroupByWithRecordsService {
     return mainQuery as WorkspaceSelectQueryBuilder<ObjectLiteral>;
   }
 
+  // Adds the ROW_NUMBER() OVER (PARTITION BY ...) window column used to
+  // rank/page records within each group, ordered by the requested
+  // orderByForRecords when present.
   private applyPartitionByToBuilder({
     groupByDefinitions,
     flatObjectMetadata,
@@ -302,6 +318,8 @@ export class GroupByWithRecordsService {
     );
   }
 
+  // Builds a SQL WHERE fragment matching rows that belong to exactly one
+  // of the previously computed groups (OR of ANDed per-column equality checks).
   private buildGroupConditions(
     groupsResult: Array<Record<string, unknown>>,
     groupByDefinitions: GroupByDefinition[],

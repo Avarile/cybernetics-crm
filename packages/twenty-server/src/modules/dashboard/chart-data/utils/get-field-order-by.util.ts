@@ -14,6 +14,9 @@ import { isMorphOrRelationFlatFieldMetadata } from 'src/engine/metadata-modules/
 import { GRAPH_DEFAULT_DATE_GRANULARITY } from 'src/modules/dashboard/chart-data/constants/graph-default-date-granularity.constant';
 import { getRelationFieldOrderBy } from 'src/modules/dashboard/chart-data/utils/get-relation-field-order-by.util';
 
+// Builds the record order-by clause for sorting by a group-by field itself
+// (as opposed to by its aggregate value), handling composite, date, and
+// relation field shapes.
 export const getFieldOrderBy = (
   groupByFieldMetadata: FlatFieldMetadata,
   groupBySubFieldName: string | null | undefined,

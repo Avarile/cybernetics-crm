@@ -1,3 +1,5 @@
+// Admin-panel service exposing config variables (grouped or single) for the
+// admin config UI, filtering out variables/groups hidden from the panel.
 import { Injectable } from '@nestjs/common';
 
 import { type ConfigVariableDTO } from 'src/engine/core-modules/admin-panel/dtos/config-variable.dto';
@@ -12,6 +14,8 @@ import { TwentyConfigService } from 'src/engine/core-modules/twenty-config/twent
 export class AdminPanelConfigService {
   constructor(private readonly twentyConfigService: TwentyConfigService) {}
 
+  // Returns all non-hidden config variables grouped and sorted by category
+  // position, each group's variables sorted alphabetically.
   getConfigVariablesGrouped(): ConfigVariablesDTO {
     const rawEnvVars = this.twentyConfigService.getAll();
     const groupedData = new Map<ConfigVariablesGroup, ConfigVariableDTO[]>();
@@ -65,6 +69,7 @@ export class AdminPanelConfigService {
     return { groups };
   }
 
+  // Returns a single config variable's current value and metadata by key.
   getConfigVariable(key: string): ConfigVariableDTO {
     const variableWithMetadata =
       this.twentyConfigService.getVariableWithMetadata(

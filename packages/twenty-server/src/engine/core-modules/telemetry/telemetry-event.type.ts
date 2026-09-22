@@ -1,3 +1,5 @@
+// Shape of a single self-hosting telemetry event sent to the telemetry
+// collection endpoint.
 export type TelemetryEventType = {
   workspaceId?: string;
   userWorkspaceId?: string;

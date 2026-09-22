@@ -8,6 +8,8 @@ import { FeatureFlagModule } from 'src/engine/core-modules/feature-flag/feature-
 import { WorkspaceCacheModule } from 'src/engine/workspace-cache/workspace-cache.module';
 import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace-migration/workspace-migration.module';
 
+// Registers the 2.1 workspace commands (permission-flag gating and layout
+// customization guard for command menu items) as providers for the upgrade runner.
 @Module({
   imports: [
     ApplicationModule,

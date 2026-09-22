@@ -1,4 +1,6 @@
 import { FieldMetadataType } from 'twenty-shared/types';
+
+// Type guard: true for field types stored as a composite of sub-values.
 export const isCompositeFieldMetadataType = (
   type: FieldMetadataType,
 ): type is

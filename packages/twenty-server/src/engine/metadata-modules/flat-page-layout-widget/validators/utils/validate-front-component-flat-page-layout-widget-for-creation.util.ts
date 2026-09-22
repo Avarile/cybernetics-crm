@@ -1,3 +1,6 @@
+// Validates a FRONT_COMPONENT-type page layout widget's configuration on
+// creation.
+
 import { msg, t } from '@lingui/core/macro';
 import { isDefined } from 'twenty-shared/utils';
 
@@ -6,6 +9,8 @@ import { type FlatPageLayoutWidgetValidationError } from 'src/engine/metadata-mo
 import { validateFrontComponentConfigurationType } from 'src/engine/metadata-modules/flat-page-layout-widget/validators/utils/validate-front-component-configuration-type.util';
 import { PageLayoutWidgetExceptionCode } from 'src/engine/metadata-modules/page-layout-widget/exceptions/page-layout-widget.exception';
 
+// Requires configuration to be present, then delegates to the shared
+// configuration-type check.
 export const validateFrontComponentFlatPageLayoutWidgetForCreation = (
   args: ValidateFlatPageLayoutWidgetTypeSpecificitiesForCreationArgs,
 ): FlatPageLayoutWidgetValidationError[] => {

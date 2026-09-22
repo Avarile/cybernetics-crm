@@ -1,3 +1,6 @@
+// Tracks which workspace/table combinations have an active live subscriber
+// (via short-TTL cache presence keys) and publishes new events only to those
+// being watched, to avoid broadcasting unwatched workspace event data.
 import { Injectable, Logger } from '@nestjs/common';
 
 import { isDefined } from 'twenty-shared/utils';
@@ -26,10 +29,13 @@ export class EventLogLiveService {
     private readonly subscriptionService: SubscriptionService,
   ) {}
 
+  // Builds the cache key tracking live-watch presence for a workspace/table.
   private getPresenceKey(workspaceId: string, key: string): string {
     return `workspaceEventLive:${workspaceId}:${key}`;
   }
 
+  // Marks a workspace/table as actively watched, with a short TTL refreshed
+  // by subscription heartbeats.
   async markWatched(workspaceId: string, key: string): Promise<void> {
     await this.cacheStorageService.set<boolean>(
       this.getPresenceKey(workspaceId, key),
@@ -38,6 +44,7 @@ export class EventLogLiveService {
     );
   }
 
+  // Checks whether a workspace/table currently has an active live watcher.
   async isWatched(workspaceId: string, key: string): Promise<boolean> {
     const value = await this.cacheStorageService.get<boolean>(
       this.getPresenceKey(workspaceId, key),
@@ -46,6 +53,8 @@ export class EventLogLiveService {
     return isDefined(value);
   }
 
+  // Groups events by workspace/table and publishes each group to the live
+  // subscription channel only if that workspace/table is currently watched.
   async publishWatched(events: WorkspaceEventEnvelope[]): Promise<void> {
     const groups = new Map<string, WatchedGroup>();
 

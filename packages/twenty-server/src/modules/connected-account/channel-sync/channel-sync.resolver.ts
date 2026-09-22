@@ -20,12 +20,15 @@ import { ChannelSyncService } from 'src/modules/connected-account/channel-sync/s
 @UsePipes(ResolverValidationPipe)
 @UseFilters(AuthGraphqlApiExceptionFilter)
 @UseGuards(WorkspaceAuthGuard)
+// GraphQL mutation to manually trigger sync for a connected account's
+// message and calendar channels.
 export class ChannelSyncResolver {
   constructor(
     private readonly channelSyncService: ChannelSyncService,
     private readonly connectedAccountMetadataService: ConnectedAccountMetadataService,
   ) {}
 
+  // Verifies the caller owns the connected account, then starts its channel sync.
   @Mutation(() => ChannelSyncSuccessDTO)
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.CONNECTED_ACCOUNTS))
   async startChannelSync(

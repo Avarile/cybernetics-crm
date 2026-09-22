@@ -1,3 +1,7 @@
+// Typed exception thrown by the direct-execution fast path (e.g. when a
+// query references an unknown resolver method or malformed args), kept
+// distinct from standard GraphQL execution errors so callers can handle
+// direct-execution failures explicitly.
 import { type MessageDescriptor } from '@lingui/core';
 
 import { CustomException } from 'src/utils/custom-exception';

@@ -1,3 +1,6 @@
+// Wires up the workspace-level query runner's event listeners (fanning
+// database mutation events out to webhooks/triggers/audit logs, and
+// telemetry for signups) along with the modules they depend on.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

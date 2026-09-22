@@ -41,6 +41,10 @@ import { WorkspaceMigrationBuilderException } from 'src/engine/workspace-manager
 import { WorkspaceMigrationValidateBuildAndRunService } from 'src/engine/workspace-manager/workspace-migration/services/workspace-migration-validate-build-and-run-service';
 
 @Injectable()
+// Replaces a FIELDS page layout widget's field layout in one call: either
+// a set of named groups (each with member fields) or a flat ungrouped
+// field list, diffing against the existing groups/fields and applying
+// the result as a single validated workspace migration.
 export class FieldsWidgetUpsertService {
   constructor(
     private readonly workspaceMigrationValidateBuildAndRunService: WorkspaceMigrationValidateBuildAndRunService,
@@ -50,6 +54,9 @@ export class FieldsWidgetUpsertService {
     private readonly viewRepository: WorkspaceScopedRepository<ViewEntity>,
   ) {}
 
+  // Validates the widget/view exist and that exactly one of groups/fields
+  // was provided, then delegates to the matching upsert path and returns
+  // the widget's owning view once persisted.
   async upsertFieldsWidget({
     input,
     workspaceId,
@@ -196,6 +203,12 @@ export class FieldsWidgetUpsertService {
     return view;
   }
 
+  // Diffs input groups (and their member fields) against the existing
+  // groups/fields for the view: creates/updates/deactivates groups,
+  // reassigns or creates fields to match each group's field list, and
+  // applies everything as one workspace migration. Overridable properties
+  // become overrides instead of direct mutations when the caller doesn't
+  // own the entity.
   private async upsertFieldsWidgetWithGroups({
     inputGroups,
     existingGroups,
@@ -583,6 +596,10 @@ export class FieldsWidgetUpsertService {
     }
   }
 
+  // Diffs an ungrouped input field list against the view's existing
+  // fields: deactivates/deletes all existing groups (since the layout is
+  // now flat), ungroups or updates matching fields, and creates new ones
+  // for unmatched inputs, applying it all as one workspace migration.
   private async upsertFieldsWidgetWithFields({
     inputFields,
     existingGroups,
@@ -840,6 +857,7 @@ export class FieldsWidgetUpsertService {
     }
   }
 
+  // Builds a new flat view field group from an input group spec.
   private buildGroupToCreate({
     inputGroup,
     viewId,
@@ -885,6 +903,8 @@ export class FieldsWidgetUpsertService {
     };
   }
 
+  // Checks whether an existing group's effective (override-resolved)
+  // name/position/visibility differ from the input, to skip no-op updates.
   private hasGroupChanged(
     existing: FlatViewFieldGroup,
     input: UpsertFieldsWidgetGroupInput,

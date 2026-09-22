@@ -6,6 +6,10 @@ import { getDomainNameFromHandle } from 'src/modules/contact-creation-manager/ut
 import { type WorkspaceMemberWorkspaceEntity } from 'src/modules/workspace-member/standard-objects/workspace-member.workspace-entity';
 import { isWorkDomain } from 'src/utils/is-work-email';
 
+// Drops contacts that are the connected account itself (or its aliases), an
+// existing workspace member, or share the account's own work domain
+// (unless internal-messages import is enabled), so auto-creation only
+// targets genuine external contacts.
 export function filterOutContactsThatBelongToSelfOrWorkspaceMembers(
   contacts: Contact[],
   connectedAccount: ConnectedAccountEntity,

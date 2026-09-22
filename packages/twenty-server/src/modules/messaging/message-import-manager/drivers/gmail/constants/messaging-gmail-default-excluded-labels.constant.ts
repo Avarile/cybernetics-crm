@@ -1,3 +1,5 @@
+// Gmail labels never synced as folders by default (promotional/social/etc.
+// categories plus system labels like trash/spam/chat).
 import { MESSAGING_GMAIL_EXCLUDED_CATEGORY_LABELS } from './messaging-gmail-excluded-category-labels.constant';
 import { MESSAGING_GMAIL_EXCLUDED_SYSTEM_LABELS } from './messaging-gmail-excluded-system-labels.constant';
 

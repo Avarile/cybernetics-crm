@@ -4,6 +4,7 @@ import {
   type CreateStandardViewFieldGroupArgs,
 } from 'src/engine/workspace-manager/twenty-standard-application/utils/view-field-group/create-standard-view-field-group-flat-metadata.util';
 
+// Builds the fixed set of standard view field groups for the "workflowRun" object's views
 export const computeStandardWorkflowRunViewFieldGroups = (
   args: Omit<CreateStandardViewFieldGroupArgs<'workflowRun'>, 'context'>,
 ): Record<string, FlatViewFieldGroup> => {

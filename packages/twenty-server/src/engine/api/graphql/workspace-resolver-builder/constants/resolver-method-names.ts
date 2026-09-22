@@ -1,3 +1,6 @@
+// The full set of CRUD/query operation names the dynamic schema exposes
+// per object (findMany, createOne, destroyMany, ...), used to key
+// resolver factories, query hooks, and generated GraphQL field names.
 export const RESOLVER_METHOD_NAMES = {
   FIND_MANY: 'findMany',
   FIND_ONE: 'findOne',

@@ -5,6 +5,9 @@ import { isDefined } from 'twenty-shared/utils';
 
 import { type FieldValue } from 'src/engine/api/rest/core/types/field-value.type';
 
+// Converts a raw REST filter value string into a typed FieldValue: splits
+// array-operator values (in/containsAny), coerces by field type
+// (numeric/boolean), and strips surrounding quotes from string literals.
 export const formatFieldValue = (
   value: string,
   fieldType?: FieldMetadataType,

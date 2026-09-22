@@ -1,3 +1,6 @@
+// Reconciles a message channel's remote folders (discovered via the
+// provider-specific driver) against its stored MessageFolder records:
+// computes and applies creates, field updates, and soft-deletions.
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -37,6 +40,8 @@ export class SyncMessageFoldersService {
     private readonly imapGetAllFoldersService: ImapGetAllFoldersService,
   ) {}
 
+  // Discovers the channel's remote folders and syncs them against the
+  // channel's existing MessageFolder records, returning the resulting set.
   async syncMessageFolders({
     messageChannel,
     workspaceId,
@@ -75,6 +80,8 @@ export class SyncMessageFoldersService {
     );
   }
 
+  // Dispatches folder discovery to the driver matching the connected
+  // account's provider.
   async discoverAllFolders(
     connectedAccount: Pick<
       ConnectedAccountEntity,
@@ -111,6 +118,8 @@ export class SyncMessageFoldersService {
     }
   }
 
+  // Diffs discovered vs. existing folders into create/update/delete sets,
+  // applies them, and returns the merged up-to-date folder list.
   private async syncFolderChanges(
     discoveredFolders: DiscoveredMessageFolder[],
     existingFolders: MessageFolder[],

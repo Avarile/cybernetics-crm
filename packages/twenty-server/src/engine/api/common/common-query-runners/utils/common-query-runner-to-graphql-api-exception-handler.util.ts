@@ -11,6 +11,8 @@ import {
   UserInputError,
 } from 'src/engine/core-modules/graphql/utils/graphql-errors.util';
 
+// Maps a CommonQueryRunnerException to the matching GraphQL error class
+// (NotFoundError, UserInputError, AuthenticationError, InternalServerError).
 export const commonQueryRunnerToGraphqlApiExceptionHandler = (
   error: CommonQueryRunnerException,
 ) => {

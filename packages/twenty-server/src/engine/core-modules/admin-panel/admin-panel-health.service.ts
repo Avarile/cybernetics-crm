@@ -1,3 +1,5 @@
+// Aggregates NestJS Terminus health indicators (database, redis, worker,
+// connected accounts, app) and BullMQ queue metrics for the admin panel.
 import { Injectable, Logger } from '@nestjs/common';
 import {
   type HealthIndicatorResult,
@@ -115,6 +117,8 @@ export class AdminPanelHealthService {
     };
   }
 
+  // Runs a single health indicator and returns its normalized status, expanding
+  // worker queue details into per-queue operational/outage statuses.
   async getIndicatorHealthStatus(
     indicatorId: HealthIndicatorId,
   ): Promise<AdminPanelHealthServiceDataDTO> {
@@ -145,6 +149,8 @@ export class AdminPanelHealthService {
     return indicatorStatus;
   }
 
+  // Runs all health indicators in parallel and returns their statuses for the
+  // system health overview.
   async getSystemHealthStatus(): Promise<SystemHealthDTO> {
     const [
       databaseResult,
@@ -195,6 +201,8 @@ export class AdminPanelHealthService {
     };
   }
 
+  // Fetches completed/failed job metrics for a queue over a time range,
+  // downsampling raw per-minute points to a fixed number of graph points.
   async getQueueMetrics(
     queueName: MessageQueue,
     timeRange: QueueMetricsTimeRange = QueueMetricsTimeRange.OneDay,

@@ -1,3 +1,5 @@
+// GraphQL DTOs for a connected IMAP/SMTP/CALDAV account and its public
+// (password-stripped) connection parameters.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 import { ConnectedAccountProvider } from 'twenty-shared/types';

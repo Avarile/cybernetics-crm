@@ -1,3 +1,5 @@
+// Normalizes a RICH_TEXT field's value, filling in markdown/blocknote from
+// whichever representation was provided.
 import { isNonEmptyString } from '@sniptt/guards';
 import {
   type RichTextMetadata,
@@ -16,6 +18,8 @@ let cachedServerBlockNoteEditor: ServerBlockNoteEditor | null = null;
 // the ESM bundle path where the full chain works.
 const nativeImport = new Function('specifier', 'return import(specifier)');
 
+// Lazily creates (and caches) a server-side BlockNote editor instance used
+// to convert between markdown and blocknote JSON.
 const getServerBlockNoteEditor = async (): Promise<ServerBlockNoteEditor> => {
   if (cachedServerBlockNoteEditor) {
     return cachedServerBlockNoteEditor;
@@ -29,6 +33,9 @@ const getServerBlockNoteEditor = async (): Promise<ServerBlockNoteEditor> => {
   return editor;
 };
 
+// Normalizes a RICH_TEXT field's input, filling in whichever of
+// markdown/blocknote representation is missing by converting from the one
+// that was provided.
 export const transformRichTextValue = async (
   // oxlint-disable-next-line typescript/no-explicit-any
   richTextValue: any,

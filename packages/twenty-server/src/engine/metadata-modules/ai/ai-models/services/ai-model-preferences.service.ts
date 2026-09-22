@@ -1,3 +1,5 @@
+// Reads and updates admin-configured AI model preferences (default fast/smart
+// models, recommended/disabled model lists) stored as config variables.
 import { Injectable } from '@nestjs/common';
 
 import { TwentyConfigService } from 'src/engine/core-modules/twenty-config/twenty-config.service';
@@ -8,6 +10,7 @@ import { AiModelRole } from 'src/engine/metadata-modules/ai/ai-models/types/ai-m
 export class AiModelPreferencesService {
   constructor(private readonly twentyConfigService: TwentyConfigService) {}
 
+  // Reads the current model preferences from config.
   getPreferences(): AiModelPreferences {
     return {
       defaultFastModels: this.twentyConfigService.get('AI_MODELS_DEFAULT_FAST'),
@@ -23,14 +26,17 @@ export class AiModelPreferencesService {
     };
   }
 
+  // Returns the set of model ids marked as recommended.
   getRecommendedModelIds(): Set<string> {
     return new Set(this.getPreferences().recommendedModels ?? []);
   }
 
+  // Enables or disables a single model workspace-wide.
   async setModelAdminEnabled(modelId: string, enabled: boolean): Promise<void> {
     await this.togglePreferenceList(modelId, 'disabledModels', !enabled);
   }
 
+  // Marks or unmarks a single model as recommended.
   async setModelRecommended(
     modelId: string,
     recommended: boolean,
@@ -38,6 +44,7 @@ export class AiModelPreferencesService {
     await this.togglePreferenceList(modelId, 'recommendedModels', recommended);
   }
 
+  // Enables or disables several models workspace-wide in one update.
   async setModelsAdminEnabled(
     modelIds: string[],
     enabled: boolean,
@@ -45,6 +52,7 @@ export class AiModelPreferencesService {
     await this.togglePreferenceListBulk(modelIds, 'disabledModels', !enabled);
   }
 
+  // Marks or unmarks several models as recommended in one update.
   async setModelsRecommended(
     modelIds: string[],
     recommended: boolean,
@@ -56,6 +64,7 @@ export class AiModelPreferencesService {
     );
   }
 
+  // Sets a model as the default for a role (fast/smart), moving it to the front of that list.
   async setDefaultModel(role: AiModelRole, modelId: string): Promise<void> {
     const prefs = { ...this.getPreferences() };
     const key =
@@ -68,6 +77,7 @@ export class AiModelPreferencesService {
     await this.persistPreferences(prefs);
   }
 
+  // Adds or removes a single model id from a preference list.
   private async togglePreferenceList(
     modelId: string,
     key: 'disabledModels' | 'recommendedModels',
@@ -76,6 +86,7 @@ export class AiModelPreferencesService {
     await this.togglePreferenceListBulk([modelId], key, add);
   }
 
+  // Adds or removes several model ids from a preference list in one update.
   private async togglePreferenceListBulk(
     modelIds: string[],
     key: 'disabledModels' | 'recommendedModels',
@@ -96,6 +107,7 @@ export class AiModelPreferencesService {
     await this.persistPreferences(prefs);
   }
 
+  // Writes all four preference lists back to config.
   private async persistPreferences(prefs: AiModelPreferences): Promise<void> {
     await Promise.all([
       this.twentyConfigService.set(

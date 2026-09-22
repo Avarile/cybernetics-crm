@@ -1,3 +1,4 @@
+// GraphQL representation of a workspace's aggregate AI usage counts.
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 
 @ObjectType('WorkspaceAiStats')

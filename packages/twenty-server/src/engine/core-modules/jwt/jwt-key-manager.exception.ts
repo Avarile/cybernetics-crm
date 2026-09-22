@@ -1,3 +1,4 @@
+// Exception type for JWT signing-key management errors (missing/invalid keys).
 import { type MessageDescriptor } from '@lingui/core';
 import { assertUnreachable } from 'twenty-shared/utils';
 

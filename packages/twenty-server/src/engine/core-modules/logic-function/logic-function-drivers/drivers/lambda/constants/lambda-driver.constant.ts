@@ -2,6 +2,7 @@ import { join, resolve } from 'path';
 
 import { ASSET_PATH } from 'src/constants/assets-path';
 
+// Timeouts, sizing, and naming constants for the AWS Lambda logic-function driver and its helper functions (builder, yarn-install)
 export const UPDATE_FUNCTION_DURATION_TIMEOUT_IN_SECONDS = 60;
 export const CREDENTIALS_DURATION_IN_SECONDS = 60 * 60; // 1h
 

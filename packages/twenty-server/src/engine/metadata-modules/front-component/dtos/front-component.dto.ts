@@ -13,6 +13,10 @@ import { GraphQLJSON } from 'graphql-type-json';
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';
 import { ApplicationTokenPairDTO } from 'src/engine/core-modules/application/application-oauth/dtos/application-token-pair.dto';
 
+// GraphQL representation of a front component: a custom UI component
+// hosted by an application, with its source/built paths, checksum for
+// cache-busting, and (when resolved) an application token pair and
+// non-secret application variables for the component to use at runtime.
 @ObjectType('FrontComponent')
 export class FrontComponentDTO {
   @IsUUID()

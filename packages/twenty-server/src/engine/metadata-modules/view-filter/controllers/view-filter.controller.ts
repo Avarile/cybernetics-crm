@@ -44,9 +44,12 @@ import { WorkspaceMigrationRunnerRestApiExceptionFilter } from 'src/engine/works
   FlatEntityMapsRestApiExceptionFilter,
   WorkspaceMigrationRunnerRestApiExceptionFilter,
 )
+// REST API for view filters (GraphQL exposes the same operations via
+// ViewFilterResolver).
 export class ViewFilterController {
   constructor(private readonly viewFilterService: ViewFilterService) {}
 
+  // Lists view filters in the workspace, optionally filtered to one view.
   @Get()
   @UseGuards(NoPermissionGuard)
   async findMany(
@@ -60,6 +63,7 @@ export class ViewFilterController {
     return this.viewFilterService.findByWorkspaceId(workspace.id);
   }
 
+  // Fetches a single view filter by id, throwing not-found if absent.
   @Get(':id')
   @UseGuards(NoPermissionGuard)
   async findOne(
@@ -86,6 +90,7 @@ export class ViewFilterController {
     return viewFilter;
   }
 
+  // Creates a new view filter.
   @Post()
   @UseGuards(CreateViewFilterPermissionGuard)
   async create(
@@ -98,6 +103,8 @@ export class ViewFilterController {
     });
   }
 
+  // Updates a view filter. Accepts either a nested `update` payload or a
+  // flat body (mapped into the expected `update` shape) for REST clients.
   @Patch(':id')
   @UseGuards(UpdateViewFilterPermissionGuard)
   async update(
@@ -116,6 +123,7 @@ export class ViewFilterController {
     });
   }
 
+  // Soft-deletes a view filter.
   @Delete(':id')
   @UseGuards(DeleteViewFilterPermissionGuard)
   async delete(

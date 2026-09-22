@@ -11,6 +11,7 @@ import { WebhookSubscriptionRenewalCronJob } from 'src/modules/connected-account
   description:
     'Starts a cron job to renew messaging/calendar webhook subscriptions before they expire',
 })
+// Registers the recurring cron job that renews expiring webhook subscriptions.
 export class WebhookSubscriptionRenewalCronCommand extends CommandRunner {
   constructor(
     @InjectMessageQueue(MessageQueue.cronQueue)

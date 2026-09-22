@@ -6,6 +6,8 @@ import { WorkspaceManyOrAllFlatEntityMapsCacheModule } from 'src/engine/metadata
 import { MiddlewareService } from 'src/engine/middlewares/middleware.service';
 import { WorkspaceCacheStorageModule } from 'src/engine/workspace-cache-storage/workspace-cache-storage.module';
 
+// NestJS module providing MiddlewareService, shared by the GraphQL and
+// REST request-hydration middlewares.
 @Module({
   imports: [
     WorkspaceCacheStorageModule,

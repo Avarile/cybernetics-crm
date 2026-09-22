@@ -21,6 +21,8 @@ import { addFlatEntityToFlatEntityMapsThroughMutationOrThrow } from 'src/engine/
 
 @Injectable()
 @WorkspaceCache('flatViewFieldMaps')
+// Computes and caches the workspace's view fields in their flat
+// (denormalized) form, with relation ids resolved to universal identifiers.
 export class WorkspaceFlatViewFieldMapCacheService extends WorkspaceCacheProvider<FlatViewFieldMaps> {
   constructor(
     @InjectWorkspaceScopedRepository(ViewFieldEntity)
@@ -37,6 +39,8 @@ export class WorkspaceFlatViewFieldMapCacheService extends WorkspaceCacheProvide
     super();
   }
 
+  // Loads all view fields and their related entities, then flattens each
+  // one by resolving its foreign keys to universal identifiers.
   async computeForCache(workspaceId: string): Promise<FlatViewFieldMaps> {
     const [viewFields, applications, fieldMetadatas, views, viewFieldGroups] =
       await Promise.all([

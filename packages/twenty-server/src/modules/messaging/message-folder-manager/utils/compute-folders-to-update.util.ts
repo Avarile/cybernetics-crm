@@ -8,6 +8,9 @@ import {
 
 import { type MessageFolderEntity } from 'src/engine/metadata-modules/message-folder/entities/message-folder.entity';
 
+// For each discovered folder matching an existing one by external id,
+// diffs name/isSentFolder/parentFolderId and returns a map of existing
+// folder id to changed fields, only including folders that actually changed.
 export const computeFoldersToUpdate = ({
   discoveredFolders,
   existingFolders,

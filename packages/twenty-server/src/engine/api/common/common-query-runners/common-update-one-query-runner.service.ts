@@ -24,6 +24,8 @@ import { FlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-metada
 import { FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object-metadata/types/flat-object-metadata.type';
 import { assertMutationNotOnRemoteObject } from 'src/engine/metadata-modules/object-metadata/utils/assert-mutation-not-on-remote-object.util';
 
+// Handles updateOne by delegating to CommonUpdateManyQueryRunnerService
+// with an id-equality filter.
 @Injectable()
 export class CommonUpdateOneQueryRunnerService extends CommonBaseQueryRunnerService<
   UpdateOneQueryArgs,
@@ -36,6 +38,7 @@ export class CommonUpdateOneQueryRunnerService extends CommonBaseQueryRunnerServ
   }
   protected readonly operationName = CommonQueryNames.UPDATE_ONE;
 
+  // Delegates to updateMany filtered by id, throwing if no record matched.
   async run(
     args: CommonExtendedInput<UpdateOneQueryArgs>,
     queryRunnerContext: CommonExtendedQueryRunnerContext,
@@ -61,6 +64,8 @@ export class CommonUpdateOneQueryRunnerService extends CommonBaseQueryRunnerServ
     return result[0];
   }
 
+  // Runs the update data through the data-arg-processor (without
+  // backfilling position).
   async computeArgs(
     args: CommonInput<UpdateOneQueryArgs>,
     queryRunnerContext: CommonBaseQueryRunnerContext,
@@ -87,6 +92,7 @@ export class CommonUpdateOneQueryRunnerService extends CommonBaseQueryRunnerServ
     };
   }
 
+  // Runs the updated record through the common result-getter pipeline.
   async processQueryResult(
     queryResult: ObjectRecord,
     flatObjectMetadata: FlatObjectMetadata,
@@ -103,6 +109,7 @@ export class CommonUpdateOneQueryRunnerService extends CommonBaseQueryRunnerServ
     );
   }
 
+  // Rejects mutations on remote objects and validates the target id.
   async validate(
     args: CommonInput<UpdateOneQueryArgs>,
     queryRunnerContext: CommonBaseQueryRunnerContext,

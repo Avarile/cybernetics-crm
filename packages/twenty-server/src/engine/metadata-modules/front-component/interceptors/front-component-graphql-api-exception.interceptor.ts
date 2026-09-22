@@ -10,6 +10,8 @@ import { type Observable, catchError } from 'rxjs';
 import { frontComponentGraphqlApiExceptionHandler } from 'src/engine/metadata-modules/front-component/utils/front-component-graphql-api-exception-handler.util';
 
 @Injectable()
+// Catches errors thrown by the front component resolver and converts
+// them into the appropriate GraphQL API error type.
 export class FrontComponentGraphqlApiExceptionInterceptor implements NestInterceptor {
   intercept(
     _context: ExecutionContext,

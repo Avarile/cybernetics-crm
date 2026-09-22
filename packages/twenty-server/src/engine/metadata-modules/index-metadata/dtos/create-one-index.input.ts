@@ -1,3 +1,5 @@
+// GraphQL mutation input wrapping a single index to create.
+
 import { Field, InputType } from '@nestjs/graphql';
 
 import { Type } from 'class-transformer';

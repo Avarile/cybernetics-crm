@@ -6,24 +6,30 @@ export type WasRemovedInUpgradeOptions = {
   upgradeCommandName: string;
 };
 
+// Type-level brand marking a field as removed in a later upgrade, so entity
+// shape helpers can find and optionalize/strip these fields at compile time
 declare const wasRemovedInUpgradeBrand: unique symbol;
 
 export type WasRemovedInUpgrade<T> = T & {
   readonly [wasRemovedInUpgradeBrand]?: true;
 };
 
+// Strips the WasRemovedInUpgrade brand back to the field's underlying type
 export type UnwrapWasRemovedInUpgrade<T> = [T] extends [
   WasRemovedInUpgrade<infer TUnwrapped>,
 ]
   ? TUnwrapped
   : T;
 
+// Union of an entity's property names branded WasRemovedInUpgrade
 type WasRemovedInUpgradeKeys<TEntity> = {
   [K in keyof TEntity]: typeof wasRemovedInUpgradeBrand extends keyof TEntity[K]
     ? K
     : never;
 }[keyof TEntity];
 
+// Makes an entity's WasRemovedInUpgrade-branded fields optional, for representing
+// an entity shape at an upgrade cursor before those fields were removed
 export type MakeWasRemovedInUpgradePropertiesOptional<TEntity> = Omit<
   TEntity,
   WasRemovedInUpgradeKeys<TEntity>
@@ -41,6 +47,8 @@ export type WasRemovedInUpgradePropertyMap = Record<
   WasRemovedInUpgradeOptions
 >;
 
+// Class/property decorator recording which upgrade command removed this
+// entity or field
 export const WasRemovedInUpgrade =
   (options: WasRemovedInUpgradeOptions) =>
   (target: object, propertyKey?: string | symbol): void => {
@@ -53,11 +61,13 @@ export const WasRemovedInUpgrade =
     });
   };
 
+// Reads the class-level @WasRemovedInUpgrade metadata, if present
 export const getWasRemovedInUpgradeClassMetadata = (
   target: Function,
 ): WasRemovedInUpgradeOptions | undefined =>
   Reflect.getMetadata(WAS_REMOVED_IN_UPGRADE_CLASS_METADATA_KEY, target);
 
+// Reads the per-property @WasRemovedInUpgrade metadata map for a class
 export const getWasRemovedInUpgradePropertyMetadata = (
   target: Function,
 ): WasRemovedInUpgradePropertyMap =>

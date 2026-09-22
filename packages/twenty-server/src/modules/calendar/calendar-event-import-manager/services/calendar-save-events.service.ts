@@ -19,6 +19,8 @@ type FetchedCalendarEventWithDBEvent = {
   newlyCreatedCalendarEvent: CalendarEventWorkspaceEntity | null;
 };
 
+// Persists fetched provider events into workspace calendar-event records and
+// their per-channel associations, upserting participants, all in one transaction.
 @Injectable()
 export class CalendarSaveEventsService {
   constructor(
@@ -26,6 +28,9 @@ export class CalendarSaveEventsService {
     private readonly calendarEventParticipantService: CalendarEventParticipantService,
   ) {}
 
+  // Inserts new calendar events (and their channel associations) and updates
+  // existing ones, then hands participants off for upsert (which also
+  // enqueues contact creation for new participants).
   public async saveCalendarEventsAndEnqueueContactCreationJob(
     fetchedCalendarEvents: FetchedCalendarEvent[],
     calendarChannel: CalendarChannelEntity,

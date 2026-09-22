@@ -1,5 +1,7 @@
 /* @license Enterprise */
 
+// NestJS module (enterprise-only) wiring the SSO resolver/service for
+// configuring OIDC/SAML identity providers per workspace.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

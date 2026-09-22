@@ -1,3 +1,5 @@
+// Flattened, denormalized representation of object metadata used across the
+// metadata engine (validators, builders, caches) instead of the raw entity.
 import { type FlatEntityFrom } from 'src/engine/metadata-modules/flat-entity/types/flat-entity-from.type';
 import { type ObjectMetadataEntity } from 'src/engine/metadata-modules/object-metadata/object-metadata.entity';
 

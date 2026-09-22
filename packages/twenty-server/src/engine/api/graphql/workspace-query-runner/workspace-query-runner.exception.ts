@@ -1,3 +1,7 @@
+// Typed exception for the higher-level workspace query runner layer
+// (record-level errors like constraint violations, timeouts, and
+// affected-row-count mismatches), with a default user-friendly message
+// per error code that callers can override.
 import { type MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { assertUnreachable } from 'twenty-shared/utils';
@@ -19,6 +23,7 @@ export const WorkspaceQueryRunnerExceptionCode = appendCommonExceptionCode({
   NO_ROWS_AFFECTED: 'NO_ROWS_AFFECTED',
 } as const);
 
+// Picks the default translated user-facing message for an exception code.
 const getWorkspaceQueryRunnerExceptionUserFriendlyMessage = (
   code: keyof typeof WorkspaceQueryRunnerExceptionCode,
 ) => {

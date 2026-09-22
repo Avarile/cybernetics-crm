@@ -1,3 +1,4 @@
+// Shared Zod fields (timestamp, context ids, version) extended by every event schema.
 import { z } from 'zod';
 
 export const baseEventSchema = z.strictObject({

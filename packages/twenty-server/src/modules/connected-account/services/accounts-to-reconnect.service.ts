@@ -6,12 +6,15 @@ import {
   AccountsToReconnectKeys,
 } from 'src/modules/connected-account/types/accounts-to-reconnect-key-value.type';
 
+// Tracks, per user, which connected accounts need re-authentication —
+// surfaced in the UI as a reconnect prompt. Backed by per-user settings storage.
 @Injectable()
 export class AccountsToReconnectService {
   constructor(
     private readonly userVarsService: UserVarsService<AccountsToReconnectKeyValueType>,
   ) {}
 
+  // Removes an account from every reconnect-reason list for a user.
   public async removeAccountToReconnect(
     userId: string,
     workspaceId: string,
@@ -27,6 +30,8 @@ export class AccountsToReconnectService {
     }
   }
 
+  // Removes an account from one reconnect-reason list, deleting the setting
+  // entirely if the list becomes empty.
   private async removeAccountToReconnectByKey(
     key: AccountsToReconnectKeys,
     userId: string,
@@ -65,6 +70,7 @@ export class AccountsToReconnectService {
     });
   }
 
+  // Adds an account to a reconnect-reason list, if not already present.
   public async addAccountToReconnectByKey(
     key: AccountsToReconnectKeys,
     userId: string,

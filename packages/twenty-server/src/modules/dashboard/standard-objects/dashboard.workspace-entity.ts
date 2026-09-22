@@ -5,6 +5,8 @@ import { type EntityRelation } from 'src/engine/workspace-manager/workspace-migr
 import { type AttachmentWorkspaceEntity } from 'src/modules/attachment/standard-objects/attachment.workspace-entity';
 import { type TimelineActivityWorkspaceEntity } from 'src/modules/timeline/standard-objects/timeline-activity.workspace-entity';
 
+// Standard object representing a dashboard, backed by a page layout that
+// holds its tabs/widgets.
 export class DashboardWorkspaceEntity extends BaseWorkspaceEntity {
   title: string | null;
   pageLayoutId: string | null;

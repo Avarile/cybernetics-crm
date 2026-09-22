@@ -1,3 +1,6 @@
+// Manages the two Lambda layers a logic function executor depends on: the
+// application's yarn dependency layer (built and cached per application) and
+// the per-workspace SDK client layer (rebuilt when marked stale).
 import * as fs from 'fs/promises';
 
 import {
@@ -42,6 +45,8 @@ export class LambdaLayerManagerService {
     private readonly sdkClientArchiveService: SdkClientArchiveService,
   ) {}
 
+  // Returns the ARN of the application's dependency layer, building it via a
+  // yarn-install Lambda if it doesn't already exist.
   async ensureDepsLayer(context: LayerAppContext): Promise<string> {
     const layerName = getLambdaDepsLayerName({
       flatApplication: context.flatApplication,
@@ -67,6 +72,8 @@ export class LambdaLayerManagerService {
     return newArn;
   }
 
+  // Returns the ARN of the workspace's SDK client layer, rebuilding and
+  // republishing it when stale or missing.
   async ensureSdkLayer(context: LayerAppContext): Promise<string> {
     const { flatApplication, applicationUniversalIdentifier } = context;
     const layerName = getLambdaSdkLayerName({
@@ -106,6 +113,7 @@ export class LambdaLayerManagerService {
     return arn;
   }
 
+  // Deletes all versions of a workspace/application's SDK layer.
   async deleteSdkLayer({
     workspaceId,
     applicationUniversalIdentifier,
@@ -121,6 +129,7 @@ export class LambdaLayerManagerService {
     await this.deleteAllLayerVersions(layerName);
   }
 
+  // Checks whether an executor's attached layers match the expected deps and SDK layer names.
   hasExpectedLayers({
     lambdaExecutor,
     flatApplication,
@@ -149,6 +158,8 @@ export class LambdaLayerManagerService {
     );
   }
 
+  // Runs a yarn install in a Lambda to build the dependency layer zip and
+  // publishes it as a new layer version.
   private async createDepsLayer({
     flatApplication,
     applicationUniversalIdentifier,
@@ -197,6 +208,7 @@ export class LambdaLayerManagerService {
     }
   }
 
+  // Reads the application's package.json/yarn.lock contents for the deps layer build.
   private async getDependencyContents({
     flatApplication,
     applicationUniversalIdentifier,
@@ -222,6 +234,7 @@ export class LambdaLayerManagerService {
     }
   }
 
+  // Publishes a new Lambda layer version from a zip buffer.
   private async publishLayer({
     layerName,
     zipBuffer,
@@ -249,6 +262,7 @@ export class LambdaLayerManagerService {
     return result.LayerVersionArn;
   }
 
+  // Paginates through and deletes every version of a layer, idempotently.
   private async deleteAllLayerVersions(layerName: string): Promise<void> {
     const lambdaClient = await this.awsClient.getLambdaClient();
     let marker: string | undefined;

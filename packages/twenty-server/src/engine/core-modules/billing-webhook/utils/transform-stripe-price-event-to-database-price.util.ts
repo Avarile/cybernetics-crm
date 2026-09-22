@@ -8,6 +8,7 @@ import { BillingPriceType } from 'src/engine/core-modules/billing/enums/billing-
 import { SubscriptionInterval } from 'src/engine/core-modules/billing/enums/billing-subscription-interval.enum';
 import { BillingUsageType } from 'src/engine/core-modules/billing/enums/billing-usage-type.enum';
 
+// Maps a Stripe Price object to the shape stored in the BillingPrice entity
 export const transformStripePriceEventToDatabasePrice = (
   data: Stripe.Price,
 ) => {

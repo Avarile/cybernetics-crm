@@ -32,6 +32,9 @@ import { SyncableEntity } from 'src/engine/workspace-manager/types/syncable-enti
 @Index('IDX_RLPPG_PARENT_GROUP_ID', [
   'parentRowLevelPermissionPredicateGroupId',
 ])
+// TypeORM entity for a row-level permission predicate group (Enterprise
+// feature): a logical (AND/OR) node in a predicate tree, which can nest
+// child groups and hold leaf predicates for a role/object.
 export class RowLevelPermissionPredicateGroupEntity
   extends SyncableEntity
   implements

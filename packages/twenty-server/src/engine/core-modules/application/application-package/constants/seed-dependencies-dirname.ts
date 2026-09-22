@@ -1,3 +1,5 @@
+// Absolute path to the bundled seed node_modules used when building a
+// logic function layer's dependencies.
 import path from 'path';
 
 import { ASSET_PATH } from 'src/constants/assets-path';

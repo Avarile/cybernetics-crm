@@ -1,3 +1,5 @@
+// Normalizes per-message Gmail import errors, silently skipping messages
+// that were deleted remotely (404/410) rather than failing the whole import.
 import { Injectable, Logger } from '@nestjs/common';
 
 import {
@@ -15,6 +17,9 @@ export class GmailMessagesImportErrorHandler {
 
   constructor() {}
 
+  // Logs the error; returns silently for a 404/410 (message no longer
+  // exists), otherwise throws a parsed network/API error or a generic
+  // MessageImportDriverException.
   public handleError(error: unknown, messageExternalId: string): void {
     this.logger.error(
       `Gmail: Error importing message ${messageExternalId}: ${JSON.stringify(error)}`,

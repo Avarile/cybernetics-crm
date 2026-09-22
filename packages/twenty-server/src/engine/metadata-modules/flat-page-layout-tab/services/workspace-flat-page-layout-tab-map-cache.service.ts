@@ -19,6 +19,8 @@ import { createIdToUniversalIdentifierMap } from 'src/engine/workspace-cache/uti
 import { regroupEntitiesByRelatedEntityId } from 'src/engine/workspace-cache/utils/regroup-entities-by-related-entity-id';
 import { addFlatEntityToFlatEntityMapsThroughMutationOrThrow } from 'src/engine/workspace-manager/workspace-migration/utils/add-flat-entity-to-flat-entity-maps-through-mutation-or-throw.util';
 
+// Builds and caches the workspace's flat-page-layout-tab maps by loading tab entities
+// (with their widgets regrouped by tab id) and resolving relation ids to universal identifiers.
 @Injectable()
 @WorkspaceCache('flatPageLayoutTabMaps')
 export class WorkspaceFlatPageLayoutTabMapCacheService extends WorkspaceCacheProvider<FlatPageLayoutTabMaps> {
@@ -35,6 +37,8 @@ export class WorkspaceFlatPageLayoutTabMapCacheService extends WorkspaceCachePro
     super();
   }
 
+  // Loads page layout tabs, widgets, applications and page layouts for the workspace,
+  // regroups widgets by their owning tab, then assembles them into flat-page-layout-tab maps.
   async computeForCache(workspaceId: string): Promise<FlatPageLayoutTabMaps> {
     const [pageLayoutTabs, pageLayoutWidgets, applications, pageLayouts] =
       await Promise.all([

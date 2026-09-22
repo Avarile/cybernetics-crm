@@ -3,6 +3,8 @@ import { isDefined } from 'twenty-shared/utils';
 
 import { type MessageWithParticipants } from 'src/modules/messaging/message-import-manager/types/message';
 
+// True when the message's FROM participant matches (case-insensitively)
+// one of the given handles.
 export const isMessageSenderMatchingHandles = (
   message: MessageWithParticipants,
   userHandles: string[],

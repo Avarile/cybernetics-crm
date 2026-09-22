@@ -7,6 +7,8 @@ import { type FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object
 import { STANDARD_COMMAND_MENU_ITEMS } from 'src/engine/workspace-manager/twenty-standard-application/constants/standard-command-menu-item.constant';
 import { TWENTY_STANDARD_APPLICATION } from 'src/engine/workspace-manager/twenty-standard-application/constants/twenty-standard-applications';
 
+// Builds a single standard command menu item's flat metadata from its STANDARD_COMMAND_MENU_ITEMS
+// definition, resolving the object metadata it's scoped to (if any) by universal identifier
 export const createStandardCommandMenuItemFlatMetadata = ({
   commandMenuItemName,
   commandMenuItemId,

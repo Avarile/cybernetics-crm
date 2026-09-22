@@ -1,5 +1,7 @@
 import { type QueryRunner } from 'typeorm';
 
+// SQL for a legacy TypeORM migration: makes permissionFlag.universalIdentifier and
+// applicationId required and rebuilds the dependent unique index / FK around them.
 export const makePermissionFlagUniversalIdentifierAndApplicationIdNotNullQueries =
   async (queryRunner: QueryRunner): Promise<void> => {
     await queryRunner.query(

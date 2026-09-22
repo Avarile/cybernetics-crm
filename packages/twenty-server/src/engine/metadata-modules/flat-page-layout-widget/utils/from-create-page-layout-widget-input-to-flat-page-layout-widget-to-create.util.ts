@@ -1,3 +1,6 @@
+// Converts a CreatePageLayoutWidgetInput GraphQL input into the flat page
+// layout widget record to persist.
+
 import { trimAndRemoveDuplicatedWhitespacesFromObjectStringProperties } from 'twenty-shared/utils';
 import { v4 } from 'uuid';
 
@@ -24,6 +27,9 @@ export type FromCreatePageLayoutWidgetInputToFlatPageLayoutWidgetToCreateArgs =
     | 'flatViewMaps'
   >;
 
+// Sanitizes the input, validates the widget's configuration shape, generates
+// a new id, and assembles the full flat widget record including the
+// universal configuration used for cross-workspace sync.
 export const fromCreatePageLayoutWidgetInputToFlatPageLayoutWidgetToCreate = ({
   createPageLayoutWidgetInput: rawCreatePageLayoutWidgetInput,
   workspaceId,

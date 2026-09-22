@@ -1,3 +1,4 @@
+// GraphQL result of a one-off agent run: its output, or an error if it failed.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 import GraphQLJSON from 'graphql-type-json';

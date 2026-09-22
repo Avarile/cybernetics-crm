@@ -12,6 +12,8 @@ import { CalDavDriverModule } from 'src/modules/calendar/calendar-event-import-m
 import { CalendarEventImportManagerModule } from 'src/modules/calendar/calendar-event-import-manager/calendar-event-import-manager.module';
 import { OAuth2ClientManagerModule } from 'src/modules/connected-account/oauth2-client-manager/oauth2-client-manager.module';
 
+// Wires up the per-provider (Google/Microsoft/CalDAV) calendar event creation
+// drivers behind the shared composer/create services.
 @Module({
   imports: [
     TypeOrmModule.forFeature([ConnectedAccountEntity, CalendarChannelEntity]),

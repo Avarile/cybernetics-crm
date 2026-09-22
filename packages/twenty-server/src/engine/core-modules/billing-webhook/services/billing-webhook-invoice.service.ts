@@ -26,6 +26,8 @@ import { WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.ent
 
 const SUBSCRIPTION_CYCLE_BILLING_REASON = 'subscription_cycle';
 
+// Handles Stripe invoice.paid/finalized events: resets usage caps on new cycles,
+// processes credit rollover, and finalizes stale past-due draft invoices
 @Injectable()
 export class BillingWebhookInvoiceService {
   protected readonly logger = new Logger(BillingWebhookInvoiceService.name);
@@ -46,6 +48,7 @@ export class BillingWebhookInvoiceService {
     private readonly eventLogEmitterService: EventLogEmitterService,
   ) {}
 
+  // Routes an invoice.paid or invoice.finalized event to its handler
   async processStripeEvent(
     event: Stripe.InvoicePaidEvent | Stripe.InvoiceFinalizedEvent,
   ) {
@@ -62,6 +65,8 @@ export class BillingWebhookInvoiceService {
     }
   }
 
+  // On a new subscription-cycle invoice, resets the per-period usage cap flag and
+  // triggers credit rollover unless this is the first period right after a trial
   private async processInvoiceFinalized(
     data: Stripe.InvoiceFinalizedEvent.Data,
   ) {
@@ -116,6 +121,7 @@ export class BillingWebhookInvoiceService {
     }
   }
 
+  // Applies resource-credit rollover for the subscription's new billing period
   private async processRollover(
     subscription: BillingSubscriptionEntity,
     invoicedPeriodStart: Date,
@@ -138,6 +144,7 @@ export class BillingWebhookInvoiceService {
     });
   }
 
+  // Finalizes any stale past-due draft invoices and logs the payment-received event
   private async processInvoicePaid(data: Stripe.InvoicePaidEvent.Data) {
     const stripeSubscriptionId = getSubscriptionIdFromInvoice(data.object);
     const stripeCustomerId = data.object.customer as string | undefined;
@@ -179,6 +186,8 @@ export class BillingWebhookInvoiceService {
     return { stripeSubscriptionId };
   }
 
+  // Finalizes draft invoices for periods after the one just paid that are already
+  // overdue, so Stripe can collect payment and resume the subscription
   private async finalizePastDueDraftInvoicesAfterPaidInvoice(
     stripeSubscriptionId: string,
     paidInvoicePeriodEnd: number,
@@ -207,6 +216,8 @@ export class BillingWebhookInvoiceService {
     }
   }
 
+  // Marks a suspended workspace's cleanup timer as freshly reset after a payment,
+  // giving it a new grace period instead of being deleted on schedule
   private async delaySuspendedWorkspaceCleanup(
     billingCustomer: BillingCustomerEntity,
   ): Promise<void> {

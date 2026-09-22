@@ -1,3 +1,5 @@
+// Tracks liveness of an in-progress chat stream in Redis via a TTL key that
+// is periodically refreshed, so a dead stream (crashed worker) can be detected and reaped.
 import { Injectable } from '@nestjs/common';
 
 import { RedisClientService } from 'src/engine/core-modules/redis-client/redis-client.service';
@@ -14,12 +16,15 @@ export class AgentChatStreamHeartbeatService {
     return `agent-chat-stream-alive:${streamId}`;
   }
 
+  // Marks a stream as claimed (queued but not yet running) with a long TTL.
   async markClaimed(streamId: string): Promise<void> {
     await this.redisClientService
       .getClient()
       .set(this.getKey(streamId), '1', 'EX', CLAIM_TTL_SECONDS);
   }
 
+  // Starts periodically refreshing a short-TTL liveness key while the stream
+  // is actively running; returns a stop function to call when it finishes.
   startRunning(streamId: string): () => void {
     const refresh = () => {
       this.redisClientService
@@ -34,6 +39,8 @@ export class AgentChatStreamHeartbeatService {
     return () => clearInterval(interval);
   }
 
+  // Checks whether the stream's liveness key is still present; defaults to
+  // true on a Redis error to avoid falsely reaping a healthy stream.
   async isAlive(streamId: string): Promise<boolean> {
     try {
       const exists = await this.redisClientService
@@ -46,6 +53,7 @@ export class AgentChatStreamHeartbeatService {
     }
   }
 
+  // Removes the stream's liveness key.
   async clear(streamId: string): Promise<void> {
     await this.redisClientService
       .getClient()

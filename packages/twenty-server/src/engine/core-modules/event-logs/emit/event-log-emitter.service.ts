@@ -1,3 +1,6 @@
+// Entry point for emitting workspace/object/pageview events into the
+// ingestion sink, with a per-context helper API and error swallowing so a
+// failed emit never breaks the caller's business logic.
 import { Injectable, Logger } from '@nestjs/common';
 
 import {
@@ -25,10 +28,12 @@ export class EventLogEmitterService {
     private readonly workspaceEventSinkService: WorkspaceEventSinkService,
   ) {}
 
+  // Whether event ingestion is enabled (i.e. a sink is configured).
   isEnabled(): boolean {
     return this.workspaceEventSinkService.isEnabled();
   }
 
+  // Sends a batch of event envelopes to the ingestion sink, no-op if empty or disabled.
   async dispatch(events: WorkspaceEventEnvelope[]): Promise<void> {
     if (events.length === 0 || !this.isEnabled()) {
       return;
@@ -37,6 +42,8 @@ export class EventLogEmitterService {
     await this.workspaceEventSinkService.ingest(events);
   }
 
+  // Returns a bound helper object for emitting workspace/object/pageview
+  // events pre-scoped to a given workspace/user context.
   createContext(context?: EventContextFields) {
     const contextFields = computeEventContextFields(context);
 
@@ -67,6 +74,8 @@ export class EventLogEmitterService {
     };
   }
 
+  // Builds and dispatches a single event envelope, catching and logging
+  // errors so callers always get a { success } result rather than a throw.
   private async emit(
     buildEnvelope: () => WorkspaceEventEnvelope,
   ): Promise<{ success: boolean }> {

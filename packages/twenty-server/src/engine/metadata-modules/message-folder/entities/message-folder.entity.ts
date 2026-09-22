@@ -20,6 +20,8 @@ registerEnumType(MessageFolderPendingSyncAction, {
   name: 'MessageFolderPendingSyncAction',
 });
 
+// A synced mailbox folder (e.g. Inbox, Sent) belonging to a message channel, tracking
+// its sync cursor and any pending sync action still to be applied.
 @Entity({ name: 'messageFolder', schema: 'core' })
 export class MessageFolderEntity extends WorkspaceRelatedEntity {
   @PrimaryGeneratedColumn('uuid')

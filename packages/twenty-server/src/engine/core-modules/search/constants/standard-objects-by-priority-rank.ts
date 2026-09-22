@@ -1,3 +1,5 @@
+// Tie-breaker ranking used to order global search results when two records
+// have identical text-search ranks.
 //the higher the number, the higher the priority
 export const STANDARD_OBJECTS_BY_PRIORITY_RANK = {
   person: 5,

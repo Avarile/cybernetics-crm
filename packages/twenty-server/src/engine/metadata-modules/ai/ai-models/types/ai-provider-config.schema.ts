@@ -5,6 +5,8 @@ import { AI_SDK_PACKAGES, DATA_RESIDENCY_KEYS } from 'twenty-shared/ai';
 import { aiProviderAuthTypeSchema } from 'src/engine/metadata-modules/ai/ai-models/types/ai-provider-auth-type.schema';
 import { aiProviderModelConfigSchema } from 'src/engine/metadata-modules/ai/ai-models/types/ai-provider-model-config.schema';
 
+// Validation schema for a single AI provider's configuration, covering all
+// supported SDK packages' credential shapes.
 export const aiProviderConfigSchema = z.object({
   npm: z.enum(AI_SDK_PACKAGES),
   name: z.string().optional(),

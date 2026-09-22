@@ -1,5 +1,6 @@
 import { type Router } from 'express';
 
+// Which exception handler backend is active, and the options needed to build it
 export enum ExceptionHandlerDriver {
   SENTRY = 'SENTRY',
   CONSOLE = 'CONSOLE',

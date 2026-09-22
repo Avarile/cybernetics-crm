@@ -1,6 +1,7 @@
 import { type LogicFunctionExecuteResult } from 'src/engine/core-modules/logic-function/logic-function-drivers/interfaces/logic-function-driver.interface';
 import { LogicFunctionExecutionStatus } from 'src/engine/metadata-modules/logic-function/dtos/logic-function-execution-result.dto';
 
+// Builds an error execution result representing a logic function timeout.
 export const buildLogicFunctionTimeoutResult = (
   timeoutMs: number,
 ): LogicFunctionExecuteResult => ({

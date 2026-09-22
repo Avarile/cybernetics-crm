@@ -3,6 +3,7 @@ import { pipeline } from 'stream/promises';
 
 import archiver from 'archiver';
 
+// Zips a directory's contents into an output zip file.
 export const createZipFile = async (
   sourceDir: string,
   outPath: string,

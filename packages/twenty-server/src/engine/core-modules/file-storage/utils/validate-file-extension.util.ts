@@ -5,6 +5,8 @@ import { ALLOWED_EXTENSIONS_BY_APPLICATION_FILE_FOLDER } from 'src/engine/core-m
 import { type ResourcePathValidationResult } from 'src/engine/core-modules/file-storage/types/resource-path-validation-result.type';
 import { hasAllowedExtension } from 'src/engine/core-modules/file-storage/utils/has-allowed-extension.util';
 
+// Validates a resource path's extension against the allowed list for its file
+// folder; folders with no configured list allow any extension
 export const validateFileExtension = ({
   resourcePath,
   fileFolder,

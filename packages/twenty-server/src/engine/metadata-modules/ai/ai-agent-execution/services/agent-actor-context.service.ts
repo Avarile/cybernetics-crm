@@ -1,3 +1,5 @@
+// Builds the actor/user context (role, workspace member, locale, timezone)
+// an agent needs to act on behalf of a user workspace during execution.
 import { Injectable } from '@nestjs/common';
 
 import { type ActorMetadata, FieldActorSource } from 'twenty-shared/types';
@@ -36,6 +38,8 @@ export class AgentActorContextService {
     private readonly globalWorkspaceOrmManager: GlobalWorkspaceOrmManager,
   ) {}
 
+  // Resolves the workspace member, role, and locale/timezone context needed
+  // to attribute an agent's actions to the requesting user.
   async buildUserAndAgentActorContext(
     userWorkspaceId: string,
     workspaceId: string,

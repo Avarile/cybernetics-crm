@@ -1,3 +1,5 @@
+// GraphQL subscription resolver streaming chat events to a client, with a
+// keepalive heartbeat that also periodically reaps a stalled active stream.
 import { UseGuards, UseInterceptors } from '@nestjs/common';
 import { Args, Subscription } from '@nestjs/graphql';
 
@@ -46,6 +48,8 @@ export class AgentChatSubscriptionResolver {
     },
   })
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.AI))
+  // Subscribes to a thread's chat events, sending periodic keepalives and
+  // reaping a dead active stream on each heartbeat check interval.
   async onAgentChatEvent(
     @Args('threadId', { type: () => UUIDScalarType }) threadId: string,
     @AuthWorkspace() workspace: WorkspaceEntity,
@@ -100,6 +104,7 @@ export class AgentChatSubscriptionResolver {
     });
   }
 
+  // Reaps the thread's active stream if it has stalled, best-effort.
   private async reapWatchedStreamIfDead(
     workspaceId: string,
     threadId: string,

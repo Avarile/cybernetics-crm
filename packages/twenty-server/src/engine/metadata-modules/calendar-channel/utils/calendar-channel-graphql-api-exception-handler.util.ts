@@ -14,6 +14,7 @@ import {
   ConnectedAccountExceptionCode,
 } from 'src/engine/metadata-modules/connected-account/connected-account.exception';
 
+// Maps calendar channel and connected account domain exceptions to GraphQL error types; rethrows anything else unchanged.
 export const calendarChannelGraphqlApiExceptionHandler = (error: Error) => {
   if (error instanceof CalendarChannelException) {
     switch (error.code) {

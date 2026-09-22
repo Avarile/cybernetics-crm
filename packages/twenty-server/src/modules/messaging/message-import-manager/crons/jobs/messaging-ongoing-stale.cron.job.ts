@@ -1,3 +1,5 @@
+// Cron job (hourly) that enqueues, per active workspace, a check for
+// message channels stuck in an ongoing sync stage past the timeout.
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
@@ -33,6 +35,7 @@ export class MessagingOngoingStaleCronJob {
     MessagingOngoingStaleCronJob.name,
     MESSAGING_ONGOING_STALE_CRON_PATTERN,
   )
+  // Enqueues a stale-sync-check job for every active workspace.
   async handle(): Promise<void> {
     const activeWorkspaces = await this.workspaceRepository.find({
       where: {

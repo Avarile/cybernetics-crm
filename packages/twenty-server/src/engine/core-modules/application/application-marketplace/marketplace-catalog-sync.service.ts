@@ -1,3 +1,6 @@
+// Pulls the app catalog from the npm-backed marketplace registry, upserts
+// each package as an ApplicationRegistration, and rehosts its logo/gallery
+// assets so they're served from Twenty's own file storage.
 import { Injectable, Logger } from '@nestjs/common';
 
 import { isDefined } from 'twenty-shared/utils';
@@ -18,12 +21,16 @@ export class MarketplaceCatalogSyncService {
     private readonly marketplaceService: MarketplaceService,
   ) {}
 
+  // Entry point for a full marketplace catalog sync run.
   async syncCatalog(): Promise<void> {
     await this.syncRegistryApps();
 
     this.logger.log('Marketplace catalog sync completed');
   }
 
+  // Fetches every package from the registry, upserts its registration from
+  // the manifest, and rehosts its assets when the version changed or assets
+  // aren't fully stored yet. Continues past per-package failures.
   private async syncRegistryApps(): Promise<void> {
     const packages = await this.marketplaceService.fetchAppsFromRegistry();
 

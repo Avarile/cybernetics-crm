@@ -1,3 +1,4 @@
+// Fixed ids for the sample message channels created in dev-seeded workspaces.
 export const MESSAGE_CHANNEL_DATA_SEED_IDS = {
   TIM: '20202020-9b80-4c2c-a597-383db48de1d6',
   JONY: '20202020-5ffe-4b32-814a-983d5e4911cd',

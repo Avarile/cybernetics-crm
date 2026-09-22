@@ -1,3 +1,5 @@
+// Converts a manifest-declared view field group into the universal flat
+// entity shape used to build workspace migrations.
 import { type ViewFieldGroupManifest } from 'twenty-shared/application';
 
 import { type UniversalFlatViewFieldGroup } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-view-field-group.type';

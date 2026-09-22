@@ -1,3 +1,5 @@
+// Converts a manifest-declared front component into the universal flat
+// entity shape used to build workspace migrations.
 import { type FrontComponentManifest } from 'twenty-shared/application';
 
 import { type UniversalFlatFrontComponent } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-front-component.type';

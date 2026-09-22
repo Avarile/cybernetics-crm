@@ -1,3 +1,5 @@
+// GraphQL result of sending a chat message: its id, whether it was queued
+// for async processing, and the stream id to subscribe to for updates.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType('SendChatMessageResult')

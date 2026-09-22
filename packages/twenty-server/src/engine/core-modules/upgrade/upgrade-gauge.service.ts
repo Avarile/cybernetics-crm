@@ -17,6 +17,8 @@ const HEALTH_TO_GAUGE_VALUE: Record<UpgradeHealthEnum, number> = {
 const HEALTH_UNKNOWN = -2;
 const UPGRADE_STATUS_TTL_MS = 60_000;
 
+// Publishes upgrade health as OpenTelemetry gauges, short-TTL-caching the
+// underlying status query so many gauge callbacks don't each recompute it
 @Injectable()
 export class UpgradeGaugeService implements OnModuleInit {
   private readonly logger = new Logger(UpgradeGaugeService.name);
@@ -32,6 +34,8 @@ export class UpgradeGaugeService implements OnModuleInit {
     private readonly upgradeStatusService: UpgradeStatusService,
   ) {}
 
+  // Registers the instance health, workspace behind/failed/up-to-date counts,
+  // and inferred version gauges
   onModuleInit() {
     this.metricsService.createObservableGauge({
       metricName: 'twenty_upgrade_instance_health',
@@ -110,6 +114,8 @@ export class UpgradeGaugeService implements OnModuleInit {
     });
   }
 
+  // Returns the cached upgrade status if still fresh, otherwise refetches it
+  // (deduplicating concurrent fetches), returning null on failure
   private async getCachedUpgradeStatus(): Promise<InstanceAndAllWorkspacesUpgradeStatus | null> {
     if (
       this.cachedUpgradeStatus &&

@@ -3,6 +3,8 @@ import { isDefined } from 'twenty-shared/utils';
 
 import { type FlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-metadata/types/flat-field-metadata.type';
 
+// True when a field is the many-to-one side pointing back out of a
+// junction table, including the hard-coded note/task activity relations.
 export const getIsFlatFieldAJunctionRelationField = ({
   flatField,
 }: {

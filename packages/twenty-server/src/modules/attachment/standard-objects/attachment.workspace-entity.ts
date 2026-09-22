@@ -13,6 +13,8 @@ import { type TaskWorkspaceEntity } from 'src/modules/task/standard-objects/task
 import { type WorkflowWorkspaceEntity } from 'src/modules/workflow/common/standard-objects/workflow.workspace-entity';
 import { type WorkspaceMemberWorkspaceEntity } from 'src/modules/workspace-member/standard-objects/workspace-member.workspace-entity';
 
+// Standard object storing a file attached to another record (task, note,
+// person, company, opportunity, dashboard, workflow, or a workspace member as author).
 export class AttachmentWorkspaceEntity extends BaseWorkspaceEntity {
   /** @deprecated Use `file[0].label` field instead */
   name: string | null;

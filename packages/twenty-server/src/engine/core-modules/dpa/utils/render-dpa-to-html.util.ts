@@ -1,6 +1,7 @@
 import { escapeHtml } from 'src/engine/core-modules/emailing-domain/utils/escape-html.util';
 import { type ResolvedDpa } from 'src/engine/core-modules/dpa/types/dpa.types';
 
+// Escapes and splits a multi-line signature field value into separate spans
 const renderMultiline = (value: string): string =>
   escapeHtml(value)
     .split('\n')
@@ -8,6 +9,7 @@ const renderMultiline = (value: string): string =>
     .map((line) => `<span class="dpa-line">${line}</span>`)
     .join('<br />');
 
+// Renders a resolved DPA document to escaped HTML for in-app preview
 export const renderDpaToHtml = (resolved: ResolvedDpa): string => {
   const parts: string[] = [];
 

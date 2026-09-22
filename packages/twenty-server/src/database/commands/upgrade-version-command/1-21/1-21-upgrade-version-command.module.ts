@@ -30,6 +30,9 @@ import { WorkspaceSchemaManagerModule } from 'src/engine/twenty-orm/workspace-sc
 import { WorkspaceCacheModule } from 'src/engine/workspace-cache/workspace-cache.module';
 import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace-migration/workspace-migration.module';
 
+// Registers the 1.21 workspace commands (messaging-to-core migration, command
+// menu/label fixes, navigation refactor, and related backfills) as providers for
+// the upgrade runner.
 @Module({
   imports: [
     TypeOrmModule.forFeature([

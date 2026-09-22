@@ -1,3 +1,6 @@
+// Runs after a blocklist item is removed: resets sync status on the
+// affected workspace member's message channels so previously-excluded
+// messages from the now-unblocked handle get re-fetched on the next sync.
 import { Scope } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -38,6 +41,9 @@ export class BlocklistReimportMessagesJob {
     private readonly messagingChannelSyncStatusService: MessageChannelSyncStatusService,
   ) {}
 
+  // For each removed blocklist item, marks the workspace member's connected
+  // accounts' message channels (excluding ones still pending an initial
+  // fetch) as pending a fresh message list fetch.
   @Process(BlocklistReimportMessagesJob.name)
   async handle(data: BlocklistReimportMessagesJobData): Promise<void> {
     const workspaceId = data.workspaceId;

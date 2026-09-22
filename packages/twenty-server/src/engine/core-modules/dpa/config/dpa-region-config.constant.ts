@@ -1,6 +1,8 @@
 import { DpaRegion } from 'src/engine/core-modules/dpa/enums/dpa-region.enum';
 import { type DpaRegionConfig } from 'src/engine/core-modules/dpa/types/dpa.types';
 
+// Legal entity, hosting, and governing-law values used to fill the DPA template
+// merge fields per hosting region
 export const DEFAULT_DPA_REGION: DpaRegion = DpaRegion.EU;
 
 export const DPA_REGION_CONFIGS: Record<DpaRegion, DpaRegionConfig> = {
@@ -40,5 +42,6 @@ export const TWENTY_PRESIGNED_SIGNATORY = {
   title: 'Chief Executive Officer',
 };
 
+// Returns the config for a region, falling back to the default region if unknown
 export const getDpaRegionConfig = (region: DpaRegion): DpaRegionConfig =>
   DPA_REGION_CONFIGS[region] ?? DPA_REGION_CONFIGS[DEFAULT_DPA_REGION];

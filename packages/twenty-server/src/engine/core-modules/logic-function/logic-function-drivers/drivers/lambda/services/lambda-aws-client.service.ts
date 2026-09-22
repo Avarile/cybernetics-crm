@@ -1,3 +1,6 @@
+// Manages the AWS Lambda SDK client and (optional) assume-role credentials
+// used by the Lambda logic-function driver, plus small AWS helper operations
+// (presigned S3 upload URLs, waiting for function active/updated state).
 import {
   Lambda,
   ListLayerVersionsCommand,
@@ -26,6 +29,8 @@ export class LambdaAwsClientService {
 
   constructor(private readonly options: LambdaDriverOptions) {}
 
+  // Returns a cached Lambda client, recreating it if unset or the assume-role
+  // credentials it depends on have expired.
   async getLambdaClient() {
     if (
       !isDefined(this.lambdaClient) ||
@@ -45,6 +50,7 @@ export class LambdaAwsClientService {
     return this.lambdaClient;
   }
 
+  // Generates a presigned S3 PUT URL for uploading a Lambda layer zip.
   async generatePresignedUploadUrl(
     s3Key: string,
     expiresIn: number = 300,
@@ -65,6 +71,7 @@ export class LambdaAwsClientService {
     return getSignedUrl(s3Client, putCommand, { expiresIn });
   }
 
+  // Waits until a Lambda function reaches the Active state.
   async waitFunctionActive(
     functionName: string,
     maxWaitTime: number = UPDATE_FUNCTION_DURATION_TIMEOUT_IN_SECONDS,
@@ -75,6 +82,7 @@ export class LambdaAwsClientService {
     );
   }
 
+  // Waits until a Lambda function's last update finishes successfully.
   async waitFunctionUpdated(
     functionName: string,
     maxWaitTime: number = UPDATE_FUNCTION_DURATION_TIMEOUT_IN_SECONDS,
@@ -85,6 +93,7 @@ export class LambdaAwsClientService {
     );
   }
 
+  // Returns the ARN of a layer's latest version, if it exists.
   async getExistingLayerArn(layerName: string): Promise<string | undefined> {
     const lambdaClient = await this.getLambdaClient();
 
@@ -106,6 +115,8 @@ export class LambdaAwsClientService {
     );
   }
 
+  // Assumes the configured subhosting role via STS and caches the resulting
+  // temporary credentials, invalidating the current Lambda client.
   private async refreshAssumeRoleCredentials() {
     const stsClient = new STSClient({ region: this.options.region });
 

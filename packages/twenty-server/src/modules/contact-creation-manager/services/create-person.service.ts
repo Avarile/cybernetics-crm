@@ -8,12 +8,15 @@ import { type WorkspaceRepository } from 'src/engine/twenty-orm/repository/works
 import { buildSystemAuthContext } from 'src/engine/twenty-orm/utils/build-system-auth-context.util';
 import { PersonWorkspaceEntity } from 'src/modules/person/standard-objects/person.workspace-entity';
 
+// Low-level create/restore/enrich operations on person records, used by the
+// contact auto-creation pipeline.
 @Injectable()
 export class CreatePersonService {
   constructor(
     private readonly globalWorkspaceOrmManager: GlobalWorkspaceOrmManager,
   ) {}
 
+  // Inserts new people, appending them after the current max position.
   public async createPeople(
     peopleToCreate: Partial<PersonWorkspaceEntity>[],
     workspaceId: string,
@@ -51,6 +54,7 @@ export class CreatePersonService {
     );
   }
 
+  // Un-deletes previously soft-deleted people, re-linking their company.
   public async restorePeople(
     people: { personId: string; companyId: string | undefined }[],
     workspaceId: string,
@@ -90,6 +94,7 @@ export class CreatePersonService {
     );
   }
 
+  // Fills in missing first/last names for auto-created people.
   public async enrichPeopleNames(
     peopleToEnrich: { personId: string; name: FullNameMetadata }[],
     workspaceId: string,
@@ -126,6 +131,7 @@ export class CreatePersonService {
     );
   }
 
+  // Returns the highest existing person position, for appending new people after it.
   private async getLastPersonPosition(
     personRepository: WorkspaceRepository<PersonWorkspaceEntity>,
   ): Promise<number> {

@@ -1,3 +1,5 @@
+// Deprecated REST controller for managing API keys (superseded by the
+// rest/metadata/apiKeys route, kept for backward compatibility).
 import {
   Body,
   Controller,
@@ -40,6 +42,7 @@ import { PermissionsRestApiExceptionFilter } from 'src/engine/metadata-modules/p
 export class ApiKeyController {
   constructor(private readonly apiKeyService: ApiKeyService) {}
 
+  // Lists all active API keys for the current workspace.
   @Get()
   async findAll(
     @AuthWorkspace() workspace: WorkspaceEntity,
@@ -47,6 +50,7 @@ export class ApiKeyController {
     return this.apiKeyService.findActiveByWorkspaceId(workspace.id);
   }
 
+  // Fetches a single API key by id, scoped to the current workspace.
   @Get(':id')
   async findOne(
     @Param('id') id: string,
@@ -60,6 +64,7 @@ export class ApiKeyController {
   @UseGuards(RequireAccessTokenGuard)
   @Post()
   async create(
+    // Creates a new API key for the workspace.
     @Body() createApiKeyDto: CreateApiKeyInput,
     @AuthWorkspace() workspace: WorkspaceEntity,
   ): Promise<ApiKeyEntity> {
@@ -74,6 +79,7 @@ export class ApiKeyController {
     });
   }
 
+  // Applies a partial update to an existing API key.
   @UseGuards(RequireAccessTokenGuard)
   @Patch(':id')
   async update(
@@ -96,6 +102,7 @@ export class ApiKeyController {
     return this.apiKeyService.update(id, workspace.id, updateData);
   }
 
+  // Revokes an API key rather than hard-deleting it.
   @UseGuards(RequireAccessTokenGuard)
   @Delete(':id')
   async remove(

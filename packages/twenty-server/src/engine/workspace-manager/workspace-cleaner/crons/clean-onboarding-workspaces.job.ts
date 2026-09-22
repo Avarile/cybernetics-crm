@@ -11,6 +11,8 @@ import { WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.ent
 import { cleanOnboardingWorkspacesCronPattern } from 'src/engine/workspace-manager/workspace-cleaner/crons/clean-onboarding-workspaces.cron.pattern';
 import { CleanerWorkspaceService } from 'src/engine/workspace-manager/workspace-cleaner/services/cleaner.workspace-service';
 
+// Recurring job that cleans up onboarding workspaces stuck in
+// pending/ongoing creation for more than 7 days.
 @Processor(MessageQueue.cronQueue)
 export class CleanOnboardingWorkspacesJob {
   constructor(

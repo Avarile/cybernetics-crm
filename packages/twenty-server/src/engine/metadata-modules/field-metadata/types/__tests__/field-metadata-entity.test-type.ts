@@ -1,3 +1,6 @@
+// Compile-time-only assertions verifying FieldMetadataEntity's relation,
+// settings, defaultValue, and options columns are typed correctly per field
+// type (present with the right shape, or narrowed to never|null). No runtime behavior.
 import { type Expect, type HasAllProperties } from 'twenty-shared/testing';
 import {
   type AllFieldMetadataSettings,

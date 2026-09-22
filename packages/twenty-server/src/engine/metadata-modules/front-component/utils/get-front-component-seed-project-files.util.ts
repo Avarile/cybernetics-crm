@@ -3,12 +3,15 @@ import path from 'path';
 
 import { ASSET_PATH } from 'src/constants/assets-path';
 
+// A single file loaded from a front component seed project template.
 export type FrontComponentSeedProjectFile = {
   name: string;
   path: string;
   content: Buffer;
 };
 
+// Recursively reads every file under a directory into seed project file
+// entries, preserving each file's path relative to the root.
 const getAllFiles = async (
   rootDir: string,
   dir: string = rootDir,
@@ -33,6 +36,8 @@ const getAllFiles = async (
   return files;
 };
 
+// Loads all files for a named front component seed project template
+// (e.g. "hello-world"), used to scaffold a new front component.
 export const getFrontComponentSeedProjectFiles = async (
   subdirectory: string,
 ): Promise<FrontComponentSeedProjectFile[]> => {

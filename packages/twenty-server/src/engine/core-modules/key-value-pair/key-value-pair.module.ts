@@ -1,3 +1,4 @@
+// NestJS module exposing the generic KeyValuePairService.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

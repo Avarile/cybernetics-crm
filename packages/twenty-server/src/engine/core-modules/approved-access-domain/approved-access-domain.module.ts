@@ -1,3 +1,5 @@
+// NestJS module wiring the approved-access-domain resolver, service, and
+// repository used to manage per-workspace approved email domains.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

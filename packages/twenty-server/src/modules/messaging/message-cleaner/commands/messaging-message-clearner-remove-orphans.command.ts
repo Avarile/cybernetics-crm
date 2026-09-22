@@ -1,3 +1,5 @@
+// CLI command to remove orphan messages and threads (ones with no
+// remaining message channel associations) across a workspace.
 import { Command } from 'nest-commander';
 
 import { ProvisionedWorkspaceCommandRunner } from 'src/database/commands/command-runners/provisioned-workspace.command-runner';
@@ -17,6 +19,7 @@ export class MessagingMessageCleanerRemoveOrphansCommand extends ProvisionedWork
     super(workspaceIteratorService);
   }
 
+  // Runs the orphan cleanup for a single provisioned workspace.
   override async runOnWorkspace({
     workspaceId,
   }: RunOnWorkspaceArgs): Promise<void> {

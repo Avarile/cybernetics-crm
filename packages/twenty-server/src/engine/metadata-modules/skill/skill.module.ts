@@ -10,6 +10,7 @@ import { SkillService } from 'src/engine/metadata-modules/skill/skill.service';
 import { WorkspaceMigrationGraphqlApiExceptionInterceptor } from 'src/engine/workspace-manager/workspace-migration/interceptors/workspace-migration-graphql-api-exception.interceptor';
 import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace-migration/workspace-migration.module';
 
+// Wires up skill CRUD/activation resolvers and services plus their required dependencies.
 @Module({
   imports: [
     WorkspaceManyOrAllFlatEntityMapsCacheModule,

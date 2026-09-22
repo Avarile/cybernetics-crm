@@ -1,3 +1,6 @@
+// Reconciles an application registration's stored translation rows with a
+// manifest's declared translations: upserts (and un-deletes) locales
+// present in the manifest, and soft-deletes locales no longer declared.
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -19,6 +22,8 @@ export class ApplicationTranslationSyncService {
     private readonly applicationTranslationCacheService: ApplicationTranslationCacheService,
   ) {}
 
+  // Syncs an application registration's translation rows to match the
+  // manifest's declared locales, then invalidates the translation cache.
   async syncFromManifest({
     applicationRegistrationId,
     translations,

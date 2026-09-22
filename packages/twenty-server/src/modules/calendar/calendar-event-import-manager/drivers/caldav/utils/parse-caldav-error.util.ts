@@ -3,6 +3,7 @@ import {
   CalendarEventImportDriverExceptionCode,
 } from 'src/modules/calendar/calendar-event-import-manager/drivers/exceptions/calendar-event-import-driver.exception';
 
+// Maps known tsdav/CalDAV error messages to a typed import-driver exception code.
 export const parseCalDAVError = (
   error: Error,
 ): CalendarEventImportDriverException => {

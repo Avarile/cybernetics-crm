@@ -15,6 +15,7 @@ import { LineChartDataService } from 'src/modules/dashboard/chart-data/services/
 @UseFilters(ChartDataGraphqlApiExceptionFilter)
 @UseGuards(WorkspaceAuthGuard)
 @UsePipes(ResolverValidationPipe)
+// GraphQL query for computing a line chart widget's data from its configuration.
 export class LineChartDataResolver {
   constructor(private readonly lineChartDataService: LineChartDataService) {}
 

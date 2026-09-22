@@ -46,6 +46,9 @@ import { getCreateCompanyWhenAddingNewPersonCodeStepLogicFunctionDefinitions } f
 import { TwentyStandardApplicationService } from 'src/engine/workspace-manager/twenty-standard-application/services/twenty-standard-application.service';
 import { WorkspaceMigrationValidateBuildAndRunService } from 'src/engine/workspace-manager/workspace-migration/services/workspace-migration-validate-build-and-run-service';
 
+// Top-level orchestrator for dev/demo workspace seeding: creates the
+// workspace's core schema, its data source schema, standard/custom
+// metadata, permissions, and sample data, in the correct order.
 @Injectable()
 export class DevSeederService {
   constructor(
@@ -72,6 +75,9 @@ export class DevSeederService {
     private readonly workspaceRepository: Repository<WorkspaceEntity>,
   ) {}
 
+  // Fully provisions a dev/demo workspace: core rows, workspace DB schema,
+  // standard/custom metadata and relations, permissions, prefilled logic
+  // functions/front components/page layouts, and sample data.
   public async seedDev(
     workspaceId: SeededWorkspacesIds,
     options?: { light?: boolean },
@@ -192,6 +198,9 @@ export class DevSeederService {
     await this.workspaceCacheStorageService.flush(workspaceId, undefined);
   }
 
+  // Seeds the workspace's rows in the core (non-workspace-scoped) schema —
+  // the workspace itself, its application, users, api keys, feature flags,
+  // billing, and metadata entities — inside a single transaction.
   private async seedCoreSchema({
     workspaceId,
     appVersion,

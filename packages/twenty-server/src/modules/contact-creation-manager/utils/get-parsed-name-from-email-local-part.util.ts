@@ -2,6 +2,7 @@ import { isNonEmptyString } from '@sniptt/guards';
 
 import { type ParsedName } from 'src/modules/contact-creation-manager/types/parsed-name.type';
 
+// Splits an email local part (before '+' tag, on '.') into first/last name guesses.
 export const getParsedNameFromEmailLocalPart = (
   localPart: string,
 ): ParsedName => {

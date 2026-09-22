@@ -1,3 +1,5 @@
+// Core-schema entity storing a graded evaluation (score + comment) for a
+// single agent turn.
 import {
   Column,
   CreateDateColumn,

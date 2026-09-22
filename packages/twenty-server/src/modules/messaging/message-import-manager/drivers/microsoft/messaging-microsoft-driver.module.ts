@@ -1,3 +1,5 @@
+// Wires up the Microsoft Graph import driver's services (message list/
+// fetch, batching, and error handling).
 import { Module } from '@nestjs/common';
 
 import { FeatureFlagModule } from 'src/engine/core-modules/feature-flag/feature-flag.module';

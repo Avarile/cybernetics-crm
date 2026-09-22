@@ -1,3 +1,6 @@
+// Validates that a widget's configuration type is present and set to
+// IFRAME, narrowing the configuration on success.
+
 import { msg, t } from '@lingui/core/macro';
 import { isDefined } from 'twenty-shared/utils';
 
@@ -6,6 +9,7 @@ import { WidgetConfigurationType } from 'src/engine/metadata-modules/page-layout
 import { PageLayoutWidgetExceptionCode } from 'src/engine/metadata-modules/page-layout-widget/exceptions/page-layout-widget.exception';
 import { type UniversalFlatPageLayoutWidget } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-page-layout-widget.type';
 
+// Requires configurationType to be present and equal to IFRAME.
 export const validateIframeConfigurationType = ({
   universalConfiguration,
   widgetTitle,

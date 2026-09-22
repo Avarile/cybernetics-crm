@@ -1,3 +1,6 @@
+// Error type import drivers (Gmail, Microsoft, IMAP, inbound email) throw
+// to signal a classified failure, optionally carrying a throttle
+// retry-after hint and the sync context it occurred in.
 import { type MessageNetworkExceptionCode } from 'src/modules/messaging/message-import-manager/drivers/exceptions/message-network.exception';
 
 export class MessageImportDriverException extends Error {

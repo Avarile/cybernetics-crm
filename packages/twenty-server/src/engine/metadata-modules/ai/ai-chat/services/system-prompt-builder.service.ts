@@ -1,3 +1,6 @@
+// Assembles the AI chat system prompt from base instructions, workspace
+// instructions, user context, and the tool/skill catalogs, and produces a
+// sectioned, token-estimated preview of it for the settings UI.
 import { Injectable } from '@nestjs/common';
 
 import {
@@ -44,6 +47,8 @@ export class SystemPromptBuilderService {
     private readonly agentActorContextService: AgentActorContextService,
   ) {}
 
+  // Builds the same sections as buildFullPrompt but keeps them separate with
+  // per-section token estimates, for a settings-page prompt preview.
   async buildPreview(
     workspaceId: string,
     userWorkspaceId: string,
@@ -135,6 +140,9 @@ export class SystemPromptBuilderService {
     };
   }
 
+  // Concatenates base/response-format instructions, optional workspace and
+  // user context, and the tool/skill/uploaded-files catalogs into the final
+  // system prompt string sent to the model.
   buildFullPrompt(
     toolCatalog: ToolIndexEntry[],
     skillCatalog: FlatSkill[],
@@ -170,6 +178,7 @@ export class SystemPromptBuilderService {
     return parts.join('\n');
   }
 
+  // Formats the workspace administrator's custom instructions as a prompt section.
   buildWorkspaceInstructionsSection(instructions: string): string {
     return `
 ## Workspace Instructions
@@ -179,6 +188,7 @@ The following are custom instructions provided by the workspace administrator:
 ${instructions}`;
   }
 
+  // Formats the requesting user's name, locale, timezone, and current date as a prompt section.
   buildUserContextSection(userContext: UserContext): string {
     const parts = [
       `User: ${userContext.firstName} ${userContext.lastName}`.trim(),
@@ -199,6 +209,7 @@ ${instructions}`;
 ${parts.join('\n')}`;
   }
 
+  // Formats today's date in the user's timezone (falling back to a valid default).
   private formatCurrentDate(timezone: string | null): string {
     return new Intl.DateTimeFormat('en-US', {
       timeZone: getValidTimeZoneOrUndefined(timezone),
@@ -209,6 +220,8 @@ ${parts.join('\n')}`;
     }).format(new Date());
   }
 
+  // Lists uploaded files and instructs the model to use code_interpreter to
+  // read them by fileId.
   buildUploadedFilesSection(
     storedFiles: Array<{ filename: string; fileId: string }>,
   ): string {
@@ -233,6 +246,7 @@ ${filesJson}
 In your Python code, access files at \`/home/user/{filename}\`.`;
   }
 
+  // Lists available skills and how to load one, or '' if there are none.
   buildSkillCatalogSection(skillCatalog: FlatSkill[]): string {
     if (skillCatalog.length === 0) {
       return '';
@@ -253,6 +267,8 @@ To load a skill, call \`${LOAD_SKILL_TOOL_NAME}\` with the skill name(s).
 ${skillsList}`;
   }
 
+  // Groups the tool catalog by category (with database CRUD tools given a
+  // condensed per-object listing) and explains how to discover/run non-preloaded tools.
   buildToolCatalogSection(
     toolCatalog: ToolIndexEntry[],
     preloadedTools: string[],
@@ -327,6 +343,8 @@ ${tools
     return sections.join('\n');
   }
 
+  // Condenses database CRUD tools into a per-object operation summary rather
+  // than listing every generated tool name, since there's one per object per operation.
   private buildDatabaseCrudCatalogSection(
     tools: ToolIndexEntry[],
     preloadedSet: Set<string>,
@@ -390,6 +408,7 @@ ${tools
     return lines.join('\n');
   }
 
+  // Maps a tool category to its human-readable section heading.
   private getCategoryLabel(category: ToolCategory): string {
     switch (category) {
       case ToolCategory.DATABASE_CRUD:

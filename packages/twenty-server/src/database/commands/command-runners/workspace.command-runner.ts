@@ -22,6 +22,10 @@ export type RunOnWorkspaceArgs = {
   total: number;
 };
 
+// Base class for CLI commands that operate per-workspace: exposes the common
+// --workspace-id/--start-from-workspace-id/--workspace-count-limit/--dry-run/--verbose
+// options and drives WorkspaceIteratorService, delegating actual work to the
+// subclass's `runOnWorkspace`.
 export abstract class WorkspaceCommandRunner<
   Options extends WorkspaceCommandOptions = WorkspaceCommandOptions,
 > extends CommandRunner {
@@ -100,6 +104,8 @@ export abstract class WorkspaceCommandRunner<
     return accumulator;
   }
 
+  // Switches to a verbose logger if requested, then iterates the matching workspaces,
+  // invoking `runOnWorkspace` for each.
   override async run(_passedParams: string[], options: Options): Promise<void> {
     if (options.verbose) {
       this.logger = new CommandLogger({

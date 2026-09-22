@@ -1,3 +1,5 @@
+// Barrel list of the arg-processor services (data, filter, group-by, order-by) that
+// validate and transform GraphQL/REST query arguments before they reach a query runner.
 import { DataArgProcessorService } from 'src/engine/api/common/common-args-processors/data-arg-processor/data-arg-processor.service';
 import { FilterArgProcessorService } from 'src/engine/api/common/common-args-processors/filter-arg-processor/filter-arg-processor.service';
 import { GroupByArgProcessorService } from 'src/engine/api/common/common-args-processors/group-by-arg-processor/group-by-arg-processor.service';

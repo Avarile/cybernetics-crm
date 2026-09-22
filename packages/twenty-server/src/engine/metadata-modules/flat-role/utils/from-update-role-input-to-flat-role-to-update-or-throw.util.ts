@@ -10,6 +10,7 @@ import {
 } from 'src/engine/metadata-modules/permissions/permissions.exception';
 import { type UpdateRoleInput } from 'src/engine/metadata-modules/role/dtos/update-role.input';
 
+// Applies an update-role input onto the matching existing flat role, throwing if it doesn't exist.
 export const fromUpdateRoleInputToFlatRoleToUpdateOrThrow = ({
   flatRoleMaps,
   updateRoleInput,

@@ -10,6 +10,9 @@ interface DecoratorOptions {
   allowUndefined?: boolean;
 }
 
+// Injects the resolved workspace from the request; throws an internal
+// error (not Forbidden) if missing, since auth guards should always set
+// it before this decorator runs.
 export const AuthWorkspace = createParamDecorator(
   (options: DecoratorOptions | undefined, ctx: ExecutionContext) => {
     const request = getRequest(ctx);

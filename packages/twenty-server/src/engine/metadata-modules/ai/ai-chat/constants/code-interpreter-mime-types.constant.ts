@@ -1,3 +1,4 @@
+// File MIME types the code interpreter tool is allowed to operate on.
 export const CODE_INTERPRETER_MIME_TYPES = new Set([
   'text/csv',
   'application/vnd.ms-excel',

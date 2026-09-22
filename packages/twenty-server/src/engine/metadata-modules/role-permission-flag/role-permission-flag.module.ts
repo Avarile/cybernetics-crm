@@ -6,6 +6,7 @@ import { RolePermissionFlagService } from 'src/engine/metadata-modules/role-perm
 import { WorkspaceCacheModule } from 'src/engine/workspace-cache/workspace-cache.module';
 import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace-migration/workspace-migration.module';
 
+// Wires up the role-permission-flag upsert service and its required dependencies.
 @Module({
   imports: [
     WorkspaceCacheModule,

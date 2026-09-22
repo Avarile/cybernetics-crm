@@ -1,3 +1,7 @@
+// Resolves an application package's contents (manifest + package.json) from
+// its source: downloads and securely extracts an npm registry tarball, or
+// reads and extracts a previously uploaded tarball file, into a temp
+// directory the caller is responsible for cleaning up.
 import { Injectable, Logger, type OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -57,6 +61,8 @@ export class ApplicationPackageFetcherService implements OnModuleInit {
     private readonly applicationRepository: Repository<ApplicationEntity>,
   ) {}
 
+  // Best-effort wipe of leftover temp extraction files from a previous
+  // server run.
   async onModuleInit(): Promise<void> {
     try {
       await fs.rm(APP_FETCHER_TMPDIR, { recursive: true, force: true });
@@ -65,6 +71,8 @@ export class ApplicationPackageFetcherService implements OnModuleInit {
     }
   }
 
+  // Dispatches package resolution based on the registration's source type;
+  // LOCAL and OAUTH_ONLY apps have no package to resolve.
   async resolvePackage(
     appRegistration: ApplicationRegistrationEntity,
     options?: { targetVersion?: string },
@@ -90,6 +98,7 @@ export class ApplicationPackageFetcherService implements OnModuleInit {
     }
   }
 
+  // Best-effort removal of a resolved package's temp working directory.
   async cleanupExtractedDir(extractedDir: string): Promise<void> {
     try {
       await fs.rm(extractedDir, { recursive: true, force: true });
@@ -98,6 +107,8 @@ export class ApplicationPackageFetcherService implements OnModuleInit {
     }
   }
 
+  // Resolves the tarball URL from the registry, downloads and securely
+  // extracts it, and reads back the manifest and package.json.
   private async resolveFromNpm(
     packageName: string,
     targetVersion?: string,
@@ -162,6 +173,9 @@ export class ApplicationPackageFetcherService implements OnModuleInit {
     }
   }
 
+  // Reads the registration's previously uploaded tarball file from
+  // storage, securely extracts it, and reads back the manifest and
+  // package.json.
   private async resolveFromTarball(
     appRegistration: ApplicationRegistrationEntity,
   ): Promise<ResolvedPackage> {
@@ -239,6 +253,8 @@ export class ApplicationPackageFetcherService implements OnModuleInit {
     }
   }
 
+  // Queries the registry's package metadata endpoint for a version spec
+  // and extracts the tarball download URL.
   private async fetchTarballUrl(
     registryUrl: string,
     packageName: string,
@@ -289,6 +305,8 @@ export class ApplicationPackageFetcherService implements OnModuleInit {
     return tarballUrl;
   }
 
+  // Downloads the tarball bytes, only forwarding the registry auth token
+  // when the tarball is hosted on the same host as the registry.
   private async downloadTarball(
     tarballUrl: string,
     registryUrl: string,

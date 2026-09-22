@@ -16,6 +16,9 @@ const UNIVERSAL_IDENTIFIERS_TO_FIX = new Set<string>([
   STANDARD_COMMAND_MENU_ITEMS.searchRecordsFallback.universalIdentifier,
 ]);
 
+// Workspace command (1.21.0): re-syncs the label of the searchRecords /
+// searchRecordsFallback command menu items with the current standard definition
+// (which dropped the object metadata name from the label).
 @RegisteredWorkspaceCommand('1.21.0', 1775500015000)
 @Command({
   name: 'upgrade:1-21:update-search-command-menu-item-labels',
@@ -32,6 +35,8 @@ export class UpdateSearchCommandMenuItemLabelsCommand extends ProvisionedWorkspa
     super(workspaceIteratorService);
   }
 
+  // Diffs each target item's label against the standard definition and updates
+  // only the ones that drifted.
   override async runOnWorkspace({
     workspaceId,
     options,

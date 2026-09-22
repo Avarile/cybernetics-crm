@@ -1,3 +1,6 @@
+// Orchestrates loading a paginated timeline of message threads related to a
+// set of people (or, via related-person resolution, any object record),
+// combining thread data, participants, and visibility from TimelineMessagingService.
 import { Injectable } from '@nestjs/common';
 
 import { TIMELINE_THREADS_DEFAULT_PAGE_SIZE } from 'src/engine/core-modules/messaging/constants/messaging.constants';
@@ -13,6 +16,9 @@ export class GetMessagesService {
     private readonly relatedPersonIdsService: RelatedPersonIdsService,
   ) {}
 
+  // Loads a page of message threads involving any of the given person ids,
+  // along with their participants and per-thread visibility, formatted for
+  // the timeline UI.
   async getMessagesFromPersonIds(
     workspaceMemberId: string,
     personIds: string[],
@@ -66,6 +72,8 @@ export class GetMessagesService {
     };
   }
 
+  // Resolves the person ids related to a given object record, then delegates
+  // to getMessagesFromPersonIds.
   async getMessagesFromObjectRecord(
     workspaceMemberId: string,
     objectNameSingular: string,

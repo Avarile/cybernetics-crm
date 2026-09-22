@@ -1,5 +1,7 @@
 /* @license Enterprise */
 
+// NestJS module wiring the event/audit log viewer's resolvers (query + live
+// subscription) and their service dependencies.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

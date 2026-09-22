@@ -25,6 +25,7 @@ type StandardViewFieldGroupBuilder<P extends AllStandardObjectName> = (
   args: Omit<CreateStandardViewFieldGroupArgs<P>, 'context'>,
 ) => Record<string, FlatViewFieldGroup>;
 
+// Registry of per-object view field group builders, one per standard object that declares view field groups
 const STANDARD_FLAT_VIEW_FIELD_GROUP_METADATA_BUILDERS_BY_OBJECT_NAME = {
   blocklist: computeStandardBlocklistViewFieldGroups,
   calendarChannelEventAssociation:
@@ -56,6 +57,8 @@ export type BuildStandardFlatViewFieldGroupMetadataMapsArgs = Omit<
   'context' | 'objectName'
 >;
 
+// Builds every standard object's fixed view field group set and assembles them into a single
+// FlatEntityMaps, used as the "target" state when seeding or syncing a workspace's standard view field groups
 export const buildStandardFlatViewFieldGroupMetadataMaps = (
   args: BuildStandardFlatViewFieldGroupMetadataMapsArgs,
 ): FlatEntityMaps<FlatViewFieldGroup> => {

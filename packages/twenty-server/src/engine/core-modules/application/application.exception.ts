@@ -1,3 +1,5 @@
+// Custom exception type and error codes for application install/upgrade
+// lifecycle failures, with user-friendly translated messages per code.
 import { type MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { assertUnreachable } from 'twenty-shared/utils';
@@ -31,6 +33,7 @@ export enum ApplicationExceptionCode {
   APPLICATION_INSTALLATION_FAILED = 'APPLICATION_INSTALLATION_FAILED',
 }
 
+// Returns the localized, user-facing message for a given exception code.
 const getApplicationExceptionUserFriendlyMessage = (
   code: ApplicationExceptionCode,
 ) => {
@@ -86,6 +89,9 @@ const getApplicationExceptionUserFriendlyMessage = (
   }
 };
 
+// Exception thrown for application-related failures (install, upgrade,
+// manifest sync, package resolution, etc.), carrying an error code and
+// optional flat-entity-maps context for debugging sync failures.
 export class ApplicationException extends CustomException<ApplicationExceptionCode> {
   context?: FlatEntityMapsExceptionContext;
 

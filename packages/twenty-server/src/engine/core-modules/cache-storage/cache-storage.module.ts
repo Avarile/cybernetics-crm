@@ -1,3 +1,6 @@
+// Global module that registers the cache-manager Redis store and exposes one
+// CacheStorageService instance per CacheStorageNamespace, so each feature
+// gets its own key namespace on the shared Redis instance.
 import { CACHE_MANAGER, Cache, CacheModule } from '@nestjs/cache-manager';
 import { Global, Inject, Module, type OnModuleDestroy } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
@@ -33,6 +36,7 @@ import { TwentyConfigService } from 'src/engine/core-modules/twenty-config/twent
 export class CacheStorageModule implements OnModuleDestroy {
   constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {}
 
+  // Closes the underlying Redis client when the module is torn down.
   async onModuleDestroy() {
     // oxlint-disable-next-line typescript/no-explicit-any
     if ((this.cacheManager.store as any)?.name === 'redis') {

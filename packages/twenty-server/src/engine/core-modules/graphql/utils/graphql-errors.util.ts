@@ -1,3 +1,6 @@
+// GraphQL error class hierarchy (BaseGraphQLError plus typed subclasses per
+// ErrorCode) used across resolvers/filters to build consistent GraphQL error
+// responses, along with a converter from generic GraphQLError to this hierarchy.
 import { type MessageDescriptor } from '@lingui/core';
 import {
   type ASTNode,
@@ -104,6 +107,7 @@ export class BaseGraphQLError extends GraphQLError {
   }
 }
 
+// Re-wraps a BaseGraphQLError as a plain GraphQLError for (de)serialization.
 function toGraphQLError(error: BaseGraphQLError): GraphQLError {
   return new GraphQLError(error.message, {
     nodes: error.nodes,

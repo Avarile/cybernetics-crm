@@ -1,3 +1,4 @@
+// NestJS module wiring the public server-route webhook controller/service.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

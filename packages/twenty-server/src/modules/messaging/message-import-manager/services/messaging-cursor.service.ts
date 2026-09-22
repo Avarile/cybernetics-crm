@@ -1,3 +1,6 @@
+// Persists the next sync cursor after a successful fetch, on the channel
+// (for cursor-per-channel providers) or a specific folder (for
+// per-folder cursors like IMAP), and resets throttle state either way.
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -18,6 +21,9 @@ export class MessagingCursorService {
     private readonly messageFolderRepository: Repository<MessageFolderEntity>,
   ) {}
 
+  // Without a folderId, updates the channel-level cursor (only advancing
+  // it, never regressing); with a folderId, updates that folder's cursor
+  // instead and clears the channel's throttle/sync-stage-started state.
   public async updateCursor(
     messageChannel: MessageChannelEntity,
     nextSyncCursor: string,

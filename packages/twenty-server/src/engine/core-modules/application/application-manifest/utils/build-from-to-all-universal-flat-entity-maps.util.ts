@@ -1,3 +1,5 @@
+// Pairs up "from" and "to" flat entity maps for every metadata kind into
+// the from/to structure the workspace migration builder expects.
 import { ALL_METADATA_NAME } from 'twenty-shared/metadata';
 
 import { type AllFlatEntityMaps } from 'src/engine/metadata-modules/flat-entity/types/all-flat-entity-maps.type';

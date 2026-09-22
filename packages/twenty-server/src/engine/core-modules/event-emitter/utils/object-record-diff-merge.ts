@@ -1,3 +1,5 @@
+// Merges two sequential record diffs into one, keeping the earliest
+// "before" and the latest "after" for each changed key.
 export function objectRecordDiffMerge(
   // oxlint-disable-next-line typescript/no-explicit-any
   oldRecord: Record<string, any>,

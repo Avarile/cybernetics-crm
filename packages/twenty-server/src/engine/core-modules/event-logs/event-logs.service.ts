@@ -1,5 +1,8 @@
 /* @license Enterprise */
 
+// Queries ClickHouse for event/audit log records with cursor pagination and
+// filters, gated on ClickHouse being configured and (for restricted tables)
+// on an Enterprise entitlement.
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -40,6 +43,8 @@ export class EventLogsService {
     private readonly userWorkspaceRepository: Repository<UserWorkspaceEntity>,
   ) {}
 
+  // Runs a filtered, cursor-paginated ClickHouse query for a table, returning
+  // normalized records plus total count and page info.
   async queryEventLogs(
     workspaceId: string,
     input: EventLogQueryInput,
@@ -124,6 +129,8 @@ export class EventLogsService {
     };
   }
 
+  // Throws unless ClickHouse is configured and, for tables requiring it, the
+  // workspace has the necessary Enterprise entitlement.
   async validateAccess(
     workspaceId: string,
     table: EventLogTable,
@@ -156,6 +163,8 @@ export class EventLogsService {
     }
   }
 
+  // Appends SQL WHERE clauses/params for the given filters, resolving
+  // userWorkspaceId to the right column per table's schema.
   private async applyFilters(
     whereClauses: string[],
     params: Record<string, unknown>,
@@ -217,10 +226,12 @@ export class EventLogsService {
     }
   }
 
+  // Encodes a timestamp as an opaque base64 pagination cursor.
   private encodeCursor(timestamp: Date): string {
     return Buffer.from(String(timestamp.getTime())).toString('base64');
   }
 
+  // Decodes a base64 pagination cursor back to its millisecond timestamp.
   private decodeCursor(cursor: string): number {
     return parseInt(Buffer.from(cursor, 'base64').toString('utf-8'), 10);
   }

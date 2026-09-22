@@ -23,15 +23,24 @@ type McpToolDefinition = ToolSet[string] & {
   annotations?: McpToolAnnotations;
 };
 
+// The AI SDK serializes tool schemas as { jsonSchema: {...} }; MCP expects
+// the schema object directly, so this strips that wrapper when present.
 const unwrapJsonSchema = (schema: unknown) =>
   schema && typeof schema === 'object' && 'jsonSchema' in schema
     ? schema.jsonSchema
     : schema;
 
+// Executes MCP tools/call and tools/list requests against a resolved
+// ToolSet, recording execution metrics and formatting results as JSON-RPC
+// responses.
 @Injectable()
 export class McpToolExecutorService {
   constructor(private readonly metricsService: MetricsService) {}
 
+  // Runs the named tool from toolSet with the given arguments, emitting an
+  // SSE progress event first if streaming, recording success/failure and
+  // output-size metrics, and wrapping the result (or error) as a JSON-RPC
+  // tool-call response.
   async handleToolCall(
     id: string | number,
     toolSet: ToolSet,
@@ -131,6 +140,9 @@ export class McpToolExecutorService {
     }
   }
 
+  // Formats a ToolSet's tools (those with an input schema) into the MCP
+  // tools/list response shape, unwrapping AI-SDK schemas and including
+  // annotations when present.
   handleToolsListing(id: string | number, toolSet: ToolSet) {
     const toolsArray = Object.entries(toolSet)
       .filter(([, def]) => !!def.inputSchema)

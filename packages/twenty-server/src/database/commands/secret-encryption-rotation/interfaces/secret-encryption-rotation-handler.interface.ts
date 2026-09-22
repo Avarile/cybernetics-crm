@@ -20,6 +20,8 @@ export type SecretEncryptionRotationSiteResult =
     durationMs: number;
   };
 
+// Contract every secret-encryption-rotation site handler implements: report how
+// many rows still need rotating, and perform the rotation itself.
 export abstract class SecretEncryptionRotationHandler {
   abstract countRemaining(
     args: Pick<

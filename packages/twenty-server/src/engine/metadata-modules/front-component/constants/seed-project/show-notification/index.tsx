@@ -1,3 +1,6 @@
+// Seed project template: a sample headless front component that shows a
+// snackbar notification and immediately unmounts itself. Bundled as
+// example source when scaffolding a new front component.
 import { defineFrontComponent } from 'twenty-sdk/define';
 import {
   enqueueSnackbar,

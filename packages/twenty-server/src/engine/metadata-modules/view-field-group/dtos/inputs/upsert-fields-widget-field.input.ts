@@ -5,6 +5,8 @@ import { IsBoolean, IsNumber, IsOptional, IsUUID } from 'class-validator';
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';
 import { AtLeastOneOf } from 'src/engine/metadata-modules/view-field-group/dtos/validators/at-least-one-of.validator';
 
+// One field entry within a fields-widget upsert: references an existing
+// view field to reposition, or a field metadata id to create a new one.
 @InputType()
 @AtLeastOneOf(['viewFieldId', 'fieldMetadataId'])
 export class UpsertFieldsWidgetFieldInput {

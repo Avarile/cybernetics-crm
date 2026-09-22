@@ -1,3 +1,5 @@
+// Generic exception for workflow errors not specific to a version, step,
+// edge, or query validation, with a translated user-facing message per code.
 import { type MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { assertUnreachable } from 'twenty-shared/utils';

@@ -5,6 +5,8 @@ import { DataSource } from 'typeorm';
 
 import { MetricsService } from 'src/engine/core-modules/metrics/metrics.service';
 
+// Registers an observable metrics gauge (twenty_database_up) that reports whether
+// the primary database is reachable, sampled via a lightweight `SELECT 1`.
 @Injectable()
 export class DatabaseGaugeService implements OnModuleInit {
   private readonly logger = new Logger(DatabaseGaugeService.name);
@@ -28,6 +30,7 @@ export class DatabaseGaugeService implements OnModuleInit {
     });
   }
 
+  // Returns 1 if a trivial query succeeds, 0 (logging the error) otherwise.
   private async isDatabaseUp(): Promise<number> {
     try {
       await this.dataSource.query('SELECT 1');

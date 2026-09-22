@@ -14,6 +14,9 @@ import { WorkspaceMigrationValidateBuildAndRunService } from 'src/engine/workspa
 const COMPOSE_EMAIL_UNIVERSAL_IDENTIFIER =
   STANDARD_COMMAND_MENU_ITEMS.composeEmail.universalIdentifier;
 
+// Workspace command (1.21.0): adds the standard "Compose Email" command menu item
+// to workspaces that don't already have it, by copying the item's definition from
+// the Twenty standard application and running a workspace migration.
 @RegisteredWorkspaceCommand('1.21.0', 1775500001000)
 @Command({
   name: 'upgrade:1-21:add-compose-email-command-menu-item',
@@ -29,6 +32,8 @@ export class AddComposeEmailCommandMenuItemCommand extends ProvisionedWorkspaceC
     super(workspaceIteratorService);
   }
 
+  // Skips workspaces that already have the item; otherwise creates it via a
+  // legacy workspace migration.
   override async runOnWorkspace({
     workspaceId,
     options,

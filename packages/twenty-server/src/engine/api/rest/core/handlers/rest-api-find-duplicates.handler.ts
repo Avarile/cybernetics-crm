@@ -8,6 +8,8 @@ import { parseDepthRestRequest } from 'src/engine/api/rest/input-request-parsers
 import { AuthenticatedRequest } from 'src/engine/api/rest/types/authenticated-request';
 import { workspaceQueryRunnerRestApiExceptionHandler } from 'src/engine/api/rest/utils/workspace-query-runner-rest-api-exception-handler.util';
 
+// REST handler for POST /rest/{objects}/duplicates: finds records that
+// duplicate the given data or existing records by id.
 @Injectable()
 export class RestApiFindDuplicatesHandler extends RestApiBaseHandler {
   constructor(
@@ -16,6 +18,8 @@ export class RestApiFindDuplicatesHandler extends RestApiBaseHandler {
     super();
   }
 
+  // Parses the request body, runs the common findDuplicates query runner,
+  // and formats each source record's duplicate connection as a REST response.
   async handle(request: AuthenticatedRequest) {
     try {
       const { data, ids, depth } = this.parseRequestArgs(request);

@@ -1,3 +1,6 @@
+// GraphQL input describing a custom index to create on an object: target
+// object, ordered field list, and index type.
+
 import { Field, InputType } from '@nestjs/graphql';
 
 import { Type } from 'class-transformer';

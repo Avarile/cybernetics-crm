@@ -1,3 +1,8 @@
+// Serves an application's own connections (connected accounts) to it,
+// enforcing a privacy rule (a request-user only sees their own
+// user-visibility credentials, plus all workspace-shared ones; a
+// cron/trigger request with no user sees everything), refreshing tokens
+// on read, and decrypting the access token for the app to use.
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -46,6 +51,9 @@ export class ApplicationConnectionsListService {
     private readonly oauthProviderRepository: Repository<ConnectionProviderEntity>,
   ) {}
 
+  // Lists connections for an application, filtered by provider name,
+  // user, and/or visibility, applying the privacy rule and refreshing
+  // each connection's tokens before returning.
   async list({
     applicationId,
     workspaceId,
@@ -98,6 +106,8 @@ export class ApplicationConnectionsListService {
     return refreshed.filter(isDefined);
   }
 
+  // Returns a single connection, applying the privacy rule and refreshing
+  // its tokens.
   async getOne({
     applicationId,
     workspaceId,
@@ -152,6 +162,8 @@ export class ApplicationConnectionsListService {
     return dto;
   }
 
+  // Builds the TypeORM where clause enforcing the request-user's
+  // visibility into connected accounts.
   private buildPrivacyWhere(
     baseWhere: FindOptionsWhere<ConnectedAccountEntity>,
     requestUserWorkspaceId: string | null,
@@ -187,6 +199,9 @@ export class ApplicationConnectionsListService {
     ];
   }
 
+  // Refreshes a connected account's tokens and maps it to the app
+  // connection DTO with its access token decrypted; returns null (instead
+  // of throwing) when its provider is missing or the refresh fails.
   private async refreshAndMap(
     account: ConnectedAccountEntity,
     workspaceId: string,

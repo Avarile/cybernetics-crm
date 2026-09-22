@@ -1,3 +1,4 @@
+// Normalizes a LINKS field's GraphQL input value before persistence.
 import { isNonEmptyString } from '@sniptt/guards';
 import isEmpty from 'lodash.isempty';
 import { type LinkMetadataNullable } from 'twenty-shared/types';
@@ -14,6 +15,8 @@ export type LinksFieldGraphQLInput =
   | null
   | undefined;
 
+// Normalizes a LINKS field's input: drops empty links, validates URLs, and
+// normalizes each URL's origin.
 // TODO refactor this function handle partial composite field update
 export const transformLinksValue = (
   value: LinksFieldGraphQLInput,

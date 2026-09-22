@@ -1,3 +1,6 @@
+// Picks out which requested field selections correspond to aggregate
+// functions (e.g. sum/avg on a numeric field) available on the object,
+// and records them on the accumulator for the query runner to compute.
 import { isDefined } from 'twenty-shared/utils';
 
 import { type GraphqlQuerySelectedFieldsResult } from 'src/engine/api/graphql/graphql-query-runner/graphql-query-parsers/graphql-query-selected-fields/graphql-selected-fields.parser';
@@ -11,6 +14,8 @@ import { type FlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-m
 import { type FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object-metadata/types/flat-object-metadata.type';
 
 export class GraphqlQuerySelectedFieldsAggregateParser {
+  // Matches selected field names against the object's available
+  // aggregations and adds each match to accumulator.aggregate.
   parse(
     // oxlint-disable-next-line typescript/no-explicit-any
     graphqlSelectedFields: Partial<Record<string, any>>,

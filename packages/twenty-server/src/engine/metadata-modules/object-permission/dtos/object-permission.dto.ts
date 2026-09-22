@@ -7,6 +7,8 @@ import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/
 import { RowLevelPermissionPredicateGroupDTO } from 'src/engine/metadata-modules/row-level-permission-predicate/dtos/row-level-permission-predicate-group.dto';
 import { RowLevelPermissionPredicateDTO } from 'src/engine/metadata-modules/row-level-permission-predicate/dtos/row-level-permission-predicate.dto';
 
+// GraphQL representation of a role's record-level (read/update/delete) permissions on an
+// object, including its field restrictions and row-level permission predicates.
 @ObjectType('ObjectPermission')
 export class ObjectPermissionDTO {
   @Field(() => UUIDScalarType, { nullable: false })

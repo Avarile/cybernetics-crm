@@ -13,6 +13,8 @@ type BuildMutationQueryBuilderArgs = {
   commonQueryParser: GraphqlQueryParser;
 };
 
+// Builds a filtered query builder safe to convert into an UPDATE / DELETE /
+// SoftDelete / Restore mutation.
 // TypeORM drops join attributes when a SelectQueryBuilder is morphed into
 // UPDATE / DELETE / SoftDelete / Restore — the generated SQL would reference
 // an alias without a FROM entry and Postgres would throw. When the filter

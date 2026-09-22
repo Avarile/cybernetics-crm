@@ -1,3 +1,5 @@
+// GraphQL input for updating a navigation menu item's editable properties.
+
 import { Field, InputType } from '@nestjs/graphql';
 
 import { Type } from 'class-transformer';

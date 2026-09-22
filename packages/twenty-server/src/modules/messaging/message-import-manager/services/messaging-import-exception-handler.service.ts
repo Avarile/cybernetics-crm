@@ -1,3 +1,10 @@
+// Central error handler for the import pipeline: classifies a driver/ORM/
+// auth exception raised during a sync step and drives the channel's sync
+// status accordingly — resetting the cursor on a sync-cursor error,
+// throttling with backoff on temporary errors (failing the channel after
+// too many consecutive throttled attempts), marking insufficient-
+// permissions or unknown failures, and reporting unexpected exceptions to
+// the exception handler service.
 import { Injectable } from '@nestjs/common';
 
 import { isDefined } from 'twenty-shared/utils';
@@ -24,6 +31,8 @@ import {
 import { MessageNetworkExceptionCode } from 'src/modules/messaging/message-import-manager/drivers/exceptions/message-network.exception';
 import { MessagingMonitoringService } from 'src/modules/messaging/monitoring/services/messaging-monitoring.service';
 
+// Which stage of the import pipeline an exception occurred in, used to
+// decide how to resume the channel's sync afterward.
 export enum MessageImportSyncStep {
   MESSAGE_LIST_FETCH = 'MESSAGE_LIST_FETCH',
   MESSAGES_IMPORT_PENDING = 'MESSAGES_IMPORT_PENDING',
@@ -40,6 +49,8 @@ export class MessageImportExceptionHandlerService {
     private readonly messagingMonitoringService: MessagingMonitoringService,
   ) {}
 
+  // Dispatches the exception to a handler based on its error code (falling
+  // back to unknown-exception handling for uncoded errors).
   public async handleDriverException(
     exception:
       | MessageImportDriverException
@@ -138,6 +149,7 @@ export class MessageImportExceptionHandlerService {
     }
   }
 
+  // Resets the channel's sync state and re-queues a fresh list fetch.
   private async handleSyncCursorErrorException(
     messageChannel: Pick<MessageChannelEntity, 'id'>,
     workspaceId: string,
@@ -148,6 +160,10 @@ export class MessageImportExceptionHandlerService {
     );
   }
 
+  // Once the channel has already hit the max throttle attempts, gives up
+  // and marks it failed; otherwise increments the throttle counter,
+  // records a retry-after hint if the exception provided one, and
+  // re-queues the channel back into the pending stage it was in.
   private async handleTemporaryException(
     syncStep: MessageImportSyncStep,
     messageChannel: Pick<MessageChannelEntity, 'id' | 'throttleFailureCount'>,
@@ -227,6 +243,7 @@ export class MessageImportExceptionHandlerService {
     }
   }
 
+  // Marks the channel failed due to insufficient permissions.
   private async handleInsufficientPermissionsException(
     messageChannel: Pick<MessageChannelEntity, 'id'>,
     workspaceId: string,
@@ -238,6 +255,8 @@ export class MessageImportExceptionHandlerService {
     );
   }
 
+  // Reports the exception to the exception handler service and marks the
+  // channel failed with an unknown status.
   private async handleUnknownException(
     exception: Error,
     messageChannel: Pick<MessageChannelEntity, 'id'>,
@@ -258,6 +277,9 @@ export class MessageImportExceptionHandlerService {
     );
   }
 
+  // During the list-fetch step, a NOT_FOUND is unexpected — reports it and
+  // marks the channel failed; during other steps (e.g. importing a
+  // message that vanished remotely), instead resets to a fresh list fetch.
   private async handleNotFoundException(
     syncStep: MessageImportSyncStep,
     messageChannel: Pick<MessageChannelEntity, 'id'>,

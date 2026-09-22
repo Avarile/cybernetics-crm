@@ -1,3 +1,6 @@
+// GraphQL resolver exposing queries to fetch the message timeline related to
+// a given object record (or, via deprecated shortcuts, a person, company or
+// opportunity directly), plus a mutation to dismiss the reconnect-account banner.
 import { UseGuards } from '@nestjs/common';
 import { Args, ArgsType, Field, Int, Mutation, Query } from '@nestjs/graphql';
 
@@ -87,6 +90,7 @@ export class TimelineMessagingResolver {
   ) {}
 
   @Query(() => TimelineThreadsWithTotalDTO)
+  // Fetches a page of message threads related to any given object record.
   async getTimelineThreadsFromObjectRecord(
     @AuthUser() user: AuthContextUser,
     @AuthWorkspace() workspace: WorkspaceEntity,
@@ -120,6 +124,7 @@ export class TimelineMessagingResolver {
   @Query(() => TimelineThreadsWithTotalDTO, {
     deprecationReason: 'Use getTimelineThreadsFromObjectRecord instead',
   })
+  // Deprecated shortcut for fetching a person's related message threads.
   async getTimelineThreadsFromPersonId(
     @AuthUser() user: AuthContextUser,
     @AuthWorkspace() workspace: WorkspaceEntity,
@@ -147,6 +152,7 @@ export class TimelineMessagingResolver {
   @Query(() => TimelineThreadsWithTotalDTO, {
     deprecationReason: 'Use getTimelineThreadsFromObjectRecord instead',
   })
+  // Deprecated shortcut for fetching a company's related message threads.
   async getTimelineThreadsFromCompanyId(
     @AuthUser() user: AuthContextUser,
     @AuthWorkspace() workspace: WorkspaceEntity,
@@ -174,6 +180,7 @@ export class TimelineMessagingResolver {
   @Query(() => TimelineThreadsWithTotalDTO, {
     deprecationReason: 'Use getTimelineThreadsFromObjectRecord instead',
   })
+  // Deprecated shortcut for fetching an opportunity's related message threads.
   async getTimelineThreadsFromOpportunityId(
     @AuthUser() user: AuthContextUser,
     @AuthWorkspace() workspace: WorkspaceEntity,
@@ -201,6 +208,8 @@ export class TimelineMessagingResolver {
 
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.CONNECTED_ACCOUNTS))
   @Mutation(() => Boolean)
+  // Marks a connected account's reconnect-needed banner as dismissed for
+  // the current user.
   async dismissReconnectAccountBanner(
     @AuthUser() user: AuthContextUser,
     @AuthWorkspace() workspace: WorkspaceEntity,

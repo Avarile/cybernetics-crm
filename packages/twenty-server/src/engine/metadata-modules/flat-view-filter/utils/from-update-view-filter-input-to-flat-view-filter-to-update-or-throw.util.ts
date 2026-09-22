@@ -18,6 +18,9 @@ import {
 import { type UniversalFlatViewFilter } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-view-filter.type';
 import { mergeUpdateInExistingRecord } from 'src/utils/merge-update-in-existing-record.util';
 
+// Applies an update-view-filter input onto the matching existing flat filter, throwing if
+// it doesn't exist, and re-resolving field metadata, view filter group and relation target
+// field metadata universal identifiers when those foreign keys change.
 export const fromUpdateViewFilterInputToFlatViewFilterToUpdateOrThrow = ({
   updateViewFilterInput: rawUpdateViewFilterInput,
   flatViewFilterMaps,

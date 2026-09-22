@@ -1,3 +1,5 @@
+// Builds and caches the active email driver (logger or SMTP) based on
+// config, recreating it when the email config changes.
 import { Injectable } from '@nestjs/common';
 
 import { type EmailDriverInterface } from 'src/engine/core-modules/email/drivers/interfaces/email-driver.interface';
@@ -19,6 +21,8 @@ export class EmailDriverFactory extends DriverFactoryBase<EmailDriverInterface> 
     super(twentyConfigService, configGroupHashService);
   }
 
+  // Cache key combining the driver type and, for SMTP, a hash of the email
+  // config group, so the driver is rebuilt whenever SMTP settings change.
   protected buildConfigKey(): string {
     const driver = this.twentyConfigService.get('EMAIL_DRIVER');
 
@@ -37,6 +41,8 @@ export class EmailDriverFactory extends DriverFactoryBase<EmailDriverInterface> 
     throw new Error(`Unsupported email driver: ${driver}`);
   }
 
+  // Instantiates the configured email driver (logger or SMTP with options
+  // read from config).
   protected createDriver(): EmailDriverInterface {
     const driver = this.twentyConfigService.get('EMAIL_DRIVER');
 

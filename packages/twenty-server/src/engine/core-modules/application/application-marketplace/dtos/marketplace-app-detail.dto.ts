@@ -1,3 +1,5 @@
+// GraphQL DTO with the full detail view of a marketplace app (metadata,
+// gallery images, default role, and role/permission breakdown).
 import { Field, ObjectType } from '@nestjs/graphql';
 
 import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';

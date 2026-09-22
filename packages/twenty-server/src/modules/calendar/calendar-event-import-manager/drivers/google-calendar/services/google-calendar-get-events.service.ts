@@ -10,6 +10,8 @@ import { type GetCalendarEventsResponse } from 'src/modules/calendar/calendar-ev
 import { GoogleOAuth2ClientProvider } from 'src/modules/connected-account/oauth2-client-manager/drivers/google/google-oauth2-client.provider';
 import { type ConnectedAccountEntity } from 'src/engine/metadata-modules/connected-account/entities/connected-account.entity';
 
+// Import-manager driver entry point for Google Calendar: paginates through
+// the sync-token-based events.list delta feed to report changed/deleted event ids.
 @Injectable()
 export class GoogleCalendarGetEventsService {
   private readonly logger = new Logger(GoogleCalendarGetEventsService.name);
@@ -93,6 +95,8 @@ export class GoogleCalendarGetEventsService {
     };
   }
 
+  // Maps network errors and non-410 API errors to typed exceptions; a 410
+  // (expired sync token) is left unhandled so the caller can trigger a full re-sync.
   private handleError(error: GaxiosError) {
     this.logger.error(
       `Error in ${GoogleCalendarGetEventsService.name} - getCalendarEvents`,

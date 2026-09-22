@@ -1,3 +1,6 @@
+// Fetches and parses full message bodies for a set of external ids
+// (folder:uid pairs), grouped and fetched per-folder over a single IMAP
+// connection, into the pipeline's normalized message shape.
 import { Injectable, Logger } from '@nestjs/common';
 
 import { type ImapFlow } from 'imapflow';
@@ -31,6 +34,8 @@ export class ImapGetMessagesService {
     private readonly errorHandler: ImapMessagesImportErrorHandler,
   ) {}
 
+  // Groups external ids by folder, opens one IMAP connection, and fetches
+  // each folder's messages before closing the connection.
   async getMessages(
     messageExternalIds: string[],
     connectedAccount: ConnectedAccount,
@@ -53,6 +58,8 @@ export class ImapGetMessagesService {
     }
   }
 
+  // Parses each "folder:uid" external id and buckets UIDs by folder path,
+  // skipping and warning on malformed ids.
   private groupByFolder(messageExternalIds: string[]): Map<string, number[]> {
     const messagesByFolder = new Map<string, number[]>();
 
@@ -73,6 +80,7 @@ export class ImapGetMessagesService {
     return messagesByFolder;
   }
 
+  // Fetches messages folder-by-folder and concatenates the results.
   private async fetchFromAllFolders(
     messagesByFolder: Map<string, number[]>,
     client: ImapFlow,
@@ -98,6 +106,9 @@ export class ImapGetMessagesService {
     return allMessages;
   }
 
+  // Parses the given UIDs from one folder, reporting per-message errors to
+  // the error handler and skipping messages that failed to parse (likely
+  // deleted between listing and fetching) rather than failing the batch.
   private async fetchFromFolder(
     folderPath: string,
     messageUids: number[],
@@ -157,6 +168,8 @@ export class ImapGetMessagesService {
     return messages;
   }
 
+  // Maps a parsed email + IMAP metadata into the pipeline's normalized
+  // message shape, marking it a draft when the \Draft flag is set.
   private buildMessage(
     parsed: ParsedMail,
     uid: number,

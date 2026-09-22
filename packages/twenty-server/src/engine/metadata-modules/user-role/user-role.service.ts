@@ -21,6 +21,8 @@ import { WorkspaceCacheService } from 'src/engine/workspace-cache/services/works
 import { STANDARD_ROLE } from 'src/engine/workspace-manager/twenty-standard-application/constants/standard-role.constant';
 import { WorkspaceMemberWorkspaceEntity } from 'src/modules/workspace-member/standard-objects/workspace-member.workspace-entity';
 
+// Manages role assignment for user workspaces: assigning roles, looking up a user's role,
+// and enforcing that a workspace always keeps at least one admin.
 export class UserRoleService {
   constructor(
     @InjectWorkspaceScopedRepository(RoleTargetEntity)
@@ -32,6 +34,9 @@ export class UserRoleService {
     private readonly workspaceCacheService: WorkspaceCacheService,
   ) {}
 
+  // Assigns a role to each given user workspace (skipping ones that already have it),
+  // validating that unassigning an existing admin role won't leave the workspace without
+  // an admin.
   public async assignRoleToManyUserWorkspace({
     workspaceId,
     userWorkspaceIds,
@@ -68,6 +73,7 @@ export class UserRoleService {
     });
   }
 
+  // Looks up the role id assigned to a user workspace, throwing if none is assigned.
   public async getRoleIdForUserWorkspace({
     workspaceId,
     userWorkspaceId,
@@ -92,6 +98,7 @@ export class UserRoleService {
     return roleId;
   }
 
+  // Returns each user workspace's assigned roles (with permission flags loaded), keyed by user workspace id.
   public async getRolesByUserWorkspaces({
     userWorkspaceIds,
     workspaceId,
@@ -137,6 +144,7 @@ export class UserRoleService {
     return rolesMap;
   }
 
+  // Returns the workspace member records for every user assigned to the given role.
   public async getWorkspaceMembersAssignedToRole(
     roleId: string,
     workspaceId: string,
@@ -177,6 +185,7 @@ export class UserRoleService {
     );
   }
 
+  // Returns the ids of every user workspace currently assigned the given role.
   public async getUserWorkspaceIdsAssignedToRole(
     roleId: string,
     workspaceId: string,
@@ -191,6 +200,8 @@ export class UserRoleService {
       .map(([userWorkspaceId]) => userWorkspaceId);
   }
 
+  // Throws if the user workspace is the workspace's sole admin, preventing actions
+  // (e.g. removal) that would leave the workspace without an admin.
   public async validateUserWorkspaceIsNotUniqueAdminOrThrow({
     userWorkspaceId,
     workspaceId,
@@ -227,6 +238,9 @@ export class UserRoleService {
     }
   }
 
+  // Validates that every given user workspace exists, filters out ones that already have
+  // the target role, and — if any being reassigned currently holds the admin role —
+  // validates that reassigning them won't leave the workspace without an admin.
   private async validateAssignRoleInputsAndGetUserWorkspaceIdsToAssign({
     userWorkspaceIds,
     workspaceId,
@@ -296,6 +310,8 @@ export class UserRoleService {
     return userWorkspaceIdsToAssign;
   }
 
+  // Throws if exactly one workspace member currently holds the admin role, since removing
+  // it from them would leave the workspace with no admin.
   private async validateMoreThanOneWorkspaceMemberHasAdminRoleOrThrow({
     adminRoleId,
     workspaceId,

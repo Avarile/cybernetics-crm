@@ -1,3 +1,5 @@
+// GraphQL representation of a field's metadata (type, name, options,
+// settings, default value), also the base type CreateFieldInput/UpdateFieldInput derive from.
 import {
   Field,
   HideField,

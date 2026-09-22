@@ -18,6 +18,8 @@ import { WorkspaceMigrationGraphqlApiExceptionInterceptor } from 'src/engine/wor
 import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace-migration/workspace-migration.module';
 import { DashboardSyncModule } from 'src/modules/dashboard-sync/dashboard-sync.module';
 
+// Wires up the page layout tab CRUD service, its REST controller, and
+// GraphQL resolver, plus dashboard sync for tabs linked to dashboards.
 @Module({
   imports: [
     TypeOrmModule.forFeature([PageLayoutTabEntity, WorkspaceEntity]),

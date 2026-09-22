@@ -15,6 +15,7 @@ import {
 } from 'src/engine/api/common/common-args-processors/filter-arg-processor/constants/filter-operators.constant';
 import { type FilterOperator } from 'src/engine/api/common/common-args-processors/filter-arg-processor/types/filter-operator.type';
 
+// Maps a field-metadata type to the set of filter operators it supports.
 export const getOperatorsForFieldType = (
   fieldType: FieldMetadataType,
 ): FilterOperator[] => {

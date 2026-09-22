@@ -1,3 +1,7 @@
+// Parses the `orderBy` argument for regular (non-group-by) queries into
+// TypeORM-compatible order clauses and the relation joins needed to sort
+// by fields on related objects, handling scalar, composite, and
+// relation-nested fields.
 import { isObject } from 'class-validator';
 import { isDefined } from 'twenty-shared/utils';
 
@@ -56,6 +60,9 @@ export class GraphqlQueryOrderFieldParser {
     this.fieldIdByJoinColumnName = fieldMaps.fieldIdByJoinColumnName;
   }
 
+  // Builds order-by conditions for each requested field, distinguishing
+  // relation fields (which need a join and nested-field ordering),
+  // composite fields (subfield ordering), and plain scalars.
   parse(
     orderBy: ObjectRecordOrderBy,
     objectNameSingular: string,
@@ -161,6 +168,8 @@ export class GraphqlQueryOrderFieldParser {
     };
   }
 
+  // Resolves the target object/field for a relation-nested orderBy entry
+  // and produces the join info plus order clause needed to sort by it.
   private parseRelationFieldOrder({
     fieldMetadata,
     orderByDirection,

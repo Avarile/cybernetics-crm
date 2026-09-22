@@ -11,6 +11,9 @@ import {
 registerEnumType(RowLevelPermissionPredicateOperand, {
   name: 'RowLevelPermissionPredicateOperand',
 });
+// GraphQL representation of a row-level permission predicate: a condition
+// on a field (or the current workspace member's field, for "assigned to
+// me"-style rules) that restricts which records a role can access.
 @ObjectType('RowLevelPermissionPredicate')
 export class RowLevelPermissionPredicateDTO {
   @Field(() => String)

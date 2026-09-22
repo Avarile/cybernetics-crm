@@ -11,6 +11,9 @@ import { TwentyORMModule } from 'src/engine/twenty-orm/twenty-orm.module';
 
 import { DashboardToolWorkspaceService } from './services/dashboard-tool.workspace-service';
 
+// Global module exposing DashboardToolWorkspaceService under the AI
+// dashboard-tool provider token, so agent workflows can create/inspect/edit
+// dashboards through it.
 @Global()
 @Module({
   imports: [

@@ -1,3 +1,6 @@
+// GraphQL object type carrying the outcome of a single logic function
+// execution: result data, logs, duration, status, and any error.
+
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 
 import { IsObject, IsOptional } from 'class-validator';

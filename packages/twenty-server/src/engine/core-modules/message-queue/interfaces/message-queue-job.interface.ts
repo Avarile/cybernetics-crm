@@ -1,3 +1,4 @@
+// Shapes for jobs handled through the message queue
 // oxlint-disable-next-line typescript/no-explicit-any
 export interface MessageQueueJob<T = any> {
   id: string;

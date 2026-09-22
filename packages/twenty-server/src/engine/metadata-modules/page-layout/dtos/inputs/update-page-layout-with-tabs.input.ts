@@ -16,6 +16,8 @@ import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/
 import { UpdatePageLayoutTabWithWidgetsInput } from 'src/engine/metadata-modules/page-layout-tab/dtos/inputs/update-page-layout-tab-with-widgets.input';
 import { PageLayoutType } from 'src/engine/metadata-modules/page-layout/enums/page-layout-type.enum';
 
+// GraphQL input for replacing a page layout's fields along with its full
+// set of tabs (each with their widgets) in one call.
 @InputType()
 export class UpdatePageLayoutWithTabsInput {
   @Field()

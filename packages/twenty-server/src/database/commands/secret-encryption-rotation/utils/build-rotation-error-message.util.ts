@@ -3,6 +3,8 @@ import {
   SecretEncryptionExceptionCode,
 } from 'src/engine/core-modules/secret-encryption/exceptions/secret-encryption.exception';
 
+// Formats a rotation failure into a log-friendly message, with a specific hint
+// when the row is encrypted under a key that's neither the current nor fallback key.
 export const buildRotationErrorMessage = (
   siteName: string,
   rowId: string,

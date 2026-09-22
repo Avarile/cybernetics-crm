@@ -25,6 +25,8 @@ type ConvertChartFilterToGqlOperationFilterParams = {
   currentWorkspaceMemberId?: string;
 };
 
+// Converts a chart widget's filter configuration into the GraphQL operation
+// filter used to query the underlying records.
 export const convertChartFilterToGqlOperationFilter = ({
   filter,
   flatFieldMetadataMaps,

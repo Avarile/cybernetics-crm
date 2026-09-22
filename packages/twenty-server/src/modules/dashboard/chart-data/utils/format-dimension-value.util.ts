@@ -24,6 +24,8 @@ type FormatDimensionValueParams = {
   firstDayOfTheWeek: FirstDayOfTheWeek;
 };
 
+// Normalizes a multi-select raw value (array, plain string, or Postgres
+// array literal "{a,b}") into a list of option values.
 const normalizeMultiSelectValue = (value: unknown): unknown[] => {
   if (Array.isArray(value)) {
     return value;
@@ -46,6 +48,9 @@ const normalizeMultiSelectValue = (value: unknown): unknown[] => {
   return content ? content.split(',') : [];
 };
 
+// Formats a raw group-by dimension value into a human-readable chart label,
+// per its field type (select labels, yes/no booleans, granularity-aware
+// dates, short-formatted numbers/currency, etc).
 export const formatDimensionValue = ({
   value,
   fieldMetadata,

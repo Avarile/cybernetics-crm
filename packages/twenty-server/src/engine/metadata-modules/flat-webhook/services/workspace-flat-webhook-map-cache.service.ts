@@ -16,6 +16,8 @@ import { WorkspaceCache } from 'src/engine/workspace-cache/decorators/workspace-
 import { createIdToUniversalIdentifierMap } from 'src/engine/workspace-cache/utils/create-id-to-universal-identifier-map.util';
 import { addFlatEntityToFlatEntityMapsThroughMutationOrThrow } from 'src/engine/workspace-manager/workspace-migration/utils/add-flat-entity-to-flat-entity-maps-through-mutation-or-throw.util';
 
+// Builds and caches the workspace's flat-webhook maps by loading non-deleted webhook
+// entities and resolving each webhook's application id to its universal identifier.
 @Injectable()
 @WorkspaceCache('flatWebhookMaps')
 export class WorkspaceFlatWebhookMapCacheService extends WorkspaceCacheProvider<FlatWebhookMaps> {
@@ -28,6 +30,8 @@ export class WorkspaceFlatWebhookMapCacheService extends WorkspaceCacheProvider<
     super();
   }
 
+  // Loads non-deleted webhooks and application universal identifiers for the workspace,
+  // then assembles them into flat-webhook maps.
   async computeForCache(workspaceId: string): Promise<FlatWebhookMaps> {
     const [webhooks, applications] = await Promise.all([
       this.webhookRepository.find(workspaceId, {

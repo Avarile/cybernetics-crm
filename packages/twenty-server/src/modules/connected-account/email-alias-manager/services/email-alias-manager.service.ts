@@ -12,6 +12,8 @@ import { buildSystemAuthContext } from 'src/engine/twenty-orm/utils/build-system
 import { GoogleEmailAliasManagerService } from 'src/modules/connected-account/email-alias-manager/drivers/google/services/google-email-alias-manager.service';
 import { MicrosoftEmailAliasManagerService } from 'src/modules/connected-account/email-alias-manager/drivers/microsoft/services/microsoft-email-alias-manager.service';
 
+// Refreshes and persists a connected account's known email aliases from its
+// provider, used to recognize self-sent messages/events across all of a user's addresses.
 @Injectable()
 export class EmailAliasManagerService {
   constructor(
@@ -24,6 +26,8 @@ export class EmailAliasManagerService {
     private readonly messageChannelRepository: Repository<MessageChannelEntity>,
   ) {}
 
+  // Fetches current aliases from the provider and persists them, but only if
+  // the account actually has a mailbox (message channel) configured.
   public async refreshHandleAliases(
     connectedAccount: ConnectedAccountEntity,
     workspaceId: string,
@@ -53,6 +57,8 @@ export class EmailAliasManagerService {
     return handleAliases;
   }
 
+  // Dispatches to the driver matching the account's provider; providers
+  // without alias support return an empty list.
   private async getHandleAliasesFromProvider(
     connectedAccount: ConnectedAccountEntity,
   ): Promise<string[]> {

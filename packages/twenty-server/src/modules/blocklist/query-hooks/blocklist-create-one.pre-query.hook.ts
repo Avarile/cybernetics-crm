@@ -15,6 +15,8 @@ import {
   BlocklistValidationService,
 } from 'src/modules/blocklist/blocklist-validation-manager/services/blocklist-validation.service';
 
+// Runs before `blocklist.createOne`; delegates to the createMany validation
+// path with a single-item payload.
 @WorkspaceQueryHook(`blocklist.createOne`)
 export class BlocklistCreateOnePreQueryHook implements WorkspacePreQueryHookInstance {
   constructor(

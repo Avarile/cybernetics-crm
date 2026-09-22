@@ -17,6 +17,7 @@ const INLINE_SAFE_MIME_TYPES = new Set([
   'image/x-icon',
 ]);
 
+// Returns 'inline' for mime types safe to render in-browser, else 'attachment'.
 export const getContentDisposition = (mimeType: string): string => {
   return INLINE_SAFE_MIME_TYPES.has(mimeType) ? 'inline' : 'attachment';
 };

@@ -1,5 +1,8 @@
+// Builders for the OpenAPI request body schemas used by generated endpoints
+// (single-object create/update, array create, find-duplicates, merge-many).
 import { v4 } from 'uuid';
 
+// Request body referencing the object's plain create schema.
 export const getRequestBody = (name: string) => {
   return {
     description: 'body',
@@ -14,6 +17,7 @@ export const getRequestBody = (name: string) => {
   };
 };
 
+// Request body referencing the object's "ForUpdate" schema.
 export const getUpdateRequestBody = (name: string) => {
   return {
     description: 'body',
@@ -28,6 +32,7 @@ export const getUpdateRequestBody = (name: string) => {
   };
 };
 
+// Request body for createMany: an array of the object's create schema.
 export const getArrayRequestBody = (name: string) => {
   return {
     required: true,
@@ -44,6 +49,8 @@ export const getArrayRequestBody = (name: string) => {
   };
 };
 
+// Request body for find-duplicates: either a list of candidate records or a
+// list of ids to check.
 export const getFindDuplicatesRequestBody = (name: string) => {
   return {
     description: 'body',
@@ -74,6 +81,8 @@ export const getFindDuplicatesRequestBody = (name: string) => {
   };
 };
 
+// Request body for merge-many: record ids to merge, the conflict-priority
+// index, and an optional dry-run flag.
 export const getMergeManyRequestBody = () => {
   return {
     description: 'body',

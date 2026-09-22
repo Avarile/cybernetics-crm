@@ -1,3 +1,4 @@
+// GraphQL args for uploading a file into an application's storage folder.
 import { ArgsType, Field } from '@nestjs/graphql';
 
 import { IsNotEmpty } from 'class-validator';

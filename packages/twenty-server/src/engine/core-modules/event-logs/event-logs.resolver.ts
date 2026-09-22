@@ -1,5 +1,6 @@
 /* @license Enterprise */
 
+// GraphQL query for paginated, filterable event/audit log records.
 import { UseFilters, UseGuards, UsePipes } from '@nestjs/common';
 import { Args, Query } from '@nestjs/graphql';
 
@@ -39,6 +40,7 @@ export class EventLogsResolver {
     SettingsPermissionGuard(PermissionFlagType.SECURITY),
   )
   @Query(() => EventLogQueryResult)
+  // Queries event logs for the authenticated workspace with filters/pagination.
   async eventLogs(
     @AuthWorkspace() workspace: WorkspaceEntity,
     @Args('input') input: EventLogQueryInput,

@@ -13,6 +13,8 @@ import {
 } from 'src/engine/core-modules/code-interpreter/drivers/interfaces/code-interpreter-driver.interface';
 import { TwentyConfigService } from 'src/engine/core-modules/twenty-config/twenty-config.service';
 
+// Facade over the active code interpreter driver: executes code, manages sandbox
+// lifecycle, and serializes concurrent executions within the same session
 @Injectable()
 export class CodeInterpreterService implements CodeInterpreterDriver {
   // One active stream per thread (the chat resolver queues the rest), so
@@ -31,6 +33,7 @@ export class CodeInterpreterService implements CodeInterpreterDriver {
     );
   }
 
+  // Releases the sandbox tied to a chat thread, if the current driver supports it
   async releaseThreadSandbox(
     workspaceId: string,
     threadId: string,
@@ -40,6 +43,7 @@ export class CodeInterpreterService implements CodeInterpreterDriver {
       .releaseSession?.(`${workspaceId}:${threadId}`);
   }
 
+  // Sweeps sandboxes idle longer than the configured max age, if the driver supports it
   async sweepExpiredSandboxes(): Promise<number> {
     const maxAgeMs = this.twentyConfigService.get(
       'CODE_INTERPRETER_SESSION_MAX_AGE_MS',
@@ -52,6 +56,7 @@ export class CodeInterpreterService implements CodeInterpreterDriver {
     );
   }
 
+  // Executes code on the current driver, serializing calls sharing the same session id
   execute(
     code: string,
     files?: InputFile[],
@@ -80,6 +85,8 @@ export class CodeInterpreterService implements CodeInterpreterDriver {
       .execute(code, files, context, callbacks);
   }
 
+  // Chains this task onto the session's promise tail so executions for the same
+  // session never run concurrently, and cleans up the tail once idle
   private async runSerializedPerSession<T>(
     sessionId: string,
     task: () => Promise<T>,

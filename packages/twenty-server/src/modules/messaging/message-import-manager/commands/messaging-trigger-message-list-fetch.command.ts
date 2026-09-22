@@ -1,3 +1,5 @@
+// CLI command to immediately schedule a message list fetch for one or all
+// pending message channels in a workspace, without waiting for the cron.
 import { Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -41,6 +43,8 @@ export class MessagingTriggerMessageListFetchCommand extends CommandRunner {
     super();
   }
 
+  // Finds message channels pending a list fetch (optionally scoped to one
+  // channel), marks each as scheduled, and enqueues its fetch job.
   async run(
     _passedParam: string[],
     options: MessagingTriggerMessageListFetchCommandOptions,

@@ -1,3 +1,4 @@
+// NestJS module wiring the `.well-known` discovery document controller.
 import { Module } from '@nestjs/common';
 
 import { WellKnownController } from 'src/engine/core-modules/well-known/controllers/well-known.controller';

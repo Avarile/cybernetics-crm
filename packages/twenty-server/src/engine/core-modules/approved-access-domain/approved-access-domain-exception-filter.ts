@@ -1,3 +1,5 @@
+// GraphQL exception filter that maps all approved-access-domain errors to a
+// generic ForbiddenError response.
 import { Catch, type ExceptionFilter } from '@nestjs/common';
 
 import { assertUnreachable } from 'twenty-shared/utils';
@@ -10,6 +12,7 @@ import { ForbiddenError } from 'src/engine/core-modules/graphql/utils/graphql-er
 
 @Catch(ApprovedAccessDomainException)
 export class ApprovedAccessDomainExceptionFilter implements ExceptionFilter {
+  // Converts a known ApprovedAccessDomainException code into a ForbiddenError.
   catch(exception: ApprovedAccessDomainException) {
     switch (exception.code) {
       case ApprovedAccessDomainExceptionCode.APPROVED_ACCESS_DOMAIN_NOT_FOUND:

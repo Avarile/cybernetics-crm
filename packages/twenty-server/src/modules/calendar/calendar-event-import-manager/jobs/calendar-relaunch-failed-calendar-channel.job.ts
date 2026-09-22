@@ -23,6 +23,8 @@ export type CalendarRelaunchFailedCalendarChannelJobData = {
   queueName: MessageQueue.calendarQueue,
   scope: Scope.REQUEST,
 })
+// Resets a calendar channel stuck in a FAILED/unknown-failure state back to
+// pending, giving it a fresh sync attempt.
 export class CalendarRelaunchFailedCalendarChannelJob {
   constructor(
     private readonly globalWorkspaceOrmManager: GlobalWorkspaceOrmManager,

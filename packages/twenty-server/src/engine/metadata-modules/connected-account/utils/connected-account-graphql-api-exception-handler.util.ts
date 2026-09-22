@@ -10,6 +10,8 @@ import {
   ConnectedAccountExceptionCode,
 } from 'src/engine/metadata-modules/connected-account/connected-account.exception';
 
+// Maps a ConnectedAccountException to the matching GraphQL error type
+// (not-found, user-input, or forbidden), rethrowing anything else unchanged.
 export const connectedAccountGraphqlApiExceptionHandler = (error: Error) => {
   if (error instanceof ConnectedAccountException) {
     switch (error.code) {

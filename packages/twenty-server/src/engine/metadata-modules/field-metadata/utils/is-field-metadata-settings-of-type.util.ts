@@ -7,6 +7,9 @@ import { isDefined } from 'twenty-shared/utils';
 
 import { type UniversalFlatFieldMetadata } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-field-metadata.type';
 
+// Type guard narrowing a flat field's settings to the given field type's
+// settings shape; settings have no discriminator, so this just enforces
+// presence for the field types that require settings.
 export const isFieldMetadataSettingsOfType = <
   T extends keyof FieldMetadataSettingsMapping,
 >(
@@ -26,6 +29,7 @@ export const isFieldMetadataSettingsOfType = <
   return true;
 };
 
+// Same check as isFieldMetadataSettingsOfType, for a universal flat field's settings shape.
 export const isUniversalFieldMetadataSettingsOftype = <
   T extends keyof FieldMetadataSettingsMapping,
 >(

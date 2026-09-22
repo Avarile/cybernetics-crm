@@ -9,6 +9,8 @@ import { WorkspaceDataSourceModule } from 'src/engine/workspace-datasource/works
 import { CalendarChannelSyncStatusService } from 'src/modules/calendar/common/services/calendar-channel-sync-status.service';
 import { ConnectedAccountModule } from 'src/modules/connected-account/connected-account.module';
 
+// Exposes CalendarChannelSyncStatusService, shared across calendar sub-modules
+// for reading/updating a calendar channel's sync stage/status.
 @Module({
   imports: [
     WorkspaceDataSourceModule,

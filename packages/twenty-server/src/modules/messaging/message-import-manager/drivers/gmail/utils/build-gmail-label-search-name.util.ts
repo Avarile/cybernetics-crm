@@ -7,6 +7,10 @@ type FolderInput = Pick<
   'externalId' | 'name' | 'parentFolderId'
 >;
 
+// Walks up a folder's parent chain to rebuild its full "/"-joined Gmail
+// label path (e.g. "parent/child"), then normalizes it into the lowercase,
+// dash-separated form Gmail's search syntax expects for a label: query.
+// Returns null if the chain exceeds the max depth (likely a cycle).
 export const buildGmailLabelSearchName = (
   folder: FolderInput,
   allFolders: FolderInput[],

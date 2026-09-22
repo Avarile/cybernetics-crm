@@ -6,6 +6,8 @@ export type ImapSyncCursor = {
   modSeq?: string;
 };
 
+// Parses a stored JSON sync cursor, returning null for a missing or
+// malformed value.
 export const parseSyncCursor = (
   cursor: string | null,
 ): ImapSyncCursor | null => {

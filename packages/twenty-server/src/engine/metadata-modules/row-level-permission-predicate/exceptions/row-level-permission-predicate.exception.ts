@@ -8,6 +8,9 @@ import {
   CustomException,
 } from 'src/utils/custom-exception';
 
+// Exception thrown by the row-level permission predicate module for
+// missing records, invalid data, unauthorized cross-role/object
+// modification, or the feature being unavailable on the workspace's plan.
 export const RowLevelPermissionPredicateExceptionCode =
   appendCommonExceptionCode({
     ROW_LEVEL_PERMISSION_PREDICATE_NOT_FOUND:

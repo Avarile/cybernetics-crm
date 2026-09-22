@@ -6,6 +6,8 @@ import { ApplicationModule } from 'src/engine/core-modules/application/applicati
 import { WorkspaceCacheModule } from 'src/engine/workspace-cache/workspace-cache.module';
 import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace-migration/workspace-migration.module';
 
+// Registers the 2.2 workspace command (calendar event description max-rows
+// setting) as a provider for the upgrade runner.
 @Module({
   imports: [
     ApplicationModule,

@@ -14,6 +14,8 @@ import { TypedReflect } from 'src/utils/typed-reflect';
 
 export const FEATURE_FLAG_KEY = 'feature-flag-metadata-args';
 
+// Method/class decorator marking a resolver as requiring a given feature
+// flag to be enabled, read by FeatureFlagGuard.
 export function RequireFeatureFlag(featureFlag: FeatureFlagKey) {
   return (
     target: object,
@@ -30,6 +32,9 @@ export function RequireFeatureFlag(featureFlag: FeatureFlagKey) {
   };
 }
 
+// Blocks a resolver marked with @RequireFeatureFlag unless that feature
+// flag is enabled for the requesting workspace; resolvers without the
+// decorator pass through unaffected.
 @Injectable()
 export class FeatureFlagGuard implements CanActivate {
   constructor(

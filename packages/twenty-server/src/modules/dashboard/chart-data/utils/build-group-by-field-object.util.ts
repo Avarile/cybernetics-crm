@@ -28,6 +28,8 @@ type BuildDateGroupByObjectParams = {
   timeZone?: string;
 };
 
+// Builds the group-by object for a date field: granularity, and (when the
+// granularity needs it) time zone and week-start-day.
 const buildDateGroupByObject = ({
   dateGranularity,
   firstDayOfTheWeek,
@@ -81,6 +83,8 @@ export type BuildGroupByFieldObjectParams = {
   shouldUnnest?: boolean;
 };
 
+// Builds the group-by selection object for a field, handling relation
+// (with optional nested sub-field), composite, date, and array (unnest) field shapes.
 export const buildGroupByFieldObject = ({
   fieldMetadata,
   subFieldName,

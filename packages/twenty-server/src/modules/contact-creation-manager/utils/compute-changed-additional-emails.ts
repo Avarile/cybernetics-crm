@@ -2,6 +2,7 @@ import { type ObjectRecordDiff } from 'twenty-shared/database-events';
 
 import { type PersonWorkspaceEntity } from 'src/modules/person/standard-objects/person.workspace-entity';
 
+// Diffs a person's additional-emails before/after to find which were added/removed.
 export const computeChangedAdditionalEmails = (
   diff: Partial<ObjectRecordDiff<PersonWorkspaceEntity>>,
 ) => {

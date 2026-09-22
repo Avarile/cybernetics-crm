@@ -1,3 +1,4 @@
+// GraphQL representation of an agent turn: its messages and evaluations.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 import { IsDateString } from 'class-validator';

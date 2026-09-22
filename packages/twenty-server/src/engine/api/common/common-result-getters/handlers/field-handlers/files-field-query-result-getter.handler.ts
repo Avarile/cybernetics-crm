@@ -11,9 +11,14 @@ import type { SignedFileOutput } from 'src/engine/api/common/common-args-process
 import { type FileUrlService } from 'src/engine/core-modules/file/file-url/file-url.service';
 import { type FlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-metadata/types/flat-field-metadata.type';
 
+// Query-result getter that replaces each FILES field's stored file
+// references with signed, time-limited download URLs before returning
+// the record to the caller.
 export class FilesFieldQueryResultGetterHandler implements QueryResultGetterHandlerInterface {
   constructor(private readonly fileUrlService: FileUrlService) {}
 
+  // Signs a download URL for every file attached to the record's FILES
+  // fields, leaving other fields untouched.
   async handle(
     record: ObjectRecord,
     workspaceId: string,

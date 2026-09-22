@@ -1,3 +1,6 @@
+// GraphQL mutations for logging analytics events: object-scoped events from
+// authenticated workspace requests, and generic pageview/track events from
+// the public analytics endpoint.
 import { UseFilters, UseGuards, UsePipes } from '@nestjs/common';
 import { Args, Mutation } from '@nestjs/graphql';
 
@@ -37,6 +40,8 @@ export class EventLogEmitterResolver {
     private readonly eventLogEmitterService: EventLogEmitterService,
   ) {}
 
+  // Logs a custom track event tied to a specific object record, scoped to
+  // the authenticated user's workspace.
   @Mutation(() => Analytics)
   @UseGuards(WorkspaceAuthGuard, NoPermissionGuard)
   async createObjectEvent(
@@ -65,6 +70,7 @@ export class EventLogEmitterResolver {
     });
   }
 
+  // Public endpoint for logging a pageview or track analytics event.
   @Mutation(() => Analytics)
   @UseGuards(PublicEndpointGuard, NoPermissionGuard)
   async trackAnalytics(

@@ -1,3 +1,6 @@
+// Wraps a raw manifest-sync error into an ApplicationException with a
+// user-friendly message that names the specific manifest entity (e.g.
+// object, field, role) that caused the failure, when it can be resolved.
 import { msg } from '@lingui/core/macro';
 import { type Manifest } from 'twenty-shared/application';
 import { isDefined } from 'twenty-shared/utils';

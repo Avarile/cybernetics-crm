@@ -13,9 +13,15 @@ import { TwentyORMModule } from 'src/engine/twenty-orm/twenty-orm.module';
 import { WorkspaceDataSourceModule } from 'src/engine/workspace-datasource/workspace-datasource.module';
 import { convertClassNameToObjectMetadataName } from 'src/engine/workspace-manager/utils/convert-class-to-object-metadata-name.util';
 
+// Dynamic NestJS module registering custom repositories (per
+// metadataToRepositoryMapping) for the given workspace-entity classes, so
+// they can be injected via @InjectObjectMetadataRepository.
 @Global()
 @Module({})
 export class ObjectMetadataRepositoryModule {
+  // Builds one provider per entity class, instantiating its registered
+  // repository with the global workspace ORM manager; throws if an entity
+  // has no mapped repository.
   // @ts-expect-error legacy noImplicitAny
   static forFeature(objectMetadatas): DynamicModule {
     // @ts-expect-error legacy noImplicitAny

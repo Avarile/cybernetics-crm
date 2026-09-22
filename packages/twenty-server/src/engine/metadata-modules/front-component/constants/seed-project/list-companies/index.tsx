@@ -1,3 +1,6 @@
+// Seed project template: a sample visual front component demonstrating
+// how to query workspace data via CoreApiClient. Bundled as example
+// source when scaffolding a new front component.
 import { CoreApiClient, type CoreSchema } from 'twenty-client-sdk/core';
 import { defineFrontComponent } from 'twenty-sdk/define';
 import { useEffect, useState } from 'react';

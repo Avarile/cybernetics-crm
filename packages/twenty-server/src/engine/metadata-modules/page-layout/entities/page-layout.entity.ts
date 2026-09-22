@@ -28,6 +28,9 @@ import { SyncableEntity } from 'src/engine/workspace-manager/types/syncable-enti
   ['workspaceId', 'objectMetadataId'],
   { where: '"deletedAt" IS NULL' },
 )
+// TypeORM entity for a page layout: a named, typed layout (record page,
+// record index, dashboard, or standalone page), optionally scoped to an
+// object metadata, holding its ordered tabs.
 export class PageLayoutEntity
   extends SyncableEntity
   implements Required<PageLayoutEntity>

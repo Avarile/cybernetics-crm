@@ -8,6 +8,8 @@ import { resolveEntityRelationUniversalIdentifiers } from 'src/engine/metadata-m
 import { type CreateViewFilterGroupInput } from 'src/engine/metadata-modules/view-filter-group/dtos/inputs/create-view-filter-group.input';
 import { type UniversalFlatViewFilterGroup } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-view-filter-group.type';
 
+// Builds a new universal flat view filter group from a create input, defaulting its
+// logical operator to AND and resolving the parent view/group references to universal identifiers.
 export const fromCreateViewFilterGroupInputToFlatViewFilterGroupToCreate = ({
   createViewFilterGroupInput: rawCreateViewFilterGroupInput,
   flatApplication,

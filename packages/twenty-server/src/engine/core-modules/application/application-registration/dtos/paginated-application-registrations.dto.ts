@@ -1,3 +1,4 @@
+// GraphQL DTO for a paginated page of application registrations.
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 
 import { ApplicationRegistrationEntity } from 'src/engine/core-modules/application/application-registration/application-registration.entity';

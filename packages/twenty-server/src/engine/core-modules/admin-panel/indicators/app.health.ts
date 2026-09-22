@@ -1,3 +1,5 @@
+// Terminus health indicator reporting basic app-level status (node version,
+// total workspace count), keeping a rolling state history for outage details.
 import { Injectable } from '@nestjs/common';
 import {
   type HealthIndicatorResult,
@@ -20,6 +22,8 @@ export class AppHealthIndicator {
     private readonly workspaceRepository: Repository<WorkspaceEntity>,
   ) {}
 
+  // Reports app health based on workspace count and system info; on failure,
+  // returns the last known state history for diagnostics.
   // TODO refactor, a workspace health should be based on its app versioning
   async isHealthy(): Promise<HealthIndicatorResult> {
     const indicator = this.healthIndicatorService.check('app');

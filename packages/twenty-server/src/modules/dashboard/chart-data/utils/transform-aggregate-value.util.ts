@@ -21,6 +21,8 @@ type TransformAggregateValueParams = {
   aggregateOperation: AggregateOperations;
 };
 
+// Normalizes a raw aggregate query result into the chart's numeric value:
+// percentages scale to 0-100, currency amounts convert from micros to units.
 export const transformAggregateValue = ({
   rawValue,
   aggregateFieldType,

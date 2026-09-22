@@ -50,6 +50,8 @@ const restApiCoreResolvers = [
   RestApiMergeManyHandler,
 ];
 
+// NestJS module wiring the REST core API (`/rest/*`): the controller,
+// per-operation handlers, and the args-processing service they share.
 @Module({
   imports: [
     WorkspaceCacheStorageModule,

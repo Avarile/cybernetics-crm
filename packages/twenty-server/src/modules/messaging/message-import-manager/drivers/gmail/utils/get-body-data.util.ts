@@ -9,6 +9,9 @@ type BodyData = {
 
 const MAX_PARTS_TO_PROCESS = 100;
 
+// Breadth-first walks a Gmail message's MIME part tree (bounded by
+// MAX_PARTS_TO_PROCESS) to find its body, skipping attachment parts and
+// preferring text/plain over text/html when both are present.
 export const getBodyData = (
   message: gmailV1.Schema$Message,
 ): BodyData | undefined => {

@@ -1,3 +1,5 @@
+// Publishes anonymized self-hosting telemetry events (e.g. sign-ups) to
+// twenty-telemetry.com, a no-op unless TELEMETRY_ENABLED is set.
 import { Injectable } from '@nestjs/common';
 
 import { SecureHttpClientService } from 'src/engine/core-modules/secure-http-client/secure-http-client.service';
@@ -19,6 +21,8 @@ export class TelemetryService {
     private readonly secureHttpClientService: SecureHttpClientService,
   ) {}
 
+  // Sends each event in the payload to the telemetry collection endpoint,
+  // swallowing network errors into a { success: false } result.
   async publish(payload: TelemetryEventPayload) {
     if (!this.twentyConfigService.get('TELEMETRY_ENABLED')) {
       return { success: true };

@@ -1,3 +1,5 @@
+// Authenticated GraphQL resolver for browsing the marketplace catalog from
+// within a workspace and triggering a manual catalog re-sync.
 import { UseFilters, UseGuards, UseInterceptors } from '@nestjs/common';
 import { Args, Mutation, Query } from '@nestjs/graphql';
 
@@ -27,6 +29,8 @@ export class MarketplaceResolver {
     private readonly messageQueueService: MessageQueueService,
   ) {}
 
+  // Returns marketplace apps, optionally filtered to specific universal
+  // identifiers.
   @Query(() => [MarketplaceAppDTO])
   async findManyMarketplaceApps(
     @Args({
@@ -41,6 +45,7 @@ export class MarketplaceResolver {
     });
   }
 
+  // Returns the full detail view for a single marketplace app.
   @Query(() => MarketplaceAppDetailDTO)
   async findMarketplaceAppDetail(
     @Args('universalIdentifier') universalIdentifier: string,
@@ -50,6 +55,7 @@ export class MarketplaceResolver {
     );
   }
 
+  // Enqueues a deduplicated (fixed job id) marketplace catalog sync job.
   @Mutation(() => Boolean)
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.MARKETPLACE_APPS))
   async syncMarketplaceCatalog(): Promise<boolean> {

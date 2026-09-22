@@ -1,3 +1,5 @@
+// Wires the services that refresh and revoke OAuth tokens for
+// application connection providers.
 import { Module } from '@nestjs/common';
 
 import { ConnectionProviderModule } from 'src/engine/core-modules/application/connection-provider/connection-provider.module';

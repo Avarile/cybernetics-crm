@@ -1,3 +1,5 @@
+// NestJS module exposing GuardRedirectService, used by auth guards to
+// redirect failed requests to a workspace-scoped error page.
 import { Module } from '@nestjs/common';
 
 import { DomainServerConfigModule } from 'src/engine/core-modules/domain/domain-server-config/domain-server-config.module';

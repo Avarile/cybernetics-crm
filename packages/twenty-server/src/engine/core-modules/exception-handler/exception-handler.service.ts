@@ -5,6 +5,7 @@ import { type ExceptionHandlerOptions } from 'src/engine/core-modules/exception-
 import { ExceptionHandlerDriverInterface } from 'src/engine/core-modules/exception-handler/interfaces';
 import { EXCEPTION_HANDLER_DRIVER } from 'src/engine/core-modules/exception-handler/exception-handler.constants';
 
+// Thin facade delegating exception capture to the configured driver (console/Sentry)
 @Injectable()
 export class ExceptionHandlerService {
   constructor(
@@ -12,6 +13,7 @@ export class ExceptionHandlerService {
     private driver: ExceptionHandlerDriverInterface,
   ) {}
 
+  // Forwards exceptions and context to the active driver, returning driver event ids
   captureExceptions(
     // oxlint-disable-next-line typescript/no-explicit-any
     exceptions: ReadonlyArray<any>,

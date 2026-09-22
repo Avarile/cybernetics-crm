@@ -5,6 +5,7 @@ import { type CamelCase, type CamelCasedPropertiesDeep } from 'type-fest';
 export const camelCase = <T>(text: T) =>
   lodashCamelCase(text as unknown as string) as CamelCase<T>;
 
+// Recursively camelCases every object key in a value, walking through arrays and nested objects.
 export const camelCaseDeep = <T>(value: T): CamelCasedPropertiesDeep<T> => {
   // Check if it's an array
   if (Array.isArray(value)) {

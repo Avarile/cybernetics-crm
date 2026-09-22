@@ -1,3 +1,5 @@
+// Builds an authenticated nodemailer SMTP transporter for a connected
+// account, decrypting its stored SMTP credentials and validating the host.
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -23,6 +25,8 @@ export class SmtpClientProvider {
     private readonly connectedAccountRepository: Repository<ConnectedAccountEntity>,
   ) {}
 
+  // Loads the account's SMTP credentials, decrypts and validates them, and
+  // returns a configured nodemailer transporter.
   public async getClient(connectedAccountId: string): Promise<Transporter> {
     const connectedAccount = await this.connectedAccountRepository.findOne({
       where: { id: connectedAccountId },

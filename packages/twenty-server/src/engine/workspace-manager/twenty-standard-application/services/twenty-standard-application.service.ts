@@ -13,6 +13,9 @@ import { WorkspaceMigrationValidateBuildAndRunService } from 'src/engine/workspa
 import { FromToAllUniversalFlatEntityMaps } from 'src/engine/workspace-manager/workspace-migration/types/workspace-migration-orchestrator.type';
 
 // TODO completely deprecate this file once we've created the twenty-standard twenty-app manifest
+// Keeps a workspace's standard application (base objects, fields, views, roles, etc.) in sync with
+// the in-code standard definitions by diffing the current flat entity maps against the freshly
+// computed target maps and running the resulting migration
 @Injectable()
 export class TwentyStandardApplicationService {
   constructor(
@@ -22,6 +25,9 @@ export class TwentyStandardApplicationService {
     private readonly globalWorkspaceOrmManager: GlobalWorkspaceOrmManager,
   ) {}
 
+  // Computes the diff between the workspace's current standard-application entities and the
+  // up-to-date standard definitions, then validates, builds and runs the resulting workspace
+  // migration so the workspace's standard app stays current
   async synchronizeTwentyStandardApplicationOrThrow({
     workspaceId,
   }: {

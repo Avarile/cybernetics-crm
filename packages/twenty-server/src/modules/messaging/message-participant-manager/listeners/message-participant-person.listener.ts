@@ -1,3 +1,7 @@
+// Listens for person create/update/delete events and enqueues a message
+// participant matching job whenever a person's email addresses changed,
+// so previously-unmatched (or now-stale) message participants get
+// re-linked to the right person.
 import { Injectable } from '@nestjs/common';
 
 import { isDefined } from 'twenty-shared/utils';
@@ -27,6 +31,7 @@ export class MessageParticipantPersonListener {
     private readonly messageQueueService: MessageQueueService,
   ) {}
 
+  // Enqueues matching by the new person's ids/emails.
   @OnDatabaseBatchEvent('person', DatabaseEventAction.CREATED)
   async handleCreatedEvent(
     payload: WorkspaceEventBatch<
@@ -63,6 +68,8 @@ export class MessageParticipantPersonListener {
     );
   }
 
+  // For people whose emails field changed, enqueues re-matching by their
+  // new emails.
   @OnDatabaseBatchEvent('person', DatabaseEventAction.UPDATED)
   async handleUpdatedEvent(
     payload: WorkspaceEventBatch<
@@ -100,6 +107,9 @@ export class MessageParticipantPersonListener {
     );
   }
 
+  // Enqueues re-matching by the deleted person's former emails, so any
+  // participants that pointed at them get resolved to another match (or
+  // unmatched) instead of dangling.
   @OnDatabaseBatchEvent('person', DatabaseEventAction.DESTROYED)
   async handleDestroyedEvent(
     payload: WorkspaceEventBatch<

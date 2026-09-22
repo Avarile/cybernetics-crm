@@ -1,3 +1,5 @@
+// NestJS module for AI-graded evaluation of agent turns: grading service,
+// resolver, and the queue jobs that run an eval input and score its turn.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

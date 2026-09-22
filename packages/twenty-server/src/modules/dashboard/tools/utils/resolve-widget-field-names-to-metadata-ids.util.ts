@@ -16,6 +16,8 @@ import { type WidgetConfigurationInput } from 'src/modules/dashboard/tools/types
 import { type WidgetIdentifiersInput } from 'src/modules/dashboard/tools/types/widget-identifiers-input.type';
 import { type WidgetWithMetadataIds } from 'src/modules/dashboard/tools/types/widget-with-metadata-ids.type';
 
+// Resolves a field reference (UUID or name) to its metadata UUID, throwing
+// a descriptive error the AI agent can act on if neither is usable.
 const getFieldMetadataIdOrThrow = (
   {
     fieldMetadataId,
@@ -59,6 +61,7 @@ const getFieldMetadataIdOrThrow = (
   return fieldMetadataIdForName;
 };
 
+// Resolves an object reference (UUID or name) to its metadata UUID.
 export const getObjectMetadataId = ({
   objectMetadataId,
   objectName,
@@ -93,6 +96,8 @@ type ResolvedChartRecordFilter = ChartRecordFilter & {
   positionInRecordFilterGroup: number;
 };
 
+// Resolves a chart filter's field names to metadata ids and normalizes its
+// filter groups, defaulting to a single AND-root group when none is given.
 const resolveChartFilterFieldNamesToIds = (
   filter: ChartFilterInput | undefined,
   objectMetadataId: string | undefined,
@@ -184,6 +189,8 @@ const resolveChartFilterFieldNamesToIds = (
   };
 };
 
+// Resolves all field/object name references in a widget's configuration
+// (aggregate, group-by, and filter fields) to metadata UUIDs, per widget/chart type.
 export const resolveConfigurationFieldNamesToIds = (
   configuration: WidgetConfigurationInput,
   objectMetadataId: string | undefined,
@@ -338,6 +345,8 @@ export const resolveConfigurationFieldNamesToIds = (
   }
 };
 
+// Resolves a widget's object and configuration field references (names) to
+// metadata UUIDs before it's created.
 export const resolveWidgetFieldNamesToIds = (
   widget: WidgetIdentifiersInput,
   maps: DashboardIdentifierMaps,

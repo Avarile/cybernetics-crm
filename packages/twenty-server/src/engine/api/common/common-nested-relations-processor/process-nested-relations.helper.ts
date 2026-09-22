@@ -12,12 +12,16 @@ import { FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object-meta
 import { GlobalWorkspaceDataSource } from 'src/engine/twenty-orm/global-workspace-datasource/global-workspace-datasource';
 import { RolePermissionConfig } from 'src/engine/twenty-orm/types/role-permission-config';
 
+// Thin wrapper delegating to ProcessNestedRelationsV2Helper, kept as the
+// stable entry point used by query runners for hydrating relation fields.
 @Injectable()
 export class ProcessNestedRelationsHelper {
   constructor(
     private readonly processNestedRelationsV2Helper: ProcessNestedRelationsV2Helper,
   ) {}
 
+  // Fetches and attaches nested relation records (and their aggregates)
+  // onto parentObjectRecords, recursing into further nested relations.
   public async processNestedRelations<T extends ObjectRecord = ObjectRecord>({
     flatObjectMetadataMaps,
     flatFieldMetadataMaps,

@@ -1,3 +1,5 @@
+// Exception type for event-log emission errors, with user-friendly messages
+// resolved per error code.
 import { type MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { assertUnreachable } from 'twenty-shared/utils';
@@ -22,6 +24,8 @@ const getEventLogEmitterExceptionUserFriendlyMessage = (
   }
 };
 
+// Exception thrown by the event-log emitter, defaulting to a friendly
+// message derived from the exception code.
 export class EventLogEmitterException extends CustomException<EventLogEmitterExceptionCode> {
   constructor(
     message: string,

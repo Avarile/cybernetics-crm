@@ -16,6 +16,7 @@ import { type UpdatePermissionFlagInput } from 'src/engine/metadata-modules/perm
 import { WorkspaceMigrationBuilderException } from 'src/engine/workspace-manager/workspace-migration/exceptions/workspace-migration-builder-exception';
 import { WorkspaceMigrationValidateBuildAndRunService } from 'src/engine/workspace-manager/workspace-migration/services/workspace-migration-validate-build-and-run-service';
 
+// CRUD operations for permission flag definitions, applying each change as a workspace migration.
 @Injectable()
 export class PermissionFlagService {
   constructor(
@@ -24,6 +25,7 @@ export class PermissionFlagService {
     private readonly applicationService: ApplicationService,
   ) {}
 
+  // Returns all permission flag definitions in the workspace, oldest first.
   async findAll(workspaceId: string): Promise<PermissionFlagDTO[]> {
     const { flatPermissionFlagMaps } =
       await this.workspaceManyOrAllFlatEntityMapsCacheService.getOrRecomputeManyOrAllFlatEntityMaps(
@@ -39,6 +41,7 @@ export class PermissionFlagService {
       .map(fromFlatPermissionFlagToPermissionFlagDto);
   }
 
+  // Returns a single permission flag definition by id, or null if not found.
   async findById(
     id: string,
     workspaceId: string,
@@ -63,6 +66,7 @@ export class PermissionFlagService {
     return fromFlatPermissionFlagToPermissionFlagDto(flatPermissionFlag);
   }
 
+  // Creates a permission flag definition via a workspace migration and returns the created record.
   async create(
     input: CreatePermissionFlagInput,
     workspaceId: string,
@@ -118,6 +122,7 @@ export class PermissionFlagService {
     );
   }
 
+  // Updates a permission flag definition via a workspace migration and returns the updated record.
   async update(
     input: UpdatePermissionFlagInput,
     workspaceId: string,
@@ -180,6 +185,7 @@ export class PermissionFlagService {
     );
   }
 
+  // Deletes a permission flag definition via a workspace migration and returns the deleted record.
   async delete(id: string, workspaceId: string): Promise<PermissionFlagDTO> {
     const { workspaceCustomFlatApplication } =
       await this.applicationService.findWorkspaceTwentyStandardAndCustomApplicationOrThrow(

@@ -1,3 +1,5 @@
+// Admin-panel field resolver adding computed fields (configuration status,
+// asset URLs) on top of the base ApplicationRegistrationEntity.
 import { Context, Parent, ResolveField } from '@nestjs/graphql';
 
 import { AdminResolver } from 'src/engine/api/graphql/graphql-config/decorators/admin-resolver.decorator';
@@ -11,6 +13,7 @@ export class AdminPanelApplicationRegistrationResolver {
     private readonly applicationRegistrationAssetUrlService: ApplicationRegistrationAssetUrlService,
   ) {}
 
+  // Resolves whether the application registration has all required variables configured, via a dataloader.
   @ResolveField(() => Boolean)
   async isConfigured(
     @Parent() registration: ApplicationRegistrationEntity,
@@ -21,6 +24,7 @@ export class AdminPanelApplicationRegistrationResolver {
     });
   }
 
+  // Builds the public URL for the application's logo asset.
   @ResolveField(() => String, { nullable: true })
   logoUrl(
     @Parent() registration: ApplicationRegistrationEntity,
@@ -30,6 +34,7 @@ export class AdminPanelApplicationRegistrationResolver {
     );
   }
 
+  // Builds the public URLs for the application's gallery images.
   @ResolveField(() => [String])
   galleryImagesUrls(
     @Parent() registration: ApplicationRegistrationEntity,

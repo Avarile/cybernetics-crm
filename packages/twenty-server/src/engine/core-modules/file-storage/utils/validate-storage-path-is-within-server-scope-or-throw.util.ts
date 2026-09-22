@@ -9,6 +9,8 @@ import {
 import { assertStoragePathIsSafe } from 'src/engine/core-modules/file-storage/utils/assert-storage-path-is-safe.util';
 import { SERVER_FILE_STORAGE_PREFIX } from 'src/engine/core-modules/file-storage/constants/server-file-storage-prefix.constant';
 
+// Throws unless the resolved storage path stays under server/{fileFolder}/, guarding
+// against a validated but still misdirected path escaping its intended scope
 export const validateStoragePathIsWithinServerScopeOrThrow = ({
   onStoragePath,
   fileFolder,

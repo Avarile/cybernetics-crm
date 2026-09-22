@@ -11,6 +11,10 @@ import { AccessTokenService } from 'src/engine/core-modules/auth/token/services/
 import { bindDataToRequestObject } from 'src/engine/utils/bind-data-to-request-object.util';
 import { WorkspaceCacheStorageService } from 'src/engine/workspace-cache-storage/workspace-cache-storage.service';
 
+// Primary HTTP auth guard: validates the request's access token (JWT or
+// API key), requires it to resolve to an API key, user-workspace, or
+// application, and binds the resolved auth data onto the request for
+// downstream guards/decorators to read.
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
   private readonly logger = new Logger(JwtAuthGuard.name);

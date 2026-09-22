@@ -9,6 +9,7 @@ import {
   DashboardExceptionCode,
 } from 'src/modules/dashboard/exceptions/dashboard.exception';
 
+// Maps a DashboardException code to the matching GraphQL error type.
 export const dashboardGraphqlApiExceptionHandler = (error: Error) => {
   if (error instanceof DashboardException) {
     switch (error.code) {

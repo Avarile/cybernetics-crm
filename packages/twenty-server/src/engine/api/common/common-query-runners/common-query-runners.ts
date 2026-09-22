@@ -14,6 +14,8 @@ import { CommonRestoreOneQueryRunnerService } from 'src/engine/api/common/common
 import { CommonUpdateManyQueryRunnerService } from 'src/engine/api/common/common-query-runners/common-update-many-query-runner.service';
 import { CommonUpdateOneQueryRunnerService } from 'src/engine/api/common/common-query-runners/common-update-one-query-runner.service';
 
+// NestJS provider list bundling every common query-runner service, used to
+// register them all in the common-API module.
 export const CommonQueryRunners = [
   CommonCreateOneQueryRunnerService,
   CommonCreateManyQueryRunnerService,

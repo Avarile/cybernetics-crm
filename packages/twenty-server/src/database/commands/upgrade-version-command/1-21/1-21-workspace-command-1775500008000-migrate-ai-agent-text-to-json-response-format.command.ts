@@ -37,6 +37,9 @@ const TEXT_AGENT_DEFAULT_OUTPUT_SCHEMA = {
   },
 };
 
+// Workspace command (1.21.0): converts custom AI agents still on the legacy text
+// response format to the JSON format (with a single "response" field), and backfills
+// a matching default output schema on any AI_AGENT workflow step that references them.
 @RegisteredWorkspaceCommand('1.21.0', 1775500008000)
 @Command({
   name: 'upgrade:1-21:migrate-ai-agent-text-to-json-response-format',
@@ -54,6 +57,8 @@ export class MigrateAiAgentTextToJsonResponseFormatCommand extends ProvisionedWo
     super(workspaceIteratorService);
   }
 
+  // Finds custom agents still on the text format, migrates them to JSON, and
+  // patches any workflow step output schemas that referenced them.
   override async runOnWorkspace({
     workspaceId,
     options,
@@ -89,6 +94,8 @@ export class MigrateAiAgentTextToJsonResponseFormatCommand extends ProvisionedWo
     );
   }
 
+  // Returns every custom agent whose responseFormat is text (or unset, which
+  // defaults to text).
   private async findTextFormatCustomAgents(
     workspaceId: string,
   ): Promise<FlatAgent[]> {
@@ -102,6 +109,7 @@ export class MigrateAiAgentTextToJsonResponseFormatCommand extends ProvisionedWo
       .filter((flatAgent) => this.isTextFormatCustomAgent(flatAgent));
   }
 
+  // True for custom agents whose responseFormat is missing or explicitly 'text'.
   private isTextFormatCustomAgent(flatAgent: FlatAgent): boolean {
     if (!flatAgent.isCustom) {
       return false;
@@ -117,6 +125,8 @@ export class MigrateAiAgentTextToJsonResponseFormatCommand extends ProvisionedWo
     return !isDefined(responseFormat?.type) || responseFormat.type === 'text';
   }
 
+  // Updates the given agents' responseFormat to the default JSON schema via a
+  // workspace migration.
   private async migrateAgentsToJson(
     workspaceId: string,
     textAgents: FlatAgent[],
@@ -157,6 +167,8 @@ export class MigrateAiAgentTextToJsonResponseFormatCommand extends ProvisionedWo
     }
   }
 
+  // Walks every workflow version's steps and, for AI_AGENT steps that reference one
+  // of the migrated agents and have no output schema yet, sets the default one.
   private async updateWorkflowStepOutputSchemas(
     workspaceId: string,
     agentIds: string[],

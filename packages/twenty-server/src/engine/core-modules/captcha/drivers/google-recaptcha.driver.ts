@@ -1,3 +1,4 @@
+// Captcha driver that verifies tokens against Google reCAPTCHA's siteverify API.
 import { type AxiosInstance } from 'axios';
 
 import { type CaptchaDriver } from 'src/engine/core-modules/captcha/drivers/interfaces/captcha-driver.interface';
@@ -21,6 +22,8 @@ export class GoogleRecaptchaDriver implements CaptchaDriver {
     this.httpService = httpClient;
   }
 
+  // Posts the token and secret key to Google's siteverify endpoint and maps
+  // the response to a success/error result.
   async validate(token: string): Promise<CaptchaValidateResult> {
     const formData = new URLSearchParams({
       secret: this.secretKey,

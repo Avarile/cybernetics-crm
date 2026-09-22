@@ -10,6 +10,7 @@ import {
 
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';
 
+// Partial set of role fields that can be updated.
 @InputType()
 export class UpdateRolePayload {
   @IsString()
@@ -73,6 +74,7 @@ export class UpdateRolePayload {
   canBeAssignedToApiKeys?: boolean;
 }
 
+// GraphQL input for updating an existing role by id.
 @InputType()
 export class UpdateRoleInput {
   @Field(() => UpdateRolePayload)

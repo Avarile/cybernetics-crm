@@ -1,3 +1,6 @@
+// Test helper: builds a mock GaxiosError shaped like a real Gmail API error
+// response for a given HTTP status and reason, for testing Gmail API error
+// classification/parsing.
 import { type GaxiosError } from 'gaxios';
 
 import { createMockGaxiosError } from 'src/modules/messaging/message-import-manager/drivers/gmail/mocks/create-mock-gaxios-error.util';
@@ -49,6 +52,8 @@ const ERROR_DEFINITIONS: Record<number, Record<string, ErrorConfig>> = {
   },
 };
 
+// Builds a GaxiosError matching the given status code and optional reason,
+// using ERROR_DEFINITIONS' default entry when no matching reason is found.
 export const getGmailApiError = ({
   code,
   reason,

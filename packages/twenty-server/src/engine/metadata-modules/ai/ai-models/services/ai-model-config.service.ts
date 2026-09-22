@@ -1,3 +1,5 @@
+// Builds provider-specific reasoning/thinking options and native tool
+// instances (web search, X search) for a resolved model.
 import { Injectable } from '@nestjs/common';
 
 import { type ProviderOptions } from '@ai-sdk/provider-utils';
@@ -26,6 +28,7 @@ export class AiModelConfigService {
     private readonly sdkProviderFactory: SdkProviderFactoryService,
   ) {}
 
+  // Returns the provider options enabling extended thinking for models that support it.
   getReasoningProviderOptions(model: RegisteredAiModel): ProviderOptions {
     switch (model.sdkPackage) {
       case AI_SDK_ANTHROPIC:
@@ -37,6 +40,8 @@ export class AiModelConfigService {
     }
   }
 
+  // Instantiates the requested native (provider-built-in) tools for the
+  // model's SDK package, e.g. Anthropic/OpenAI/xAI web search or X search.
   getNativeModelTools(
     model: RegisteredAiModel,
     options: NativeModelToolOptions = {},
@@ -105,6 +110,7 @@ export class AiModelConfigService {
     return tools as ToolSet;
   }
 
+  // Enables Anthropic extended thinking with the configured token budget, if supported.
   private getAnthropicProviderOptions(
     model: RegisteredAiModel,
   ): ProviderOptions {
@@ -122,6 +128,7 @@ export class AiModelConfigService {
     };
   }
 
+  // Enables Bedrock extended thinking with the configured token budget, if supported.
   private getBedrockProviderOptions(model: RegisteredAiModel): ProviderOptions {
     if (!model.supportsReasoning) {
       return {};

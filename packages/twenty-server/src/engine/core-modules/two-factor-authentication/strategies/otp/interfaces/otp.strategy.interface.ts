@@ -2,6 +2,8 @@ import { type TwoFactorAuthenticationStrategy } from 'twenty-shared/types';
 
 import { type OTPContext } from 'src/engine/core-modules/two-factor-authentication/strategies/otp/otp.constants';
 
+// Contract implemented by each OTP strategy (e.g. TOTP): generates a
+// provisioning URI/context, then validates a submitted token against it
 export interface OTPAuthenticationStrategyInterface {
   readonly name: TwoFactorAuthenticationStrategy;
   initiate(

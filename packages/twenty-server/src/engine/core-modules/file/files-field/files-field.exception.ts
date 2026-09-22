@@ -1,3 +1,4 @@
+// Exception type for errors managing FILES-type field attachments.
 import { type MessageDescriptor } from '@lingui/core';
 
 import { CustomException } from 'src/utils/custom-exception';
@@ -8,6 +9,7 @@ export enum FilesFieldExceptionCode {
   TEMPORARY_FILE_NOT_ALLOWED = 'TEMPORARY_FILE_NOT_ALLOWED',
 }
 
+// Exception thrown by files-field services; requires an explicit friendly message.
 export class FilesFieldException extends CustomException<FilesFieldExceptionCode> {
   constructor(
     message: string,

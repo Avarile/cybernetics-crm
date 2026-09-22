@@ -19,6 +19,9 @@ import { WorkspaceScopedRepository } from 'src/engine/twenty-orm/workspace-scope
 import { WorkspaceCache } from 'src/engine/workspace-cache/decorators/workspace-cache.decorator';
 import { createIdToUniversalIdentifierMap } from 'src/engine/workspace-cache/utils/create-id-to-universal-identifier-map.util';
 
+// Builds and caches the workspace's flat-navigation-menu-item maps, resolving relation ids
+// (application, object metadata, view, page layout) to universal identifiers and indexing
+// items by user workspace and folder for ordering lookups.
 @Injectable()
 @WorkspaceCache('flatNavigationMenuItemMaps')
 export class WorkspaceFlatNavigationMenuItemMapCacheService extends WorkspaceCacheProvider<FlatNavigationMenuItemMaps> {
@@ -37,6 +40,8 @@ export class WorkspaceFlatNavigationMenuItemMapCacheService extends WorkspaceCac
     super();
   }
 
+  // Loads all navigation menu items plus related applications, object metadata, views and
+  // page layouts for the workspace, then assembles them into flat-navigation-menu-item maps.
   async computeForCache(
     workspaceId: string,
   ): Promise<FlatNavigationMenuItemMaps> {

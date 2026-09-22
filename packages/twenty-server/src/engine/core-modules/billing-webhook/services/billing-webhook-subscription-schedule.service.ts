@@ -11,6 +11,8 @@ import { transformStripeSubscriptionScheduleEventToDatabaseSubscriptionPhase } f
 import { BillingSubscriptionEntity } from 'src/engine/core-modules/billing/entities/billing-subscription.entity';
 import { StripeSubscriptionScheduleService } from 'src/engine/core-modules/billing/stripe/services/stripe-subscription-schedule.service';
 
+// Syncs Stripe subscription schedule updates to the subscription's stored phases,
+// clearing them once the schedule is released back onto the subscription itself
 @Injectable()
 export class BillingWebhookSubscriptionScheduleService {
   protected readonly logger = new Logger(
@@ -25,6 +27,8 @@ export class BillingWebhookSubscriptionScheduleService {
     private readonly stripeSubscriptionScheduleService: StripeSubscriptionScheduleService,
   ) {}
 
+  // If the schedule was released, clears the subscription's phases; otherwise
+  // refetches the schedule and stores its phases on the subscription
   async processStripeEvent(
     data:
       | Stripe.SubscriptionScheduleUpdatedEvent.Data

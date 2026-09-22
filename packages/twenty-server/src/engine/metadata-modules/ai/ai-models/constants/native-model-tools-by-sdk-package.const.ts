@@ -12,6 +12,8 @@ import {
 } from 'src/engine/metadata-modules/ai/ai-models/constants/ai-sdk-package.const';
 import { type NativeModelTools } from 'src/engine/metadata-modules/ai/ai-models/types/native-model-tools.type';
 
+// Per-provider mapping of which native (SDK-built-in) tools, like web search,
+// are available and what their direct tool name is.
 export const NATIVE_MODEL_TOOLS_BY_SDK_PACKAGE = {
   [AI_SDK_ANTHROPIC]: {
     webSearch: {

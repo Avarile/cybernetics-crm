@@ -22,6 +22,8 @@ import { WorkspaceMigrationBuilderException } from 'src/engine/workspace-manager
 import { WorkspaceMigrationValidateBuildAndRunService } from 'src/engine/workspace-manager/workspace-migration/services/workspace-migration-validate-build-and-run-service';
 import { type UniversalFlatObjectPermission } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-object-permission.type';
 
+// Manages object-level permission overrides for a role: diffs the desired set against
+// current permissions and runs the resulting create/update/delete as a workspace migration.
 @Injectable()
 export class ObjectPermissionService {
   constructor(
@@ -30,6 +32,9 @@ export class ObjectPermissionService {
     private readonly applicationService: ApplicationService,
   ) {}
 
+  // Replaces a role's object permissions with the desired set from the input: validates
+  // read/write consistency and referenced objects, then diffs against the current
+  // permissions and runs the create/update/delete as a single workspace migration.
   public async upsertObjectPermissions({
     workspaceId,
     input,
@@ -263,6 +268,8 @@ export class ObjectPermissionService {
     return filtered;
   }
 
+  // Ensures no update grants write access (update/soft-delete/destroy) to an object the
+  // role won't be able to read after the change; throws otherwise.
   private validateObjectPermissionsReadAndWriteConsistencyOrThrow({
     objectPermissions: newObjectPermissions,
     flatRole,
@@ -332,6 +339,8 @@ export class ObjectPermissionService {
     }
   }
 
+  // Resolves the workspace's custom (non-standard) application, used as the owner for
+  // object permissions created via this service.
   private async getFlatApplicationForWorkspace(workspaceId: string) {
     const { workspaceCustomFlatApplication } =
       await this.applicationService.findWorkspaceTwentyStandardAndCustomApplicationOrThrow(

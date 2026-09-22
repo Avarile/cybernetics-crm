@@ -1,3 +1,5 @@
+// Converts a manifest-declared navigation menu item into the universal flat
+// entity shape used to build workspace migrations.
 import { type NavigationMenuItemManifest } from 'twenty-shared/application';
 
 import { type UniversalFlatNavigationMenuItem } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-navigation-menu-item.type';

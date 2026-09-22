@@ -1,3 +1,5 @@
+// Guards the file-download endpoint with a per-folder JWT file token,
+// validating the folder is supported and the token matches the requested file.
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 
 import { FileFolder } from 'twenty-shared/types';
@@ -23,6 +25,8 @@ export type SupportedFileFolder = (typeof SUPPORTED_FILE_FOLDERS)[number];
 export class FileByIdGuard implements CanActivate {
   constructor(private readonly jwtWrapperService: JwtWrapperService) {}
 
+  // Verifies the file token is valid for the requested folder/file and
+  // stashes the workspaceId onto the request.
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const fileId = request.params.id;
@@ -65,6 +69,7 @@ export class FileByIdGuard implements CanActivate {
     return true;
   }
 
+  // Type guard narrowing to the subset of folders this guard serves.
   private isSupportedFileFolder(
     fileFolder: string,
   ): fileFolder is SupportedFileFolder {

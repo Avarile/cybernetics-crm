@@ -14,6 +14,8 @@ export type BuildStandardFlatPageLayoutTabMetadataMapsArgs = Omit<
   'context'
 >;
 
+// Builds every standard page layout's fixed tab set and assembles them into a single FlatEntityMaps,
+// used as the "target" state when seeding or syncing a workspace's standard page layout tabs
 export const buildStandardFlatPageLayoutTabMetadataMaps = ({
   now,
   workspaceId,

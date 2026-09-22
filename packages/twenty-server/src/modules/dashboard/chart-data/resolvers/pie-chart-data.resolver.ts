@@ -15,6 +15,7 @@ import { PieChartDataService } from 'src/modules/dashboard/chart-data/services/p
 @UseFilters(ChartDataGraphqlApiExceptionFilter)
 @UseGuards(WorkspaceAuthGuard)
 @UsePipes(ResolverValidationPipe)
+// GraphQL query for computing a pie chart widget's data from its configuration.
 export class PieChartDataResolver {
   constructor(private readonly pieChartDataService: PieChartDataService) {}
 

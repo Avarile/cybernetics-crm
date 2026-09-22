@@ -1,9 +1,13 @@
+// Builds the root OpenAPI document skeleton (info, auth, servers, docs
+// markdown) shared by both the core and metadata REST API schemas.
 import { type OpenAPIV3_1 } from 'openapi-types';
 
 import { computeOpenApiPath } from 'src/engine/core-modules/open-api/utils/path.utils';
 
 export const API_Version = 'v0.1';
 
+// Returns the base OpenAPI document (everything except per-object paths),
+// with auth docs, filter/pagination usage guides, and the schema's own path.
 export const baseSchema = (
   schemaName: 'core' | 'metadata',
   serverUrl: string,
@@ -121,17 +125,15 @@ hand the file to your tool — never paste a tokenized URL into a chat:
 
 \`\`\`bash
 curl -H 'Authorization: Bearer <token>' \\
-  ${serverUrl}/rest/open-api/${schemaName} > twenty-${schemaName}.json
+  ${serverUrl}/rest/open-api/${schemaName} > cybernetics-${schemaName}.json
 \`\`\`
 `,
-      termsOfService:
-        'https://github.com/twentyhq/twenty?tab=coc-ov-file#readme',
       contact: {
-        email: 'felix@twenty.com',
+        email: 'avarile@gmail.com',
       },
       license: {
         name: 'AGPL-3.0',
-        url: 'https://github.com/twentyhq/twenty?tab=License-1-ov-file#readme',
+        url: 'https://github.com/Avarile/cybernetics-crm/blob/HEAD/LICENSE',
       },
       version: API_Version,
     },
@@ -160,7 +162,7 @@ curl -H 'Authorization: Bearer <token>' \\
     ],
     externalDocs: {
       description: 'Find out more about **Cybernetics**',
-      url: 'https://twenty.com',
+      url: 'https://blog.avarile.com',
     },
     paths: { [`/open-api/${schemaName}`]: computeOpenApiPath(serverUrl) },
   };

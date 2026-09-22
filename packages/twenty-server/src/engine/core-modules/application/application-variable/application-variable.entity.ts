@@ -1,3 +1,6 @@
+// TypeORM entity for a workspace-level application variable (an installed
+// app's runtime configuration value), always stored encrypted regardless
+// of whether it's flagged secret for display purposes.
 import { Field, ObjectType } from '@nestjs/graphql';
 import {
   Check,

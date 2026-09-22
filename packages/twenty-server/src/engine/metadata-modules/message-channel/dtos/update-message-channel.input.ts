@@ -17,6 +17,7 @@ import {
 
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';
 
+// Partial set of message channel fields that can be updated.
 @InputType()
 export class UpdateMessageChannelInputUpdates {
   @IsOptional()
@@ -55,6 +56,7 @@ export class UpdateMessageChannelInputUpdates {
   excludeGroupEmails?: boolean;
 }
 
+// GraphQL input for updating an existing message channel by id.
 @InputType()
 export class UpdateMessageChannelInput {
   @IsUUID()

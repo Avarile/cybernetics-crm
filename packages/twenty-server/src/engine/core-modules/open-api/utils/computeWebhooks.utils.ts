@@ -1,3 +1,4 @@
+// Documents an object's create/update/delete webhook payloads for the OpenAPI schema.
 import { type OpenAPIV3_1 } from 'openapi-types';
 import { capitalize } from 'twenty-shared/utils';
 
@@ -5,6 +6,8 @@ import { DatabaseEventAction } from 'src/engine/api/graphql/graphql-query-runner
 import { type AllFlatEntityMaps } from 'src/engine/metadata-modules/flat-entity/types/all-flat-entity-maps.type';
 import { type FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object-metadata/types/flat-object-metadata.type';
 
+// Documents the outbound webhook payload for a record create/update/delete
+// event on an object, including the HMAC signature headers used to verify it.
 export const computeWebhooks = (
   type: DatabaseEventAction,
   item: Pick<FlatObjectMetadata, 'nameSingular'>,

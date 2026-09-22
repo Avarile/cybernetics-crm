@@ -1,5 +1,8 @@
 import { type QueryRunner } from 'typeorm';
 
+// SQL for a legacy TypeORM migration: rebuilds the check constraint enforcing that
+// commandMenuItem's workflowVersionId/frontComponentId/payload fields are set only
+// for the matching engineComponentKey (TRIGGER_WORKFLOW_VERSION/FRONT_COMPONENT_RENDERER/NAVIGATION).
 export const addPayloadCheckConstraintToCommandMenuItem = async (
   queryRunner: QueryRunner,
 ): Promise<void> => {

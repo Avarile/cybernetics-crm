@@ -11,16 +11,23 @@ import {
   RestInputRequestParserExceptionCode,
 } from 'src/engine/api/rest/input-request-parsers/rest-input-request-parser.exception';
 
+// Logical conjunctions recognized in the REST filter DSL.
 export enum Conjunctions {
   or = 'or',
   and = 'and',
   not = 'not',
 }
 
+// Matches a filter query string that's wholly wrapped by one root-level
+// conjunction, e.g. `and(...)`.
 export const ROOT_FILTER_CONJUNCTION_REGEX = new RegExp(
   `^(${Object.values(Conjunctions).join('|')})\\((.+)\\)$`,
 );
 
+// Recursively parses a REST filter query string into an
+// ObjectRecordFilter-shaped object: a conjunction wrapper recurses into
+// its predicates, while a leaf expression is parsed into a nested
+// field-path -> operator -> value structure.
 export const parseFilter = (
   filterQuery: string,
 ): Record<string, FieldValue> => {

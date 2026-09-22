@@ -81,6 +81,9 @@ import { WorkspaceMemberWorkspaceEntity } from 'src/modules/workspace-member/sta
   PreventNestToAutoLogGraphqlErrorsFilter,
 )
 @UseInterceptors(WorkspaceMigrationGraphqlApiExceptionInterceptor)
+// GraphQL resolver for roles: CRUD, member/agent role assignment, and
+// upserting the object/field/row-level permissions and permission flags
+// attached to a role.
 export class RoleResolver {
   constructor(
     private readonly userRoleService: UserRoleService,
@@ -98,6 +101,7 @@ export class RoleResolver {
     private readonly workspaceManyOrAllFlatEntityMapsCacheService: WorkspaceManyOrAllFlatEntityMapsCacheService,
   ) {}
 
+  // Lists all roles in the workspace.
   @Query(() => [RoleDTO])
   async getRoles(
     @AuthWorkspace() workspace: WorkspaceEntity,
@@ -105,6 +109,8 @@ export class RoleResolver {
     return this.roleService.getWorkspaceRoles(workspace.id);
   }
 
+  // Reassigns a workspace member's role. Rejects self-role changes to
+  // prevent a member from locking themselves out or escalating privileges.
   @Mutation(() => WorkspaceMemberDTO)
   @UseGuards(UserAuthGuard)
   async updateWorkspaceMemberRole(
@@ -160,6 +166,7 @@ export class RoleResolver {
     } as WorkspaceMemberDTO;
   }
 
+  // Creates a new custom role owned by the workspace's custom application.
   @Mutation(() => RoleDTO)
   async createOneRole(
     @AuthWorkspace() workspace: WorkspaceEntity,
@@ -180,6 +187,7 @@ export class RoleResolver {
     });
   }
 
+  // Updates an existing role.
   @Mutation(() => RoleDTO)
   async updateOneRole(
     @AuthWorkspace() workspace: WorkspaceEntity,
@@ -193,6 +201,7 @@ export class RoleResolver {
     return role;
   }
 
+  // Deletes a role and returns its id.
   @Mutation(() => String)
   async deleteOneRole(
     @AuthWorkspace() workspace: WorkspaceEntity,
@@ -206,6 +215,7 @@ export class RoleResolver {
     return deletedRole.id;
   }
 
+  // Replaces a role's per-object read/write/delete permission overrides.
   @Mutation(() => [ObjectPermissionDTO])
   async upsertObjectPermissions(
     @AuthWorkspace() workspace: WorkspaceEntity,
@@ -222,6 +232,8 @@ export class RoleResolver {
     );
   }
 
+  // Replaces a role's settings-area permission flags (e.g. access to
+  // workflows, workspace members settings).
   @Mutation(() => [RolePermissionFlagDTO])
   async upsertPermissionFlags(
     @AuthWorkspace() workspace: WorkspaceEntity,
@@ -249,6 +261,7 @@ export class RoleResolver {
     );
   }
 
+  // Replaces a role's per-field read/write permission restrictions.
   @Mutation(() => [FieldPermissionDTO])
   async upsertFieldPermissions(
     @AuthWorkspace() workspace: WorkspaceEntity,
@@ -265,6 +278,8 @@ export class RoleResolver {
     );
   }
 
+  // Replaces a role's row-level permission predicates and groups for a
+  // given object (Enterprise feature).
   @Mutation(() => UpsertRowLevelPermissionPredicatesResultDTO)
   async upsertRowLevelPermissionPredicates(
     @AuthWorkspace() workspace: WorkspaceEntity,
@@ -279,6 +294,7 @@ export class RoleResolver {
     );
   }
 
+  // Assigns a role to an AI agent.
   @Mutation(() => Boolean)
   async assignRoleToAgent(
     @Args('agentId', { type: () => UUIDScalarType }) agentId: string,
@@ -294,6 +310,7 @@ export class RoleResolver {
     return true;
   }
 
+  // Unassigns the role from an AI agent.
   @Mutation(() => Boolean)
   async removeRoleFromAgent(
     @Args('agentId', { type: () => UUIDScalarType }) agentId: string,
@@ -307,6 +324,7 @@ export class RoleResolver {
     return true;
   }
 
+  // Resolves the workspace members currently assigned this role.
   @ResolveField('workspaceMembers', () => [WorkspaceMemberDTO])
   async getWorkspaceMembersAssignedToRole(
     @Parent() role: RoleDTO,
@@ -321,6 +339,7 @@ export class RoleResolver {
     return workspaceMembers;
   }
 
+  // Resolves the AI agents currently assigned this role.
   @ResolveField('agents', () => [AgentDTO])
   async getAgentsAssignedToRole(
     @Parent() role: RoleDTO,
@@ -359,6 +378,7 @@ export class RoleResolver {
     });
   }
 
+  // Resolves the API keys currently assigned this role.
   @ResolveField('apiKeys', () => [ApiKeyForRoleDTO])
   async getApiKeysAssignedToRole(
     @Parent() role: RoleDTO,
@@ -382,6 +402,7 @@ export class RoleResolver {
     () => [RowLevelPermissionPredicateDTO],
     { nullable: true },
   )
+  // Resolves this role's row-level permission predicates.
   async getRowLevelPermissionPredicatesForRole(
     @Parent() role: RoleDTO,
     @AuthWorkspace() workspace: WorkspaceEntity,
@@ -399,6 +420,7 @@ export class RoleResolver {
     () => [RowLevelPermissionPredicateGroupDTO],
     { nullable: true },
   )
+  // Resolves this role's row-level permission predicate groups.
   async getRowLevelPermissionPredicateGroupsForRole(
     @Parent() role: RoleDTO,
     @AuthWorkspace() workspace: WorkspaceEntity,

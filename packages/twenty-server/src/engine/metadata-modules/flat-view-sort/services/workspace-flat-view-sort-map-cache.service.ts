@@ -18,6 +18,8 @@ import { addFlatEntityToFlatEntityMapsThroughMutationOrThrow } from 'src/engine/
 import { ApplicationEntity } from 'src/engine/core-modules/application/application.entity';
 import { createIdToUniversalIdentifierMap } from 'src/engine/workspace-cache/utils/create-id-to-universal-identifier-map.util';
 
+// Builds and caches the workspace's flat-view-sort maps by loading view sort entities
+// and resolving their application, view and field metadata ids to universal identifiers.
 @Injectable()
 @WorkspaceCache('flatViewSortMaps')
 export class WorkspaceFlatViewSortMapCacheService extends WorkspaceCacheProvider<FlatViewSortMaps> {
@@ -34,6 +36,8 @@ export class WorkspaceFlatViewSortMapCacheService extends WorkspaceCacheProvider
     super();
   }
 
+  // Loads all view sorts plus related applications, views and field metadata for the
+  // workspace, then assembles them into flat-view-sort maps.
   async computeForCache(workspaceId: string): Promise<FlatViewSortMaps> {
     const [existingViewSorts, applications, views, fieldMetadatas] =
       await Promise.all([

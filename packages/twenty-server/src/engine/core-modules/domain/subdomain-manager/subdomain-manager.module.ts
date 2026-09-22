@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { SubdomainManagerService } from 'src/engine/core-modules/domain/subdomain-manager/services/subdomain-manager.service';
 import { WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.entity';
 
+// Wires up the service that generates and validates workspace subdomains
 @Module({
   imports: [TypeOrmModule.forFeature([WorkspaceEntity])],
   providers: [SubdomainManagerService],

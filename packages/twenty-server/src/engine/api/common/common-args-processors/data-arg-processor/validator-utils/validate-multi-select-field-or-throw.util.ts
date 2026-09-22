@@ -11,6 +11,9 @@ import {
 } from 'src/engine/api/common/common-query-runners/errors/common-query-runner.exception';
 import { STANDARD_ERROR_MESSAGE } from 'src/engine/api/common/common-query-runners/errors/standard-error-message.constant';
 
+// Validates a multi-select field input against the field's configured
+// options, requiring options to be provided and every selected value to be
+// one of them; throws a CommonQueryRunnerException otherwise.
 export const validateMultiSelectFieldOrThrow = (
   value: unknown,
   fieldName: string,

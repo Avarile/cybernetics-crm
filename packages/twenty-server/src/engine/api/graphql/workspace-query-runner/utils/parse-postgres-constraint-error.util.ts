@@ -1,3 +1,5 @@
+// Extracts the offending column name and value out of a Postgres
+// constraint-violation error's detail message (e.g. `Key (email)=(x@y.com) already exists.`).
 import { type QueryFailedError } from 'typeorm';
 
 export type PostgreSQLError = QueryFailedError & {
@@ -12,6 +14,8 @@ export type ParsedConstraintError = {
   conflictingValue: string;
 };
 
+// Parses the "Key (col)=(val)" pattern from a Postgres error's detail
+// string, returning null if the detail is missing or doesn't match.
 export const parsePostgresConstraintError = (
   error: PostgreSQLError,
 ): ParsedConstraintError | null => {

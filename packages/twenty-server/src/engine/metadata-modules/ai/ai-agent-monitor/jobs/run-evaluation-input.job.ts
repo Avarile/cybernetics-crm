@@ -1,3 +1,5 @@
+// Queue job that feeds an evaluation input prompt to an agent, records the
+// user/assistant messages, and enqueues grading of the resulting turn.
 import { Logger } from '@nestjs/common';
 
 import { InjectMessageQueue } from 'src/engine/core-modules/message-queue/decorators/message-queue.decorator';
@@ -33,6 +35,8 @@ export class RunEvaluationInputJob {
     private readonly messageQueueService: MessageQueueService,
   ) {}
 
+  // Records the eval prompt as a user message, runs the agent on it, records
+  // the assistant's response, then enqueues grading of the turn.
   @Process(RunEvaluationInputJob.name)
   async handle(data: RunEvaluationInputJobData): Promise<void> {
     await this.agentChatService.addMessage({

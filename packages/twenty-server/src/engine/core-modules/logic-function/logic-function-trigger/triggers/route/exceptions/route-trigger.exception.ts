@@ -1,3 +1,4 @@
+// Exception type for HTTP route-trigger errors, with per-code friendly messages.
 import { type MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { assertUnreachable } from 'twenty-shared/utils';
@@ -49,6 +50,8 @@ const getRouteTriggerExceptionUserFriendlyMessage = (
   }
 };
 
+// Exception thrown by the route-trigger flow, defaulting to a friendly
+// message derived from the exception code.
 export class RouteTriggerException extends CustomException<RouteTriggerExceptionCode> {
   constructor(
     message: string,

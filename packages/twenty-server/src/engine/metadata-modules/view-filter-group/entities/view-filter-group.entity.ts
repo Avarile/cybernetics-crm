@@ -21,6 +21,9 @@ import { SyncableEntity } from 'src/engine/workspace-manager/types/syncable-enti
 @Index('IDX_VIEW_FILTER_GROUP_WORKSPACE_ID_VIEW_ID', ['workspaceId', 'viewId'])
 @Index('IDX_VIEW_FILTER_GROUP_VIEW_ID', ['viewId'])
 @Index('IDX_VIEW_FILTER_GROUP_PARENT_ID', ['parentViewFilterGroupId'])
+// TypeORM entity for a view filter group: a logical grouping node
+// (AND/OR/NOT) that can nest child groups and hold leaf view filters,
+// forming a filter tree for a view.
 export class ViewFilterGroupEntity extends SyncableEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;

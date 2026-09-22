@@ -1,3 +1,9 @@
+// Executes a workspace GraphQL query/mutation without going through the
+// full GraphQL Yoga pipeline: extracts top-level fields from the parsed
+// document, maps each one directly to the matching CRUD resolver factory
+// (find/create/update/delete/restore/etc.), runs them concurrently, and
+// reassembles a standard GraphQL-shaped result. Also handles a parallel
+// path for introspection-only queries by building a throwaway schema.
 import { Injectable } from '@nestjs/common';
 
 import { type MessageDescriptor } from '@lingui/core';
@@ -150,6 +156,9 @@ export class DirectExecutionService {
     ]);
   }
 
+  // Returns the set of resolver field names registered for a workspace,
+  // used upstream to decide whether a query can take the direct-execution
+  // path at all.
   async getWorkspaceResolverNames(
     workspaceId: string,
   ): Promise<Set<string> | null> {
@@ -161,6 +170,9 @@ export class DirectExecutionService {
     return new Set(Object.keys(graphQLResolverNameMap));
   }
 
+  // Entry point: runs the introspection and workspace-field portions of
+  // a query in parallel (only the parts that are actually present) and
+  // merges their data/errors into a single GraphQL-shaped result.
   async execute(
     req: Request,
     document: DocumentNode,
@@ -180,6 +192,10 @@ export class DirectExecutionService {
     );
   }
 
+  // Resolves every top-level workspace field of the query directly
+  // against its CRUD resolver factory (bypassing full schema execution),
+  // enforcing root-resolver limits first, then formats each field's
+  // result down to only the sub-selection actually requested.
   private async executeWorkspaceQuery(
     req: Request,
     document: DocumentNode,
@@ -282,6 +298,9 @@ export class DirectExecutionService {
     }
   }
 
+  // Handles __schema/__type introspection fields by building a real
+  // (but throwaway) executable schema from the workspace's SDL and
+  // running the query through graphql-js's standard execute().
   private async executeIntrospectionQuery(
     req: Request,
     document: DocumentNode,
@@ -318,6 +337,8 @@ export class DirectExecutionService {
     }
   }
 
+  // Combines the introspection and workspace-query results (either of
+  // which may be null/absent) into one data/errors payload.
   private mergeDirectExecutionResults(
     introspectionResult: DirectExecutionResult | null,
     workspaceResult: DirectExecutionResult | null,
@@ -340,6 +361,9 @@ export class DirectExecutionService {
     };
   }
 
+  // Looks up the resolver factory and args-assertion function for a
+  // single field's resolver method, validates the args, then invokes
+  // the built resolver directly (no GraphQL execution engine involved).
   private async executeField({
     entry,
     args,
@@ -377,6 +401,9 @@ export class DirectExecutionService {
     );
   }
 
+  // Converts a caught error into a GraphQL-formatted error, routing it
+  // through the standard workspace exception handler and translating
+  // its user-friendly message via i18n based on the request's locale.
   private formatError(error: unknown, req: Request): GraphQLFormattedError {
     if (!(error instanceof Error)) {
       return {
@@ -410,6 +437,8 @@ export class DirectExecutionService {
     };
   }
 
+  // Rejects the query if it requests more root resolvers than the
+  // configured maximum, or if the same root field name appears twice.
   private checkRootResolverLimitsOrThrow(topLevelFields: FieldNode[]): void {
     const maxRootResolvers = this.twentyConfigService.get(
       'GRAPHQL_MAX_ROOT_RESOLVERS',

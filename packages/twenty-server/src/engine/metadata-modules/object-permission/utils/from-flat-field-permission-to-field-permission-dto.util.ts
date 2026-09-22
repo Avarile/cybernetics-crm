@@ -1,6 +1,7 @@
 import { type FlatFieldPermission } from 'src/engine/metadata-modules/flat-field-permission/types/flat-field-permission.type';
 import { type FieldPermissionDTO } from 'src/engine/metadata-modules/object-permission/dtos/field-permission.dto';
 
+// Maps a flat field permission to the GraphQL FieldPermissionDTO shape.
 export const fromFlatFieldPermissionToFieldPermissionDto = (
   flatFieldPermission: FlatFieldPermission,
 ): FieldPermissionDTO => ({

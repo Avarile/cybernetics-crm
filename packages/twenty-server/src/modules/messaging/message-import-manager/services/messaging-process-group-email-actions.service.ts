@@ -1,3 +1,6 @@
+// Runs a channel's pending group-email action (deleting previously-imported
+// group-email messages, or resetting cursors to re-import them), queued
+// when the workspace's excludeGroupEmails setting changes on a channel.
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -26,6 +29,7 @@ export class MessagingProcessGroupEmailActionsService {
     private readonly messagingDeleteGroupEmailMessagesService: MessagingDeleteGroupEmailMessagesService,
   ) {}
 
+  // Queues a group-email action to run on the channel's next list fetch.
   async markMessageChannelAsPendingGroupEmailsAction(
     messageChannel: MessageChannelEntity,
     workspaceId: string,
@@ -41,6 +45,9 @@ export class MessagingProcessGroupEmailActionsService {
     );
   }
 
+  // Runs the channel's pending group-email action, if any, and clears it
+  // afterward; leaves the flag set (by rethrowing) on failure so it's
+  // retried on the next sync.
   async processGroupEmailActions(
     messageChannel: MessageChannelEntity,
     workspaceId: string,
@@ -101,6 +108,8 @@ export class MessagingProcessGroupEmailActionsService {
     }
   }
 
+  // Deletes previously-imported group-email messages, then resets cursors
+  // so a normal resync doesn't try to re-add them.
   private async handleGroupEmailsDeletion(
     workspaceId: string,
     messageChannelId: string,
@@ -117,6 +126,7 @@ export class MessagingProcessGroupEmailActionsService {
     );
   }
 
+  // Resets cursors so the next full sync re-imports group-email messages.
   private async handleGroupEmailsImport(
     workspaceId: string,
     messageChannelId: string,
@@ -128,6 +138,7 @@ export class MessagingProcessGroupEmailActionsService {
     );
   }
 
+  // Clears the channel's and its folders' sync cursors.
   private async resetCursors(workspaceId: string, messageChannelId: string) {
     await this.messageChannelRepository.update(
       { id: messageChannelId, workspaceId },

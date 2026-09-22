@@ -18,6 +18,10 @@ import {
 } from 'src/engine/metadata-modules/permissions/permissions.exception';
 import { PermissionsService } from 'src/engine/metadata-modules/permissions/permissions.service';
 
+// Factory producing a guard class that requires a specific workspace
+// settings permission flag, always allowing access while the workspace is
+// still being created (no roles configured yet); throws otherwise if the
+// caller (user, API key, or application) lacks the permission.
 export const SettingsPermissionGuard = (
   requiredPermission: PermissionFlagType,
 ): Type<CanActivate> => {

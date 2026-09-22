@@ -43,12 +43,16 @@ const MICROSOFT_GRAPH_RESOURCE_CONFIG_BY_CHANNEL_TYPE: Record<
 };
 
 @Injectable()
+// Manages Microsoft Graph subscriptions for mailbox/calendar change
+// notifications behind the shared subscription driver interface.
 export class MicrosoftWebhookSubscriptionDriver implements WebhookSubscriptionDriver {
   constructor(
     private readonly microsoftOAuth2ClientProvider: MicrosoftOAuth2ClientProvider,
     private readonly twentyConfigService: TwentyConfigService,
   ) {}
 
+  // Creates a Graph subscription for the given channel type's resource
+  // (messages or events), pointed at Twenty's webhook endpoint.
   async createSubscription(
     connectedAccountId: string,
     channelType: WebhookSubscriptionChannelType,
@@ -82,6 +86,7 @@ export class MicrosoftWebhookSubscriptionDriver implements WebhookSubscriptionDr
     return this.toResult(subscription);
   }
 
+  // Extends an existing Graph subscription's expiration.
   async renewSubscription(
     context: WebhookSubscriptionContext,
   ): Promise<WebhookSubscriptionResult> {
@@ -105,6 +110,7 @@ export class MicrosoftWebhookSubscriptionDriver implements WebhookSubscriptionDr
     return this.toResult(renewedSubscription);
   }
 
+  // Deletes the Graph subscription identified by its external id.
   async deleteSubscription(context: WebhookSubscriptionContext): Promise<void> {
     if (!isDefined(context.externalSubscriptionId)) {
       return;
@@ -119,6 +125,7 @@ export class MicrosoftWebhookSubscriptionDriver implements WebhookSubscriptionDr
       .delete();
   }
 
+  // Converts a Graph subscription response into the shared driver result shape.
   private toResult(subscription: Subscription): WebhookSubscriptionResult {
     if (
       !isDefined(subscription.id) ||

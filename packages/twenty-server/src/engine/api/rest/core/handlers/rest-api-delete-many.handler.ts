@@ -10,6 +10,9 @@ import { parseFilterRestRequest } from 'src/engine/api/rest/input-request-parser
 import { AuthenticatedRequest } from 'src/engine/api/rest/types/authenticated-request';
 import { workspaceQueryRunnerRestApiExceptionHandler } from 'src/engine/api/rest/utils/workspace-query-runner-rest-api-exception-handler.util';
 
+// REST handler for DELETE /rest/{objects} with a filter: bulk-deletes
+// records matching the filter, which is mandatory to avoid accidental
+// delete-all.
 @Injectable()
 export class RestApiDeleteManyHandler extends RestApiBaseHandler {
   constructor(
@@ -18,6 +21,8 @@ export class RestApiDeleteManyHandler extends RestApiBaseHandler {
     super();
   }
 
+  // Requires a non-empty filter, runs the common deleteMany query runner,
+  // and formats the deleted records as a REST response.
   async handle(request: AuthenticatedRequest): Promise<{
     data: {
       [x: string]: ObjectRecord[];

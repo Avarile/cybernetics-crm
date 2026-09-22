@@ -1,3 +1,4 @@
+// GraphQL args for syncing an application manifest into a workspace.
 import { ArgsType, Field } from '@nestjs/graphql';
 
 import GraphQLJSON from 'graphql-type-json';

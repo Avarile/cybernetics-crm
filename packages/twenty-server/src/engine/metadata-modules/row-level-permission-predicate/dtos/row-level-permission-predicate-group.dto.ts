@@ -7,6 +7,9 @@ import { RowLevelPermissionPredicateGroupLogicalOperator } from 'twenty-shared/t
 registerEnumType(RowLevelPermissionPredicateGroupLogicalOperator, {
   name: 'RowLevelPermissionPredicateGroupLogicalOperator',
 });
+// GraphQL representation of a row-level permission predicate group: a
+// logical (AND/OR) grouping of predicates, optionally nested under a
+// parent group to form a predicate tree for a role/object.
 @ObjectType('RowLevelPermissionPredicateGroup')
 export class RowLevelPermissionPredicateGroupDTO {
   @Field(() => String)

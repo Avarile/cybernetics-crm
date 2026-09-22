@@ -1,3 +1,5 @@
+// GraphQL resolver for reading (obfuscated) and updating an installed
+// application's runtime configuration variables.
 import { UseFilters, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Parent, ResolveField } from '@nestjs/graphql';
 
@@ -25,11 +27,14 @@ export class ApplicationVariableEntityResolver {
     private readonly applicationVariableService: ApplicationVariableEntityService,
   ) {}
 
+  // Resolves the variable's display value (masked if secret, else
+  // decrypted).
   @ResolveField(() => String)
   value(@Parent() applicationVariable: ApplicationVariableEntity): string {
     return this.applicationVariableService.getDisplayValue(applicationVariable);
   }
 
+  // Sets an application variable's value for the workspace.
   @Mutation(() => Boolean)
   async updateOneApplicationVariable(
     @Args() { key, value, applicationId }: UpdateApplicationVariableEntityInput,

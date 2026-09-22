@@ -11,6 +11,8 @@ import {
 import { JwtTokenTypeEnum } from 'src/engine/core-modules/auth/types/jwt-token-type.enum';
 import { getRequest } from 'src/utils/extract-request';
 
+// Restricts an endpoint to session access tokens, rejecting other JWT
+// token types (e.g. refresh, invitation).
 @Injectable()
 export class RequireAccessTokenGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {

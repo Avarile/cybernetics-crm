@@ -8,6 +8,8 @@ import { FieldMetadataEntity } from 'src/engine/metadata-modules/field-metadata/
 import { WorkspaceCacheModule } from 'src/engine/workspace-cache/workspace-cache.module';
 import { WorkspaceMigrationRunnerModule } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-runner/workspace-migration-runner.module';
 
+// Registers the 2.21 workspace command (backfill system field isSystemSideEffect)
+// as a provider for the upgrade runner.
 @Module({
   imports: [
     TypeOrmModule.forFeature([ApplicationEntity, FieldMetadataEntity]),

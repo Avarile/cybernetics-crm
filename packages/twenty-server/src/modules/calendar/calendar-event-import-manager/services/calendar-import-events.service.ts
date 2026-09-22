@@ -12,6 +12,8 @@ import {
 import { type FetchedCalendarEvent } from 'src/modules/calendar/common/types/fetched-calendar-event';
 import { type ConnectedAccountEntity } from 'src/engine/metadata-modules/connected-account/entities/connected-account.entity';
 
+// Dispatches "fetch full event data" calls to the driver matching the
+// connected account's provider.
 @Injectable()
 export class CalendarImportEventsService {
   constructor(

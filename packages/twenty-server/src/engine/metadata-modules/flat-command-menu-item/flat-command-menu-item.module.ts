@@ -10,6 +10,8 @@ import { ObjectMetadataEntity } from 'src/engine/metadata-modules/object-metadat
 import { PageLayoutEntity } from 'src/engine/metadata-modules/page-layout/entities/page-layout.entity';
 import { provideWorkspaceScopedRepository } from 'src/engine/twenty-orm/workspace-scoped-repository/provide-workspace-scoped-repository';
 
+// Wires up the cache service that computes and stores flat (denormalized)
+// command menu items from their underlying entities and related metadata.
 @Module({
   imports: [
     TypeOrmModule.forFeature([

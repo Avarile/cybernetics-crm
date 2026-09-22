@@ -14,6 +14,8 @@ import { isApplicationAuthContext } from 'src/engine/core-modules/auth/guards/is
   key: `calendarEvent.findOne`,
   type: WorkspaceQueryHookType.POST_HOOK,
 })
+// Runs after `calendarEvent.findOne`; redacts/removes the event if the
+// requesting user isn't allowed to see it per the calendar channel's visibility setting.
 export class CalendarEventFindOnePostQueryHook implements WorkspacePostQueryHookInstance {
   constructor(
     private readonly applyCalendarEventsVisibilityRestrictionsService: ApplyCalendarEventsVisibilityRestrictionsService,

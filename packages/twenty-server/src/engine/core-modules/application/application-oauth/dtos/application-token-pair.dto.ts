@@ -1,3 +1,5 @@
+// GraphQL DTO returned when generating or renewing an application's
+// access/refresh token pair.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 import { AuthToken } from 'src/engine/core-modules/auth/dto/auth-token.dto';

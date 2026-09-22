@@ -1,5 +1,7 @@
 import { createHash } from 'crypto';
 
+// Deterministically derives a UUID-shaped id from a workspace id and a seed
+// name, so the same logical seed entity gets the same id across runs.
 export const generateSeedId = (
   workspaceId: string,
   seedName: string,

@@ -20,6 +20,8 @@ export class InstallPreInstalledAppsCommand extends ProvisionedWorkspaceCommandR
     super(workspaceIteratorService);
   }
 
+  // Installs every isPreInstalled application registration on a single workspace
+  // (or logs what would happen, under --dry-run).
   override async runOnWorkspace({
     workspaceId,
     options,

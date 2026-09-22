@@ -1,5 +1,6 @@
 import { extname } from 'path';
 
+// Whether the file's extension (case-insensitive) is in the allowed set
 export const hasAllowedExtension = ({
   filePath,
   allowedExtensions,

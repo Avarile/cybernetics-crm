@@ -14,6 +14,7 @@ import { type CalendarEventToCreate } from 'src/modules/calendar/calendar-event-
 import { type FetchedCalendarEvent } from 'src/modules/calendar/common/types/fetched-calendar-event';
 import { MicrosoftOAuth2ClientProvider } from 'src/modules/connected-account/oauth2-client-manager/drivers/microsoft/microsoft-oauth2-client.provider';
 
+// Creates an event on the connected account's Microsoft (Outlook) calendar.
 @Injectable()
 export class MicrosoftCalendarCreateEventService implements CalendarEventCreationDriver {
   constructor(

@@ -1,3 +1,5 @@
+// Fixture list of sample opportunities linked to sample companies/people,
+// used to populate dev-seeded workspaces.
 import { isDefined } from 'twenty-shared/utils';
 
 import { COMPANY_DATA_SEED_IDS } from 'src/engine/workspace-manager/dev-seeder/data/constants/company-data-seeds.constant';

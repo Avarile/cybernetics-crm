@@ -1,3 +1,5 @@
+// Builds the flat agent (and optional flat role target) to persist from a
+// create-agent GraphQL input, to be run through a workspace migration.
 import { isNonEmptyString } from '@sniptt/guards';
 import { computeMetadataNameFromLabel } from 'twenty-shared/metadata';
 import {
@@ -20,6 +22,8 @@ export type FromCreateAgentInputToFlatAgentArgs = {
   flatRoleMaps: AllFlatEntityMaps['flatRoleMaps'];
 };
 
+// Converts a CreateAgentInput into a flat agent record and, if a role was
+// given, a flat role target linking the new agent to it.
 export const fromCreateAgentInputToFlatAgent = ({
   createAgentInput: rawCreateAgentInput,
   workspaceId,

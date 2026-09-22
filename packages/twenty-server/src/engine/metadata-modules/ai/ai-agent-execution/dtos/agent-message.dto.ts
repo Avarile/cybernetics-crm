@@ -1,3 +1,4 @@
+// GraphQL representation of a single message within an agent turn, made up of ordered parts.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 import { IsDateString } from 'class-validator';

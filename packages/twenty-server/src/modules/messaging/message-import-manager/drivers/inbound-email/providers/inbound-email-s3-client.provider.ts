@@ -1,3 +1,6 @@
+// Lazily builds and caches the S3 client used to read/delete raw inbound
+// (email group) messages, and exposes the config needed to know whether
+// the email group feature is set up at all.
 import { Injectable } from '@nestjs/common';
 
 import { S3Client, type S3ClientConfig } from '@aws-sdk/client-s3';
@@ -12,6 +15,7 @@ export class InboundEmailS3ClientProvider {
 
   constructor(private readonly twentyConfigService: TwentyConfigService) {}
 
+  // True when storage is S3-backed and an inbound email domain is set.
   isConfigured(): boolean {
     const storageType = this.twentyConfigService.get('STORAGE_TYPE');
     const domain = this.twentyConfigService.get('INBOUND_EMAIL_DOMAIN');
@@ -19,6 +23,7 @@ export class InboundEmailS3ClientProvider {
     return storageType === StorageDriverType.S_3 && isNonEmptyString(domain);
   }
 
+  // Returns the configured S3 bucket name, or throws if unset.
   getBucket(): string {
     const bucket = this.twentyConfigService.get('STORAGE_S3_NAME');
 
@@ -31,6 +36,7 @@ export class InboundEmailS3ClientProvider {
     return bucket;
   }
 
+  // Returns the configured inbound email domain, or throws if unset.
   getDomain(): string {
     const domain = this.twentyConfigService.get('INBOUND_EMAIL_DOMAIN');
 
@@ -43,6 +49,8 @@ export class InboundEmailS3ClientProvider {
     return domain;
   }
 
+  // Lazily builds and caches the S3 client from configured region/
+  // endpoint/credentials, throwing if the region is missing.
   getClient(): S3Client {
     if (this.s3Client) {
       return this.s3Client;

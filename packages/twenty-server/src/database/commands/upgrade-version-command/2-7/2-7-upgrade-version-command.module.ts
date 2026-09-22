@@ -9,6 +9,9 @@ import { ObjectMetadataModule } from 'src/engine/metadata-modules/object-metadat
 import { WorkspaceCacheModule } from 'src/engine/workspace-cache/workspace-cache.module';
 import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace-migration/workspace-migration.module';
 
+// Registers the 2.7 workspace commands (sync command-menu availability, drop
+// favorite objects, drop connected-account standard object) as providers for the
+// upgrade runner.
 @Module({
   imports: [
     ApplicationModule,

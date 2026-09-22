@@ -1,5 +1,6 @@
 import { v4 as uuidV4 } from 'uuid';
 
+// Generates a UUID-based storage filename preserving the original extension.
 export const buildFileInfo = (filename: string) => {
   const parts = filename.split('.');
 

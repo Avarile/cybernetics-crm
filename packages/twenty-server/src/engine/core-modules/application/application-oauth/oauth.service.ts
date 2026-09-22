@@ -1,3 +1,7 @@
+// Implements the OAuth 2.0 grant flows (authorization_code with PKCE,
+// client_credentials, refresh_token) plus revocation and introspection for
+// applications authenticating against a workspace, auto-installing the
+// application on first authorization code exchange when needed.
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -40,6 +44,10 @@ export class OAuthService {
     private readonly twentyConfigService: TwentyConfigService,
   ) {}
 
+  // Handles the authorization_code grant: validates the client, the
+  // hashed one-time code (rejecting replay/expiry/redirect-uri/PKCE
+  // mismatches per RFC 6749), consumes it, auto-installs the application
+  // in the workspace if needed, and issues a new access/refresh token pair.
   async exchangeAuthorizationCode(params: {
     authorizationCode: string;
     clientId: string;
@@ -244,6 +252,10 @@ export class OAuthService {
     };
   }
 
+  // Handles the client_credentials grant: authenticates the confidential
+  // client and issues an access token for its single workspace
+  // installation. Fails if the app isn't installed in exactly one
+  // workspace, since this grant has no user/workspace context to select one.
   async clientCredentialsGrant(params: {
     clientId: string;
     clientSecret: string;
@@ -305,6 +317,9 @@ export class OAuthService {
     };
   }
 
+  // Handles the refresh_token grant: authenticates the client, validates
+  // the refresh token and confirms it was issued to this client, and
+  // issues a renewed access/refresh token pair.
   async refreshTokenGrant(params: {
     refreshToken: string;
     clientId: string;
@@ -384,8 +399,9 @@ export class OAuthService {
     }
   }
 
-  // RFC 7009: Token revocation
-  // Returns true if token was successfully processed (even if already invalid)
+  // RFC 7009: Token revocation. Since application tokens are stateless
+  // JWTs they can't actually be invalidated server-side; this validates
+  // the token (best-effort, for logging) and always reports success.
   async revokeToken(params: {
     token: string;
     clientId?: string;
@@ -431,7 +447,9 @@ export class OAuthService {
     return { success: true };
   }
 
-  // RFC 7662: Token introspection
+  // RFC 7662: Token introspection. Tries the token as a refresh token
+  // first, then as an access token, confirming it was issued to the
+  // requesting client before reporting it active.
   async introspectToken(params: {
     token: string;
     clientId: string;
@@ -522,6 +540,7 @@ export class OAuthService {
     }
   }
 
+  // Looks up the application registration for an OAuth client id.
   private async validateClient(
     clientId: string,
   ): Promise<ApplicationRegistrationEntity | OAuthErrorResponse> {
@@ -535,6 +554,7 @@ export class OAuthService {
     return applicationRegistration;
   }
 
+  // Verifies a confidential client's secret against its stored hash.
   private async validateClientSecret(
     applicationRegistration: ApplicationRegistrationEntity,
     clientSecret: string,
@@ -552,6 +572,9 @@ export class OAuthService {
     return null;
   }
 
+  // Returns the application already installed for this registration in the
+  // workspace, or installs it now; falls back to a bare application record
+  // if the install fails or doesn't leave a matching record behind.
   private async findOrInstallApplication(
     applicationRegistration: ApplicationRegistrationEntity,
     workspaceId: string,
@@ -605,7 +628,8 @@ export class OAuthService {
     });
   }
 
-  // OAuth RFC 6749 requires expires_in as seconds
+  // Converts the configured access token TTL to seconds, as RFC 6749
+  // requires for expires_in.
   private getAccessTokenExpiresInSeconds(): number {
     const duration = this.twentyConfigService.get(
       'APPLICATION_ACCESS_TOKEN_EXPIRES_IN',
@@ -614,6 +638,7 @@ export class OAuthService {
     return Math.floor(ms(duration) / 1000);
   }
 
+  // Builds an OAuth error response body.
   private errorResponse(
     error: string,
     errorDescription: string,

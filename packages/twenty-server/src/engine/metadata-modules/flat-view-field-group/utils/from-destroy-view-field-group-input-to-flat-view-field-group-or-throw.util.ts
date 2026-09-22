@@ -13,6 +13,7 @@ import {
 } from 'src/engine/metadata-modules/view-field-group/exceptions/view-field-group.exception';
 import { type UniversalFlatViewFieldGroup } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-view-field-group.type';
 
+// Looks up the flat view field group targeted for permanent destruction, throwing if it doesn't exist.
 export const fromDestroyViewFieldGroupInputToFlatViewFieldGroupOrThrow = ({
   destroyViewFieldGroupInput,
   flatViewFieldGroupMaps,

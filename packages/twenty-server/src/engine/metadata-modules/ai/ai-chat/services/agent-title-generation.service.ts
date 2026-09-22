@@ -1,3 +1,5 @@
+// Generates a short thread title from its first message using the default
+// speed model, billing the call and falling back to a truncated title on failure.
 import { Injectable, Logger } from '@nestjs/common';
 
 import {
@@ -24,6 +26,8 @@ export class AgentTitleGenerationService {
     private readonly billingUsageService: BillingUsageService,
   ) {}
 
+  // Generates a concise thread title via the default speed model, billing
+  // the call; falls back to a truncated title if no model is available or generation fails.
   async generateThreadTitle(
     messageContent: string,
     workspaceId: string,
@@ -75,6 +79,7 @@ export class AgentTitleGenerationService {
     }
   }
 
+  // Truncates the message content into a plain title when AI generation isn't available.
   private generateFallbackTitle(messageContent: string): string {
     const cleanContent = messageContent.trim().replace(/\s+/g, ' ');
     const title = cleanContent.substring(0, 50);
@@ -82,6 +87,7 @@ export class AgentTitleGenerationService {
     return cleanContent.length > 50 ? `${title}...` : title;
   }
 
+  // Strips surrounding quotes and collapses whitespace in a model-generated title.
   private cleanTitle(title: string): string {
     return title
       .replace(/^["']|["']$/g, '')

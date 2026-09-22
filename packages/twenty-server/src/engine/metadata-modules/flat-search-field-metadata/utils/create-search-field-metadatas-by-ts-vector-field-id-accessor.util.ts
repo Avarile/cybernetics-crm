@@ -11,6 +11,9 @@ export type SearchFieldMetadatasByTsVectorFieldIdAccessor = {
   invalidate: () => void;
 };
 
+// Lazily builds (and caches) the tsVectorFieldId-to-search-field-metadatas index the first
+// time it's read, so repeated lookups avoid rescanning the flat maps; `invalidate` forces
+// a rebuild on the next `get` after the underlying maps change.
 export const createSearchFieldMetadatasByTsVectorFieldIdAccessor = (
   getFlatSearchFieldMetadataMaps: () => FlatEntityMaps<FlatSearchFieldMetadata>,
 ): SearchFieldMetadatasByTsVectorFieldIdAccessor => {

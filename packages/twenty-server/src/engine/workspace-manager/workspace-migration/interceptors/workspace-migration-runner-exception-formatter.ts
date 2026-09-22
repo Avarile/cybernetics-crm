@@ -7,6 +7,8 @@ import {
   WorkspaceMigrationRunnerExceptionCode,
 } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-runner/exceptions/workspace-migration-runner.exception';
 
+// Converts a WorkspaceMigrationRunnerException into a GraphQL error, surfacing the specific
+// underlying failure (action transpilation, metadata, or workspace schema) when execution failed
 export const workspaceMigrationRunnerExceptionFormatter = (
   error: WorkspaceMigrationRunnerException,
 ) => {

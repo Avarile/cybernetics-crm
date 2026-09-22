@@ -21,6 +21,8 @@ type SeedUsersArgs = {
   schemaName: string;
 };
 
+// Inserts the fixed set of demo users (Avarile/Jony/Phil/Jane/Scott) plus
+// the batch of generated random users.
 export const seedUsers = async ({ queryRunner, schemaName }: SeedUsersArgs) => {
   const originalUsers = [
     {

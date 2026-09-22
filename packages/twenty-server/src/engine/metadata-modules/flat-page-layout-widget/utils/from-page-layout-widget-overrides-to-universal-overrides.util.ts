@@ -1,3 +1,7 @@
+// Converts a page layout widget's application overrides blob into its
+// universal form by resolving the overridden pageLayoutTabId to a universal
+// identifier.
+
 import { type FormatRecordSerializedRelationProperties } from 'twenty-shared/types';
 import { isDefined } from 'twenty-shared/utils';
 
@@ -10,6 +14,8 @@ import { type PageLayoutWidgetOverrides } from 'src/engine/metadata-modules/page
 type UniversalPageLayoutWidgetOverrides =
   FormatRecordSerializedRelationProperties<PageLayoutWidgetOverrides>;
 
+// Resolves the overridden pageLayoutTabId to its universal identifier,
+// throwing (unless disabled) or falling back to null when it can't be found.
 export const fromPageLayoutWidgetOverridesToUniversalOverrides = ({
   overrides,
   pageLayoutTabUniversalIdentifierById,

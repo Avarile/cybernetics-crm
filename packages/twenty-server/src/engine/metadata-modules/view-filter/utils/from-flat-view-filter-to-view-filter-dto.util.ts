@@ -1,6 +1,8 @@
 import { type FlatViewFilter } from 'src/engine/metadata-modules/flat-view-filter/types/flat-view-filter.type';
 import { type ViewFilterDTO } from 'src/engine/metadata-modules/view-filter/dtos/view-filter.dto';
 
+// Converts a flat view filter into its GraphQL DTO, converting timestamp
+// strings to Date objects.
 export const fromFlatViewFilterToViewFilterDto = (
   flatViewFilter: FlatViewFilter,
 ): ViewFilterDTO => {

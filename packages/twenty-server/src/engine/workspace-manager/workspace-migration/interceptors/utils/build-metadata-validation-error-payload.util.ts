@@ -14,6 +14,8 @@ export type MetadataValidationErrorPayloadDescriptor =
 const MANY_VALIDATION_ERRORS_MESSAGE = msg`Many validation errors`;
 const METADATA_VALIDATION_FAILED_MESSAGE = msg`Metadata validation failed`;
 
+// Picks a user-friendly summary message: a generic "many errors" message when there's more than one
+// total error, else the first validation error's own user-friendly message, else a generic fallback
 const getMetadataValidationUserFriendlyMessage = (
   metadataValidation: MetadataValidationErrorResponseDescriptor,
 ): MessageDescriptor => {
@@ -40,6 +42,8 @@ const getMetadataValidationUserFriendlyMessage = (
   return METADATA_VALIDATION_FAILED_MESSAGE;
 };
 
+// Converts a WorkspaceMigrationBuilderException's per-metadata failure report into the API-facing
+// error/summary payload, plus a user-friendly message
 export const buildMetadataValidationErrorPayload = (
   exception: WorkspaceMigrationBuilderException,
 ): MetadataValidationErrorPayloadDescriptor => {

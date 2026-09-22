@@ -1,3 +1,6 @@
+// Fills in an index's deterministic name and universal identifier from its
+// object and fields, propagating the identifier to each index field.
+
 import { getIndexUniversalIdentifier } from 'twenty-shared/application';
 
 import { computeFlatIndexNameOrThrow } from 'src/engine/metadata-modules/index-metadata/utils/compute-flat-index-name.util';
@@ -22,6 +25,8 @@ type GenerateDeterministicFlatIndexArgs = {
   };
 };
 
+// Computes the index's deterministic name and universal identifier, then
+// stamps the identifier onto the index and each of its fields.
 export const generateDeterministicFlatIndexMetadataOrThrow = ({
   flatObjectMetadata,
   objectFlatFieldMetadatas,

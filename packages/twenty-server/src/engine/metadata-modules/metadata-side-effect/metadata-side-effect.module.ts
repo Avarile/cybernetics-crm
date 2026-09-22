@@ -1,3 +1,6 @@
+// Wires up the metadata side effect engine and its discovery-based handler
+// registry, exposing the engine for other modules to trigger side effects.
+
 import { Module } from '@nestjs/common';
 import { DiscoveryModule } from '@nestjs/core';
 
@@ -13,4 +16,6 @@ import { MetadataSideEffectEngineService } from 'src/engine/metadata-modules/met
   ],
   exports: [MetadataSideEffectEngineService],
 })
+// Provides the metadata side effect engine to modules that need to trigger
+// side effects on metadata mutations.
 export class MetadataSideEffectModule {}

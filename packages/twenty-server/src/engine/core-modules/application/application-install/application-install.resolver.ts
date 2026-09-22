@@ -1,3 +1,6 @@
+// GraphQL resolver exposing queries/mutations to list, install, and
+// uninstall applications in a workspace, and reports install/uninstall
+// metrics.
 import {
   UseFilters,
   UseGuards,
@@ -46,6 +49,7 @@ export class ApplicationInstallResolver {
     private readonly metricsService: MetricsService,
   ) {}
 
+  // Returns all applications installed in the workspace.
   @Query(() => [ApplicationDTO])
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.APPLICATIONS))
   async findManyApplications(
@@ -54,6 +58,7 @@ export class ApplicationInstallResolver {
     return this.applicationService.findManyApplications(workspaceId);
   }
 
+  // Returns a single application looked up by id or universal identifier.
   @Query(() => ApplicationDTO)
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.APPLICATIONS))
   async findOneApplication(
@@ -72,6 +77,8 @@ export class ApplicationInstallResolver {
     });
   }
 
+  // Deprecated: installs a marketplace app by universal identifier, returns
+  // only a boolean. Use installApplication instead.
   @Mutation(() => Boolean, {
     deprecationReason: 'Use installApplication instead',
   })
@@ -91,6 +98,8 @@ export class ApplicationInstallResolver {
     return true;
   }
 
+  // Installs (or upgrades) a marketplace application by universal
+  // identifier and returns the resulting application record.
   @Mutation(() => ApplicationDTO)
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.APPLICATIONS))
   async installApplication(
@@ -111,6 +120,8 @@ export class ApplicationInstallResolver {
     });
   }
 
+  // Looks up the marketplace registration by universal identifier and
+  // triggers the actual install.
   private async installRegisteredApplication(params: {
     universalIdentifier: string;
     version: string | undefined;
@@ -128,6 +139,8 @@ export class ApplicationInstallResolver {
     });
   }
 
+  // Uninstalls an application from the workspace and records
+  // success/failure metrics for observability.
   @Mutation(() => Boolean)
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.APPLICATIONS))
   async uninstallApplication(

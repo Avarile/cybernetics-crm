@@ -1,3 +1,4 @@
+// Wires up the sendEmail GraphQL mutation and its dependencies.
 import { Module } from '@nestjs/common';
 
 import { FileEmailAttachmentModule } from 'src/engine/core-modules/file/file-email-attachment/file-email-attachment.module';

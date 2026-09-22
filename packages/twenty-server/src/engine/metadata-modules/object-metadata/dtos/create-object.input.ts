@@ -1,3 +1,5 @@
+// GraphQL input for creating a new object metadata record.
+
 import { Field, HideField, InputType } from '@nestjs/graphql';
 
 import { Type } from 'class-transformer';

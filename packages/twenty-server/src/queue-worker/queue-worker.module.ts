@@ -1,3 +1,6 @@
+// Nest module for the background worker process: wires in the message queue
+// explorer, job handlers, workspace event emitter, and the ORM modules needed
+// to process queued jobs outside of the HTTP server.
 import { Module } from '@nestjs/common';
 
 import { CoreEngineModule } from 'src/engine/core-modules/core-engine.module';

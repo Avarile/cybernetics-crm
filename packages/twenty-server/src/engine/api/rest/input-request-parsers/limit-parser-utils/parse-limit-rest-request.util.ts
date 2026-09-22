@@ -10,6 +10,8 @@ import {
 import { type AuthenticatedRequest } from 'src/engine/api/rest/types/authenticated-request';
 import { type RequestContext } from 'src/engine/api/rest/types/RequestContext';
 
+// Parses the `?limit=` REST query param, defaulting and capping it at
+// QUERY_MAX_RECORDS; throws if given a negative or non-numeric value.
 export const parseLimitRestRequest = (
   request: AuthenticatedRequest | RequestContext,
   defaultLimit = QUERY_DEFAULT_LIMIT_RECORDS,

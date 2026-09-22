@@ -15,6 +15,7 @@ import { TwoFactorAuthenticationService } from './two-factor-authentication.serv
 
 import { TwoFactorAuthenticationMethodEntity } from './entities/two-factor-authentication-method.entity';
 
+// Wires up 2FA provisioning and verification: resolver, service, and its entity repository
 @Module({
   imports: [
     UserWorkspaceModule,

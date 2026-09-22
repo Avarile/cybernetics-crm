@@ -1,3 +1,6 @@
+// Maps each WorkspaceQueryRunnerException code to the appropriate
+// GraphQL-facing error class or rethrows it as-is; exhaustiveness is
+// enforced via assertUnreachable.
 import { assertUnreachable } from 'twenty-shared/utils';
 
 import {
@@ -11,6 +14,7 @@ import {
   UserInputError,
 } from 'src/engine/core-modules/graphql/utils/graphql-errors.util';
 
+// Converts a WorkspaceQueryRunnerException into the matching public GraphQL error type.
 export const workspaceExceptionHandler = (
   error: WorkspaceQueryRunnerException,
 ) => {

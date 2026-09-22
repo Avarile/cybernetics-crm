@@ -21,12 +21,15 @@ import {
 import { GoogleOAuth2ClientProvider } from 'src/modules/connected-account/oauth2-client-manager/drivers/google/google-oauth2-client.provider';
 
 @Injectable()
+// Manages Gmail mailbox watches and Google Calendar event watches (Google's
+// two separate push-notification mechanisms) behind the shared subscription driver interface.
 export class GoogleWebhookSubscriptionDriver implements WebhookSubscriptionDriver {
   constructor(
     private readonly googleOAuth2ClientProvider: GoogleOAuth2ClientProvider,
     private readonly twentyConfigService: TwentyConfigService,
   ) {}
 
+  // Creates a Gmail watch or a Calendar watch, depending on channel type.
   async createSubscription(
     connectedAccountId: string,
     channelType: WebhookSubscriptionChannelType,
@@ -37,6 +40,8 @@ export class GoogleWebhookSubscriptionDriver implements WebhookSubscriptionDrive
       : this.watchPrimaryCalendar(connectedAccountId, clientState);
   }
 
+  // Gmail watches renew in place; Calendar watches must be deleted and
+  // recreated since Google doesn't support extending them.
   async renewSubscription(
     context: WebhookSubscriptionContext,
   ): Promise<WebhookSubscriptionResult> {
@@ -51,12 +56,14 @@ export class GoogleWebhookSubscriptionDriver implements WebhookSubscriptionDrive
     );
   }
 
+  // Stops the Gmail watch or Calendar watch, depending on channel type.
   async deleteSubscription(context: WebhookSubscriptionContext): Promise<void> {
     return context.channelType === WebhookSubscriptionChannelType.MESSAGING
       ? this.stopGmailMailboxWatch(context.connectedAccountId)
       : this.stopCalendarWatch(context);
   }
 
+  // Starts a Gmail mailbox watch that pushes changes to the configured Pub/Sub topic.
   private async watchGmailMailbox(
     connectedAccountId: string,
   ): Promise<WebhookSubscriptionResult> {
@@ -94,6 +101,7 @@ export class GoogleWebhookSubscriptionDriver implements WebhookSubscriptionDrive
     };
   }
 
+  // Stops the account's Gmail mailbox watch.
   private async stopGmailMailboxWatch(
     connectedAccountId: string,
   ): Promise<void> {
@@ -102,6 +110,8 @@ export class GoogleWebhookSubscriptionDriver implements WebhookSubscriptionDrive
     await gmailClient.users.stop({ userId: 'me' });
   }
 
+  // Starts a watch on the primary Google Calendar that pushes notifications
+  // to Twenty's webhook endpoint, tagged with the client state for verification.
   private async watchPrimaryCalendar(
     connectedAccountId: string,
     clientState: string,
@@ -136,6 +146,7 @@ export class GoogleWebhookSubscriptionDriver implements WebhookSubscriptionDrive
     };
   }
 
+  // Stops the calendar channel watch identified by its subscription/resource ids.
   private async stopCalendarWatch(
     context: WebhookSubscriptionContext,
   ): Promise<void> {
@@ -158,6 +169,7 @@ export class GoogleWebhookSubscriptionDriver implements WebhookSubscriptionDrive
     });
   }
 
+  // Builds an authenticated Gmail API client for the connected account.
   private async getGmailClient(
     connectedAccountId: string,
   ): Promise<gmail_v1.Gmail> {
@@ -167,6 +179,7 @@ export class GoogleWebhookSubscriptionDriver implements WebhookSubscriptionDrive
     return google.gmail({ version: 'v1', auth: oAuth2Client });
   }
 
+  // Builds an authenticated Google Calendar API client for the connected account.
   private async getCalendarClient(
     connectedAccountId: string,
   ): Promise<calendar_v3.Calendar> {

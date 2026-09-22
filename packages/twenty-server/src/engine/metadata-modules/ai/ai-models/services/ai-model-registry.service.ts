@@ -1,3 +1,7 @@
+// Central registry of configured AI providers/models: builds and caches
+// LanguageModel instances and their cost/capability config from provider
+// config, refreshing automatically when relevant config changes, and
+// enforces admin/workspace availability rules.
 import { Injectable, Logger } from '@nestjs/common';
 
 import { type LanguageModel } from 'ai';
@@ -78,6 +82,7 @@ export class AiModelRegistryService {
     this.currentConfigHash = configHash;
   }
 
+  // Clears all caches and rebuilds the model registry from resolved provider config.
   private buildModelRegistry(): void {
     this.modelRegistry.clear();
     this.sdkProviderFactory.clearCache();
@@ -89,6 +94,8 @@ export class AiModelRegistryService {
     this.registerModelsFromProviders(providers);
   }
 
+  // Populates the config/registry caches for every model of every configured
+  // provider; only providers with credentials get a live SDK model instance.
   private registerModelsFromProviders(providers: AiProvidersConfig): void {
     for (const [providerKey, config] of Object.entries(providers)) {
       if (!config.npm) {
@@ -135,6 +142,8 @@ export class AiModelRegistryService {
     }
   }
 
+  // Converts a provider's model definition into the normalized AiModelConfig
+  // used for cost calculation and capability checks.
   private toAiModelConfig(
     compositeId: string,
     providerConfig: AiProviderConfig,
@@ -164,28 +173,33 @@ export class AiModelRegistryService {
     };
   }
 
+  // Looks up a registered (SDK-backed) model by composite id.
   getModel(modelId: string): RegisteredAiModel | undefined {
     this.ensureFresh();
 
     return this.modelRegistry.get(modelId);
   }
 
+  // Lists all currently registered (SDK-backed) models.
   getAvailableModels(): RegisteredAiModel[] {
     this.ensureFresh();
 
     return Array.from(this.modelRegistry.values());
   }
 
+  // Looks up a model's normalized config (cost/capabilities) by composite id.
   getModelConfig(modelId: string): AiModelConfig | undefined {
     this.ensureFresh();
 
     return this.modelConfigCache.get(modelId);
   }
 
+  // Delegates to preferences for the recommended model id set.
   getRecommendedModelIds(): Set<string> {
     return this.preferencesService.getRecommendedModelIds();
   }
 
+  // Returns the first model from the list that is actually registered.
   private getFirstAvailableModelFromList(
     modelIds: string[],
   ): RegisteredAiModel | undefined {
@@ -200,14 +214,18 @@ export class AiModelRegistryService {
     return undefined;
   }
 
+  // Default model for low-latency/cheap operations (e.g. title generation).
   getDefaultSpeedModel(): RegisteredAiModel {
     return this.getDefaultModelForRole(AiModelRole.FAST);
   }
 
+  // Default model for higher-quality/capability operations.
   getDefaultPerformanceModel(): RegisteredAiModel {
     return this.getDefaultModelForRole(AiModelRole.SMART);
   }
 
+  // Resolves the preferred model for a role, falling back to the first
+  // available model, and throwing if none are configured at all.
   private getDefaultModelForRole(role: AiModelRole): RegisteredAiModel {
     const prefs = this.preferencesService.getPreferences();
     const preferenceKey =
@@ -229,6 +247,8 @@ export class AiModelRegistryService {
     return model;
   }
 
+  // Resolves a model id (including auto-select sentinels) to its config,
+  // synthesizing a default config for models not in the static catalog.
   getEffectiveModelConfig(modelId: string): AiModelConfig {
     this.ensureFresh();
 
@@ -262,6 +282,8 @@ export class AiModelRegistryService {
     );
   }
 
+  // Builds a minimal AiModelConfig (zero cost, default limits) for a
+  // registered model that has no entry in the static provider catalog.
   private createDefaultConfigForCustomModel(
     registeredModel: RegisteredAiModel,
   ): AiModelConfig {
@@ -281,6 +303,7 @@ export class AiModelRegistryService {
     };
   }
 
+  // True unless the model has been explicitly disabled by an admin (auto-select is always allowed).
   isModelAdminAllowed(modelId: string): boolean {
     if (isAutoSelectModelId(modelId)) {
       return true;
@@ -292,6 +315,8 @@ export class AiModelRegistryService {
     return !disabledModels.includes(modelId);
   }
 
+  // Throws if the model is admin-disabled or not available to the given
+  // workspace's model availability settings.
   validateModelAvailability(
     modelId: string,
     availabilitySettings: WorkspaceModelAvailabilitySettings,
@@ -321,12 +346,15 @@ export class AiModelRegistryService {
     }
   }
 
+  // Lists registered models excluding those admin-disabled.
   getAdminFilteredModels(): RegisteredAiModel[] {
     return this.getAvailableModels().filter((model) =>
       this.isModelAdminAllowed(model.modelId),
     );
   }
 
+  // Lists every catalog model (registered or not) with its availability,
+  // admin-enabled, and recommended status, for the admin settings UI.
   getAllModelsWithStatus(): Array<{
     modelConfig: AiModelConfig;
     isAvailable: boolean;
@@ -353,11 +381,13 @@ export class AiModelRegistryService {
     });
   }
 
+  // Validates the model exists, then delegates to preferences to enable/disable it.
   async setModelAdminEnabled(modelId: string, enabled: boolean): Promise<void> {
     this.validateModelInRegistry(modelId);
     await this.preferencesService.setModelAdminEnabled(modelId, enabled);
   }
 
+  // Validates the model exists, then delegates to preferences to mark it recommended.
   async setModelRecommended(
     modelId: string,
     recommended: boolean,
@@ -366,6 +396,7 @@ export class AiModelRegistryService {
     await this.preferencesService.setModelRecommended(modelId, recommended);
   }
 
+  // Validates each model exists, then delegates to preferences for a bulk enable/disable.
   async setModelsAdminEnabled(
     modelIds: string[],
     enabled: boolean,
@@ -374,6 +405,7 @@ export class AiModelRegistryService {
     await this.preferencesService.setModelsAdminEnabled(modelIds, enabled);
   }
 
+  // Validates each model exists, then delegates to preferences for a bulk recommend update.
   async setModelsRecommended(
     modelIds: string[],
     recommended: boolean,
@@ -382,11 +414,13 @@ export class AiModelRegistryService {
     await this.preferencesService.setModelsRecommended(modelIds, recommended);
   }
 
+  // Validates the model exists, then delegates to preferences to set it as the role's default.
   async setDefaultModel(role: AiModelRole, modelId: string): Promise<void> {
     this.validateModelInRegistry(modelId);
     await this.preferencesService.setDefaultModel(role, modelId);
   }
 
+  // Throws if the model id has no entry in the provider catalog.
   private validateModelInRegistry(modelId: string): void {
     this.ensureFresh();
 
@@ -398,14 +432,18 @@ export class AiModelRegistryService {
     }
   }
 
+  // Delegates to provider config for the full resolved provider list (admin view).
   getResolvedProvidersForAdmin(): AiProvidersConfig {
     return this.providerConfigService.getResolvedProviders();
   }
 
+  // Delegates to provider config for the set of known catalog provider names.
   getCatalogProviderNames(): Set<string> {
     return this.providerConfigService.getCatalogProviderNames();
   }
 
+  // Resolves an agent's configured model (or the smart default if none/auto)
+  // to a registered model, throwing if its provider isn't configured.
   resolveModelForAgent(agent: { modelId: string } | null): RegisteredAiModel {
     const aiModel = this.getEffectiveModelConfig(
       agent?.modelId ?? AUTO_SELECT_SMART_MODEL_ID,

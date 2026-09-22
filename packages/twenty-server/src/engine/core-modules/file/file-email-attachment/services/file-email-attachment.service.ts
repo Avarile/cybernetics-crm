@@ -1,3 +1,5 @@
+// Stores/deletes email attachment files in the workspace's application file
+// storage, tagged as temporary until the email referencing them is sent.
 import { Injectable, Logger } from '@nestjs/common';
 
 import { isNonEmptyString } from '@sniptt/guards';
@@ -20,6 +22,8 @@ export class FileEmailAttachmentService {
     private readonly fileUrlService: FileUrlService,
   ) {}
 
+  // Writes a file buffer to storage as a temporary email attachment and
+  // returns its metadata with a signed download URL.
   async uploadFile({
     file,
     filename,
@@ -68,6 +72,7 @@ export class FileEmailAttachmentService {
     };
   }
 
+  // Deletes email attachment files by id, logging (not throwing) on failure.
   async deleteFiles({
     fileIds,
     workspaceId,

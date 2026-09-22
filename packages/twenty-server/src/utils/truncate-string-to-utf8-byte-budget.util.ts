@@ -9,6 +9,8 @@ export type Utf8TruncationResult = {
 export const utf8ByteLengthOf = (value: string): number =>
   Buffer.byteLength(value, 'utf8');
 
+// Truncates a string to fit within a UTF-8 byte budget (not character count),
+// appending a truncation sentinel when the original exceeds the budget.
 export const truncateStringToUtf8ByteBudget = (
   value: string,
   maxBytes: number,

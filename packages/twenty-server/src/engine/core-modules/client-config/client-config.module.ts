@@ -1,3 +1,5 @@
+// NestJS module wiring the client-config controller/resolver/service that
+// expose the frontend's runtime configuration.
 import { Module } from '@nestjs/common';
 
 import { AdminPanelModule } from 'src/engine/core-modules/admin-panel/admin-panel.module';

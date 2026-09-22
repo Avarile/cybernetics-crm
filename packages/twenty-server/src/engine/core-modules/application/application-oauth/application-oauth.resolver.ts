@@ -1,3 +1,5 @@
+// GraphQL resolver for generating and renewing application access/refresh
+// token pairs used by an installed application to call the workspace API.
 import { UseFilters, UseGuards, UsePipes } from '@nestjs/common';
 import { Args, Mutation } from '@nestjs/graphql';
 
@@ -35,6 +37,8 @@ export class ApplicationOAuthResolver {
     private readonly throttlerService: ThrottlerService,
   ) {}
 
+  // Rate-limited: generates a new application access/refresh token pair for
+  // the given application in the current workspace.
   @Mutation(() => ApplicationTokenPairDTO)
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.APPLICATIONS))
   async generateApplicationToken(
@@ -58,6 +62,8 @@ export class ApplicationOAuthResolver {
     });
   }
 
+  // Exchanges a valid application refresh token for a new token pair,
+  // rejecting tokens issued for a different workspace.
   @Mutation(() => ApplicationTokenPairDTO)
   @UseGuards(NoPermissionGuard)
   async renewApplicationToken(

@@ -6,6 +6,7 @@ import {
 import { type PermissionFlagPermissionType } from 'src/engine/metadata-modules/permission-flag/constants/permission-flag-permission-type.constant';
 import { TOOL_PERMISSION_FLAGS } from 'src/engine/metadata-modules/permissions/constants/tool-permission-flags';
 
+// Metadata describing a built-in (standard) permission flag before it's persisted for a workspace.
 export type StandardPermissionFlagDefinition = {
   key: PermissionFlagType;
   universalIdentifier: string;
@@ -156,6 +157,8 @@ const STANDARD_PERMISSION_FLAG_METADATA: Record<
   },
 };
 
+// All built-in permission flags, derived from PermissionFlagType with their label/description/
+// icon metadata and whether each is a settings-area or tool-invocation permission.
 export const STANDARD_PERMISSION_FLAG_DEFINITIONS: StandardPermissionFlagDefinition[] =
   Object.values(PermissionFlagType).map((key) => ({
     key,

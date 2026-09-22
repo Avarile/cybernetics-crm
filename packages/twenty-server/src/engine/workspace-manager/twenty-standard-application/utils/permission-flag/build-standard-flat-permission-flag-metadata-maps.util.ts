@@ -7,6 +7,7 @@ import { type FlatPermissionFlag } from 'src/engine/metadata-modules/flat-permis
 import { STANDARD_PERMISSION_FLAG_DEFINITIONS } from 'src/engine/metadata-modules/permission-flag/constants/standard-permission-flag-definitions.constant';
 import { TWENTY_STANDARD_APPLICATION } from 'src/engine/workspace-manager/twenty-standard-application/constants/twenty-standard-applications';
 
+// Builds the flat permission flag maps for a workspace from the shared STANDARD_PERMISSION_FLAG_DEFINITIONS
 export const buildStandardFlatPermissionFlagMetadataMaps = ({
   now,
   workspaceId,

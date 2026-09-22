@@ -4,6 +4,7 @@ import { IsArray, IsNotEmpty, IsString, IsUUID } from 'class-validator';
 
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';
 
+// Input for replacing a role's full set of granted permission flags in one batch.
 @InputType()
 export class UpsertPermissionFlagsInput {
   @IsUUID()

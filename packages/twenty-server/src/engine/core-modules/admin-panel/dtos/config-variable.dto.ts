@@ -1,3 +1,5 @@
+// GraphQL DTO representing a single config variable's current value, type
+// and source, for the admin config UI.
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 
 import GraphQLJSON from 'graphql-type-json';

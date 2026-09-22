@@ -5,6 +5,8 @@ import { buildReplyToParticipants } from 'src/modules/messaging/message-import-m
 import { extractAddressesFromParsedEmail } from 'src/modules/messaging/message-import-manager/utils/extract-addresses-from-parsed-email.util';
 import { formatAddressObjectAsParticipants } from 'src/modules/messaging/message-import-manager/utils/format-address-object-as-participants.util';
 
+// Builds the full participant list (from/to/cc/bcc/reply-to) for a
+// postal-mime parsed email.
 export const extractParticipantsFromParsedEmail = (parsed: ParsedEmail) => {
   const addressFields = [
     { field: parsed.from, role: MessageParticipantRole.FROM },

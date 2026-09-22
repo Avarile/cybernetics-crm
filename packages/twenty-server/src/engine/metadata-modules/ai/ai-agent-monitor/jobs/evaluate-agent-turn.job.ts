@@ -1,3 +1,4 @@
+// Queue job that grades a completed agent turn via AgentTurnGraderService.
 import { Logger } from '@nestjs/common';
 
 import { Process } from 'src/engine/core-modules/message-queue/decorators/process.decorator';
@@ -16,6 +17,7 @@ export class EvaluateAgentTurnJob {
 
   constructor(private readonly graderService: AgentTurnGraderService) {}
 
+  // Grades the given turn and logs the resulting score.
   @Process(EvaluateAgentTurnJob.name)
   async handle(data: EvaluateAgentTurnJobData): Promise<void> {
     if (!data.turnId) {

@@ -1,3 +1,4 @@
+// Barrel re-exporting every standard object's fixed page layout config, plus the shared config types
 export { STANDARD_BLOCKLIST_PAGE_LAYOUT_CONFIG } from './standard-blocklist-page-layout.config';
 export { STANDARD_CALENDAR_CHANNEL_EVENT_ASSOCIATION_PAGE_LAYOUT_CONFIG } from './standard-calendar-channel-event-association-page-layout.config';
 export { STANDARD_CALENDAR_EVENT_PAGE_LAYOUT_CONFIG } from './standard-calendar-event-page-layout.config';

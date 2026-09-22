@@ -1,3 +1,5 @@
+// Admin-panel service for looking up a user or workspace and assembling the
+// full UserLookup DTO (workspaces, members, feature flags, signed URLs).
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -37,6 +39,7 @@ export class AdminPanelUserLookupService {
     private readonly featureFlagRepository: WorkspaceScopedRepository<FeatureFlagEntity>,
   ) {}
 
+  // Builds a per-user fallback avatar URL map from cached workspace-member defaults.
   private buildFallbackAvatarUrlsByUserId(
     workspaceUsers: UserWorkspaceEntity[],
   ): Map<string, string | null> {
@@ -50,6 +53,8 @@ export class AdminPanelUserLookupService {
     );
   }
 
+  // Finds a user by email or id and returns them with all of their
+  // workspaces, each workspace's members, and feature flags.
   async userLookup(userIdentifier: string): Promise<UserLookup> {
     const isEmail = userIdentifier.includes('@');
     const normalizedIdentifier = isEmail
@@ -141,6 +146,8 @@ export class AdminPanelUserLookupService {
     };
   }
 
+  // Finds a workspace by id and returns it with its members and feature
+  // flags, using the first member as the representative "user" field.
   async workspaceLookup(workspaceId: string): Promise<UserLookup> {
     const workspace = await this.workspaceRepository.findOne({
       where: { id: workspaceId },

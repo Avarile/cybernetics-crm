@@ -3,6 +3,7 @@ import { isDefined } from 'twenty-shared/utils';
 import { type FlatFrontComponent } from 'src/engine/metadata-modules/flat-front-component/types/flat-front-component.type';
 import { type FrontComponentDTO } from 'src/engine/metadata-modules/front-component/dtos/front-component.dto';
 
+// Maps a flat front component to the GraphQL FrontComponentDTO shape.
 export const fromFlatFrontComponentToFrontComponentDto = (
   flatFrontComponent: FlatFrontComponent,
 ): FrontComponentDTO => ({

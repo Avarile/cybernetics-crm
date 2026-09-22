@@ -5,6 +5,7 @@ import {
   FileStorageExceptionCode,
 } from 'src/engine/core-modules/file-storage/interfaces/file-storage-exception';
 
+// Throws if the storage path contains null bytes, is absolute, or traverses upward
 export const assertStoragePathIsSafe = (storagePath: string): void => {
   if (storagePath.includes('\0')) {
     throw new FileStorageException(

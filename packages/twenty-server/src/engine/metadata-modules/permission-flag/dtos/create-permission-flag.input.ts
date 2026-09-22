@@ -14,6 +14,7 @@ import {
   type PermissionFlagPermissionType,
 } from 'src/engine/metadata-modules/permission-flag/constants/permission-flag-permission-type.constant';
 
+// Input for creating a custom permission flag definition.
 @InputType()
 export class CreatePermissionFlagInput {
   @IsUUID()

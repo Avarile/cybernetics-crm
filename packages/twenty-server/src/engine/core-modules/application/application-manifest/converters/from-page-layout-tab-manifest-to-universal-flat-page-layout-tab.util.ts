@@ -1,3 +1,5 @@
+// Converts a manifest-declared page layout tab into the universal flat
+// entity shape used to build workspace migrations.
 import { type PageLayoutTabManifest } from 'twenty-shared/application';
 import { PageLayoutTabLayoutMode } from 'twenty-shared/types';
 

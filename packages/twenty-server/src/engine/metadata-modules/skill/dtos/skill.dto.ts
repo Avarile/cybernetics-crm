@@ -10,6 +10,7 @@ import {
 
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';
 
+// GraphQL representation of a skill (standard or custom) available to agents.
 @ObjectType('Skill')
 export class SkillDTO {
   @IsUUID()

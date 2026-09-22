@@ -1,3 +1,4 @@
+// Maps a connection security setting to imapflow TLS options.
 import { EmailConnectionSecurity } from 'src/engine/core-modules/imap-smtp-caldav-connection/enums/email-connection-security.enum';
 
 type ImapTlsOptions = {
@@ -5,6 +6,7 @@ type ImapTlsOptions = {
   doSTARTTLS?: boolean;
 };
 
+// Maps a connection security choice to the imapflow client's TLS options.
 export const buildImapTlsOptions = (
   connectionSecurity: EmailConnectionSecurity,
 ): ImapTlsOptions => {

@@ -16,6 +16,8 @@ import { type UniversalFlatViewSort } from 'src/engine/workspace-manager/workspa
 import { type FlatViewSortMaps } from 'src/engine/metadata-modules/flat-view-sort/types/flat-view-sort-maps.type';
 import { findFlatEntityByIdInFlatEntityMaps } from 'src/engine/metadata-modules/flat-entity/utils/find-flat-entity-by-id-in-flat-entity-maps.util';
 
+// Applies an update-view-sort input onto the matching existing flat view sort,
+// throwing if it doesn't exist.
 export const fromUpdateViewSortInputToFlatViewSortToUpdateOrThrow = ({
   updateViewSortInput: rawUpdateViewSortInput,
   flatViewSortMaps,

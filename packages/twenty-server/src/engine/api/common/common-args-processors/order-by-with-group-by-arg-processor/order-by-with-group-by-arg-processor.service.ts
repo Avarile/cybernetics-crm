@@ -11,6 +11,8 @@ import { isDefined } from 'twenty-shared/utils';
 
 @Injectable()
 export class OrderByWithGroupByArgProcessorService {
+  // Normalizes an orderBy arg used alongside a groupBy query (single entry
+  // or array) into an array.
   process({
     orderBy,
   }: {

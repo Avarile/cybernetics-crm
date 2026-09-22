@@ -7,6 +7,7 @@ import {
 } from 'src/engine/core-modules/logic-function/logic-function-drivers/drivers/local/constants/local-driver.constant';
 import { type FlatLogicFunction } from 'src/engine/metadata-modules/logic-function/types/flat-logic-function.type';
 
+// Local disk paths for a logic function's installed prebuilt bundle and its checksum sidecar.
 export const getLocalPrebuiltBundleDir = (
   flatLogicFunction: FlatLogicFunction,
 ): string =>

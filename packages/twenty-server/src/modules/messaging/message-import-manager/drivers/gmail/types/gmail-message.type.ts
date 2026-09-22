@@ -1,3 +1,5 @@
+// Shape of a Gmail message after parsing the raw Gmail API payload into
+// the fields the messaging import pipeline needs.
 import { type MessageParticipantRole } from 'twenty-shared/types';
 
 export type GmailMessage = {

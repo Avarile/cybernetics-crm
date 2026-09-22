@@ -1,3 +1,6 @@
+// On-demand fetch of message ids belonging to a single folder, used when
+// re-importing a specific folder outside the normal full sync (currently
+// Gmail-only; other providers return an empty list).
 import { Injectable } from '@nestjs/common';
 
 import {
@@ -15,6 +18,8 @@ export class MessagingImportFolderMessagesService {
     private readonly gmailGetMessageListService: GmailGetMessageListService,
   ) {}
 
+  // For Gmail, runs a search scoped to just the given folder (via a
+  // one-off SELECTED_FOLDERS policy override) and returns its message ids.
   async getFolderMessageIdsToImport(
     messageChannel: MessageChannelEntity,
     messageFolder: MessageFolderEntity,

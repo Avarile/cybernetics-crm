@@ -1,3 +1,4 @@
+// GraphQL representation of a relation between two objects' fields.
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 
 import { IsEnum, IsNotEmpty } from 'class-validator';

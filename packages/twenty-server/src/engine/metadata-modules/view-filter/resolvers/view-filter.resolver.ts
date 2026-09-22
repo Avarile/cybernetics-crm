@@ -21,9 +21,11 @@ import { ViewGraphqlApiExceptionFilter } from 'src/engine/metadata-modules/view/
 @MetadataResolver(() => ViewFilterDTO)
 @UseFilters(ViewGraphqlApiExceptionFilter)
 @UseGuards(WorkspaceAuthGuard)
+// GraphQL resolver exposing CRUD operations for view filters.
 export class ViewFilterResolver {
   constructor(private readonly viewFilterService: ViewFilterService) {}
 
+  // Lists view filters in the workspace, optionally filtered to one view.
   @Query(() => [ViewFilterDTO])
   @UseGuards(NoPermissionGuard)
   async getViewFilters(
@@ -38,6 +40,7 @@ export class ViewFilterResolver {
     return this.viewFilterService.findByWorkspaceId(workspace.id);
   }
 
+  // Fetches a single view filter by id.
   @Query(() => ViewFilterDTO, { nullable: true })
   @UseGuards(NoPermissionGuard)
   async getViewFilter(
@@ -47,6 +50,7 @@ export class ViewFilterResolver {
     return this.viewFilterService.findById(id, workspace.id);
   }
 
+  // Creates a new view filter.
   @Mutation(() => ViewFilterDTO)
   @UseGuards(CreateViewFilterPermissionGuard)
   async createViewFilter(
@@ -59,6 +63,7 @@ export class ViewFilterResolver {
     });
   }
 
+  // Updates a view filter.
   @Mutation(() => ViewFilterDTO)
   @UseGuards(UpdateViewFilterPermissionGuard)
   async updateViewFilter(
@@ -71,6 +76,7 @@ export class ViewFilterResolver {
     });
   }
 
+  // Soft-deletes a view filter.
   @Mutation(() => ViewFilterDTO)
   @UseGuards(DeleteViewFilterPermissionGuard)
   async deleteViewFilter(
@@ -83,6 +89,7 @@ export class ViewFilterResolver {
     });
   }
 
+  // Permanently destroys a view filter.
   @Mutation(() => ViewFilterDTO)
   @UseGuards(DestroyViewFilterPermissionGuard)
   async destroyViewFilter(

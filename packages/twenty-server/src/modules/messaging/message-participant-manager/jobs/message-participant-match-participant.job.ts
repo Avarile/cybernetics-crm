@@ -1,3 +1,6 @@
+// Matches message participants (by person email or workspace member) to
+// their corresponding CRM records, linking newly created/updated people
+// or workspace members back to already-imported messages.
 import { Scope } from '@nestjs/common';
 
 import { Process } from 'src/engine/core-modules/message-queue/decorators/process.decorator';
@@ -24,6 +27,8 @@ export class MessageParticipantMatchParticipantJob {
     private readonly matchParticipantService: MatchParticipantService<MessageParticipantWorkspaceEntity>,
   ) {}
 
+  // Runs person-based matching when person ids/emails are given, and
+  // workspace-member-based matching when workspace member ids are given.
   @Process(MessageParticipantMatchParticipantJob.name)
   async handle(data: MessageParticipantMatchParticipantJobData): Promise<void> {
     const { participantMatching, workspaceId } = data;

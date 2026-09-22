@@ -24,6 +24,11 @@ import { ConfigVariableType } from 'src/engine/core-modules/twenty-config/enums/
 import { TypedReflect } from 'src/utils/typed-reflect';
 
 @Injectable()
+// Dedicated rotation handler for the "sensitive-config-storage" site: global
+// (no user/workspace) KeyValuePair rows of type CONFIG_VARIABLE whose key is marked
+// `isSensitive` + STRING in the config-variables metadata (see TypedReflect). This is
+// the untyped site whose encrypted-ness is conditional and can't be expressed as a
+// plain entity column in the typed registry.
 export class SensitiveConfigStorageRotationHandler extends SecretEncryptionRotationHandler {
   private readonly logger = new Logger(
     SensitiveConfigStorageRotationHandler.name,
@@ -37,6 +42,7 @@ export class SensitiveConfigStorageRotationHandler extends SecretEncryptionRotat
     super();
   }
 
+  // Counts sensitive config-variable rows not yet on the current encryption key.
   async countRemaining({
     currentEncryptionKeyId,
   }: Pick<
@@ -55,6 +61,7 @@ export class SensitiveConfigStorageRotationHandler extends SecretEncryptionRotat
     }).getCount();
   }
 
+  // Pages through matching rows by id and rotates each one's value.
   async rotate({
     siteName,
     currentEncryptionKeyId,
@@ -102,6 +109,7 @@ export class SensitiveConfigStorageRotationHandler extends SecretEncryptionRotat
     return outcome;
   }
 
+  // Decrypts and re-encrypts a single key-value pair's value.
   private async rotateRow({
     siteName,
     row,
@@ -147,6 +155,7 @@ export class SensitiveConfigStorageRotationHandler extends SecretEncryptionRotat
     }
   }
 
+  // Selects global CONFIG_VARIABLE rows whose key is sensitive and not yet rotated.
   private buildRotationQuery({
     currentEncryptionKeyId,
     sensitiveStringConfigKeys,
@@ -169,6 +178,8 @@ export class SensitiveConfigStorageRotationHandler extends SecretEncryptionRotat
       });
   }
 
+  // Reads the config-variables metadata to find every config key marked as a
+  // sensitive STRING, which is what makes it eligible for this rotation site.
   private collectSensitiveStringConfigKeys(): string[] {
     const metadata = TypedReflect.getMetadata(
       'config-variables',

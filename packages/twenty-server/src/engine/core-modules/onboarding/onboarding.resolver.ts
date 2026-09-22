@@ -1,3 +1,5 @@
+// GraphQL resolver exposing onboarding queries/mutations: teammate invite
+// suggestions, and marking onboarding steps as complete/skipped.
 import { UseFilters, UseGuards, UsePipes } from '@nestjs/common';
 import { Args, Mutation, Query } from '@nestjs/graphql';
 
@@ -29,6 +31,7 @@ export class OnboardingResolver {
 
   @Query(() => [InviteSuggestionDTO])
   @UseGuards(NoPermissionGuard)
+  // Returns suggested teammate emails to invite for the current user/workspace.
   async getInviteSuggestions(
     @AuthUser() user: AuthContextUser,
     @AuthWorkspace() workspace: WorkspaceEntity,
@@ -43,6 +46,7 @@ export class OnboardingResolver {
 
   @Mutation(() => OnboardingStepSuccessDTO)
   @UseGuards(NoPermissionGuard)
+  // Marks the "connect your email" onboarding step as no longer pending.
   async skipSyncEmailOnboardingStep(
     @AuthUser() user: AuthContextUser,
     @AuthWorkspace() workspace: WorkspaceEntity,
@@ -58,6 +62,8 @@ export class OnboardingResolver {
 
   @Mutation(() => OnboardingStepSuccessDTO)
   @UseGuards(NoPermissionGuard)
+  // Completes the "install apps" onboarding step and kicks off installation
+  // of the user's selected apps.
   async triggerInstallAppsOnboardingStep(
     @AuthUser() user: AuthContextUser,
     @AuthWorkspace() workspace: WorkspaceEntity,

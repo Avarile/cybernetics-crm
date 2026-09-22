@@ -1,3 +1,5 @@
+// Wires the services that cache and sync an application's translated
+// message catalogs.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

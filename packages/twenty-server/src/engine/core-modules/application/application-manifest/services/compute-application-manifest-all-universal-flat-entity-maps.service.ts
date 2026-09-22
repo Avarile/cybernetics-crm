@@ -1,3 +1,7 @@
+// Converts an entire application manifest into the full set of universal
+// flat entity maps (objects, fields, indexes, logic functions, roles,
+// permissions, views, page layouts, application variables, etc.), ready to
+// be diffed against existing workspace metadata to build a migration.
 import { Injectable } from '@nestjs/common';
 
 import {
@@ -51,6 +55,8 @@ export class ComputeApplicationManifestAllUniversalFlatEntityMapsService {
     private readonly secretEncryptionService: SecretEncryptionService,
   ) {}
 
+  // Encrypts a plaintext application variable value for storage, leaving
+  // empty strings (e.g. unset secret values) untouched.
   private encryptApplicationVariableValue(
     plaintext: string,
     workspaceId: string,
@@ -65,6 +71,13 @@ export class ComputeApplicationManifestAllUniversalFlatEntityMapsService {
     );
   }
 
+  // Walks every section of the manifest (objects/fields, indexes, logic
+  // functions, front components, connection providers, permission flags,
+  // roles and their nested permissions, skills, agents, views and their
+  // nested fields/filters/groups/sorts, navigation menu items, page
+  // layouts and their tabs/widgets, application variables, command menu
+  // items) and converts each entry into its universal flat entity,
+  // enforcing per-object index limits along the way.
   compute({
     manifest,
     ownerFlatApplication,

@@ -3,6 +3,8 @@ import { type LanguageModelUsage } from 'ai';
 const sum = (a: number | undefined, b: number | undefined): number =>
   (a ?? 0) + (b ?? 0);
 
+// Sums two LanguageModelUsage objects field by field, used to combine usage
+// across multiple generateText calls in one agent execution.
 export const mergeLanguageModelUsage = (
   a: LanguageModelUsage,
   b: LanguageModelUsage,

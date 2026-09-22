@@ -1,3 +1,6 @@
+// TypeORM entity for a server-side configuration variable declared by an
+// application registration's manifest (e.g. API keys required to run its
+// server routes), encrypted at rest when secret.
 import { Field, ObjectType } from '@nestjs/graphql';
 import {
   Check,

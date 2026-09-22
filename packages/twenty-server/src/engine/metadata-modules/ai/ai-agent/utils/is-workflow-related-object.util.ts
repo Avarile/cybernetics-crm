@@ -8,6 +8,8 @@ const WORKFLOW_STANDARD_OBJECT_UNIVERSAL_IDENTIFIERS = [
   STANDARD_OBJECTS.workflowAutomatedTrigger.universalIdentifier,
 ] as const;
 
+// True if the object is one of the built-in workflow standard objects, which
+// are hidden from agent database CRUD tools to avoid recursive workflow execution.
 export const isWorkflowRelatedObject = (objectMetadata: {
   universalIdentifier: string;
 }): boolean => {

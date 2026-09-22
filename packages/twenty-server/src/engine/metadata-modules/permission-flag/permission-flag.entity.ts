@@ -15,6 +15,8 @@ import { type PermissionFlagPermissionType } from 'src/engine/metadata-modules/p
 import { RolePermissionFlagEntity } from 'src/engine/metadata-modules/role-permission-flag/role-permission-flag.entity';
 import { SyncableEntity } from 'src/engine/workspace-manager/types/syncable-entity.interface';
 
+// A workspace's permission flag definition (standard or custom), which roles reference
+// via RolePermissionFlagEntity to gate access to a settings area or tool.
 @Entity('permissionFlag')
 @WasIntroducedInUpgrade({
   upgradeCommandName:

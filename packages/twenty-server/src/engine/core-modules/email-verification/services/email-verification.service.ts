@@ -1,3 +1,5 @@
+// Service that generates and sends email-verification link emails, and
+// handles resend requests (with a per-user cooldown and rate limiting).
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -47,6 +49,8 @@ export class EmailVerificationService {
     private readonly i18nService: I18nService,
   ) {}
 
+  // Generates a verification token and sends the verification email with a
+  // link to confirm it, unless email verification is disabled for the instance.
   async sendVerificationEmail({
     userId,
     email,
@@ -151,6 +155,9 @@ export class EmailVerificationService {
     return { success: true };
   }
 
+  // Resends the verification email for a user identified by email,
+  // enforcing a 1-minute cooldown between resend requests and rejecting
+  // already-verified users.
   async resendEmailVerificationToken(
     email: string,
     workspace: WorkspaceDomainConfig | undefined,

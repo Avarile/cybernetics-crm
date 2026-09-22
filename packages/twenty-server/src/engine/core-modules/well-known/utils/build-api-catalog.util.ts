@@ -1,3 +1,5 @@
+// Builds the RFC 9727 API catalog (linkset) document listing this
+// instance's REST/metadata/GraphQL/MCP endpoints and their docs.
 import { DOCUMENTATION_BASE_URL } from 'twenty-shared/constants';
 
 const API_DOCS_URL = `${DOCUMENTATION_BASE_URL}/developers/extend/api`;
@@ -5,6 +7,7 @@ const MCP_DOCS_URL = `${DOCUMENTATION_BASE_URL}/user-guide/ai/capabilities/mcp`;
 
 // service-desc points at each host's live OpenAPI, which is generated per
 // workspace and so includes that workspace's custom objects.
+// Builds the linkset entries pointing at this instance's API surfaces.
 export const buildApiCatalog = (baseUrl: string) => ({
   linkset: [
     {

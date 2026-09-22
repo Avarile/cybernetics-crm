@@ -1,5 +1,7 @@
 /* @license Enterprise */
 
+// Public webhook endpoint receiving Cloudflare custom-hostname notifications,
+// used to re-check DNS validation status for custom and public domains.
 import { Controller, Post, Req, UseFilters, UseGuards } from '@nestjs/common';
 
 import { Request } from 'express';
@@ -22,6 +24,8 @@ export class DnsCloudflareController {
 
   @Post(['cloudflare/custom-hostname-webhooks', 'webhooks/cloudflare'])
   @UseGuards(CloudflareSecretMatchGuard, PublicEndpointGuard, NoPermissionGuard)
+  // Handles Cloudflare's custom-hostname webhook, filtering to notifications
+  // for our configured zones before re-checking the hostname's DNS records.
   async customHostnameWebhooks(@Req() req: Request) {
     const hostname = req.body?.data?.data?.hostname;
 

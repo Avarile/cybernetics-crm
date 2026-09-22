@@ -1,5 +1,6 @@
 /* @license Enterprise */
 
+// GraphQL input for editing an SSO identity provider's status.
 import { Field, InputType } from '@nestjs/graphql';
 
 import { IsString, IsUUID } from 'class-validator';

@@ -8,6 +8,8 @@ import {
 } from 'src/engine/metadata-modules/permissions/permissions.exception';
 import { type RolePermissionFlagDTO } from 'src/engine/metadata-modules/role-permission-flag/dtos/role-permission-flag.dto';
 
+// Maps a flat role permission flag to the GraphQL RolePermissionFlagDTO shape, resolving
+// its permission flag key from the flat permission flag maps (throws if not found).
 export const fromFlatRolePermissionFlagToRolePermissionFlagDto = (
   flatRolePermissionFlag: FlatRolePermissionFlag,
   flatPermissionFlagMaps: FlatPermissionFlagMaps,

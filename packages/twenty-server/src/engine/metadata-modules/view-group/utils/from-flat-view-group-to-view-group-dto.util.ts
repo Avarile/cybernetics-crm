@@ -1,6 +1,8 @@
 import { type FlatViewGroup } from 'src/engine/metadata-modules/flat-view-group/types/flat-view-group.type';
 import { type ViewGroupDTO } from 'src/engine/metadata-modules/view-group/dtos/view-group.dto';
 
+// Converts a flat view group into its GraphQL DTO, converting timestamp
+// strings to Date objects.
 export const fromFlatViewGroupToViewGroupDto = (
   flatViewGroup: FlatViewGroup,
 ): ViewGroupDTO => {

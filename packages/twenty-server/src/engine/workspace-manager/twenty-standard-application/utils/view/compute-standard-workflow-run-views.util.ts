@@ -7,6 +7,7 @@ import {
   type CreateStandardViewArgs,
 } from 'src/engine/workspace-manager/twenty-standard-application/utils/view/create-standard-view-flat-metadata.util';
 
+// Builds the fixed set of standard views for the "workflowRun" object
 export const computeStandardWorkflowRunViews = (
   args: Omit<CreateStandardViewArgs<'workflowRun'>, 'context'>,
 ): Record<string, FlatView> => {

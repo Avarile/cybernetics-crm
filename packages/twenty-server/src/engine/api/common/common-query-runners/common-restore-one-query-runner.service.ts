@@ -25,6 +25,8 @@ import { FlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-metada
 import { FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object-metadata/types/flat-object-metadata.type';
 import { assertMutationNotOnRemoteObject } from 'src/engine/metadata-modules/object-metadata/utils/assert-mutation-not-on-remote-object.util';
 
+// Handles restoreOne by delegating to CommonRestoreManyQueryRunnerService
+// with an id-equality filter.
 @Injectable()
 export class CommonRestoreOneQueryRunnerService extends CommonBaseQueryRunnerService<
   RestoreOneQueryArgs,
@@ -38,6 +40,7 @@ export class CommonRestoreOneQueryRunnerService extends CommonBaseQueryRunnerSer
 
   protected readonly operationName = CommonQueryNames.RESTORE_ONE;
 
+  // Delegates to restoreMany filtered by id, throwing if no record matched.
   async run(
     args: CommonExtendedInput<RestoreOneQueryArgs>,
     queryRunnerContext: CommonExtendedQueryRunnerContext,
@@ -63,6 +66,7 @@ export class CommonRestoreOneQueryRunnerService extends CommonBaseQueryRunnerSer
     return result[0];
   }
 
+  // No args transformation needed for restoreOne.
   async computeArgs(
     args: CommonInput<RestoreOneQueryArgs>,
     _queryRunnerContext: CommonBaseQueryRunnerContext,
@@ -70,6 +74,7 @@ export class CommonRestoreOneQueryRunnerService extends CommonBaseQueryRunnerSer
     return args;
   }
 
+  // Runs the restored record through the common result-getter pipeline.
   async processQueryResult(
     queryResult: ObjectRecord,
     flatObjectMetadata: FlatObjectMetadata,
@@ -86,6 +91,7 @@ export class CommonRestoreOneQueryRunnerService extends CommonBaseQueryRunnerSer
     );
   }
 
+  // Rejects mutations on remote objects and validates the target id.
   async validate(
     args: CommonInput<RestoreOneQueryArgs>,
     queryRunnerContext: CommonBaseQueryRunnerContext,

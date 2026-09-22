@@ -8,6 +8,8 @@ import { type FlatRoleTarget } from 'src/engine/metadata-modules/flat-role-targe
 import { findFlatRoleTargetFromForeignKey } from 'src/engine/metadata-modules/flat-role-target/utils/find-flat-role-target-from-foreign-key.util';
 import { type CreateRoleTargetInput } from 'src/engine/metadata-modules/role-target/types/create-role-target.input';
 
+// Builds a new flat role target from a create input, and finds any existing role target
+// on the same target entity that must be deleted since a target can only hold one role.
 export const fromCreateRoleTargetInputToFlatRoleTargetToCreate = ({
   createRoleTargetInput,
   workspaceId,

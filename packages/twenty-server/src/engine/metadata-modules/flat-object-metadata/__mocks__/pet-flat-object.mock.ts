@@ -1,3 +1,4 @@
+// Test fixture: flat object metadata for the "Pet" custom object used in tests.
 import { getFlatObjectMetadataMock } from 'src/engine/metadata-modules/flat-object-metadata/__mocks__/get-flat-object-metadata.mock';
 
 export const PET_FLAT_OBJECT_MOCK = getFlatObjectMetadataMock({

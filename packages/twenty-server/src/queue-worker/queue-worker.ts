@@ -1,3 +1,5 @@
+// Worker entry point: boots a headless Nest application context (no HTTP server)
+// that processes background jobs from the message queue.
 import { NestFactory } from '@nestjs/core';
 
 import { ExceptionHandlerService } from 'src/engine/core-modules/exception-handler/exception-handler.service';
@@ -6,6 +8,7 @@ import { shouldCaptureException } from 'src/engine/utils/global-exception-handle
 import 'src/instrument';
 import { QueueWorkerModule } from 'src/queue-worker/queue-worker.module';
 
+// Creates the worker's application context and enables graceful shutdown hooks.
 async function bootstrap() {
   let exceptionHandlerService: ExceptionHandlerService | undefined;
   let loggerService: LoggerService | undefined;

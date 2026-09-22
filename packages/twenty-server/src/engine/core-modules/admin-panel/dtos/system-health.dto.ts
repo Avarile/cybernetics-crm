@@ -1,3 +1,4 @@
+// GraphQL DTOs for the system health overview: per-service status list.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 import { AdminPanelHealthServiceStatus } from 'src/engine/core-modules/admin-panel/enums/admin-panel-health-service-status.enum';

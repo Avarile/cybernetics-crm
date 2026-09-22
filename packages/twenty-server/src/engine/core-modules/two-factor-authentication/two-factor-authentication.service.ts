@@ -30,6 +30,7 @@ import { OTPStatus } from './strategies/otp/otp.constants';
 
 const PENDING_METHOD_REUSE_WINDOW_MS = 60 * 60 * 1000;
 
+// Provisions, verifies, and enforces TOTP-based two-factor authentication for workspace members
 @Injectable()
 // oxlint-disable-next-line twenty/inject-workspace-repository
 export class TwoFactorAuthenticationService {
@@ -40,6 +41,7 @@ export class TwoFactorAuthenticationService {
     private readonly secretEncryptionService: SecretEncryptionService,
   ) {}
 
+  // Decrypts a workspace-scoped stored TOTP secret
   private async decryptStoredSecret({
     storedSecret,
     workspaceId,
@@ -84,6 +86,9 @@ export class TwoFactorAuthenticationService {
     }
   }
 
+  // Starts TOTP provisioning: reuses a still-fresh pending method's secret if one
+  // exists, refuses if already fully provisioned, otherwise generates and stores
+  // a new secret and returns its provisioning URI
   async initiateStrategyConfiguration(
     userId: string,
     userEmail: string,
@@ -152,6 +157,8 @@ export class TwoFactorAuthenticationService {
     return uri;
   }
 
+  // Validates a submitted OTP against the user's stored method for the given
+  // strategy, marking the method verified on success
   async validateStrategy(
     userId: UserEntity['id'],
     token: string,
@@ -210,6 +217,7 @@ export class TwoFactorAuthenticationService {
     });
   }
 
+  // Verifies the TOTP strategy for an authenticated user and reports success
   async verifyTwoFactorAuthenticationMethodForAuthenticatedUser(
     userId: UserEntity['id'],
     token: string,

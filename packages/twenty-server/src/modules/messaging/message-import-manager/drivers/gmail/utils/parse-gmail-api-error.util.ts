@@ -6,6 +6,10 @@ import {
 } from 'src/modules/messaging/message-import-manager/drivers/exceptions/message-import-driver.exception';
 import { parseGmailErrorRetryAfter } from 'src/modules/messaging/message-import-manager/drivers/gmail/utils/parse-gmail-error-retry-after.util';
 
+// Maps a Gmail API error's status code/reason to a classified
+// MessageImportDriverException (insufficient permissions, temporary/
+// retryable, sync-cursor invalid, or unknown), extracting a throttle
+// retry-after hint from rate-limit error messages where present.
 export const parseGmailApiError = (
   error: GaxiosError,
 ): MessageImportDriverException => {

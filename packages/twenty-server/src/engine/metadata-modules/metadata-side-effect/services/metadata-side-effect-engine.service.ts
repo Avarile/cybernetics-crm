@@ -1,3 +1,8 @@
+// Core engine that expands a batch of pending metadata operations (creates/
+// updates/deletes) with the additional operations produced by registered
+// side effect handlers, detecting collisions between system- and
+// user-generated entities sharing a universal identifier.
+
 import { Injectable } from '@nestjs/common';
 
 import { type AllMetadataName } from 'twenty-shared/metadata';
@@ -59,6 +64,9 @@ export class MetadataSideEffectEngineService {
     private readonly metadataSideEffectHandlerRegistryService: MetadataSideEffectHandlerRegistryService,
   ) {}
 
+  // Given the metadata names being mutated, returns the full set of metadata
+  // names (including many-to-one relations and side-effect companions) that
+  // side effect handlers might need to read or write.
   getSideEffectRelatedMetadataNames(
     triggerMetadataNames: AllMetadataName[],
   ): AllMetadataName[] {
@@ -83,6 +91,10 @@ export class MetadataSideEffectEngineService {
     return [...relatedMetadataNames];
   }
 
+  // Runs every registered handler over each triggering entity in the
+  // operation matrix, merging the resulting side effect operations back
+  // into a cloned copy of the matrix. Returns a failure report if any
+  // handler fails or a system/non-system entity collides on identifier.
   expandWithSideEffects({
     allFlatEntityOperationRecordByMetadataName,
     sideEffectRelatedFlatEntityMaps,
@@ -184,6 +196,8 @@ export class MetadataSideEffectEngineService {
     };
   }
 
+  // Adds each entity from a handler's side effect operations into the
+  // expanded matrix, skipping entities already present at that key.
   private mergeSideEffectsIntoMatrix({
     expandedMatrix,
     sideEffectOperations,
@@ -219,6 +233,8 @@ export class MetadataSideEffectEngineService {
     }
   }
 
+  // Shallow-clones the operation matrix (and its create/update/delete
+  // buckets) so side effect expansion doesn't mutate the caller's input.
   private cloneMatrix(
     allFlatEntityOperationRecordByMetadataName: AllFlatEntityOperationRecordByMetadataName,
   ): GenericAllFlatEntityOperationRecordByMetadataName {
@@ -243,6 +259,9 @@ export class MetadataSideEffectEngineService {
     return clonedMatrix;
   }
 
+  // Adds a flat entity to the matrix bucket for its metadata name/operation
+  // unless one is already present there, in which case it records a
+  // collision if needed instead of overwriting.
   private addToOperationIfAbsent({
     expandedMatrix,
     operation,
@@ -282,6 +301,9 @@ export class MetadataSideEffectEngineService {
     flatEntityRecord[flatEntity.universalIdentifier] = flatEntity;
   }
 
+  // Records a collision only when the incoming entity is a system side
+  // effect landing on a universal identifier already claimed by a
+  // non-system entity (the case that indicates a naming conflict).
   private recordUniversalIdentifierCollisionIfNeeded({
     existingFlatEntity,
     operation,
@@ -319,6 +341,7 @@ export class MetadataSideEffectEngineService {
     });
   }
 
+  // Reads the entity's name field if it has one and it's a string.
   private extractFlatEntityName(
     flatEntity: GenericUniversalFlatEntity,
   ): string | undefined {

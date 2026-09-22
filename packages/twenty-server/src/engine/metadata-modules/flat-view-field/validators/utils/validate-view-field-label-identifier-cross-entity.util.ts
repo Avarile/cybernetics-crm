@@ -12,6 +12,10 @@ import { type UniversalFlatViewField } from 'src/engine/workspace-manager/worksp
 import { type UniversalDeleteViewFieldAction } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-builder/builders/view-field/types/workspace-migration-view-field-action.type';
 import { getEmptyFlatEntityValidationError } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-builder/builders/utils/get-flat-entity-validation-error.util';
 
+// Validates that deleting view fields never removes a view's last
+// remaining view field for its object's label identifier field, since a
+// (non-FIELDS_WIDGET) view must always be able to display the record's
+// label. Reports a validation error per offending deletion.
 export const validateViewFieldLabelIdentifierCrossEntity = ({
   optimisticUniversalFlatMaps,
   deletedViewFieldActions,

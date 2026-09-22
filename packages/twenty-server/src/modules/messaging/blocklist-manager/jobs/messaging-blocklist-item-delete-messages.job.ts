@@ -1,3 +1,7 @@
+// Runs after a blocklist item is created or updated: finds messages from the
+// newly-blocked handle(s) across the relevant workspace member's connected
+// accounts and deletes the matching message channel associations, then
+// cleans up any resulting orphan messages/threads.
 import { Scope } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -40,6 +44,10 @@ export class BlocklistItemDeleteMessagesJob {
     private readonly userWorkspaceRepository: Repository<UserWorkspaceEntity>,
   ) {}
 
+  // For each affected workspace member, deletes messages sent/received from
+  // their newly-blocklisted handles (or domains, when the handle starts with
+  // '@'), excluding the member's own connected account handles/aliases so
+  // messages sent by the member themselves are not removed.
   @Process(BlocklistItemDeleteMessagesJob.name)
   async handle(data: BlocklistItemDeleteMessagesJobData): Promise<void> {
     const workspaceId = data.workspaceId;

@@ -1,6 +1,7 @@
 import { type FlatWebhook } from 'src/engine/metadata-modules/flat-webhook/types/flat-webhook.type';
 import { type WebhookDTO } from 'src/engine/metadata-modules/webhook/dtos/webhook.dto';
 
+// Maps a flat webhook to the GraphQL WebhookDTO shape.
 export const fromFlatWebhookToWebhookDto = (
   flatWebhook: FlatWebhook,
 ): WebhookDTO => ({

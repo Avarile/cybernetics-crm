@@ -1,3 +1,5 @@
+// Marketplace apps that are Twenty-vetted and get featured/ordered
+// placement in the marketplace, keyed by their universal identifier.
 export const MARKETPLACE_VETTED_APPLICATIONS: {
   universalIdentifier: string;
   position?: number;

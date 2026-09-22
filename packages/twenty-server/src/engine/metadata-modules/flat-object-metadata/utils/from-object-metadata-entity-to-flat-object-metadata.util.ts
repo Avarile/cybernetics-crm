@@ -1,3 +1,5 @@
+// Converts a TypeORM ObjectMetadataEntity (with its loaded relations) into a
+// FlatObjectMetadata, resolving related entity ids to universal identifiers.
 import { isDefined } from 'twenty-shared/utils';
 
 import { fromEntityToScalarEntity } from 'src/engine/metadata-modules/flat-entity/utils/from-entity-to-scalar-entity.util';
@@ -10,6 +12,8 @@ type FromObjectMetadataEntityToFlatObjectMetadataArgs =
     fieldMetadataIdToUniversalIdentifierMap: Map<string, string>;
   };
 
+// Builds a FlatObjectMetadata from an entity, resolving many-to-one relation ids
+// and the soft label/image identifier field references to universal identifiers.
 export const fromObjectMetadataEntityToFlatObjectMetadata = (
   args: FromObjectMetadataEntityToFlatObjectMetadataArgs,
 ): FlatObjectMetadata => {

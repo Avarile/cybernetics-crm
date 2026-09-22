@@ -8,6 +8,8 @@ import {
   CommonQueryRunnerExceptionCode,
 } from 'src/engine/api/common/common-query-runners/errors/common-query-runner.exception';
 
+// Validates an array field input: null passes through, a single string is
+// allowed, otherwise it must be an array of strings; throws otherwise.
 export const validateArrayFieldOrThrow = (
   value: unknown,
   fieldName: string,

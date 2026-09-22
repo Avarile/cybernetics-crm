@@ -1,3 +1,5 @@
+// A bare TypeORM DataSource (no entities/migrations) used by CLI scripts that just
+// need to run raw SQL against Postgres directly (setup-db, truncate-db, etc).
 import { config } from 'dotenv';
 import { DataSource, type DataSourceOptions } from 'typeorm';
 config({

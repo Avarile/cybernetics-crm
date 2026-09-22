@@ -8,6 +8,10 @@ import { PageLayoutType } from 'src/engine/metadata-modules/page-layout/enums/pa
 import { GlobalWorkspaceOrmManager } from 'src/engine/twenty-orm/global-workspace-datasource/global-workspace-orm.manager';
 import { buildSystemAuthContext } from 'src/engine/twenty-orm/utils/build-system-auth-context.util';
 
+// Dashboards store their content in a page layout, so editing a layout's
+// tab/widget doesn't directly touch the dashboard row. This service walks
+// from a changed layout/tab/widget back up to its dashboard(s) and bumps
+// their updatedAt, so consumers see the dashboard as recently modified.
 @Injectable()
 export class DashboardSyncService {
   private readonly logger = new Logger(DashboardSyncService.name);
@@ -17,6 +21,8 @@ export class DashboardSyncService {
     private readonly workspaceManyOrAllFlatEntityMapsCacheService: WorkspaceManyOrAllFlatEntityMapsCacheService,
   ) {}
 
+  // Checks whether a page layout is a dashboard layout (vs. some other
+  // layout type), since only dashboard layouts need updatedAt propagation.
   private async isPageLayoutOfTypeDashboard({
     pageLayoutId,
     workspaceId,
@@ -42,6 +48,8 @@ export class DashboardSyncService {
     );
   }
 
+  // Bumps updatedAt on every dashboard backed by the given page layout, if
+  // that layout is in fact a dashboard layout.
   async updateLinkedDashboardsUpdatedAtByPageLayoutId({
     pageLayoutId,
     workspaceId,
@@ -83,6 +91,7 @@ export class DashboardSyncService {
     }
   }
 
+  // Resolves a tab up to its page layout and bumps the linked dashboard(s)' updatedAt.
   async updateLinkedDashboardsUpdatedAtByTabId({
     tabId,
     workspaceId,
@@ -128,6 +137,8 @@ export class DashboardSyncService {
     });
   }
 
+  // Resolves a widget up through its tab to its page layout and bumps the
+  // linked dashboard(s)' updatedAt.
   async updateLinkedDashboardsUpdatedAtByWidgetId({
     widgetId,
     workspaceId,

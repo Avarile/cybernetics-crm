@@ -27,6 +27,9 @@ import { ViewFilterModule } from 'src/engine/metadata-modules/view-filter/view-f
 import { ViewModule } from 'src/engine/metadata-modules/view/view.module';
 import { WorkspaceCacheModule } from 'src/engine/workspace-cache/workspace-cache.module';
 
+// NestJS module wiring together the common (GraphQL/REST/MCP-shared) API
+// layer: arg processors, query runners, result getters, and their
+// supporting services/modules.
 @Module({
   imports: [
     WorkspaceQueryHookModule,

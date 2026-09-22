@@ -2,6 +2,7 @@ import { registerEnumType } from '@nestjs/graphql';
 
 import { type JobState as BullMQJobState } from 'bullmq/dist/esm/types';
 
+// GraphQL-facing job state, kept distinct from BullMQ's own state strings
 export enum JobStateEnum {
   COMPLETED = 'COMPLETED',
   FAILED = 'FAILED',

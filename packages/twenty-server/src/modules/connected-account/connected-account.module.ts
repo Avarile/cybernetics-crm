@@ -7,6 +7,7 @@ import { ConnectedAccountEntity } from 'src/engine/metadata-modules/connected-ac
 import { ConnectedAccountListener } from 'src/modules/connected-account/listeners/connected-account.listener';
 import { AccountsToReconnectService } from 'src/modules/connected-account/services/accounts-to-reconnect.service';
 
+// Exposes AccountsToReconnectService and listens for connected account events.
 @Module({
   imports: [
     TypeOrmModule.forFeature([ConnectedAccountEntity, UserWorkspaceEntity]),

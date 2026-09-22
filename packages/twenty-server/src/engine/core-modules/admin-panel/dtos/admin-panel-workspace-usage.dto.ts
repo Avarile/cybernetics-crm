@@ -1,5 +1,6 @@
 import { Field, Float, ObjectType } from '@nestjs/graphql';
 
+// Credit usage for a workspace over a billing period, shown in the admin panel
 @ObjectType('AdminPanelWorkspaceUsage')
 export class AdminPanelWorkspaceUsageDTO {
   @Field(() => Date)

@@ -7,6 +7,7 @@ import { WorkspaceFlatSkillMapCacheService } from 'src/engine/metadata-modules/f
 import { SkillEntity } from 'src/engine/metadata-modules/skill/entities/skill.entity';
 import { provideWorkspaceScopedRepository } from 'src/engine/twenty-orm/workspace-scoped-repository/provide-workspace-scoped-repository';
 
+// Provides the flat-skill map cache used to read agent skills in denormalized form.
 @Module({
   imports: [
     TypeOrmModule.forFeature([ApplicationEntity, SkillEntity]),

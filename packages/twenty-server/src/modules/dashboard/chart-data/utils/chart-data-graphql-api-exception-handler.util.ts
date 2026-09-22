@@ -11,6 +11,7 @@ import {
   ChartDataExceptionCode,
 } from 'src/modules/dashboard/chart-data/exceptions/chart-data.exception';
 
+// Maps a ChartDataException code to the matching GraphQL error type.
 export const chartDataGraphqlApiExceptionHandler = (error: Error) => {
   if (error instanceof ChartDataException) {
     switch (error.code) {

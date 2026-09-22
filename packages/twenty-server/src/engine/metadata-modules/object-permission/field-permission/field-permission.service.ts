@@ -34,9 +34,12 @@ type DesiredFieldPermission = {
   canUpdateFieldValue?: boolean | null;
 };
 
+// Builds a composite lookup key for a field permission from its object/field metadata ids.
 const keyFrom = (objectMetadataId: string, fieldMetadataId: string) =>
   `${objectMetadataId}:${fieldMetadataId}`;
 
+// Manages field-level permission overrides for a role: diffs the desired set against
+// current permissions and runs the resulting create/update/delete as a workspace migration.
 @Injectable()
 export class FieldPermissionService {
   constructor(
@@ -46,6 +49,9 @@ export class FieldPermissionService {
     private readonly applicationService: ApplicationService,
   ) {}
 
+  // Replaces a role's field permissions with the desired set from the input: validates each
+  // entry, folds in permissions implied on relation target fields, then diffs against the
+  // current permissions and runs the create/update/delete as a single workspace migration.
   public async upsertFieldPermissions({
     workspaceId,
     input,
@@ -308,6 +314,9 @@ export class FieldPermissionService {
     return filtered;
   }
 
+  // Validates one field permission entry: rejects duplicates for the same field, rejects
+  // explicit grants (field permissions may only restrict), and requires the referenced
+  // object/field to exist, be non-system, and already have an object permission for the role.
   private validateFieldPermission({
     allFieldPermissions,
     fieldPermission,
@@ -404,6 +413,9 @@ export class FieldPermissionService {
     }
   }
 
+  // For each ONE_TO_MANY/MANY_TO_ONE relation field in the input, mirrors its permission
+  // onto the relation's target field so both sides stay consistent; throws if the target
+  // field is also explicitly present in the input with a conflicting permission.
   private addRelatedFieldPermissionsToDesired({
     desiredMap,
     inputFieldPermissions,

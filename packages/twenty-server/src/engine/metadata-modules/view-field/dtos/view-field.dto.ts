@@ -11,6 +11,8 @@ import { type ViewFieldOverrides } from 'src/engine/metadata-modules/view-field/
 
 registerEnumType(AggregateOperations, { name: 'AggregateOperations' });
 
+// GraphQL representation of a view field: one displayed column of a view,
+// its visibility/width/position, and optional aggregate/grouping.
 @ObjectType('ViewField')
 export class ViewFieldDTO {
   @Field(() => UUIDScalarType)

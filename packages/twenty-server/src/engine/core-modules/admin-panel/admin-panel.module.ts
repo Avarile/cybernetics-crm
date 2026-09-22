@@ -1,3 +1,5 @@
+// NestJS module wiring together the admin panel's resolvers, services and
+// health indicators, along with the entities and modules they depend on.
 import { Module } from '@nestjs/common';
 import { TerminusModule } from '@nestjs/terminus';
 import { TypeOrmModule } from '@nestjs/typeorm';

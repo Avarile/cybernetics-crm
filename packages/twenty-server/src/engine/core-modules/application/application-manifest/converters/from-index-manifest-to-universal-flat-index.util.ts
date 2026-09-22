@@ -1,3 +1,6 @@
+// Converts a manifest-declared index into the universal flat index metadata
+// shape, validating that referenced fields exist, composite sub-fields are
+// used correctly, and there are no duplicate columns.
 import { isNonEmptyString } from '@sniptt/guards';
 import { type IndexManifest } from 'twenty-shared/application';
 import {

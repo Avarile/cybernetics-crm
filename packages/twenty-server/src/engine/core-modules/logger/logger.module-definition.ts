@@ -1,3 +1,4 @@
+// NestJS configurable-module scaffolding for LoggerModule.forRoot/forRootAsync.
 import { ConfigurableModuleBuilder } from '@nestjs/common';
 
 import { type LoggerModuleOptions } from 'src/engine/core-modules/logger/interfaces';

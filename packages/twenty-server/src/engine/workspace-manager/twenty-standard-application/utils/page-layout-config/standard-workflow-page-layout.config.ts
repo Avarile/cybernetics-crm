@@ -30,6 +30,7 @@ const WORKFLOW_PAGE_TABS = {
   },
 } as const satisfies Record<string, StandardPageLayoutTabConfig>;
 
+// Fixed record page layout (tabs and widgets) for the standard "workflow" object
 export const STANDARD_WORKFLOW_PAGE_LAYOUT_CONFIG = {
   name: 'Default Workflow Layout',
   type: PageLayoutType.RECORD_PAGE,

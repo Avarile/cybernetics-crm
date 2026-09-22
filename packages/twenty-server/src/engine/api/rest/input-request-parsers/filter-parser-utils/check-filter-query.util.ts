@@ -5,6 +5,8 @@ import {
   RestInputRequestParserExceptionCode,
 } from 'src/engine/api/rest/input-request-parsers/rest-input-request-parser.exception';
 
+// Throws if a REST filter query string has unbalanced parentheses,
+// reporting how many are missing.
 export const checkFilterQuery = (filterQuery: string): void => {
   const countOpenedBrackets = (filterQuery.match(/\(/g) || []).length;
   const countClosedBrackets = (filterQuery.match(/\)/g) || []).length;

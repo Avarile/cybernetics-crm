@@ -11,6 +11,7 @@ import { WebhookSubscriptionModule } from 'src/modules/connected-account/webhook
 import { GoogleCalendarNotificationHandler } from 'src/modules/connected-account-sync-webhooks/drivers/google/google-calendar-notification.handler';
 import { GoogleMessagingNotificationHandler } from 'src/modules/connected-account-sync-webhooks/drivers/google/google-messaging-notification.handler';
 
+// Wires up the Google messaging/calendar webhook notification handlers.
 @Module({
   imports: [
     MetricsModule,

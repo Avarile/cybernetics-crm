@@ -7,6 +7,8 @@ config({
   override: true,
 });
 
+// Injects the server base URL (or an empty config to trigger auto-detection) into
+// the built frontend's index.html at boot, so the SPA knows which API to call.
 export function generateFrontConfig(): void {
   // When FRONT_AUTO_BASE_URL=true (or SERVER_URL is unset), inject an empty
   // _env_ so the frontend's getDefaultUrl() fallback resolves the API origin

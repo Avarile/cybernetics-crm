@@ -13,6 +13,7 @@ import { MessageFolderPendingSyncAction } from 'twenty-shared/types';
 
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';
 
+// GraphQL representation of a synced mailbox folder (e.g. Inbox, Sent) belonging to a message channel.
 @ObjectType('MessageFolder')
 export class MessageFolderDTO {
   @IsUUID()

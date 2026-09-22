@@ -17,6 +17,8 @@ export const fromCreateViewGroupInputToFlatViewGroupToCreate = ({
 } & Pick<AllFlatEntityMaps, 'flatViewMaps'>): UniversalFlatViewGroup & {
   id: string;
 } => {
+  // Builds a new universal flat view group from a create input, generating an id when
+  // not provided and resolving the parent view to a universal identifier.
   const { viewId, ...createViewGroupInput } =
     trimAndRemoveDuplicatedWhitespacesFromObjectStringProperties(
       rawCreateViewGroupInput,

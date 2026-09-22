@@ -19,6 +19,7 @@ import { DashboardGraphqlApiExceptionFilter } from 'src/modules/dashboard/utils/
 )
 @UseGuards(WorkspaceAuthGuard)
 @UsePipes(ResolverValidationPipe)
+// GraphQL mutation for duplicating a dashboard (and its underlying page layout).
 export class DashboardResolver {
   constructor(
     private readonly dashboardDuplicationService: DashboardDuplicationService,

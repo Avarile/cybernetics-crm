@@ -1,3 +1,7 @@
+// Service that loads calendar events for a set of related person ids,
+// resolves each event's participants and access visibility (full details vs
+// metadata-only, based on calendar channel sharing settings and ownership),
+// and shapes the result for the timeline UI.
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -32,6 +36,10 @@ export class TimelineCalendarEventService {
     private readonly fileUrlService: FileUrlService,
   ) {}
 
+  // Loads a page of calendar events involving any of the given person ids,
+  // resolving participants, avatars, and per-event visibility (full details
+  // if the current user owns/has full-share access to the source calendar
+  // channel, otherwise metadata-only with title/description redacted).
   async getCalendarEventsFromPersonIds({
     currentWorkspaceMemberId,
     personIds,
@@ -280,6 +288,8 @@ export class TimelineCalendarEventService {
     );
   }
 
+  // Resolves the person ids related to a given object record, then delegates
+  // to getCalendarEventsFromPersonIds.
   async getCalendarEventsFromObjectRecord({
     currentWorkspaceMemberId,
     objectNameSingular,

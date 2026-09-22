@@ -3,6 +3,8 @@ import { type PermissionFlagType } from 'twenty-shared/constants';
 import { type UserWorkspacePermissions } from 'src/engine/metadata-modules/permissions/types/user-workspace-permissions';
 import { type UserWorkspacePermissionsDto } from 'src/engine/metadata-modules/role/dtos/user-workspace-permissions.dto';
 
+// Converts resolved per-object permissions and settings permission flags
+// into the flattened DTO shape returned to API consumers.
 export const fromUserWorkspacePermissionsToUserWorkspacePermissionsDto = ({
   objectsPermissions: rawObjectsPermissions,
   permissionFlags: rawSettingsPermissions,

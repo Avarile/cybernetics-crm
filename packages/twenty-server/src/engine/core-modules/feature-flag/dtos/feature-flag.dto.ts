@@ -1,3 +1,4 @@
+// GraphQL DTO for a single workspace feature flag and its value.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 import { Column } from 'typeorm';

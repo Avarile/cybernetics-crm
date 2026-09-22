@@ -1,3 +1,7 @@
+// Converts an UpdatePageLayoutWidgetInput into the flat page layout widget
+// record to persist, handling override-vs-direct-edit resolution and
+// re-deriving universal identifiers/configuration for any changed relations.
+
 import { t } from '@lingui/core/macro';
 import {
   extractAndSanitizeObjectStringFields,
@@ -27,6 +31,10 @@ export type UpdatePageLayoutWidgetInputWithId = {
   update: UpdatePageLayoutWidgetInput;
 };
 
+// Finds the existing widget or throws, sanitizes the editable update
+// properties (applying overrides when the caller app doesn't own the
+// widget), merges them in, and refreshes derived universal identifiers for
+// any changed tab, object, configuration, or overrides.
 export const fromUpdatePageLayoutWidgetInputToFlatPageLayoutWidgetToUpdateOrThrow =
   ({
     updatePageLayoutWidgetInput: rawUpdatePageLayoutWidgetInput,

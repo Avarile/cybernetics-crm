@@ -1,3 +1,5 @@
+// TypeORM entity for an email domain a workspace has registered/validated to
+// automatically grant access to members whose work email matches the domain.
 import { ObjectType } from '@nestjs/graphql';
 
 import {

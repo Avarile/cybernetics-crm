@@ -1,3 +1,7 @@
+// Service managing workspace invitations, stored as AppToken rows: creating
+// and sending invite emails (with per-email/per-workspace rate limiting and
+// an onboarding-invite cap), validating/consuming tokens, and listing/
+// deleting/resending invitations.
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -57,6 +61,8 @@ export class WorkspaceInvitationService {
     private readonly fileUrlService: FileUrlService,
   ) {}
 
+  // Validates a personal invite token: it must exist, match the given
+  // email, and not be expired.
   async validatePersonalInvitation({
     workspacePersonalInviteToken,
     email,
@@ -94,6 +100,7 @@ export class WorkspaceInvitationService {
     }
   }
 
+  // Finds all active, unexpired invitations for the given email across workspaces.
   async findInvitationsByEmail(email: string) {
     return await this.appTokenRepository
       .createQueryBuilder('appToken')
@@ -109,6 +116,7 @@ export class WorkspaceInvitationService {
       .getMany();
   }
 
+  // Finds the (single) existing invitation for an email in a workspace, if any.
   async getOneWorkspaceInvitation(workspaceId: string, email: string) {
     return await this.appTokenRepository
       .createQueryBuilder('appToken')
@@ -122,6 +130,7 @@ export class WorkspaceInvitationService {
       .getOne();
   }
 
+  // Looks up the app token for a raw invitation token value, throwing if invalid.
   async getAppTokenByInvitationToken(invitationToken: string) {
     const appToken = await this.appTokenRepository.findOne({
       where: {
@@ -141,6 +150,7 @@ export class WorkspaceInvitationService {
     return appToken;
   }
 
+  // Lists a workspace's pending invitations (excluding the token value) as DTOs.
   async loadWorkspaceInvitations(workspace: WorkspaceEntity) {
     const appTokens = await this.appTokenRepository.find({
       where: {
@@ -156,6 +166,8 @@ export class WorkspaceInvitationService {
     return appTokens.map(castAppTokenToWorkspaceInvitationUtil);
   }
 
+  // Creates a new invitation token for an email, rejecting if one already
+  // exists or the user is already a workspace member.
   async createWorkspaceInvitation(
     email: string,
     workspace: WorkspaceEntity,
@@ -201,6 +213,7 @@ export class WorkspaceInvitationService {
     );
   }
 
+  // Deletes an invitation token belonging to the workspace.
   async deleteWorkspaceInvitation(appTokenId: string, workspaceId: string) {
     const appToken = await this.appTokenRepository.findOne({
       where: {
@@ -219,6 +232,8 @@ export class WorkspaceInvitationService {
     return 'success';
   }
 
+  // Deletes an email's pending invitation for a workspace, if one exists
+  // (used once the user actually joins).
   async invalidateWorkspaceInvitation(workspaceId: string, email: string) {
     const appToken = await this.getOneWorkspaceInvitation(workspaceId, email);
 
@@ -229,6 +244,8 @@ export class WorkspaceInvitationService {
     await this.appTokenRepository.delete(appToken.id);
   }
 
+  // Deletes an existing invitation token and re-sends a fresh invitation
+  // email for the same address, role, and onboarding flag.
   async resendWorkspaceInvitation(
     appTokenId: string,
     workspace: WorkspaceEntity,
@@ -260,6 +277,10 @@ export class WorkspaceInvitationService {
     );
   }
 
+  // Validates the role and any onboarding invite cap, rate-limits sending,
+  // creates an invitation token per email, sends the invite email for each
+  // successfully created one, clears the onboarding invite-pending flag,
+  // and returns a per-email success/error summary.
   async sendInvitations(
     emails: string[],
     workspace: WorkspaceEntity,
@@ -417,6 +438,8 @@ export class WorkspaceInvitationService {
     };
   }
 
+  // Generates and persists a new random invitation token with an expiry,
+  // recording the invitee's email and optional role.
   async generateInvitationToken(
     workspaceId: string,
     email: string,
@@ -452,6 +475,8 @@ export class WorkspaceInvitationService {
     return this.appTokenRepository.save(invitationToken);
   }
 
+  // Throws if sending `requestedCount` more onboarding invitations would
+  // exceed the configured per-workspace onboarding invite cap.
   private async throwIfOnboardingInvitationLimitReached(
     workspaceId: string,
     requestedCount: number,
@@ -479,6 +504,8 @@ export class WorkspaceInvitationService {
     }
   }
 
+  // Enforces per-email and per-workspace rate limits on invitation sending,
+  // converting a throttle failure into a WorkspaceInvitationException.
   private async throttleInvitationSending(
     workspaceId: string,
     emails: string[],

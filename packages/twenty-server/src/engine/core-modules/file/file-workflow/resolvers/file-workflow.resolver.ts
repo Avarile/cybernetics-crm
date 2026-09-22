@@ -1,3 +1,4 @@
+// GraphQL mutation for uploading a file to be used within a workflow.
 import { UseFilters, UseGuards, UsePipes } from '@nestjs/common';
 import { Args, Mutation } from '@nestjs/graphql';
 
@@ -26,6 +27,7 @@ export class FileWorkflowResolver {
 
   @Mutation(() => FileWithSignedUrlDTO)
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.UPLOAD_FILE))
+  // Reads the uploaded file stream into a buffer and stores it as a workflow file.
   async uploadWorkflowFile(
     @AuthWorkspace()
     { id: workspaceId }: WorkspaceEntity,

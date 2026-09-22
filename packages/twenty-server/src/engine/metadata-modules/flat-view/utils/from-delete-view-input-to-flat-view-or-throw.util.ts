@@ -14,6 +14,9 @@ import {
 } from 'src/engine/metadata-modules/view/exceptions/view.exception';
 import { type UniversalFlatView } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-view.type';
 
+// Looks up the flat view targeted by a delete request, throwing if it
+// doesn't exist. If the caller doesn't own the view, it's deactivated
+// instead of soft-deleted; otherwise its deletedAt is set.
 export const fromDeleteViewInputToFlatViewOrThrow = ({
   deleteViewInput: rawDeleteViewInput,
   flatViewMaps,

@@ -23,6 +23,8 @@ import { WorkspaceMigrationBuilderException } from 'src/engine/workspace-manager
 import { WorkspaceMigrationValidateBuildAndRunService } from 'src/engine/workspace-manager/workspace-migration/services/workspace-migration-validate-build-and-run-service';
 
 @Injectable()
+// CRUD for view filters, backed by the flat entity maps and applied
+// through validated workspace migrations.
 export class ViewFilterService {
   constructor(
     @InjectWorkspaceScopedRepository(ViewFilterEntity)
@@ -32,6 +34,8 @@ export class ViewFilterService {
     private readonly applicationService: ApplicationService,
   ) {}
 
+  // Builds a flat view filter from the input and applies it through a
+  // validated workspace migration, then returns the persisted DTO.
   async createOne({
     createViewFilterInput,
     workspaceId,
@@ -107,6 +111,8 @@ export class ViewFilterService {
     );
   }
 
+  // Applies partial updates to an existing view filter via a validated
+  // workspace migration.
   async updateOne({
     updateViewFilterInput,
     workspaceId,
@@ -185,6 +191,8 @@ export class ViewFilterService {
     );
   }
 
+  // Soft-deletes a view filter (sets deletedAt) via a validated workspace
+  // migration.
   async deleteOne({
     deleteViewFilterInput,
     workspaceId,
@@ -256,6 +264,7 @@ export class ViewFilterService {
     );
   }
 
+  // Permanently removes a view filter via a validated workspace migration.
   async destroyOne({
     destroyViewFilterInput,
     workspaceId,
@@ -319,6 +328,7 @@ export class ViewFilterService {
     });
   }
 
+  // Returns all active view filters in the workspace, ordered by position.
   async findByWorkspaceId(workspaceId: string): Promise<ViewFilterEntity[]> {
     return this.viewFilterRepository.find(workspaceId, {
       where: {
@@ -329,6 +339,7 @@ export class ViewFilterService {
     });
   }
 
+  // Returns all active view filters belonging to a specific view.
   async findByViewId(
     workspaceId: string,
     viewId: string,
@@ -343,6 +354,7 @@ export class ViewFilterService {
     });
   }
 
+  // Finds a single active view filter by id.
   async findById(
     id: string,
     workspaceId: string,

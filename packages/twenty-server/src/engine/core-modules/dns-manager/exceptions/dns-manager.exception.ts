@@ -1,3 +1,4 @@
+// Exception type and codes for DNS/Cloudflare custom-hostname errors.
 import { type MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 

@@ -1,3 +1,5 @@
+// NestJS module wiring the controller/service that generate OpenAPI schemas
+// for the workspace's REST APIs.
 import { Module } from '@nestjs/common';
 
 import { AuthModule } from 'src/engine/core-modules/auth/auth.module';

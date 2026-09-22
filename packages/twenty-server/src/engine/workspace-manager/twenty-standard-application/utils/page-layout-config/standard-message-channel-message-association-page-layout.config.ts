@@ -48,6 +48,7 @@ const MESSAGE_CHANNEL_MESSAGE_ASSOCIATION_PAGE_TABS = {
   },
 } as const satisfies Record<string, StandardPageLayoutTabConfig>;
 
+// Fixed record page layout (tabs and widgets) for the standard "messageChannelMessageAssociation" object
 export const STANDARD_MESSAGE_CHANNEL_MESSAGE_ASSOCIATION_PAGE_LAYOUT_CONFIG = {
   name: 'Default Message Channel Message Association Layout',
   type: PageLayoutType.RECORD_PAGE,

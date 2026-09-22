@@ -1,3 +1,6 @@
+// Assembles and runs a single AI chat streaming turn: builds the tool
+// catalog/system prompt, prepares and prunes messages, injects browsing
+// context, streams the model response, and bills/records usage metrics per step.
 import { Injectable, Logger } from '@nestjs/common';
 
 import {
@@ -117,6 +120,9 @@ export class ChatExecutionService {
     private readonly metricsService: MetricsService,
   ) {}
 
+  // Builds the actor context, tool catalog, and system prompt, prepares and
+  // prunes the conversation, then starts the model's streamText call with
+  // billing/metrics hooks; returns the live stream plus a credits-exhausted flag getter.
   async streamChat({
     workspace,
     userWorkspaceId,
@@ -591,6 +597,7 @@ export class ChatExecutionService {
     };
   }
 
+  // Appends a browsing-context text part to the last user message, if any.
   private injectBrowsingContextIntoLastUserMessage(
     messages: ExtendedUIMessage[],
     contextString: string,
@@ -619,6 +626,7 @@ export class ChatExecutionService {
     ];
   }
 
+  // Renders a browsing context into a text description for the system/user prompt.
   private buildContextFromBrowsingContext(
     workspace: WorkspaceEntity,
     browsingContext: BrowsingContextType,
@@ -640,6 +648,7 @@ export class ChatExecutionService {
     return '';
   }
 
+  // Describes the record page the user is viewing, with its URL and optional layout/tab.
   private buildRecordPageContext(
     workspace: WorkspaceEntity,
     objectNameSingular: string,
@@ -668,6 +677,7 @@ export class ChatExecutionService {
     return context;
   }
 
+  // Describes the list view (with applied filters) the user is viewing.
   private buildListViewContext(browsingContext: {
     type: 'listView';
     objectNameSingular: string;
@@ -689,6 +699,8 @@ export class ChatExecutionService {
     return context;
   }
 
+  // Maps extracted code-interpreter files to the filename/fileId pairs used
+  // to reference them in the system prompt.
   private async storeExtractedFiles(
     files: ExtractedFile[],
     _workspaceId: string,

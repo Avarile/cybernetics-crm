@@ -1,3 +1,5 @@
+// Global module that loads and validates environment variables (.env /
+// .env.test) into the app's ConfigModule at startup.
 import { Global, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 

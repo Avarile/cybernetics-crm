@@ -1,3 +1,6 @@
+// Assembles the system instructions text sent to MCP clients on
+// initialize: workspace object names, available skills, the CRUD tool
+// naming grammar, and usage guidance for the meta-tools.
 export const buildMcpServerInstructions = (
   objectNames: string,
   skillNames?: string,

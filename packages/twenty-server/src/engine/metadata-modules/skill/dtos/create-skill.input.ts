@@ -4,6 +4,7 @@ import { IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator';
 
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';
 
+// Input for creating a custom skill (an agent capability defined by markdown content).
 @InputType()
 export class CreateSkillInput {
   @IsUUID()

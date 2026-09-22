@@ -21,8 +21,12 @@ const fileItemSchema = z
   })
   .strict();
 
+// Zod schema for a FILES field value: an array of {fileId, label} items.
 export const filesFieldSchema = z.array(fileItemSchema);
 
+// Validates a FILES field input against filesFieldSchema (parsing it from
+// JSON first if given as a string) and enforces the field's configured
+// maxNumberOfValues; throws a CommonQueryRunnerException on any violation.
 export const validateFilesFieldOrThrow = (
   value: unknown,
   fieldName: string,

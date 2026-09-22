@@ -1,3 +1,5 @@
+// Admin-panel service computing recent-user and top-workspace statistics
+// (with search filtering and signed avatar/logo URLs) for the admin dashboard.
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -25,6 +27,8 @@ export class AdminPanelStatisticsService {
     private readonly workspaceRepository: Repository<WorkspaceEntity>,
   ) {}
 
+  // Returns the most recently created users (optionally search-filtered) with
+  // their default workspace and signed avatar/logo URLs.
   async getRecentUsers(
     searchTerm?: string,
   ): Promise<AdminPanelRecentUserDTO[]> {
@@ -88,6 +92,7 @@ export class AdminPanelStatisticsService {
     );
   }
 
+  // Returns the workspaces with the most members (optionally search-filtered).
   async getTopWorkspaces(
     searchTerm?: string,
   ): Promise<AdminPanelTopWorkspaceDTO[]> {
@@ -144,6 +149,8 @@ export class AdminPanelStatisticsService {
     );
   }
 
+  // Signs avatar URLs for a set of users, grouped per workspace since signing
+  // requires workspace context, keeping the first non-empty URL found per user.
   private async buildSignedAvatarUrlByUserId(
     users: UserEntity[],
   ): Promise<Map<string, string | null>> {

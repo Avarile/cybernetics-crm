@@ -36,6 +36,8 @@ registerEnumType(CalendarChannelContactAutoCreationPolicy, {
   name: 'CalendarChannelContactAutoCreationPolicy',
 });
 
+// A per-connected-account calendar sync channel: tracks sync state/cursor, visibility, contact
+// auto-creation policy, and the webhook subscription used to receive push updates from the provider.
 @Entity({ name: 'calendarChannel', schema: 'core' })
 @Index('IDX_CALENDAR_CHANNEL_WORKSPACE_ID_SYNC_ENABLED_SYNC_STAGE', [
   'workspaceId',

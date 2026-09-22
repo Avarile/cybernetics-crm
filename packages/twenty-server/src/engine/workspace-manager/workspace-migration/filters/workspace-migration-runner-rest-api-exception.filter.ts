@@ -14,6 +14,9 @@ import {
   WorkspaceMigrationRunnerExceptionCode,
 } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-runner/exceptions/workspace-migration-runner.exception';
 
+// Maps WorkspaceMigrationRunnerException into an HTTP error response, unwrapping the underlying
+// Postgres QueryFailedError (when the runner failed at the DB layer) so it's reported with its own
+// specific error handling instead of the generic runner error
 @Injectable()
 @Catch(WorkspaceMigrationRunnerException)
 export class WorkspaceMigrationRunnerRestApiExceptionFilter implements ExceptionFilter {

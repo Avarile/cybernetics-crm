@@ -44,11 +44,14 @@ import { WorkspaceMigrationRunnerRestApiExceptionFilter } from 'src/engine/works
   FlatEntityMapsRestApiExceptionFilter,
   WorkspaceMigrationRunnerRestApiExceptionFilter,
 )
+// REST API for view filter groups (GraphQL exposes the same operations
+// via ViewFilterGroupResolver).
 export class ViewFilterGroupController {
   constructor(
     private readonly viewFilterGroupService: ViewFilterGroupService,
   ) {}
 
+  // Lists view filter groups in the workspace, optionally filtered to one view.
   @Get()
   @UseGuards(NoPermissionGuard)
   async findMany(
@@ -62,6 +65,7 @@ export class ViewFilterGroupController {
     return this.viewFilterGroupService.findByWorkspaceId(workspace.id);
   }
 
+  // Fetches a single view filter group by id, throwing not-found if absent.
   @Get(':id')
   @UseGuards(NoPermissionGuard)
   async findOne(
@@ -92,6 +96,7 @@ export class ViewFilterGroupController {
     return viewFilterGroup;
   }
 
+  // Creates a new view filter group.
   @Post()
   @UseGuards(CreateViewFilterGroupPermissionGuard)
   async create(
@@ -104,6 +109,7 @@ export class ViewFilterGroupController {
     });
   }
 
+  // Updates a view filter group.
   @Patch(':id')
   @UseGuards(UpdateViewFilterGroupPermissionGuard)
   async update(
@@ -118,6 +124,7 @@ export class ViewFilterGroupController {
     });
   }
 
+  // Soft-deletes a view filter group.
   @Delete(':id')
   @UseGuards(DeleteViewFilterGroupPermissionGuard)
   async delete(

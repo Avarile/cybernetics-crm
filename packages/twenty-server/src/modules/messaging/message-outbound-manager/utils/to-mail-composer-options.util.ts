@@ -1,6 +1,8 @@
 import { type SendMessageInput } from 'src/modules/messaging/message-outbound-manager/types/send-message-input.type';
 import { isDefined } from 'twenty-shared/utils';
 
+// Maps a SendMessageInput into nodemailer MailComposer's options shape,
+// including reply threading headers (In-Reply-To/References) when set.
 export const toMailComposerOptions = (
   from: string,
   sendMessageInput: SendMessageInput,

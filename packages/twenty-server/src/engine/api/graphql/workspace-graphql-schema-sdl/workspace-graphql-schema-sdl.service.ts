@@ -1,3 +1,7 @@
+// Produces a workspace's GraphQL SDL (schema-definition-language string)
+// and its used scalar names, cached per workspace + metadata version (and
+// optionally scoped to one application's objects), regenerating from
+// metadata only on a cache miss.
 import { Injectable } from '@nestjs/common';
 
 import { isNonEmptyString } from '@sniptt/guards';
@@ -37,6 +41,11 @@ export class WorkspaceGraphqlSchemaSDLService {
     private readonly workspaceManyOrAllFlatEntityMapsCacheService: WorkspaceManyOrAllFlatEntityMapsCacheService,
   ) {}
 
+  // Returns the workspace's SDL and scalar names, from cache when the
+  // metadata version hasn't changed, otherwise regenerating and caching
+  // it. When applicationId is given, filters metadata down to just that
+  // application (plus the standard Twenty application) before generating.
+  // Returns null if the workspace has no database schema yet.
   async getOrComputeSchemaSDL(
     workspace: FlatWorkspace,
     applicationId?: string,
@@ -173,6 +182,9 @@ export class WorkspaceGraphqlSchemaSDLService {
     };
   }
 
+  // After filtering fields down to an application's subset, drops
+  // references to now-missing field ids from each object's fieldIds so
+  // the schema generator doesn't try to build types for removed fields.
   private reconcileObjectFieldIdsWithFilteredFieldMaps(
     flatObjectMetadataMaps: FlatEntityMaps<FlatObjectMetadata>,
     flatFieldMetadataMaps: FlatEntityMaps<FlatFieldMetadata>,
@@ -202,6 +214,7 @@ export class WorkspaceGraphqlSchemaSDLService {
     };
   }
 
+  // Restricts a flat entity map to only entries belonging to the given application ids.
   private filterFlatEntityMapsByApplicationIds<
     T extends FlatObjectMetadata | FlatFieldMetadata | FlatIndexMetadata,
   >(

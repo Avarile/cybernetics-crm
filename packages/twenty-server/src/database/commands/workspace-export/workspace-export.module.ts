@@ -7,6 +7,7 @@ import { FieldMetadataEntity } from 'src/engine/metadata-modules/field-metadata/
 import { ObjectMetadataEntity } from 'src/engine/metadata-modules/object-metadata/object-metadata.entity';
 import { SearchFieldMetadataEntity } from 'src/engine/metadata-modules/search-field-metadata/search-field-metadata.entity';
 
+// Registers the `workspace:export` CLI command and its metadata repositories.
 @Module({
   imports: [
     TypeOrmModule.forFeature([

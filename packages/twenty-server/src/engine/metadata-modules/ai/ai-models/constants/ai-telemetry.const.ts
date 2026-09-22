@@ -1,3 +1,4 @@
+// Default AI SDK telemetry settings applied to model calls (generateText/streamText).
 export const AI_TELEMETRY_CONFIG = {
   isEnabled: true,
   recordInputs: true,

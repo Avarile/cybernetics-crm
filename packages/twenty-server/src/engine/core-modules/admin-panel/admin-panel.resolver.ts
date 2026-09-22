@@ -99,6 +99,10 @@ import { type AiProviderConfig } from 'src/engine/metadata-modules/ai/ai-models/
 import { type AiProviderModelConfig } from 'src/engine/metadata-modules/ai/ai-models/types/ai-provider-model-config.type';
 import { extractConfigVariableName } from 'src/engine/metadata-modules/ai/ai-models/utils/extract-config-variable-name.util';
 
+// Main admin panel GraphQL resolver: exposes queries/mutations for user
+// lookup, server-admin access, config variables, health/queue monitoring,
+// AI provider/model management, application registrations, maintenance mode,
+// upgrade status and signing keys. Guarded per-field by admin/impersonation guards.
 import { AdminPanelHealthServiceDataDTO } from './dtos/admin-panel-health-service-data.dto';
 import { MaintenanceModeDTO } from './dtos/maintenance-mode.dto';
 import { ModelsDevModelSuggestionDTO } from './dtos/models-dev-model-suggestion.dto';
@@ -150,6 +154,7 @@ export class AdminPanelResolver {
     private readonly workspaceQueueService: MessageQueueService,
   ) {}
 
+  // Looks up a user by identifier (email/id) for the admin panel.
   @UseGuards(AdminPanelOrImpersonateGuard)
   @Query(() => UserLookup)
   async userLookupAdminPanel(
@@ -160,6 +165,7 @@ export class AdminPanelResolver {
     );
   }
 
+  // Returns the most recently active users, optionally filtered by search term.
   @UseGuards(AdminPanelOrImpersonateGuard)
   @Query(() => [AdminPanelRecentUserDTO])
   async adminPanelRecentUsers(
@@ -173,6 +179,7 @@ export class AdminPanelResolver {
     return this.adminStatisticsService.getRecentUsers(searchTerm);
   }
 
+  // Returns the top workspaces (e.g. by activity/usage), optionally filtered by search term.
   @UseGuards(ServerLevelImpersonateGuard)
   @Query(() => [AdminPanelTopWorkspaceDTO])
   async adminPanelTopWorkspaces(
@@ -186,12 +193,15 @@ export class AdminPanelResolver {
     return this.adminStatisticsService.getTopWorkspaces(searchTerm);
   }
 
+  // Lists users with server-admin access.
   @UseGuards(AdminPanelGuard, NoImpersonationGuard)
   @Query(() => [ServerAdminDTO])
   async getServerAdmins(): Promise<ServerAdminDTO[]> {
     return this.adminServerAdminService.getServerAdmins();
   }
 
+  // Grants or revokes a target user's full-admin-panel/impersonation access;
+  // requires OTP confirmation from the acting admin.
   @UseGuards(AdminPanelGuard, NoImpersonationGuard)
   @Mutation(() => ServerAdminDTO)
   async updateServerAdminAccess(
@@ -209,6 +219,8 @@ export class AdminPanelResolver {
     });
   }
 
+  // Toggles a feature flag for a specific workspace; converts known
+  // feature-flag exceptions into user-input errors.
   @UseGuards(AdminPanelGuard)
   @Mutation(() => Boolean)
   async updateWorkspaceFeatureFlag(
@@ -231,18 +243,21 @@ export class AdminPanelResolver {
     }
   }
 
+  // Returns all config variables grouped by category for the admin config UI.
   @UseGuards(AdminPanelGuard)
   @Query(() => ConfigVariablesDTO)
   async getConfigVariablesGrouped(): Promise<ConfigVariablesDTO> {
     return this.adminConfigService.getConfigVariablesGrouped();
   }
 
+  // Returns the aggregated health status of all system services.
   @UseGuards(AdminPanelGuard)
   @Query(() => SystemHealthDTO)
   async getSystemHealthStatus(): Promise<SystemHealthDTO> {
     return this.adminPanelHealthService.getSystemHealthStatus();
   }
 
+  // Returns the health status of a single indicator (e.g. worker queues).
   @UseGuards(AdminPanelGuard)
   @Query(() => AdminPanelHealthServiceDataDTO)
   async getIndicatorHealthStatus(
@@ -254,6 +269,7 @@ export class AdminPanelResolver {
     return this.adminPanelHealthService.getIndicatorHealthStatus(indicatorId);
   }
 
+  // Returns completed/failed job metrics for a queue over a time range, for graphing.
   @UseGuards(AdminPanelGuard)
   @Query(() => QueueMetricsDataDTO)
   async getQueueMetrics(
@@ -272,12 +288,15 @@ export class AdminPanelResolver {
     );
   }
 
+  // Returns server/instance version information.
   @UseGuards(AdminPanelGuard)
   @Query(() => VersionInfoDTO)
   async versionInfo(): Promise<VersionInfoDTO> {
     return this.adminVersionService.getVersionInfo();
   }
 
+  // Returns all registered AI models with availability, enablement and
+  // recommendation status, plus each provider's resolved label.
   @UseGuards(AdminPanelGuard)
   @Query(() => AdminAiModelsDTO)
   async getAdminAiModels(): Promise<AdminAiModelsDTO> {
@@ -328,6 +347,7 @@ export class AdminPanelResolver {
     };
   }
 
+  // Enables/disables a single AI model for admin selection.
   @UseGuards(AdminPanelGuard)
   @Mutation(() => Boolean)
   async setAdminAiModelEnabled(
@@ -339,6 +359,7 @@ export class AdminPanelResolver {
     return true;
   }
 
+  // Enables/disables multiple AI models at once.
   @UseGuards(AdminPanelGuard)
   @Mutation(() => Boolean)
   async setAdminAiModelsEnabled(
@@ -350,6 +371,7 @@ export class AdminPanelResolver {
     return true;
   }
 
+  // Marks/unmarks a single AI model as recommended.
   @UseGuards(AdminPanelGuard)
   @Mutation(() => Boolean)
   async setAdminAiModelRecommended(
@@ -361,6 +383,7 @@ export class AdminPanelResolver {
     return true;
   }
 
+  // Marks/unmarks multiple AI models as recommended at once.
   @UseGuards(AdminPanelGuard)
   @Mutation(() => Boolean)
   async setAdminAiModelsRecommended(
@@ -375,6 +398,7 @@ export class AdminPanelResolver {
     return true;
   }
 
+  // Sets the default AI model to use for a given role (e.g. smart/fast).
   @UseGuards(AdminPanelGuard)
   @Mutation(() => Boolean)
   async setAdminDefaultAiModel(
@@ -386,6 +410,7 @@ export class AdminPanelResolver {
     return true;
   }
 
+  // Returns a single database-stored config variable's current value/metadata.
   @UseGuards(AdminPanelGuard)
   @Query(() => ConfigVariableDTO)
   async getDatabaseConfigVariable(
@@ -396,6 +421,7 @@ export class AdminPanelResolver {
     return this.adminConfigService.getConfigVariable(key);
   }
 
+  // Creates a database-stored override for a config variable.
   @UseGuards(AdminPanelGuard)
   @Mutation(() => Boolean)
   async createDatabaseConfigVariable(
@@ -408,6 +434,7 @@ export class AdminPanelResolver {
     return true;
   }
 
+  // Updates a database-stored config variable's value.
   @UseGuards(AdminPanelGuard)
   @Mutation(() => Boolean)
   async updateDatabaseConfigVariable(
@@ -420,6 +447,8 @@ export class AdminPanelResolver {
     return true;
   }
 
+  // Removes a database-stored config variable override, reverting to the
+  // environment/default value.
   @UseGuards(AdminPanelGuard)
   @Mutation(() => Boolean)
   async deleteDatabaseConfigVariable(
@@ -430,6 +459,7 @@ export class AdminPanelResolver {
     return true;
   }
 
+  // Lists queue jobs in a given state, paginated.
   @UseGuards(AdminPanelGuard)
   @Query(() => QueueJobsResponseDTO)
   async getQueueJobs(
@@ -450,6 +480,7 @@ export class AdminPanelResolver {
     );
   }
 
+  // Retries failed jobs by id (or all failed jobs when no ids are given).
   @UseGuards(AdminPanelGuard)
   @Mutation(() => RetryJobsResponseDTO)
   async retryJobs(
@@ -464,6 +495,7 @@ export class AdminPanelResolver {
     );
   }
 
+  // Deletes queue jobs by id.
   @UseGuards(AdminPanelGuard)
   @Mutation(() => DeleteJobsResponseDTO)
   async deleteJobs(
@@ -478,6 +510,7 @@ export class AdminPanelResolver {
     );
   }
 
+  // Lists application registrations (marketplace apps), paginated and filterable.
   @UseGuards(AdminPanelGuard)
   @Query(() => PaginatedApplicationRegistrationsDTO)
   async findAllApplicationRegistrations(
@@ -498,6 +531,7 @@ export class AdminPanelResolver {
     });
   }
 
+  // Enqueues a one-off cron job to sync the marketplace application catalog.
   @UseGuards(AdminPanelGuard)
   @Mutation(() => Boolean)
   async syncMarketplaceCatalog(): Promise<boolean> {
@@ -510,6 +544,7 @@ export class AdminPanelResolver {
     return true;
   }
 
+  // Updates global settings for an application registration.
   @UseGuards(AdminPanelGuard)
   @Mutation(() => ApplicationRegistrationEntity)
   async updateAdminApplicationRegistration(
@@ -518,6 +553,8 @@ export class AdminPanelResolver {
     return this.applicationRegistrationService.updateGlobal(input);
   }
 
+  // Enqueues a job to backfill installation of a pre-installed app across
+  // workspaces that don't yet have it installed.
   @UseGuards(AdminPanelGuard)
   @Mutation(() => Boolean)
   async backfillApplicationInstallation(
@@ -545,6 +582,7 @@ export class AdminPanelResolver {
     return true;
   }
 
+  // Returns configured AI providers with sensitive fields (API keys) masked.
   @UseGuards(AdminPanelGuard)
   @Query(() => GraphQLJSON)
   async getAiProviders(): Promise<Record<string, unknown>> {
@@ -581,6 +619,7 @@ export class AdminPanelResolver {
     return masked;
   }
 
+  // Adds a custom AI provider configuration, validating the provider name format.
   @UseGuards(AdminPanelGuard)
   @Mutation(() => Boolean)
   async addAiProvider(
@@ -602,6 +641,7 @@ export class AdminPanelResolver {
     return true;
   }
 
+  // Removes a custom AI provider configuration.
   @UseGuards(AdminPanelGuard)
   @Mutation(() => Boolean)
   async removeAiProvider(
@@ -618,12 +658,14 @@ export class AdminPanelResolver {
     return true;
   }
 
+  // Returns provider suggestions sourced from the models.dev catalog.
   @UseGuards(AdminPanelGuard)
   @Query(() => [ModelsDevProviderSuggestionDTO])
   async getModelsDevProviders(): Promise<ModelsDevProviderSuggestionDTO[]> {
     return this.modelsDevCatalogService.getProviderSuggestions();
   }
 
+  // Returns model suggestions from the models.dev catalog for a provider type.
   @UseGuards(AdminPanelGuard)
   @Query(() => [ModelsDevModelSuggestionDTO])
   async getModelsDevSuggestions(
@@ -632,6 +674,7 @@ export class AdminPanelResolver {
     return this.modelsDevCatalogService.getModelSuggestions(providerType);
   }
 
+  // Adds a model to a custom AI provider's model list, rejecting duplicates.
   @UseGuards(AdminPanelGuard)
   @Mutation(() => Boolean)
   async addModelToProvider(
@@ -672,6 +715,7 @@ export class AdminPanelResolver {
     return true;
   }
 
+  // Removes a model from a custom AI provider's model list.
   @UseGuards(AdminPanelGuard)
   @Mutation(() => Boolean)
   async removeModelFromProvider(
@@ -704,6 +748,9 @@ export class AdminPanelResolver {
     return true;
   }
 
+  // Returns AI usage broken down by workspace over a period (defaults to the
+  // last 30 days), with workspace display names attached and dollar-mode used
+  // when billing is disabled.
   @UseGuards(AdminPanelGuard)
   @Query(() => [UsageBreakdownItemDTO])
   async getAdminAiUsageByWorkspace(
@@ -747,6 +794,7 @@ export class AdminPanelResolver {
     }));
   }
 
+  // Returns the currently scheduled maintenance-mode window, if any.
   @UseGuards(AdminPanelGuard)
   @Query(() => MaintenanceModeDTO, { nullable: true })
   async getMaintenanceMode(): Promise<MaintenanceModeDTO | null> {
@@ -763,6 +811,7 @@ export class AdminPanelResolver {
     };
   }
 
+  // Schedules a maintenance-mode window shown to users.
   @UseGuards(AdminPanelGuard)
   @Mutation(() => Boolean)
   async setMaintenanceMode(
@@ -777,6 +826,7 @@ export class AdminPanelResolver {
     return true;
   }
 
+  // Clears any scheduled maintenance-mode window.
   @UseGuards(AdminPanelGuard)
   @Mutation(() => Boolean)
   async clearMaintenanceMode(): Promise<boolean> {
@@ -785,6 +835,7 @@ export class AdminPanelResolver {
     return true;
   }
 
+  // Looks up a workspace by id for the admin panel.
   @UseGuards(ServerLevelImpersonateGuard)
   @Query(() => UserLookup)
   async workspaceLookupAdminPanel(
@@ -793,6 +844,7 @@ export class AdminPanelResolver {
     return this.adminUserLookupService.workspaceLookup(workspaceId);
   }
 
+  // Returns billing details for a workspace for the admin panel.
   @UseGuards(ServerLevelImpersonateGuard)
   @Query(() => AdminPanelWorkspaceBillingDTO, { nullable: true })
   async workspaceBillingAdminPanel(
@@ -801,6 +853,7 @@ export class AdminPanelResolver {
     return this.adminBillingService.getWorkspaceBilling(workspaceId);
   }
 
+  // Lists a workspace's AI chat threads for the admin panel.
   @UseGuards(ServerLevelImpersonateGuard)
   @Query(() => [AdminWorkspaceChatThreadDTO])
   async getAdminWorkspaceChatThreads(
@@ -809,6 +862,7 @@ export class AdminPanelResolver {
     return this.adminChatService.getWorkspaceChatThreads(workspaceId);
   }
 
+  // Returns the messages of a single AI chat thread for the admin panel.
   @UseGuards(ServerLevelImpersonateGuard)
   @Query(() => AdminChatThreadMessagesDTO)
   async getAdminChatThreadMessages(
@@ -817,6 +871,7 @@ export class AdminPanelResolver {
     return this.adminChatService.getChatThreadMessages(threadId);
   }
 
+  // Fetches a single application registration by id.
   @UseGuards(AdminPanelGuard)
   @Query(() => ApplicationRegistrationEntity)
   async findOneAdminApplicationRegistration(
@@ -825,6 +880,7 @@ export class AdminPanelResolver {
     return this.applicationRegistrationService.findOneByIdGlobal(id);
   }
 
+  // Lists an application registration's variables with values obfuscated.
   @UseGuards(AdminPanelGuard)
   @Query(() => [ApplicationRegistrationVariableDTO])
   async findAdminApplicationRegistrationVariables(
@@ -835,6 +891,7 @@ export class AdminPanelResolver {
     );
   }
 
+  // Returns usage/installation stats for an application registration.
   @UseGuards(AdminPanelGuard)
   @Query(() => ApplicationRegistrationStatsDTO)
   async findAdminApplicationRegistrationStats(
@@ -843,6 +900,7 @@ export class AdminPanelResolver {
     return this.applicationRegistrationService.getStatsGlobal(id);
   }
 
+  // Lists workspaces that have an application registration installed, paginated.
   @UseGuards(AdminPanelGuard)
   @Query(() => ApplicationRegistrationInstalledWorkspacesDTO)
   async findAdminApplicationRegistrationInstalledWorkspaces(
@@ -862,6 +920,7 @@ export class AdminPanelResolver {
     );
   }
 
+  // Updates a single application registration variable's value.
   @UseGuards(AdminPanelGuard)
   @Mutation(() => ApplicationRegistrationVariableDTO)
   async updateAdminApplicationRegistrationVariable(
@@ -872,18 +931,21 @@ export class AdminPanelResolver {
     );
   }
 
+  // Returns the cached upgrade status for the instance and all workspaces.
   @UseGuards(AdminPanelGuard)
   @Query(() => InstanceAndAllWorkspacesUpgradeStatusDTO)
   async getInstanceAndAllWorkspacesUpgradeStatus(): Promise<InstanceAndAllWorkspacesUpgradeStatusDTO> {
     return this.upgradeStatusService.getInstanceAndAllWorkspacesStatus();
   }
 
+  // Forces a refresh of the instance/workspaces upgrade status cache.
   @UseGuards(AdminPanelGuard)
   @Mutation(() => InstanceAndAllWorkspacesUpgradeStatusDTO)
   async refreshUpgradeStatus(): Promise<InstanceAndAllWorkspacesUpgradeStatusDTO> {
     return this.upgradeStatusService.refreshInstanceAndAllWorkspacesStatus();
   }
 
+  // Returns upgrade status for a specific set of workspace ids.
   @UseGuards(AdminPanelGuard)
   @Query(() => [WorkspaceUpgradeStatusDTO])
   async getUpgradeStatus(
@@ -897,12 +959,14 @@ export class AdminPanelResolver {
     return this.upgradeStatusService.getWorkspaceStatuses(workspaceIds);
   }
 
+  // Lists the instance's signing keys (e.g. for JWT/webhook signing).
   @UseGuards(AdminPanelGuard)
   @Query(() => SigningKeysAdminPanelDTO)
   async getSigningKeys(): Promise<SigningKeysAdminPanelDTO> {
     return this.adminPanelSigningKeyService.getSigningKeys();
   }
 
+  // Revokes a signing key by id.
   @UseGuards(AdminPanelGuard)
   @Mutation(() => SigningKeyDTO)
   async revokeSigningKey(

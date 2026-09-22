@@ -1,3 +1,7 @@
+// Converts a page layout widget's configuration (entity-scoped, using raw
+// foreign key ids) into its universal form (using universal identifiers),
+// so it can be diffed/synced across workspaces during migrations.
+
 import {
   type ChartFilter,
   type UniversalChartFilter,
@@ -17,6 +21,8 @@ type PageLayoutWidgetConfiguration = PageLayoutWidgetEntity['configuration'];
 type UniversalPageLayoutWidgetConfiguration =
   NonNullable<FlatPageLayoutWidget>['universalConfiguration'];
 
+// Resolves a field metadata id to its universal identifier, optionally
+// throwing when the mapping is missing instead of returning null.
 const getFieldMetadataUniversalIdentifier = ({
   fieldMetadataId,
   fieldMetadataUniversalIdentifierById,
@@ -43,6 +49,8 @@ const getFieldMetadataUniversalIdentifier = ({
   return universalIdentifier;
 };
 
+// Converts a chart filter's record filters to reference field metadata by
+// universal identifier instead of by id.
 const convertChartFilterToUniversalFilter = ({
   filter,
   fieldMetadataUniversalIdentifierById,
@@ -70,6 +78,9 @@ const convertChartFilterToUniversalFilter = ({
   };
 };
 
+// Dispatches on the widget's configurationType and rewrites its
+// entity-scoped foreign key ids (field, view, front component, etc.) into
+// universal identifiers, leaving configuration types with no ids untouched.
 export const fromPageLayoutWidgetConfigurationToUniversalConfiguration = ({
   configuration,
   fieldMetadataUniversalIdentifierById,

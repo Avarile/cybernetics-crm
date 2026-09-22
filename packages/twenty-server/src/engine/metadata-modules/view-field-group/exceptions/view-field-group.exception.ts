@@ -3,6 +3,8 @@ import { msg } from '@lingui/core/macro';
 
 import { CustomException } from 'src/utils/custom-exception';
 
+// Exception thrown by the view field group module for missing records,
+// missing fields widgets, or invalid input.
 export class ViewFieldGroupException extends CustomException<ViewFieldGroupExceptionCode> {
   constructor(
     message: string,

@@ -44,6 +44,7 @@ const BLOCKLIST_PAGE_TABS = {
   },
 } as const satisfies Record<string, StandardPageLayoutTabConfig>;
 
+// Fixed record page layout (tabs and widgets) for the standard "blocklist" object
 export const STANDARD_BLOCKLIST_PAGE_LAYOUT_CONFIG = {
   name: 'Default Blocklist Layout',
   type: PageLayoutType.RECORD_PAGE,

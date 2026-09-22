@@ -9,9 +9,12 @@ import {
   type OPTIONS_TYPE,
 } from 'src/engine/core-modules/message-queue/message-queue.module-definition';
 
+// Registers the message queue driver/services, and separately the explorer that
+// discovers and wires up @Processor classes (kept optional so it registers once)
 @Global()
 @Module({})
 export class MessageQueueModule {
+  // Registers the module synchronously with static driver options
   static register(options: typeof OPTIONS_TYPE): DynamicModule {
     return {
       module: MessageQueueModule,
@@ -19,6 +22,7 @@ export class MessageQueueModule {
     };
   }
 
+  // Registers the processor discovery explorer, separate from the driver setup
   static registerExplorer(): DynamicModule {
     return {
       module: MessageQueueModule,
@@ -27,6 +31,7 @@ export class MessageQueueModule {
     };
   }
 
+  // Registers the module with driver options resolved asynchronously
   static registerAsync(options: typeof ASYNC_OPTIONS_TYPE): DynamicModule {
     return {
       module: MessageQueueModule,

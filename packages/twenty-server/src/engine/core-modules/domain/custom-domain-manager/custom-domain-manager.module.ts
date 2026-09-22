@@ -8,6 +8,7 @@ import { CustomDomainManagerService } from 'src/engine/core-modules/domain/custo
 import { PublicDomainEntity } from 'src/engine/core-modules/public-domain/public-domain.entity';
 import { WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.entity';
 
+// Wires up the service that manages workspace custom domain assignment and DNS validation
 @Module({
   imports: [
     TypeOrmModule.forFeature([WorkspaceEntity, PublicDomainEntity]),

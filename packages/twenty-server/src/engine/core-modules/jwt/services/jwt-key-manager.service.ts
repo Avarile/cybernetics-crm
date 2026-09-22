@@ -1,3 +1,6 @@
+// Manages the lifecycle of asymmetric (EC P-256) JWT signing keys: lazily
+// creates/loads the current key (with a short in-memory cache to avoid
+// hammering the DB), rotates to a new current key, and revokes old keys.
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -40,6 +43,9 @@ export class JwtKeyManagerService {
     private readonly secretEncryptionService: SecretEncryptionService,
   ) {}
 
+  // Returns the current signing key (id + decrypted private key), caching
+  // the in-flight/loaded promise briefly to reduce DB load; returns null
+  // (falling back to legacy signing) if none could be loaded or created.
   async getCurrentSigningKey(): Promise<CurrentSigningKey | null> {
     const isLocalCacheExpired =
       Date.now() - this.currentSigningKeyCachedAt >
@@ -64,6 +70,8 @@ export class JwtKeyManagerService {
     }
   }
 
+  // Looks up a signing key's public key PEM by id via the entity cache, used
+  // to verify tokens signed with a (possibly non-current) known key.
   async getValidPublicKeyPemById(id: string): Promise<string | null> {
     if (!isNonEmptyString(id) || !isValidUuid(id)) {
       return null;
@@ -72,12 +80,16 @@ export class JwtKeyManagerService {
     return this.coreEntityCacheService.get('signingKeyPublicKey', id);
   }
 
+  // Lists all signing keys, newest first.
   async listSigningKeys(): Promise<SigningKeyEntity[]> {
     return this.signingKeyRepository.find({
       order: { createdAt: 'DESC' },
     });
   }
 
+  // Generates a new key pair, atomically demotes the previous current key
+  // (clearing its private key) and inserts the new one as current, then
+  // invalidates the relevant caches.
   async rotateCurrent(): Promise<CurrentSigningKey> {
     const generated = this.generateEcP256KeyPair();
     const newId = randomUUID();
@@ -109,6 +121,8 @@ export class JwtKeyManagerService {
     return { id: newId, privateKeyPem: generated.privateKeyPem };
   }
 
+  // Marks a signing key revoked (clearing its private key so it can no
+  // longer sign), throwing if the id is invalid or the key doesn't exist.
   async revokeSigningKey(id: string): Promise<SigningKeyEntity> {
     if (!isNonEmptyString(id) || !isValidUuid(id)) {
       throw new JwtKeyManagerException(
@@ -143,11 +157,15 @@ export class JwtKeyManagerService {
     return this.signingKeyRepository.findOneByOrFail({ id });
   }
 
+  // Clears the short-lived in-memory cache of the current signing key.
   private invalidateCurrentSigningKeyLocalCache(): void {
     this.currentSigningKeyPromise = null;
     this.currentSigningKeyCachedAt = 0;
   }
 
+  // Loads the existing current key row if present, otherwise generates and
+  // persists a new one. Swallows errors (logging them) so callers fall back
+  // to legacy signing rather than crashing.
   private async loadOrCreateCurrentSigningKey(): Promise<CurrentSigningKey | null> {
     try {
       const existing = await this.findCurrentSigningKeyRow();
@@ -174,12 +192,14 @@ export class JwtKeyManagerService {
     }
   }
 
+  // Finds the active (non-revoked) row marked as the current signing key.
   private async findCurrentSigningKeyRow(): Promise<SigningKeyEntity | null> {
     return this.signingKeyRepository.findOne({
       where: { isCurrent: true, revokedAt: IsNull() },
     });
   }
 
+  // Decrypts a stored private key, throwing if it's missing.
   private decryptPrivateKey(
     encryptedPrivateKey: EncryptedString | null,
     id: string,
@@ -196,6 +216,9 @@ export class JwtKeyManagerService {
     );
   }
 
+  // Generates and inserts a brand-new current signing key. If a concurrent
+  // process already inserted one (unique constraint violation), falls back
+  // to reading and returning that one instead of failing.
   private async generateAndPersistCurrent(): Promise<CurrentSigningKey> {
     const generated = this.generateEcP256KeyPair();
     const id = randomUUID();
@@ -233,6 +256,7 @@ export class JwtKeyManagerService {
     }
   }
 
+  // Generates a fresh EC P-256 key pair, PEM-encoded.
   private generateEcP256KeyPair(): {
     privateKeyPem: PlaintextString;
     publicKeyPem: string;
@@ -251,6 +275,7 @@ export class JwtKeyManagerService {
     return { privateKeyPem, publicKeyPem };
   }
 
+  // Detects a Postgres unique-constraint violation from a TypeORM error.
   private isUniqueViolation(error: unknown): boolean {
     return (
       error instanceof QueryFailedError &&

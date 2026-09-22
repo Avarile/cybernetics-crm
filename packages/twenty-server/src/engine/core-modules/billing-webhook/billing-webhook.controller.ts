@@ -1,5 +1,7 @@
 /* @license Enterprise */
 
+// REST controller that receives Stripe webhook events and dispatches them to the
+// matching billing-webhook service based on event type
 import {
   Controller,
   Headers,
@@ -50,6 +52,7 @@ export class BillingWebhookController {
     private readonly billingWebhookSubscriptionScheduleService: BillingWebhookSubscriptionScheduleService,
   ) {}
 
+  // Verifies the Stripe signature, parses the event, and routes it for handling
   @Post(['webhooks/stripe'])
   @UseGuards(PublicEndpointGuard, NoPermissionGuard)
   async handleWebhooks(
@@ -89,6 +92,7 @@ export class BillingWebhookController {
     }
   }
 
+  // Dispatches a Stripe event to the service responsible for its event type
   private async handleStripeEvent(event: Stripe.Event) {
     switch (event.type) {
       case BillingWebhookEvent.SETUP_INTENT_SUCCEEDED:

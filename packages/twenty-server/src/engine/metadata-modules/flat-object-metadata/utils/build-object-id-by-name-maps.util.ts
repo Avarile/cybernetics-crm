@@ -3,6 +3,8 @@ import { isDefined } from 'twenty-shared/utils';
 import { type FlatEntityMaps } from 'src/engine/metadata-modules/flat-entity/types/flat-entity-maps.type';
 import { type FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object-metadata/types/flat-object-metadata.type';
 
+// Builds lookup maps from object nameSingular/namePlural to object metadata id,
+// for resolving object names to ids without scanning the full maps repeatedly.
 export const buildObjectIdByNameMaps = (
   flatObjectMetadataMaps: FlatEntityMaps<FlatObjectMetadata>,
 ): {

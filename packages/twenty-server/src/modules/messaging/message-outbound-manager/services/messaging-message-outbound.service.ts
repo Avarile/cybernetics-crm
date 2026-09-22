@@ -1,3 +1,6 @@
+// Dispatches send/draft operations to the outbound driver matching the
+// connected account's provider, rejecting providers that don't support
+// sending/drafting (auth-only providers, or email-group for drafts).
 import { Injectable } from '@nestjs/common';
 
 import { ConnectedAccountProvider } from 'twenty-shared/types';
@@ -20,6 +23,7 @@ export class MessagingMessageOutboundService {
     private readonly emailGroupMessageOutboundService: EmailGroupMessageOutboundService,
   ) {}
 
+  // Routes to the provider-specific outbound driver's sendMessage.
   public async sendMessage(
     sendMessageInput: SendMessageInput,
     connectedAccount: ConnectedAccountEntity,
@@ -59,6 +63,7 @@ export class MessagingMessageOutboundService {
     }
   }
 
+  // Routes to the provider-specific outbound driver's createDraft.
   public async createDraft(
     sendMessageInput: SendMessageInput,
     connectedAccount: ConnectedAccountEntity,
@@ -94,6 +99,7 @@ export class MessagingMessageOutboundService {
     }
   }
 
+  // Routes to the provider-specific outbound driver's sendDraft.
   public async sendDraft(
     draftExternalId: string,
     sendMessageInput: SendMessageInput,

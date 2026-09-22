@@ -1,3 +1,6 @@
+// The ask_questions tool the AI SDK calls to pause a turn and present the
+// user with multiple-choice questions; execution just records the questions
+// as pending — the actual answer flow is handled by AgentChatService.
 import { z } from 'zod';
 
 import {
@@ -66,6 +69,8 @@ type AskQuestionsPendingOutput = {
   result: AskQuestionsToolResult;
 };
 
+// Builds the ask_questions AI SDK tool definition; its result is always a
+// 'pending' status, since answering happens asynchronously via GraphQL.
 export const createAskQuestionsTool = () => ({
   description:
     'Ask the user one or more multiple-choice questions when you need a decision you cannot ' +

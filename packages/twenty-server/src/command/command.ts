@@ -1,3 +1,5 @@
+// CLI entry point: boots the Nest CLI application context (via nest-commander)
+// used to run registered instance/workspace commands, then dispatches the invocation.
 import { CommandFactory } from 'nest-commander';
 
 import { ExceptionHandlerService } from 'src/engine/core-modules/exception-handler/exception-handler.service';
@@ -6,6 +8,7 @@ import { shouldCaptureException } from 'src/engine/utils/global-exception-handle
 
 import { CommandModule } from './command.module';
 
+// Creates the CLI app, wires logging/error capture, then runs the requested command.
 async function bootstrap() {
   const errorHandler = (err: Error) => {
     loggerService.error(err?.message, err?.name);

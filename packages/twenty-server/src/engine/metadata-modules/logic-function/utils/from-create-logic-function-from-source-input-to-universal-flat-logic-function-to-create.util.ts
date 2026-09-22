@@ -1,3 +1,6 @@
+// Converts a CreateLogicFunctionFromSourceInput plus resolved build info
+// into the universal flat logic function record to persist.
+
 import { trimAndRemoveDuplicatedWhitespacesFromObjectStringProperties } from 'twenty-shared/utils';
 import { v4 } from 'uuid';
 
@@ -8,6 +11,8 @@ import {
 import { type CreateLogicFunctionFromSourceInput } from 'src/engine/metadata-modules/logic-function/dtos/create-logic-function-from-source.input';
 import { type UniversalFlatLogicFunction } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-logic-function.type';
 
+// Sanitizes name/description, generates missing ids, and assembles the full
+// universal flat logic function record with defaults for optional settings.
 export const fromCreateLogicFunctionFromSourceInputToUniversalFlatLogicFunctionToCreate =
   ({
     createLogicFunctionFromSourceInput,

@@ -1,3 +1,4 @@
+// CLI command to register the recurring ongoing-stale-sync-check cron job.
 import { Command, CommandRunner } from 'nest-commander';
 
 import { InjectMessageQueue } from 'src/engine/core-modules/message-queue/decorators/message-queue.decorator';
@@ -21,6 +22,7 @@ export class MessagingOngoingStaleCronCommand extends CommandRunner {
     super();
   }
 
+  // Schedules the recurring stale-ongoing-sync check cron job.
   async run(): Promise<void> {
     await this.messageQueueService.addCron<undefined>({
       jobName: MessagingOngoingStaleCronJob.name,

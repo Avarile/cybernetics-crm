@@ -1,2 +1,4 @@
+// Fixed synthetic entity id used to store the cached marketplace catalog
+// as a single row.
 export const MARKETPLACE_CATALOG_CACHE_ENTITY_ID =
   '00000000-0000-4000-8000-000000000001';

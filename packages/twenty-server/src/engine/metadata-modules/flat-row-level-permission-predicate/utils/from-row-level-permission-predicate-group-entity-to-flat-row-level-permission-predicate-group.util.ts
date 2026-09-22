@@ -5,6 +5,8 @@ import { type FlatRowLevelPermissionPredicateGroup } from 'src/engine/metadata-m
 import { type FromEntityToFlatEntityArgs } from 'src/engine/workspace-cache/types/from-entity-to-flat-entity-args.type';
 import { resolveManyToOneRelationIdsToUniversalIdentifiers } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/utils/resolve-many-to-one-relation-ids-to-universal-identifiers.util';
 
+// Converts a RowLevelPermissionPredicateGroupEntity (with its loaded child groups and
+// predicates) into its flat representation, resolving relation ids to universal identifiers.
 export const fromRowLevelPermissionPredicateGroupEntityToFlatRowLevelPermissionPredicateGroup =
   (
     args: FromEntityToFlatEntityArgs<'rowLevelPermissionPredicateGroup'>,

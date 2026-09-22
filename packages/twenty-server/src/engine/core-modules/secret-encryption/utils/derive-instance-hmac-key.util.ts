@@ -7,6 +7,8 @@ import {
 
 const ZERO_SALT = Buffer.alloc(32);
 
+// Derives a purpose-scoped HMAC key from the raw instance key via HKDF, so a
+// key derived for one purpose can't be reused for another
 export const deriveInstanceHmacKey = ({
   rawKey,
   purpose,

@@ -17,6 +17,8 @@ import {
 } from 'src/engine/metadata-modules/message-folder/message-folder.exception';
 import { MessageChannelMetadataService } from 'src/engine/metadata-modules/message-channel/message-channel-metadata.service';
 
+// CRUD and sync-status operations for message folders, plus ownership checks that
+// verify a folder's message channel belongs to the requesting user's connected accounts.
 @Injectable()
 export class MessageFolderMetadataService {
   constructor(
@@ -26,10 +28,12 @@ export class MessageFolderMetadataService {
     private readonly connectedAccountMetadataService: ConnectedAccountMetadataService,
   ) {}
 
+  // Returns every message folder in the workspace, regardless of owner.
   async findAll(workspaceId: string): Promise<MessageFolderDTO[]> {
     return this.repository.find({ where: { workspaceId } });
   }
 
+  // Returns all message folders across every message channel connected to the given user.
   async findByUserWorkspaceId({
     userWorkspaceId,
     workspaceId,
@@ -57,6 +61,7 @@ export class MessageFolderMetadataService {
     });
   }
 
+  // Returns a message channel's folders after verifying the channel belongs to the user.
   async findByMessageChannelIdForUser({
     messageChannelId,
     userWorkspaceId,
@@ -75,6 +80,7 @@ export class MessageFolderMetadataService {
     return this.findByMessageChannelId({ messageChannelId, workspaceId });
   }
 
+  // Returns all folders belonging to a single message channel.
   async findByMessageChannelId({
     messageChannelId,
     workspaceId,
@@ -87,6 +93,7 @@ export class MessageFolderMetadataService {
     });
   }
 
+  // Returns all folders belonging to any of the given message channels.
   async findByMessageChannelIds({
     messageChannelIds,
     workspaceId,
@@ -103,6 +110,7 @@ export class MessageFolderMetadataService {
     });
   }
 
+  // Returns a single message folder by id, or null if not found.
   async findById({
     id,
     workspaceId,
@@ -113,6 +121,8 @@ export class MessageFolderMetadataService {
     return this.repository.findOne({ where: { id, workspaceId } });
   }
 
+  // Asserts the folder exists and its message channel's connected account belongs to the
+  // given user workspace, throwing a MessageFolderException otherwise.
   async verifyOwnership({
     id,
     userWorkspaceId,
@@ -157,6 +167,7 @@ export class MessageFolderMetadataService {
     return messageFolder;
   }
 
+  // Creates a new message folder.
   async create(
     data: Partial<MessageFolderEntity> & {
       workspaceId: string;
@@ -169,6 +180,7 @@ export class MessageFolderMetadataService {
     return this.repository.save(entity);
   }
 
+  // Updates a message folder's fields and returns the refreshed record.
   async update({
     id,
     workspaceId,
@@ -186,6 +198,9 @@ export class MessageFolderMetadataService {
     return this.repository.findOneOrFail({ where: { id, workspaceId } });
   }
 
+  // Toggles sync on/off for the given folders. Turning sync off also clears any pending
+  // FOLDER_IMPORT action. Turning sync on backfills a FOLDER_IMPORT action for
+  // previously-unsynced Google folders so their messages get imported.
   async setSyncStatus({
     ids,
     workspaceId,
@@ -246,6 +261,7 @@ export class MessageFolderMetadataService {
     return this.repository.find({ where: { id: In(ids), workspaceId } });
   }
 
+  // Deletes a message folder and returns the record as it existed before deletion.
   async delete({
     id,
     workspaceId,

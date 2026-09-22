@@ -10,6 +10,7 @@ const MIME_TYPES: Record<string, string> = {
   txt: 'text/plain',
 };
 
+// Guesses a MIME type from a filename's extension, falling back to a generic binary type
 export const getMimeType = (filename: string): string => {
   const ext = filename.split('.').pop()?.toLowerCase();
 

@@ -28,6 +28,8 @@ import { SyncableEntity } from 'src/engine/workspace-manager/types/syncable-enti
     where: '"deletedAt" IS NULL',
   },
 )
+// TypeORM entity for a view sort: orders a view's records by a field in
+// a given direction. At most one active sort per field per view.
 export class ViewSortEntity extends SyncableEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;

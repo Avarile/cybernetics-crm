@@ -1,3 +1,5 @@
+// GraphQL DTOs describing a marketplace app's declared roles and the
+// object/field permissions each role grants, shown before install.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';

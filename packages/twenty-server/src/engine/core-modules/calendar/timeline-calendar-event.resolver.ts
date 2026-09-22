@@ -1,3 +1,6 @@
+// GraphQL resolver exposing queries to fetch the calendar events timeline
+// related to a given object record (or, via deprecated shortcuts, a person,
+// company or opportunity directly).
 import { UseGuards } from '@nestjs/common';
 import { Args, ArgsType, Field, Int, Query } from '@nestjs/graphql';
 
@@ -77,6 +80,8 @@ export class TimelineCalendarEventResolver {
     private readonly timelineCalendarEventService: TimelineCalendarEventService,
   ) {}
 
+  // Fetches a page of calendar events related to any given object record
+  // (via its related person ids).
   @Query(() => TimelineCalendarEventsWithTotalDTO)
   async getTimelineCalendarEventsFromObjectRecord(
     @Args()
@@ -102,6 +107,7 @@ export class TimelineCalendarEventResolver {
   @Query(() => TimelineCalendarEventsWithTotalDTO, {
     deprecationReason: 'Use getTimelineCalendarEventsFromObjectRecord instead',
   })
+  // Deprecated shortcut for fetching a person's related calendar events.
   async getTimelineCalendarEventsFromPersonId(
     @Args()
     { personId, page, pageSize }: GetTimelineCalendarEventsFromPersonIdArgs,
@@ -121,6 +127,7 @@ export class TimelineCalendarEventResolver {
   @Query(() => TimelineCalendarEventsWithTotalDTO, {
     deprecationReason: 'Use getTimelineCalendarEventsFromObjectRecord instead',
   })
+  // Deprecated shortcut for fetching a company's related calendar events.
   async getTimelineCalendarEventsFromCompanyId(
     @Args()
     { companyId, page, pageSize }: GetTimelineCalendarEventsFromCompanyIdArgs,
@@ -140,6 +147,7 @@ export class TimelineCalendarEventResolver {
   @Query(() => TimelineCalendarEventsWithTotalDTO, {
     deprecationReason: 'Use getTimelineCalendarEventsFromObjectRecord instead',
   })
+  // Deprecated shortcut for fetching an opportunity's related calendar events.
   async getTimelineCalendarEventsFromOpportunityId(
     @Args()
     {

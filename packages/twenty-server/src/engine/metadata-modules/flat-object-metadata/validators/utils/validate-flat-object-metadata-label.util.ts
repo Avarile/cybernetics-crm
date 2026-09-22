@@ -1,3 +1,6 @@
+// Validates that an object's singular/plural labels fall within the allowed
+// length range.
+
 import { msg } from '@lingui/core/macro';
 
 import { type FlatObjectMetadataValidationError } from 'src/engine/metadata-modules/flat-object-metadata/types/flat-object-metadata-validation-error.type';
@@ -7,6 +10,8 @@ import { IDENTIFIER_MAX_CHAR_LENGTH } from 'twenty-shared/metadata';
 import { IDENTIFIER_MIN_CHAR_LENGTH } from 'src/engine/metadata-modules/utils/constants/identifier-min-char-length.constants';
 import { type UniversalFlatObjectMetadata } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-object-metadata.type';
 
+// Checks both labelSingular and labelPlural are within the min/max char
+// length bounds, returning one error per violation.
 export const validateFlatObjectMetadataLabel = ({
   labelPlural,
   labelSingular,

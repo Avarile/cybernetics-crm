@@ -12,6 +12,9 @@ type RebuildDefaultPackageFilesCommandOptions = {
   workspaceId?: Set<string>;
 };
 
+// CLI command (`application:rebuild-default-deps`): re-generates and re-uploads
+// the default package.json/yarn.lock files for every (non-deleted) application in
+// one workspace, or in all provisioned workspaces if no --workspace-id is given.
 @Command({
   name: 'application:rebuild-default-deps',
   description:
@@ -46,6 +49,8 @@ export class RebuildApplicationDefaultDepsCommand extends CommandRunner {
     return accumulator;
   }
 
+  // Iterates the target workspace(s) and re-uploads default dependency files for
+  // every application found, throwing if any workspace in the iteration failed.
   override async run(
     _passedParams: string[],
     options: RebuildDefaultPackageFilesCommandOptions,

@@ -1,3 +1,5 @@
+// Wires up the Gmail import driver's services (history/message-list/message
+// fetching and error handling).
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

@@ -1,3 +1,6 @@
+// Wraps OpenTelemetry metrics (observable gauges, counters, histograms)
+// with convenience helpers, including a cached-gauge mode to avoid
+// re-running expensive collection callbacks on every scrape.
 import { Injectable, Logger } from '@nestjs/common';
 
 import {
@@ -29,10 +32,12 @@ export class MetricsService {
     private readonly healthCacheStorage: CacheStorageService,
   ) {}
 
+  // Returns the shared OpenTelemetry meter for this app.
   getMeter(): Meter {
     return metrics.getMeter(METER_NAME);
   }
 
+  // Registers a single-value observable gauge backed by `callback`.
   createObservableGauge({
     metricName,
     options,
@@ -55,6 +60,8 @@ export class MetricsService {
     });
   }
 
+  // Registers an observable gauge that emits multiple values (one per
+  // attribute set) per collection, backed by `callback`.
   createMultiObservableGauge({
     metricName,
     options,
@@ -79,6 +86,9 @@ export class MetricsService {
     });
   }
 
+  // Shared gauge registration logic: on each scrape, optionally serves a
+  // cached value instead of re-running `callback`, and caches fresh results
+  // when `cacheValue` is set.
   private createObservableGaugeInternal<T>({
     metricName,
     options,
@@ -128,6 +138,8 @@ export class MetricsService {
     return gauge;
   }
 
+  // Registers an "info" style gauge (always observes 1, carrying descriptive
+  // attributes), auto-suffixing the metric name with `_info` if missing.
   createInfoGauge({
     metricName,
     options,
@@ -162,6 +174,8 @@ export class MetricsService {
     return gauge;
   }
 
+  // Increments an OTel counter by 1 and, optionally, records the event id
+  // in the sliding-window cache for later count queries.
   async incrementCounterForEvent({
     key,
     eventId,
@@ -192,6 +206,8 @@ export class MetricsService {
     }
   }
 
+  // Increments an OTel counter by the batch size and, optionally, records
+  // each event id in the sliding-window cache.
   async incrementCounterForEvents({
     key,
     eventIds,
@@ -212,6 +228,7 @@ export class MetricsService {
     }
   }
 
+  // Increments an OTel counter by an arbitrary amount.
   incrementCounterBy({
     key,
     amount,
@@ -224,6 +241,7 @@ export class MetricsService {
     this.getMeter().createCounter(key).add(amount, attributes);
   }
 
+  // Records a value into an OTel histogram metric.
   recordHistogram({
     key,
     value,
@@ -238,6 +256,8 @@ export class MetricsService {
     this.getMeter().createHistogram(key, { unit }).record(value, attributes);
   }
 
+  // Computes sliding-window counts for a list of named metric cache keys,
+  // returning them keyed by name (e.g. for a status-grouped dashboard).
   async groupMetrics(
     metrics: { name: string; cacheKey: MetricsKeys }[],
   ): Promise<Record<string, number>> {

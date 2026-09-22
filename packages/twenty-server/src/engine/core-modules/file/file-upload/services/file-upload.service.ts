@@ -1,3 +1,7 @@
+// Implements the two-step direct upload flow: create a pending file and
+// hand back a presigned (or token-streamed fallback) upload target, receive/
+// stream the bytes when there's no presign support, and confirm completion
+// by verifying size/mime-type against what's actually in storage.
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -61,6 +65,9 @@ export class FileUploadService {
     private readonly fileRepository: WorkspaceScopedRepository<FileEntity>,
   ) {}
 
+  // Validates folder/size, creates a PENDING file record, and returns a
+  // presigned storage upload URL, or a token-authenticated streaming
+  // endpoint URL when the storage driver has no presign support.
   async createFileUpload({
     workspaceId,
     filename,
@@ -378,6 +385,7 @@ export class FileUploadService {
     });
   }
 
+  // Sniffs the real mime type from the uploaded object's leading bytes.
   private async detectUploadedMimeTypeOrThrow({
     fileFolder,
     applicationUniversalIdentifier,
@@ -411,6 +419,8 @@ export class FileUploadService {
     return mimeType;
   }
 
+  // Resolves the storage application/path for a new upload, requiring a
+  // field-metadata reference when uploading into a FILES field.
   private async resolveUploadLocation({
     workspaceId,
     fileFolder,
@@ -476,6 +486,7 @@ export class FileUploadService {
     };
   }
 
+  // Looks up a file by id in the workspace or throws FILE_NOT_FOUND.
   private async findFileOrThrow({
     workspaceId,
     fileId,
@@ -500,6 +511,7 @@ export class FileUploadService {
     return file;
   }
 
+  // Resolves the owning application and storage path for an existing file record.
   private async resolveFileLocation({
     workspaceId,
     file,
@@ -527,6 +539,7 @@ export class FileUploadService {
     };
   }
 
+  // Attaches a signed download URL to a file record for the response DTO.
   private async toFileWithSignedUrl({
     file,
     fileFolder,

@@ -5,6 +5,8 @@ import { PathCommandMenuItemPayloadDTO } from 'src/engine/metadata-modules/comma
 import { type ObjectMetadataCommandMenuItemPayload } from 'src/engine/metadata-modules/command-menu-item/dtos/types/object-metadata-command-menu-item-payload.type';
 import { type PathCommandMenuItemPayload } from 'src/engine/metadata-modules/command-menu-item/dtos/types/path-command-menu-item-payload.type';
 
+// The payload for a NAVIGATION command menu item: either a static path
+// or a target object metadata item, resolved to the relevant GraphQL type.
 export type CommandMenuItemPayload =
   | PathCommandMenuItemPayload
   | ObjectMetadataCommandMenuItemPayload;

@@ -1,3 +1,4 @@
+// GraphQL representation of an agent, returned by agent queries and mutations.
 import { Field, HideField, ObjectType } from '@nestjs/graphql';
 
 import {

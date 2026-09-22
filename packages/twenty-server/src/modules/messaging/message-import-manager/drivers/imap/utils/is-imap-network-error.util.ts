@@ -1,3 +1,5 @@
+// Recognizes ImapFlow-specific timeout/connection error codes as well as
+// standard Node.js network error codes.
 import { isDefined } from 'twenty-shared/utils';
 
 import { MessageNetworkExceptionCode } from 'src/modules/messaging/message-import-manager/drivers/exceptions/message-network.exception';
@@ -27,6 +29,8 @@ const NODEJS_NETWORK_ERROR_CODES = [
   MessageNetworkExceptionCode.EHOSTUNREACH,
 ];
 
+// True when the error's code matches a known ImapFlow timeout/connection
+// code or a standard Node.js network error code.
 export const isImapNetworkError = (error: Error): boolean => {
   const errorWithCode = error as { code?: string };
 

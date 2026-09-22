@@ -1,3 +1,7 @@
+// Builds the `findDuplicates` GraphQL query resolver for an object:
+// delegates duplicate-detection logic to
+// CommonFindDuplicatesQueryRunnerService and formats each group of
+// duplicate records as its own connection, ordered by id.
 import { Injectable } from '@nestjs/common';
 
 import graphqlFields from 'graphql-fields';
@@ -24,6 +28,8 @@ export class FindDuplicatesResolverFactory implements WorkspaceResolverBuilderFa
     private readonly commonFindDuplicatesQueryRunnerService: CommonFindDuplicatesQueryRunnerService,
   ) {}
 
+  // Returns a resolver function that finds potential duplicate records
+  // and formats each duplicate group as a GraphQL connection.
   create(
     context: WorkspaceSchemaBuilderContext,
   ): Resolver<FindDuplicatesResolverArgs> {

@@ -1,5 +1,7 @@
 import { type Settings } from './interfaces/settings.interface';
 
+// Application-wide static settings (file-size limits, duplicate-check and
+// view-field thresholds).
 export const settings: Settings = {
   storage: {
     maxFileSize: '10MB',

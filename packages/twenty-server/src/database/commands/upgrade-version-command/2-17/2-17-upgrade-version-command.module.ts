@@ -8,6 +8,9 @@ import { ApplicationModule } from 'src/engine/core-modules/application/applicati
 import { WorkspaceCacheModule } from 'src/engine/workspace-cache/workspace-cache.module';
 import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace-migration/workspace-migration.module';
 
+// Registers the 2.17 workspace commands (sync call recording navigation
+// availability expression, add reply-to participant role option, add workspace
+// member job title field) as providers for the upgrade runner.
 @Module({
   imports: [
     ApplicationModule,

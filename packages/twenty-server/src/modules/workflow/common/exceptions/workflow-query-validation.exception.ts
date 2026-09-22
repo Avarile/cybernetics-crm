@@ -1,3 +1,5 @@
+// Exception thrown when a GraphQL query/mutation targeting workflow
+// objects fails permission validation.
 import { type MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { assertUnreachable } from 'twenty-shared/utils';

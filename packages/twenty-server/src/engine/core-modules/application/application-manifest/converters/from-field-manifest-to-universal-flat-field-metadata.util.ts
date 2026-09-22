@@ -1,3 +1,6 @@
+// Converts a manifest-declared field into the universal flat field metadata
+// shape used to build workspace migrations, resolving relation/morph
+// targets and normalizing composite default values.
 import { type FieldManifest } from 'twenty-shared/application';
 import {
   FieldMetadataType,
@@ -16,11 +19,14 @@ import { PARTIAL_SYSTEM_FLAT_FIELD_METADATAS } from 'src/engine/metadata-modules
 import { isMorphOrRelationFieldMetadataType } from 'src/engine/utils/is-morph-or-relation-field-metadata-type.util';
 import { type UniversalFlatFieldMetadata } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-field-metadata.type';
 
+// Narrows a field manifest to one describing a relation or morph relation.
 const isRelationFieldManifest = (
   fieldManifest: FieldManifest,
 ): fieldManifest is FieldManifest<RelationAndMorphRelationFieldMetadataType> =>
   isMorphOrRelationFieldMetadataType(fieldManifest.type);
 
+// Extracts the relation target field/object universal identifiers for a
+// relation field manifest, throwing if they're missing.
 const getRelationTargetUniversalIdentifiers = (
   fieldManifest: FieldManifest,
 ): {

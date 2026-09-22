@@ -1,3 +1,5 @@
+// Wires the service, resolver, and cron job that check for and apply
+// NPM-sourced application version upgrades.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

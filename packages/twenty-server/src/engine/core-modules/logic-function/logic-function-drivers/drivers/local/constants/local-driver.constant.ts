@@ -1,3 +1,4 @@
+// Lock/sentinel config for the local driver's deps/SDK layer builds and prebuilt-bundle installs.
 export const LAYER_BUILD_LOCK_TTL_MS = 120_000;
 export const LAYER_BUILD_LOCK_RETRY_MS = 500;
 export const LAYER_BUILD_LOCK_MAX_RETRIES = 240;

@@ -12,6 +12,8 @@ import { PermissionsModule } from 'src/engine/metadata-modules/permissions/permi
 import { WorkspaceEventEmitterModule } from 'src/engine/workspace-event-emitter/workspace-event-emitter.module';
 import { MessagingImportManagerModule } from 'src/modules/messaging/message-import-manager/messaging-import-manager.module';
 
+// Wires up the message channel service and resolver, plus their
+// dependencies for connected accounts, message import, and emailing domains.
 @Module({
   imports: [
     TypeOrmModule.forFeature([MessageChannelEntity, MessageFolderEntity]),

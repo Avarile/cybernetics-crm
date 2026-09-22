@@ -1,3 +1,5 @@
+// Universal identifiers for the standard page layout tabs seeded into every
+// workspace.
 export const PAGE_LAYOUT_TAB_SEEDS = {
   SALES_OVERVIEW: 'SALES_OVERVIEW_TAB',
   SALES_DETAILS: 'SALES_DETAILS_TAB',

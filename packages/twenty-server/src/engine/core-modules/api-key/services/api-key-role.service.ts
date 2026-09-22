@@ -19,6 +19,7 @@ import { InjectWorkspaceScopedRepository } from 'src/engine/twenty-orm/workspace
 import { WorkspaceScopedRepository } from 'src/engine/twenty-orm/workspace-scoped-repository/workspace-scoped-repository';
 import { WorkspaceCacheService } from 'src/engine/workspace-cache/services/workspace-cache.service';
 
+// Manages the relationship between API keys and the roles that govern their permissions
 @Injectable()
 export class ApiKeyRoleService {
   constructor(
@@ -33,6 +34,7 @@ export class ApiKeyRoleService {
     private readonly roleTargetService: RoleTargetService,
   ) {}
 
+  // Assigns a role to an API key, no-op if the API key already has that role
   public async assignRoleToApiKey({
     apiKeyId,
     roleId,
@@ -62,6 +64,7 @@ export class ApiKeyRoleService {
     });
   }
 
+  // Returns the id of the role assigned to an API key, from the cached role map
   async getRoleIdForApiKeyId(
     apiKeyId: string,
     workspaceId: string,
@@ -83,6 +86,7 @@ export class ApiKeyRoleService {
     return roleId;
   }
 
+  // Returns the full role DTO assigned to an API key
   async getRoleDtoByApiKeyId({
     apiKeyId,
     workspaceId,
@@ -120,6 +124,8 @@ export class ApiKeyRoleService {
     return fromFlatRoleToRoleDto(flatRole);
   }
 
+  // Ensures the API key and role exist, the role is assignable to API keys, and reports
+  // whether the API key already has this role so callers can skip a redundant assignment
   private async validateAssignRoleInput({
     apiKeyId,
     workspaceId,
@@ -173,6 +179,7 @@ export class ApiKeyRoleService {
     };
   }
 
+  // Batch-resolves the role DTO for each of the given API key ids
   public async getRolesByApiKeys({
     apiKeyIds,
     workspaceId,
@@ -205,6 +212,7 @@ export class ApiKeyRoleService {
     return rolesMap;
   }
 
+  // Returns all non-revoked API keys currently assigned to a given role
   public async getApiKeysAssignedToRole(
     roleId: string,
     workspaceId: string,

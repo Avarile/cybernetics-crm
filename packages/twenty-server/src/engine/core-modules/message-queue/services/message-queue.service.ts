@@ -16,6 +16,7 @@ import {
   QUEUE_DRIVER,
 } from 'src/engine/core-modules/message-queue/message-queue.constants';
 
+// Per-queue facade over the active MessageQueueDriver, bound to one MessageQueue at construction
 @Injectable()
 export class MessageQueueService {
   constructor(

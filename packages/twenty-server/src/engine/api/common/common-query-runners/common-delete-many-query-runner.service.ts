@@ -28,6 +28,8 @@ import { FlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-metada
 import { FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object-metadata/types/flat-object-metadata.type';
 import { assertMutationNotOnRemoteObject } from 'src/engine/metadata-modules/object-metadata/utils/assert-mutation-not-on-remote-object.util';
 
+// Handles deleteMany: soft-deletes records matching the filter and
+// optionally hydrates nested relations on the deleted records.
 @Injectable()
 export class CommonDeleteManyQueryRunnerService extends CommonBaseQueryRunnerService<
   DeleteManyQueryArgs,
@@ -35,6 +37,8 @@ export class CommonDeleteManyQueryRunnerService extends CommonBaseQueryRunnerSer
 > {
   protected readonly operationName = CommonQueryNames.DELETE_MANY;
 
+  // Builds the filtered query, soft-deletes matching records, and hydrates
+  // any requested nested relations on the deleted records.
   async run(
     args: CommonExtendedInput<DeleteManyQueryArgs>,
     queryRunnerContext: CommonExtendedQueryRunnerContext,
@@ -93,6 +97,7 @@ export class CommonDeleteManyQueryRunnerService extends CommonBaseQueryRunnerSer
     return deletedRecords;
   }
 
+  // Validates and normalizes the delete filter against object/field metadata.
   async computeArgs(
     args: CommonInput<DeleteManyQueryArgs>,
     queryRunnerContext: CommonBaseQueryRunnerContext,
@@ -114,6 +119,7 @@ export class CommonDeleteManyQueryRunnerService extends CommonBaseQueryRunnerSer
     };
   }
 
+  // Runs the deleted records through the common result-getter pipeline.
   async processQueryResult(
     queryResult: ObjectRecord[],
     flatObjectMetadata: FlatObjectMetadata,
@@ -130,6 +136,8 @@ export class CommonDeleteManyQueryRunnerService extends CommonBaseQueryRunnerSer
     );
   }
 
+  // Rejects mutations on remote objects, requires a filter to be present
+  // (to prevent accidental delete-all), and validates any id-in-list values.
   async validate(
     args: CommonInput<DeleteManyQueryArgs>,
     queryRunnerContext: CommonBaseQueryRunnerContext,

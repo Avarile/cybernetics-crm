@@ -1,3 +1,5 @@
+// GraphQL exception filter mapping PublicDomainException codes to
+// UserInputError or NotFoundError.
 import { Catch, ExceptionFilter } from '@nestjs/common';
 
 import { assertUnreachable } from 'twenty-shared/utils';
@@ -13,6 +15,7 @@ import {
 
 @Catch(PublicDomainException)
 export class PublicDomainExceptionFilter implements ExceptionFilter {
+  // Maps each known PublicDomainExceptionCode to the appropriate GraphQL error.
   catch(exception: PublicDomainException) {
     switch (exception.code) {
       case PublicDomainExceptionCode.PUBLIC_DOMAIN_ALREADY_REGISTERED:

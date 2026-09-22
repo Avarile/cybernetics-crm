@@ -23,6 +23,8 @@ export const assert: Assert = (condition, message, ErrorType) => {
   }
 };
 
+// Exhaustiveness check: fails type checking if called with a value that isn't `never`,
+// so switch/if-else chains that should cover every case surface unhandled branches.
 export const assertNever = (_value: never, message?: string): never => {
   throw new Error(message ?? "Didn't expect to get here.");
 };

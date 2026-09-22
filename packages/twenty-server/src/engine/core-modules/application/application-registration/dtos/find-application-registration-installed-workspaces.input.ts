@@ -1,3 +1,4 @@
+// GraphQL input for the paginated, searchable installed-workspaces query.
 import { Field, InputType, Int } from '@nestjs/graphql';
 
 import {

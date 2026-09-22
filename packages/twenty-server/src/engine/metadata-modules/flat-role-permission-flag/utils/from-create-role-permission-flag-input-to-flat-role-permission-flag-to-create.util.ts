@@ -6,6 +6,8 @@ import { resolveEntityRelationUniversalIdentifiers } from 'src/engine/metadata-m
 import { type CreateRolePermissionFlagInput } from 'src/engine/metadata-modules/role-permission-flag/dtos/create-role-permission-flag.input';
 import { type UniversalFlatRolePermissionFlag } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-role-permission-flag.type';
 
+// Builds a new universal flat role permission flag from a create input, generating a
+// fresh id and resolving role/permission flag references to universal identifiers.
 export const fromCreateRolePermissionFlagInputToFlatRolePermissionFlagToCreate =
   ({
     createRolePermissionFlagInput,

@@ -1,3 +1,4 @@
+// GraphQL response for a created/found development application.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType('DevelopmentApplication')

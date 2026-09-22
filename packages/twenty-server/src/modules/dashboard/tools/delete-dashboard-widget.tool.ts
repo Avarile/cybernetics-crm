@@ -9,6 +9,7 @@ const deleteDashboardWidgetSchema = z.object({
   widgetId: z.string().uuid().describe('The UUID of the widget to delete'),
 });
 
+// AI agent tool: deletes a widget from a dashboard by id.
 export const createDeleteDashboardWidgetTool = (
   deps: Pick<DashboardToolDependencies, 'pageLayoutWidgetService'>,
   context: DashboardToolContext,

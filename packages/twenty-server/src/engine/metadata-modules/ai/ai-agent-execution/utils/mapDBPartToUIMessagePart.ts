@@ -9,6 +9,8 @@ import { type AgentMessagePartEntity } from 'src/engine/metadata-modules/ai/ai-a
 // A parallel mapping for GraphQL DTOs exists in the frontend at:
 // packages/twenty-front/src/modules/ai/utils/mapDBPartToUIMessagePart.ts
 
+// Maps a single stored AgentMessagePartEntity back to its AI SDK UI message
+// part shape, by part type; returns null for part types with no UI rendering.
 export const mapDBPartToUIMessagePart = (
   part: AgentMessagePartEntity,
 ): ExtendedUIMessagePart | null => {

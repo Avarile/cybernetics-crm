@@ -1,5 +1,6 @@
 import { isNonEmptyString } from '@sniptt/guards';
 
+// Parses a URL string and returns its lowercased hostname, or undefined if invalid
 export const getHostnameFromUrlOrUndefined = (
   url?: string | null,
 ): string | undefined => {
@@ -14,6 +15,7 @@ export const getHostnameFromUrlOrUndefined = (
   }
 };
 
+// Whether host is a strict subdomain of the public function base domain (not the base itself)
 export const isHostUnderPublicFunctionDomain = ({
   host,
   publicDomainBaseHostname,

@@ -14,6 +14,7 @@ import { type TaskTargetWorkspaceEntity } from 'src/modules/task/standard-object
 import { type TimelineActivityWorkspaceEntity } from 'src/modules/timeline/standard-objects/timeline-activity.workspace-entity';
 import { type WorkspaceMemberWorkspaceEntity } from 'src/modules/workspace-member/standard-objects/workspace-member.workspace-entity';
 
+// Standard CRM object representing a company/account record.
 export class CompanyWorkspaceEntity {
   // Base fields
   id: string;

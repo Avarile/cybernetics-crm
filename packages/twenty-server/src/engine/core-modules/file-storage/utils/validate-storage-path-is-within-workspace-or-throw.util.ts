@@ -7,6 +7,8 @@ import {
   FileStorageExceptionCode,
 } from 'src/engine/core-modules/file-storage/interfaces/file-storage-exception';
 
+// Throws unless the resolved storage path stays under the workspace's
+// {workspaceId}/{applicationUniversalIdentifier}/{fileFolder}/ prefix
 export const validateStoragePathIsWithinWorkspaceOrThrow = ({
   onStoragePath,
   workspaceId,

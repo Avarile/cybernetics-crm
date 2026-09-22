@@ -1,3 +1,5 @@
+// Wires the services and resolver for an application's declared connection
+// providers and their OAuth connect flow.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

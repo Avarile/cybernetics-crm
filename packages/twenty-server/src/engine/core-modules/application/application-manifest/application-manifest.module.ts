@@ -1,3 +1,5 @@
+// Wires together the services that apply, migrate, and sync application
+// manifests into a workspace.
 import { Module } from '@nestjs/common';
 
 import { ApplicationModule } from 'src/engine/core-modules/application/application.module';

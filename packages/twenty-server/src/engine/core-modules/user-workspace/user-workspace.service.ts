@@ -1,3 +1,8 @@
+// Manages the lifecycle of a user's membership in a workspace: creating and
+// deleting user-workspace links and their corresponding workspaceMember
+// record, resolving default avatars, discovering workspaces a user can join
+// (by prior membership, approved domain, or invitation), and issuing login
+// tokens for them.
 import { Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -68,10 +73,12 @@ export class UserWorkspaceService {
     private readonly coreEntityCacheService: CoreEntityCacheService,
   ) {}
 
+  // Finds a user-workspace by id.
   async findById(id: string): Promise<UserWorkspaceEntity | null> {
     return this.userWorkspaceRepository.findOne({ where: { id } });
   }
 
+  // Updates a user-workspace's locale and invalidates its cached entry.
   async updateUserWorkspaceLocaleForUserWorkspace({
     locale,
     userWorkspaceId,
@@ -98,6 +105,7 @@ export class UserWorkspaceService {
     );
   }
 
+  // Creates a new user-workspace link, computing its default avatar first.
   async create(
     {
       userId,
@@ -134,6 +142,8 @@ export class UserWorkspaceService {
       : this.userWorkspaceRepository.save(userWorkspace);
   }
 
+  // Creates the workspaceMember standard-object record for a user in a
+  // workspace, no-op if one already exists.
   async createWorkspaceMember(
     workspaceId: string,
     user: Pick<
@@ -191,6 +201,9 @@ export class UserWorkspaceService {
     }, authContext);
   }
 
+  // Adds a user to a workspace (user-workspace link, workspace member,
+  // default/assigned role), invalidates any pending invitation, and marks
+  // profile creation pending, unless the user is already a member.
   async addUserToWorkspaceIfUserNotInWorkspace(
     user: UserEntity,
     workspace: WorkspaceEntity,
@@ -236,6 +249,8 @@ export class UserWorkspaceService {
     });
   }
 
+  // Validates an explicitly given role, or falls back to the workspace's
+  // default role, throwing if neither is available.
   private async resolveRoleIdForNewMember(
     roleId: string | null | undefined,
     workspace: WorkspaceEntity,
@@ -261,12 +276,14 @@ export class UserWorkspaceService {
     return defaultRoleId;
   }
 
+  // Counts user-workspace links for a workspace.
   public async getUserCount(workspaceId: string): Promise<number | undefined> {
     return await this.userWorkspaceRepository.countBy({
       workspaceId,
     });
   }
 
+  // Finds a user-workspace link by user and workspace id, if it exists.
   async checkUserWorkspaceExists(
     userId: string,
     workspaceId: string,
@@ -277,6 +294,7 @@ export class UserWorkspaceService {
     });
   }
 
+  // Checks whether a user with the given email is a member of the workspace.
   async checkUserWorkspaceExistsByEmail(email: string, workspaceId: string) {
     return this.userWorkspaceRepository.exists({
       where: {
@@ -291,6 +309,8 @@ export class UserWorkspaceService {
     });
   }
 
+  // Returns the user's oldest workspace membership, throwing if they belong
+  // to none.
   async findFirstWorkspaceByUserId(userId: string) {
     const user = await this.userRepository.findOne({
       where: {
@@ -319,6 +339,7 @@ export class UserWorkspaceService {
     return workspace;
   }
 
+  // Counts how many workspaces the user belongs to.
   async countUserWorkspaces(userId: string): Promise<number> {
     return await this.userWorkspaceRepository.count({ where: { userId } });
   }
@@ -326,6 +347,8 @@ export class UserWorkspaceService {
   // TODO migrate roleTargetRepository to WorkspaceScopedRepository once workspaceId
   // is threaded through all deleteUserWorkspace callers (user.service.ts does not
   // currently have it at the call site).
+  // Removes a user-workspace link (and its role assignments), either soft-
+  // or hard-deleting depending on `softDelete`.
   async deleteUserWorkspace({
     userWorkspaceId,
     softDelete = false,
@@ -342,6 +365,11 @@ export class UserWorkspaceService {
     }
   }
 
+  // Discovers workspaces this email can sign into (existing, non-hidden
+  // memberships) or sign up for (via a validated approved-access domain
+  // that's publicly discoverable, or a pending invitation — hidden
+  // workspaces are excluded from the picker but remain joinable via a
+  // direct invitation link).
   async findAvailableWorkspacesByEmail(email: string) {
     const user = await this.userRepository.findOne({
       where: {
@@ -418,6 +446,7 @@ export class UserWorkspaceService {
     };
   }
 
+  // Finds a user's membership in a workspace, throwing if none exists.
   async getUserWorkspaceForUserOrThrow({
     userId,
     workspaceId,
@@ -442,6 +471,7 @@ export class UserWorkspaceService {
     return userWorkspace;
   }
 
+  // Finds a workspaceMember record by id in the workspace, throwing if not found.
   async getWorkspaceMemberOrThrow({
     workspaceMemberId,
     workspaceId,
@@ -476,6 +506,7 @@ export class UserWorkspaceService {
     );
   }
 
+  // Delegates to computeDefaultAvatarUrlMigrated.
   private async computeDefaultAvatarUrl(
     userId: string,
     workspaceId: string,
@@ -494,6 +525,9 @@ export class UserWorkspaceService {
     );
   }
 
+  // For an existing user joining a new workspace, copies their avatar from
+  // an existing user-workspace's picture into the new workspace's file
+  // storage; for a brand-new user, uploads the given picture URL instead.
   private async computeDefaultAvatarUrlMigrated(
     userId: string,
     workspaceId: string,
@@ -567,6 +601,8 @@ export class UserWorkspaceService {
     });
   }
 
+  // Maps a workspace entity to the public AvailableWorkspace shape (urls,
+  // signed logo, active SSO providers) shown on the workspace picker.
   async castWorkspaceToAvailableWorkspace(workspace: WorkspaceEntity) {
     return {
       id: workspace.id,
@@ -600,6 +636,9 @@ export class UserWorkspaceService {
     };
   }
 
+  // Attaches an invitation token (sign-up) or a freshly generated login
+  // token (sign-in, only when the workspace allows the given auth provider)
+  // to each available workspace entry.
   async setLoginTokenToAvailableWorkspacesWhenAuthProviderMatch(
     availableWorkspaces: {
       availableWorkspacesForSignUp: Array<{
@@ -655,6 +694,7 @@ export class UserWorkspaceService {
     };
   }
 
+  // Counts all active (non-deleted) user-workspace links instance-wide, floored at 1.
   public async getActiveUserWorkspaceCountTotal(): Promise<number> {
     const count = await this.userWorkspaceRepository.count({
       where: { deletedAt: IsNull() },

@@ -1,3 +1,6 @@
+// Wires up the shared services/helpers used by the CRUD resolvers to
+// process nested relations and compute aggregate expressions, along
+// with the permissions and view metadata modules they depend on.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

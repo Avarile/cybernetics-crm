@@ -1,3 +1,6 @@
+// A single email message, imported from a connected account or sent via a
+// workflow/manual send, linked to its thread, participants, campaign (if
+// any), and per-channel associations.
 import { BaseWorkspaceEntity } from 'src/engine/twenty-orm/base.workspace-entity';
 import { type EntityRelation } from 'src/engine/workspace-manager/workspace-migration/types/entity-relation.interface';
 import { type MessageCampaignWorkspaceEntity } from 'src/modules/emailing/standard-objects/message-campaign.workspace-entity';

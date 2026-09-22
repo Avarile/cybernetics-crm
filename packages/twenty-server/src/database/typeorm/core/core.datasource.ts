@@ -1,3 +1,5 @@
+// TypeORM DataSource configuration for the core (non-workspace) schema — the
+// "core" Postgres schema holding entities like users, workspaces and metadata.
 import { type TypeOrmModuleOptions } from '@nestjs/typeorm';
 
 import { config } from 'dotenv';
@@ -7,12 +9,16 @@ config({
   override: true,
 });
 
+// Detects whether the process was launched via the CLI command runner rather than
+// the HTTP server, so query logging can be scoped to "server-only" when desired.
 const isRunningCommand = (): boolean => {
   const scriptPath = process.argv[1] || '';
 
   return scriptPath.includes('/command/command.');
 };
 
+// Resolves TypeORM log levels from ORM_QUERY_LOGGING: disabled/always, or
+// server-only (queries logged from the HTTP server but not from CLI commands).
 const getLoggingConfig = (): LogLevel[] => {
   if (process.env.NODE_ENV === 'test') {
     return [];

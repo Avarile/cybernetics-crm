@@ -4,6 +4,7 @@ import {
   type CreateStandardViewFieldArgs,
 } from 'src/engine/workspace-manager/twenty-standard-application/utils/view-field/create-standard-view-field-flat-metadata.util';
 
+// Builds the fixed set of standard view fields for the "blocklist" object's views
 export const computeStandardBlocklistViewFields = (
   args: Omit<CreateStandardViewFieldArgs<'blocklist'>, 'context'>,
 ): Record<string, FlatViewField> => {

@@ -1,3 +1,4 @@
+// Maps RecordTransformerException codes to GraphQL UserInputErrors.
 import { assertUnreachable } from 'twenty-shared/utils';
 
 import { UserInputError } from 'src/engine/core-modules/graphql/utils/graphql-errors.util';
@@ -6,6 +7,7 @@ import {
   RecordTransformerExceptionCode,
 } from 'src/engine/core-modules/record-transformer/record-transformer.exception';
 
+// Maps a RecordTransformerException code to a GraphQL UserInputError.
 export const recordTransformerGraphqlApiExceptionHandler = (
   error: RecordTransformerException,
 ) => {

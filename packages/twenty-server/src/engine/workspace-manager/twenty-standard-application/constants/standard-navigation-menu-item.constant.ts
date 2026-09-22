@@ -2,6 +2,8 @@ import { STANDARD_OBJECTS } from 'twenty-shared/metadata';
 
 import { NavigationMenuItemType } from 'src/engine/metadata-modules/navigation-menu-item/enums/navigation-menu-item-type.enum';
 
+// Defines the standard left-nav menu items (and folders) seeded into every workspace, each linking
+// to a standard object's default view, plus their default color assignments
 export const STANDARD_NAVIGATION_MENU_ITEMS = {
   allCompanies: {
     universalIdentifier: '20202020-b001-4b01-8b01-c0aba11c0001',

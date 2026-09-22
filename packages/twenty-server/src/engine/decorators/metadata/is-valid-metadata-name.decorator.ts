@@ -4,6 +4,9 @@ import {
   type ValidationArguments,
 } from 'class-validator';
 
+// class-validator property decorator rejecting metadata names that are
+// reserved GraphQL keywords/scalars or contain characters unsafe for use
+// as an identifier (quotes, semicolons, path separators, etc.).
 export function IsValidMetadataName(validationOptions?: ValidationOptions) {
   return function (object: object, propertyName: string) {
     registerDecorator({

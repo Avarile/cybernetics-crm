@@ -1,3 +1,6 @@
+// Cron job (every 30 minutes) that finds channels failed with an unknown
+// (non-permissions) error across active workspaces and enqueues a relaunch
+// job for each, giving them another chance to recover automatically.
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { WorkspaceActivationStatus } from 'twenty-shared/workspace';
@@ -42,6 +45,8 @@ export class MessagingRelaunchFailedMessageChannelsCronJob {
     MessagingRelaunchFailedMessageChannelsCronJob.name,
     MESSAGING_RELAUNCH_FAILED_MESSAGE_CHANNELS_CRON_PATTERN,
   )
+  // Finds non-email-group channels failed with FAILED_UNKNOWN across active
+  // workspaces and enqueues a relaunch job for each.
   async handle(): Promise<void> {
     const activeWorkspaces = await this.workspaceRepository.find({
       where: {

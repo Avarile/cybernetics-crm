@@ -1,3 +1,5 @@
+// Domain exception for API key errors, mapping each error code to a
+// localized, user-friendly message.
 import { type MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { assertUnreachable } from 'twenty-shared/utils';
@@ -12,6 +14,7 @@ export enum ApiKeyExceptionCode {
   ROLE_CANNOT_BE_ASSIGNED_TO_API_KEYS = 'ROLE_CANNOT_BE_ASSIGNED_TO_API_KEYS',
 }
 
+// Maps an exception code to its localized, user-facing message.
 const getApiKeyExceptionUserFriendlyMessage = (code: ApiKeyExceptionCode) => {
   switch (code) {
     case ApiKeyExceptionCode.API_KEY_NOT_FOUND:

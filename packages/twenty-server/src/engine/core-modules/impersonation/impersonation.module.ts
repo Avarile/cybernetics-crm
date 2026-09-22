@@ -1,3 +1,5 @@
+// NestJS module wiring the impersonation resolver/service used by admins to
+// log in as another user (workspace- or server-level).
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

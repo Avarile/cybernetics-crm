@@ -1,3 +1,6 @@
+// Service handling the lifecycle of approved access domains: creation,
+// sending/verifying the domain-ownership validation email, and lookups used
+// by SSO discovery.
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -50,6 +53,8 @@ export class ApprovedAccessDomainService {
     private readonly jwtWrapperService: JwtWrapperService,
   ) {}
 
+  // Sends the domain-ownership validation email to the given address,
+  // provided the domain isn't already validated and the email matches it.
   async sendApprovedAccessDomainValidationEmail(
     sender: WorkspaceMemberWorkspaceEntity,
     to: string,
@@ -130,6 +135,8 @@ export class ApprovedAccessDomainService {
     });
   }
 
+  // Signs a short-lived JWT identifying the approved access domain, sent as
+  // part of the validation link.
   private async mintValidationToken({
     approvedAccessDomain,
     workspaceId,
@@ -149,6 +156,8 @@ export class ApprovedAccessDomainService {
     );
   }
 
+  // Verifies the JWT validation token's signature and shape, throwing if it
+  // is malformed, expired, or not an approved-access-domain token.
   private async verifyValidationTokenOrThrow(
     validationToken: string,
   ): Promise<ApprovedAccessDomainJwtPayload> {
@@ -188,6 +197,8 @@ export class ApprovedAccessDomainService {
     return payload;
   }
 
+  // Verifies the token and matches it against the stored domain record,
+  // then marks the approved access domain as validated.
   async validateApprovedAccessDomain({
     validationToken,
     approvedAccessDomainId,
@@ -237,6 +248,9 @@ export class ApprovedAccessDomainService {
     );
   }
 
+  // Validates the domain is a company domain (not a free email provider),
+  // ensures it isn't already registered, persists it, and sends the
+  // validation email.
   async createApprovedAccessDomain(
     domain: string,
     inWorkspace: WorkspaceEntity,
@@ -280,6 +294,7 @@ export class ApprovedAccessDomainService {
     return approvedAccessDomain;
   }
 
+  // Deletes an approved access domain, throwing if it doesn't exist.
   async deleteApprovedAccessDomain(
     workspace: WorkspaceEntity,
     approvedAccessDomainId: string,
@@ -296,10 +311,14 @@ export class ApprovedAccessDomainService {
     });
   }
 
+  // Lists all approved access domains for the given workspace.
   async getApprovedAccessDomains(workspace: WorkspaceEntity) {
     return this.approvedAccessDomainRepository.find(workspace.id);
   }
 
+  // Finds validated approved access domains matching the given domain across
+  // all workspaces, with their SSO identity providers, used during SSO login
+  // to discover which workspace/IdP a user's email domain belongs to.
   async findValidatedApprovedAccessDomainWithWorkspacesAndSSOIdentityProvidersDomain(
     domain: string,
   ) {

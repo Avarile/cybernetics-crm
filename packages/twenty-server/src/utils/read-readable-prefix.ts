@@ -1,5 +1,7 @@
 import { type Readable } from 'stream';
 
+// Reads up to `maxBytes` from the start of a stream, then destroys it — useful
+// for sniffing content (e.g. file type) without buffering the whole stream.
 export const readReadablePrefix = async (
   stream: Readable,
   maxBytes: number,

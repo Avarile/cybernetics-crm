@@ -5,6 +5,7 @@ import { type KebabCase, type KebabCasedPropertiesDeep } from 'type-fest';
 export const kebabCase = <T>(text: T) =>
   lodashKebabCase(text as unknown as string) as KebabCase<T>;
 
+// Recursively kebab-cases every object key in a value, walking through arrays and nested objects.
 export const kebabCaseDeep = <T>(value: T): KebabCasedPropertiesDeep<T> => {
   // Check if it's an array
   if (Array.isArray(value)) {

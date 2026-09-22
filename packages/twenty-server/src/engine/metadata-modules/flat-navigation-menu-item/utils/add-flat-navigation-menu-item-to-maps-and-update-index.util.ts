@@ -2,6 +2,8 @@ import { type FlatNavigationMenuItemMaps } from 'src/engine/metadata-modules/fla
 import { type FlatNavigationMenuItem } from 'src/engine/metadata-modules/flat-navigation-menu-item/types/flat-navigation-menu-item.type';
 import { addFlatEntityToFlatEntityMapsThroughMutationOrThrow } from 'src/engine/workspace-manager/workspace-migration/utils/add-flat-entity-to-flat-entity-maps-through-mutation-or-throw.util';
 
+// Adds a flat navigation menu item to the maps and appends it to the
+// byUserWorkspaceIdAndFolderId index so position lookups stay in sync.
 export const addFlatNavigationMenuItemToMapsAndUpdateIndex = ({
   flatNavigationMenuItem,
   flatNavigationMenuItemMaps,

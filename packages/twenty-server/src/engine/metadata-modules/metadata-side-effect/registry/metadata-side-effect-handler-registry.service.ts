@@ -1,3 +1,7 @@
+// Discovers all registered metadata side effect handler providers at startup
+// (via reflect metadata) and indexes them by (operation, metadataName) for
+// the side effect engine to look up.
+
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { DiscoveryService } from '@nestjs/core';
 
@@ -34,10 +38,13 @@ export class MetadataSideEffectHandlerRegistryService implements OnModuleInit {
 
   constructor(private readonly discoveryService: DiscoveryService) {}
 
+  // Triggers handler discovery when the module initializes.
   onModuleInit() {
     this.discoverAndRegisterHandlers();
   }
 
+  // Scans all providers in the handlers module, and registers each one
+  // carrying the side effect handler reflect metadata and a buildSideEffects method.
   private discoverAndRegisterHandlers(): void {
     const providers = this.discoveryService.getProviders({
       include: [MetadataSideEffectHandlersModule],
@@ -65,6 +72,8 @@ export class MetadataSideEffectHandlerRegistryService implements OnModuleInit {
     });
   }
 
+  // Indexes a handler instance by its (operation, metadataName) key,
+  // rejecting duplicate side effect names.
   private registerHandler(instance: RegisteredSideEffectHandler): void {
     if (this.registeredSideEffectNames.has(instance.sideEffectName)) {
       throw new Error(
@@ -92,6 +101,7 @@ export class MetadataSideEffectHandlerRegistryService implements OnModuleInit {
     });
   }
 
+  // Returns the handlers registered for a given operation and metadata name.
   getHandlers(
     operation: MetadataSideEffectOperation,
     metadataName: AllMetadataName,
@@ -103,6 +113,8 @@ export class MetadataSideEffectHandlerRegistryService implements OnModuleInit {
     );
   }
 
+  // Returns every distinct (operation, metadataName) pair that has at least
+  // one registered handler.
   getRegisteredHandlerKeys(): RegisteredMetadataSideEffectHandlerKey[] {
     return this.registeredHandlerKeys;
   }

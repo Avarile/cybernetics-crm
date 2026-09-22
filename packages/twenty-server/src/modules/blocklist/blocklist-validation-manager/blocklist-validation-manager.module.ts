@@ -5,6 +5,8 @@ import { TwentyORMModule } from 'src/engine/twenty-orm/twenty-orm.module';
 import { BlocklistValidationService } from 'src/modules/blocklist/blocklist-validation-manager/services/blocklist-validation.service';
 import { BlocklistWorkspaceEntity } from 'src/modules/blocklist/standard-objects/blocklist.workspace-entity';
 
+// Wires up the service that validates blocklist entries (schema + uniqueness)
+// before they are created or updated.
 @Module({
   imports: [
     ObjectMetadataRepositoryModule.forFeature([BlocklistWorkspaceEntity]),

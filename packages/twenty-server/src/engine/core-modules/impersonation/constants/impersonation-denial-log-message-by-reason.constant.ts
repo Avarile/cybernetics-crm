@@ -1,3 +1,5 @@
+// Maps each impersonation denial reason to a log message builder, for
+// server-side audit logging of denied impersonation attempts.
 import { type ImpersonationDenialReason } from 'src/engine/core-modules/impersonation/services/impersonation-authorization.service';
 
 export const IMPERSONATION_DENIAL_LOG_MESSAGE_BY_REASON: Record<

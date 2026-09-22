@@ -17,6 +17,7 @@ export class SyncDriver implements MessageQueueDriver {
 
   constructor() {}
 
+  // Runs the job's handler immediately instead of enqueueing it
   async add<T extends MessageQueueJobData>(
     queueName: MessageQueue,
     jobName: string,
@@ -25,6 +26,7 @@ export class SyncDriver implements MessageQueueDriver {
     await this.processJob(queueName, { id: '', name: jobName, data });
   }
 
+  // Runs the cron job's handler immediately once, rather than scheduling it
   async addCron<T extends MessageQueueJobData | undefined>({
     queueName,
     jobName,
@@ -48,6 +50,7 @@ export class SyncDriver implements MessageQueueDriver {
     this.logger.log(`Removing '${queueName}' cron job with SyncDriver`);
   }
 
+  // Registers the in-memory handler invoked synchronously for jobs added to this queue
   work<T extends MessageQueueJobData>(
     queueName: MessageQueue,
     handler: (job: MessageQueueJob<T>) => Promise<void> | void,
@@ -56,6 +59,7 @@ export class SyncDriver implements MessageQueueDriver {
     this.workersMap[queueName] = handler;
   }
 
+  // Dispatches a job to its registered handler, logging if none is registered
   async processJob<T extends MessageQueueJobData>(
     queueName: string,
     job: MessageQueueJob<T>,

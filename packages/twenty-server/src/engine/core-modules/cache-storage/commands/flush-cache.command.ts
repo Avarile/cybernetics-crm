@@ -1,3 +1,5 @@
+// CLI command (`cache:flush`) that clears Redis cache keys, either for a
+// single namespace or across all namespaces, matching an optional pattern.
 import { CACHE_MANAGER, type Cache } from '@nestjs/cache-manager';
 import { Inject, Logger } from '@nestjs/common';
 
@@ -24,6 +26,8 @@ export class FlushCacheCommand extends CommandRunner {
     super();
   }
 
+  // Resolves the namespace(s) to flush from CLI options and flushes matching
+  // keys in each.
   async run(
     _passedParams: string[],
     options?: Record<string, string>,
@@ -55,6 +59,8 @@ export class FlushCacheCommand extends CommandRunner {
     }
   }
 
+  // Returns all namespaces if none was passed, otherwise validates and
+  // returns the single requested namespace.
   private computeNamespacesToFlushOrThrow(
     value: unknown,
   ): CacheStorageNamespace[] {
@@ -71,6 +77,7 @@ export class FlushCacheCommand extends CommandRunner {
     return [this.parseNamespaceOrThrow(value)];
   }
 
+  // Validates that `value` is one of the known cache storage namespaces.
   private parseNamespaceOrThrow(value: string): CacheStorageNamespace {
     if (!NAMESPACE_VALUES.includes(value as CacheStorageNamespace)) {
       throw new Error(

@@ -1,3 +1,5 @@
+// Global root module wiring together the logic-function subsystem: the
+// driver factory (Lambda/local), resource storage, triggers, and executor.
 import { type DynamicModule, Global, Module } from '@nestjs/common';
 
 import { CacheLockModule } from 'src/engine/core-modules/cache-lock/cache-lock.module';
@@ -13,6 +15,7 @@ import { WorkspaceCacheModule } from 'src/engine/workspace-cache/workspace-cache
 @Global()
 @Module({})
 export class LogicFunctionModule {
+  // Builds the dynamic module, wiring the driver factory and its submodules.
   static forRoot(): DynamicModule {
     return {
       module: LogicFunctionModule,

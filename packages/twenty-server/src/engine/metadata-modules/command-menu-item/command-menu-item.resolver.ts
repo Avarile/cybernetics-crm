@@ -33,12 +33,16 @@ import { WorkspaceMigrationGraphqlApiExceptionInterceptor } from 'src/engine/wor
   CommandMenuItemGraphqlApiExceptionInterceptor,
 )
 @MetadataResolver(() => CommandMenuItemDTO)
+// GraphQL resolver exposing CRUD operations and navigation field
+// resolution (label, shortLabel, icon) for command menu items.
 export class CommandMenuItemResolver {
   constructor(
     private readonly commandMenuItemService: CommandMenuItemService,
     private readonly frontComponentService: FrontComponentService,
   ) {}
 
+  // Resolves the display label, interpolating navigation placeholders
+  // (e.g. object metadata labels) and applying i18n translations.
   @ResolveField(() => String)
   async label(
     @Parent() commandMenuItem: CommandMenuItemDTO,
@@ -60,6 +64,7 @@ export class CommandMenuItemResolver {
     );
   }
 
+  // Resolves the shortened display label used in compact UI contexts.
   @ResolveField(() => String, { nullable: true })
   async shortLabel(
     @Parent() commandMenuItem: CommandMenuItemDTO,
@@ -78,6 +83,8 @@ export class CommandMenuItemResolver {
     });
   }
 
+  // Resolves the icon to display, falling back to navigation defaults
+  // (e.g. the linked object metadata's icon) when not explicitly set.
   @ResolveField(() => String, { nullable: true })
   async icon(
     @Parent() commandMenuItem: CommandMenuItemDTO,
@@ -96,6 +103,8 @@ export class CommandMenuItemResolver {
     });
   }
 
+  // Resolves the linked front component, if this command menu item
+  // launches a custom front component rather than a navigation target.
   @ResolveField(() => FrontComponentDTO, { nullable: true })
   async frontComponent(
     @Parent() commandMenuItem: CommandMenuItemDTO,
@@ -111,6 +120,7 @@ export class CommandMenuItemResolver {
     );
   }
 
+  // Lists all command menu items available in the workspace.
   @Query(() => [CommandMenuItemDTO])
   @UseGuards(NoPermissionGuard)
   async commandMenuItems(
@@ -119,6 +129,7 @@ export class CommandMenuItemResolver {
     return await this.commandMenuItemService.findAll(workspace.id);
   }
 
+  // Fetches a single command menu item by id.
   @Query(() => CommandMenuItemDTO, { nullable: true })
   @UseGuards(NoPermissionGuard)
   async commandMenuItem(
@@ -128,6 +139,7 @@ export class CommandMenuItemResolver {
     return await this.commandMenuItemService.findById(id, workspace.id);
   }
 
+  // Creates a new custom command menu item.
   @Mutation(() => CommandMenuItemDTO)
   @UseGuards(NoPermissionGuard)
   async createCommandMenuItem(
@@ -137,6 +149,7 @@ export class CommandMenuItemResolver {
     return await this.commandMenuItemService.create(input, workspace.id);
   }
 
+  // Updates an existing command menu item.
   @Mutation(() => CommandMenuItemDTO)
   @UseGuards(NoPermissionGuard)
   async updateCommandMenuItem(
@@ -146,6 +159,8 @@ export class CommandMenuItemResolver {
     return await this.commandMenuItemService.update(input, workspace.id);
   }
 
+  // Resets a standard-app command menu item back to its default state,
+  // discarding any workspace-level overrides.
   @Mutation(() => CommandMenuItemDTO)
   @UseGuards(NoPermissionGuard)
   async resetCommandMenuItem(
@@ -155,6 +170,8 @@ export class CommandMenuItemResolver {
     return await this.commandMenuItemService.reset(id, workspace.id);
   }
 
+  // Deletes a command menu item (or deactivates it, when it originates
+  // from the standard app and must be soft-removed instead).
   @Mutation(() => CommandMenuItemDTO)
   @UseGuards(NoPermissionGuard)
   async deleteCommandMenuItem(

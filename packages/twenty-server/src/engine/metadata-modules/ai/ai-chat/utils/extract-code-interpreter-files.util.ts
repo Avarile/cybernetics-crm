@@ -1,3 +1,5 @@
+// Pulls file attachments with code-interpreter-supported MIME types out of
+// user messages, replacing them with a text note listing the extracted files.
 import { type ExtendedUIMessage, isExtendedFileUIPart } from 'twenty-shared/ai';
 
 import { CODE_INTERPRETER_MIME_TYPES } from 'src/engine/metadata-modules/ai/ai-chat/constants/code-interpreter-mime-types.constant';

@@ -8,6 +8,8 @@ import {
   SkillExceptionCode,
 } from 'src/engine/metadata-modules/skill/skill.exception';
 
+// Looks up the flat skill targeted for deletion, throwing if it doesn't exist or is a
+// non-custom (standard) skill that can't be deleted.
 export const fromDeleteSkillInputToFlatSkillOrThrow = ({
   flatSkillMaps,
   skillId,

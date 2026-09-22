@@ -1,3 +1,5 @@
+// Per-FileFolder serving config: whether an expired token is still accepted
+// (for long-lived public assets) and what Cache-Control header to send.
 import { registerEnumType } from '@nestjs/graphql';
 
 import { FileFolder } from 'twenty-shared/types';

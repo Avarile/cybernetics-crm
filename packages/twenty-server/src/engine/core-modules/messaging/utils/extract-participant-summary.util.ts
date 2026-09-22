@@ -1,8 +1,12 @@
+// Derives a thread's participant summary (first/last-two, count) for the timeline.
 import { type TimelineThreadParticipantDTO } from 'src/engine/core-modules/messaging/dtos/timeline-thread-participant.dto';
 import { filterActiveParticipants } from 'src/engine/core-modules/messaging/utils/filter-active-participants.util';
 import { formatThreadParticipant } from 'src/engine/core-modules/messaging/utils/format-thread-participant.util';
 import { type MessageParticipantWorkspaceEntity } from 'src/modules/messaging/common/standard-objects/message-participant.workspace-entity';
 
+// Derives the timeline summary fields for a thread's participants: the
+// first sender, up to two other distinct senders, and the total count of
+// active (FROM-role) participants.
 export const extractParticipantSummary = (
   messageParticipants: MessageParticipantWorkspaceEntity[],
 ): {

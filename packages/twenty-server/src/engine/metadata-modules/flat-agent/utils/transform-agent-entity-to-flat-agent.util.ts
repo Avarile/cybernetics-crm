@@ -7,6 +7,8 @@ import {
 } from 'src/engine/metadata-modules/flat-entity/exceptions/flat-entity-maps.exception';
 import { type FromEntityToFlatEntityArgs } from 'src/engine/workspace-cache/types/from-entity-to-flat-entity-args.type';
 
+// Converts an AgentEntity into its flat representation, resolving the agent's
+// application id to its universal identifier (throws if the application isn't found).
 export const transformAgentEntityToFlatAgent = ({
   entity: agentEntity,
   applicationIdToUniversalIdentifierMap,

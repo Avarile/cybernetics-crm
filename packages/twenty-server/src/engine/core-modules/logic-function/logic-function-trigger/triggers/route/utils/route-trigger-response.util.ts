@@ -2,6 +2,7 @@ import { type Response } from 'express';
 import { isLogicFunctionHttpResponse } from 'twenty-shared/types';
 import { isDefined } from 'twenty-shared/utils';
 
+// HTTP response shape produced by a route-triggered logic function.
 export type RouteTriggerResponse = {
   statusCode: number;
   headers: Record<string, string>;
@@ -16,6 +17,8 @@ const ALLOWED_RESPONSE_HEADERS = new Set([
   'retry-after',
 ]);
 
+// Normalizes a function's return value into a RouteTriggerResponse, using
+// the custom HTTP-response shape when the function returned one.
 export const buildRouteTriggerResponse = (
   data: unknown,
 ): RouteTriggerResponse => {
@@ -30,6 +33,8 @@ export const buildRouteTriggerResponse = (
   return { statusCode: 200, headers: {}, body: data };
 };
 
+// Writes a RouteTriggerResponse onto the Express response, allow-listing
+// which headers get forwarded and inferring content-type for string/JSON bodies.
 export const sendRouteTriggerResponse = (
   response: Response,
   { statusCode, headers, body }: RouteTriggerResponse,

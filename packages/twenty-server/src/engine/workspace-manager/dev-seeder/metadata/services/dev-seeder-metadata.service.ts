@@ -64,6 +64,9 @@ type FlatMaps = {
   objectIdByName: Record<string, string>;
 };
 
+// Seeds custom objects/fields, morph relations, and junction relations for
+// the dev-seeded Apple and YCombinator workspaces (e.g. Pet, Rocket, Survey
+// Result custom objects and their relations to standard objects).
 @Injectable()
 export class DevSeederMetadataService {
   constructor(
@@ -174,6 +177,7 @@ export class DevSeederMetadataService {
     },
   };
 
+  // In light mode, skip all custom object/field seeding.
   private getLightConfig(_config: WorkspaceSeedConfig): WorkspaceSeedConfig {
     return {
       objects: [],
@@ -181,6 +185,7 @@ export class DevSeederMetadataService {
     };
   }
 
+  // Looks up the workspace's seed config, applying the light-mode override.
   private getConfig(workspaceId: string, light: boolean): WorkspaceSeedConfig {
     const config = this.workspaceConfigs[workspaceId];
 
@@ -193,6 +198,8 @@ export class DevSeederMetadataService {
     return light ? this.getLightConfig(config) : config;
   }
 
+  // Creates the workspace's custom objects (and their own fields) plus any
+  // extra custom fields on standard objects.
   public async seed({
     workspaceId,
     light = false,
@@ -226,6 +233,7 @@ export class DevSeederMetadataService {
     }
   }
 
+  // Creates a single custom object from its seed definition.
   private async seedCustomObject({
     workspaceId,
     objectMetadataSeed,
@@ -239,6 +247,7 @@ export class DevSeederMetadataService {
     });
   }
 
+  // Creates the given custom fields on the named object.
   private async seedCustomFields({
     workspaceId,
     objectMetadataNameSingular,
@@ -269,6 +278,9 @@ export class DevSeederMetadataService {
     });
   }
 
+  // Seeds relations between the seeded custom/standard objects: morph
+  // relations first, then junction relation fields, then junction settings
+  // — each step re-reads flat maps since prior steps change object shape.
   public async seedRelations({
     workspaceId,
     light = false,
@@ -310,6 +322,8 @@ export class DevSeederMetadataService {
     }
   }
 
+  // Invalidates and recomputes the object/field flat entity maps, returning
+  // them alongside an object-id-by-name lookup.
   private async getFreshFlatMaps(workspaceId: string): Promise<FlatMaps> {
     await this.flatEntityMapsCacheService.invalidateFlatEntityMaps({
       workspaceId,
@@ -335,6 +349,8 @@ export class DevSeederMetadataService {
     };
   }
 
+  // Configures a junction field to point at its paired field on the
+  // junction target object, optionally overriding its label.
   private async applyJunctionConfig({
     workspaceId,
     junctionConfig,
@@ -372,6 +388,8 @@ export class DevSeederMetadataService {
     });
   }
 
+  // Creates a morph relation field (one field targeting multiple object
+  // types) on the given object from its seed definition.
   private async seedMorphRelations({
     workspaceId,
     relation,
@@ -431,6 +449,8 @@ export class DevSeederMetadataService {
     });
   }
 
+  // Creates a one-to-many relation field on the source object pointing at
+  // the target (junction) object.
   private async seedJunctionField({
     workspaceId,
     field,
@@ -470,6 +490,7 @@ export class DevSeederMetadataService {
     });
   }
 
+  // Looks up a field's id by object name and field name in the flat maps.
   private findFieldId(
     objectName: string,
     fieldName: string,

@@ -25,6 +25,8 @@ import {
 import { WasIntroducedInUpgrade } from 'src/engine/core-modules/upgrade/decorators/was-introduced-in-upgrade.decorator';
 import { type WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.entity';
 
+// Persists metadata for a stored file (workspace or application-registration
+// scoped) - its storage path, size, mime type, and upload status.
 @Entity('file')
 @Check(
   'CHK_FILE_PENDING_MIME_OCTET_STREAM',

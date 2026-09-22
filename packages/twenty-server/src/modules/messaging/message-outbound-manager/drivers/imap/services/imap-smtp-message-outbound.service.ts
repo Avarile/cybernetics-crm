@@ -1,3 +1,6 @@
+// MessageOutboundDriver for IMAP/SMTP accounts: sends via SMTP and, when
+// the account also has IMAP configured, appends a copy to the account's
+// sent folder; drafts are appended directly to the IMAP drafts folder.
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -35,6 +38,8 @@ export class ImapSmtpMessageOutboundService implements MessageOutboundDriver {
     private readonly messageFolderRepository: Repository<MessageFolderEntity>,
   ) {}
 
+  // Sends via SMTP, then — if the account has IMAP configured — appends a
+  // copy of the raw message to its sent folder so it shows up in sync.
   async sendMessage(
     sendMessageInput: SendMessageInput,
     connectedAccount: ConnectedAccountEntity,
@@ -99,6 +104,8 @@ export class ImapSmtpMessageOutboundService implements MessageOutboundDriver {
     };
   }
 
+  // Requires IMAP; appends the composed message to the drafts folder
+  // (finding or creating one) with the \Draft flag set.
   async createDraft(
     sendMessageInput: SendMessageInput,
     connectedAccount: ConnectedAccountEntity,
@@ -139,6 +146,8 @@ export class ImapSmtpMessageOutboundService implements MessageOutboundDriver {
     }
   }
 
+  // Sends the message, then best-effort deletes the source draft
+  // (logging rather than failing the send if cleanup fails).
   async sendDraft(
     draftExternalId: string,
     sendMessageInput: SendMessageInput,
@@ -160,6 +169,7 @@ export class ImapSmtpMessageOutboundService implements MessageOutboundDriver {
     return sendResult;
   }
 
+  // Deletes an IMAP draft by its "folder:uid" external id.
   async deleteDraft(
     externalId: string,
     connectedAccount: ConnectedAccountEntity,
@@ -189,6 +199,7 @@ export class ImapSmtpMessageOutboundService implements MessageOutboundDriver {
     }
   }
 
+  // Builds a raw MIME message buffer with MailComposer.
   private async compileRawMessage(
     from: string,
     sendMessageInput: SendMessageInput,
@@ -200,6 +211,7 @@ export class ImapSmtpMessageOutboundService implements MessageOutboundDriver {
     return mail.compile().build();
   }
 
+  // Narrows handle to non-null, throwing if the account has none set.
   private assertHandleIsDefined(
     handle: string | null,
   ): asserts handle is string {

@@ -1,3 +1,5 @@
+// Trims older reasoning/tool-call content from a conversation once it
+// approaches the model's context window, to keep the prompt within budget.
 import { Injectable, Logger } from '@nestjs/common';
 
 import { type ModelMessage, pruneMessages } from 'ai';
@@ -15,6 +17,9 @@ export type PruningResult = {
 export class MessagePruningService {
   private readonly logger = new Logger(MessagePruningService.name);
 
+  // If the conversation is near the context window limit, prunes older
+  // reasoning/tool-call content (keeping the last few messages intact) and
+  // reports whether pruning happened and whether it's still over budget.
   pruneIfOverContextWindowLimit(
     messages: ModelMessage[],
     contextWindowTokens: number,

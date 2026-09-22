@@ -13,6 +13,10 @@ const TRANSIENT_IMAP_RESPONSE_CODES = new Set([
   'SERVERBUG',
 ]);
 
+// Classifies an IMAP connect/authenticate failure: network errors and
+// known transient server response codes are treated as retryable, an
+// explicit authenticationFailed flag as insufficient permissions,
+// anything else as unknown.
 export const parseImapAuthenticationError = (
   error: ImapFlowError,
 ): MessageImportDriverException => {

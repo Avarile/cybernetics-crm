@@ -30,6 +30,10 @@ type BuildCursorCompositeFieldWhereConditionParams = {
   isEqualityCondition?: boolean;
 };
 
+// Builds the where condition for one composite field's cursor position:
+// either a plain equality (for the earlier, "anchor" cursor keys) or a
+// direction-aware comparison built from the field's subfields' order-by
+// directions, combined with OR across subfields for a proper keyset scan.
 export const buildCursorCompositeFieldWhereCondition = ({
   fieldType,
   fieldKey,

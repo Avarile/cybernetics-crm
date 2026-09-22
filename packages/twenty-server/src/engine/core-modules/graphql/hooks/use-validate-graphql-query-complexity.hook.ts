@@ -1,3 +1,6 @@
+// GraphQL Yoga plugin that rejects overly complex queries (too many fields,
+// too many root resolvers, or too deep nesting), and optionally rejects
+// duplicate root resolvers in a single document.
 import { msg } from '@lingui/core/macro';
 import {
   type DocumentNode,
@@ -24,6 +27,8 @@ type AnalysisResult = {
   rootResolverNames: string[];
 };
 
+// Parses each incoming document and throws a UserInputError if it exceeds
+// the configured field count, root resolver count, or nesting depth limits.
 export const useValidateGraphqlQueryComplexity = ({
   maximumAllowedFields,
   maximumAllowedRootResolvers,
@@ -86,6 +91,7 @@ export const useValidateGraphqlQueryComplexity = ({
   },
 });
 
+// Indexes a document's fragment definitions by name for quick lookup.
 const buildFragmentMap = (
   document: DocumentNode,
 ): Map<string, FragmentDefinitionNode> => {
@@ -100,6 +106,8 @@ const buildFragmentMap = (
   return fragmentMap;
 };
 
+// Analyzes a named fragment's selection set once, returning its field
+// count, depth, and root field names for reuse at every spread site.
 const resolveFragmentMetadata = (
   fragmentName: string,
   fragmentMap: Map<string, FragmentDefinitionNode>,
@@ -125,6 +133,9 @@ const resolveFragmentMetadata = (
   return result;
 };
 
+// Recursively walks a selection set, counting non-introspection fields,
+// tracking maximum nesting depth, and collecting root-level field names
+// (resolving fragment spreads and inline fragments along the way).
 const analyzeSelectionSet = (
   selections: readonly SelectionNode[],
   fragmentMap: Map<string, FragmentDefinitionNode>,
@@ -210,6 +221,8 @@ const analyzeSelectionSet = (
   return { fieldsCount, maxDepth, rootFieldNames };
 };
 
+// Analyzes every operation in a document, aggregating field/root-resolver
+// counts and max depth, optionally throwing on duplicate root resolver names.
 const analyzeDocument = (
   document: DocumentNode,
   fragmentMap: Map<string, FragmentDefinitionNode>,

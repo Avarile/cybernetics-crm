@@ -4,6 +4,8 @@ import { assertUnreachable } from 'twenty-shared/utils';
 
 import { CustomException } from 'src/utils/custom-exception';
 
+// Exception thrown when a metadata name/label fails validation rules
+// (length, casing, reserved keywords, label/name mismatch, etc).
 export enum InvalidMetadataExceptionCode {
   LABEL_REQUIRED = 'Label required',
   INPUT_TOO_SHORT = 'Input too short',
@@ -16,6 +18,7 @@ export enum InvalidMetadataExceptionCode {
   NOT_AVAILABLE = 'Name not available',
 }
 
+// Maps an exception code to the localized message shown to end users.
 const getInvalidMetadataExceptionUserFriendlyMessage = (
   code: InvalidMetadataExceptionCode,
 ) => {

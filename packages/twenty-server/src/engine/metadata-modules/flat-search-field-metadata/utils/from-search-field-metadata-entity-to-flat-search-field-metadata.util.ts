@@ -8,6 +8,9 @@ import { getMetadataEntityRelationProperties } from 'src/engine/metadata-modules
 import { type FlatSearchFieldMetadata } from 'src/engine/metadata-modules/flat-search-field-metadata/types/flat-search-field-metadata.type';
 import type { FromEntityToFlatEntityArgs } from 'src/engine/workspace-cache/types/from-entity-to-flat-entity-args.type';
 
+// Converts a SearchFieldMetadataEntity into its flat representation, resolving application,
+// object metadata, field metadata and TS_VECTOR field references to universal identifiers
+// (throws if any referenced entity can't be resolved).
 export const fromSearchFieldMetadataEntityToFlatSearchFieldMetadata = ({
   entity: searchFieldMetadataEntity,
   applicationIdToUniversalIdentifierMap,

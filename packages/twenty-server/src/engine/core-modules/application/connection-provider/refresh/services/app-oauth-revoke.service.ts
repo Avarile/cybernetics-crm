@@ -1,3 +1,5 @@
+// Best-effort revokes a connected account's access token with its OAuth
+// provider's revoke endpoint, e.g. when the user disconnects an app.
 import { Injectable, Logger } from '@nestjs/common';
 
 import { isDefined } from 'twenty-shared/utils';

@@ -7,6 +7,7 @@ import {
   type CreateStandardViewArgs,
 } from 'src/engine/workspace-manager/twenty-standard-application/utils/view/create-standard-view-flat-metadata.util';
 
+// Builds the fixed set of standard views for the "opportunity" object
 export const computeStandardOpportunityViews = (
   args: Omit<CreateStandardViewArgs<'opportunity'>, 'context'>,
 ): Record<string, FlatView> => {

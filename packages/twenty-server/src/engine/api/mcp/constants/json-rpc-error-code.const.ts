@@ -1,3 +1,4 @@
+// Standard JSON-RPC 2.0 error codes used when responding to MCP requests.
 export const JSON_RPC_ERROR_CODE = {
   PARSE_ERROR: -32700,
   INVALID_REQUEST: -32600,

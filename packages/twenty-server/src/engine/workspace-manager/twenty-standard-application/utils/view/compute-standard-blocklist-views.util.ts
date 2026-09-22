@@ -6,6 +6,7 @@ import {
   type CreateStandardViewArgs,
 } from 'src/engine/workspace-manager/twenty-standard-application/utils/view/create-standard-view-flat-metadata.util';
 
+// Builds the fixed set of standard views for the "blocklist" object
 export const computeStandardBlocklistViews = (
   args: Omit<CreateStandardViewArgs<'blocklist'>, 'context'>,
 ): Record<string, FlatView> => {

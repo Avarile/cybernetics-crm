@@ -1,3 +1,6 @@
+// Normalizes a raw GraphQL record input (e.g. stringified composite
+// sub-fields, provider-specific formatting) into the shape the workspace
+// ORM expects, per field type (rich text, links, emails, phones, etc).
 import { Injectable } from '@nestjs/common';
 
 import {
@@ -19,6 +22,8 @@ import { FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object-meta
 
 @Injectable()
 export class RecordInputTransformerService {
+  // Transforms every field in a record input according to its metadata
+  // type, leaving unknown fields untouched.
   async process({
     recordInput,
     flatObjectMetadata,
@@ -63,6 +68,7 @@ export class RecordInputTransformerService {
     return transformedEntries;
   }
 
+  // Dispatches to the type-specific transform util for known field types.
   private async transformFieldValue(
     fieldType: FieldMetadataType,
     // oxlint-disable-next-line typescript/no-explicit-any
@@ -92,6 +98,8 @@ export class RecordInputTransformerService {
   }
 
   // oxlint-disable-next-line typescript/no-explicit-any
+  // For composite fields, JSON-stringifies any RAW_JSON sub-field so it
+  // matches the string shape the individual value transformers expect.
   private stringifySubFields(fieldMetadataType: FieldMetadataType, value: any) {
     const compositeType = compositeTypeDefinitions.get(fieldMetadataType);
 
@@ -121,6 +129,8 @@ export class RecordInputTransformerService {
   }
 
   // oxlint-disable-next-line typescript/no-explicit-any
+  // Reverses stringifySubFields: parses a composite field's RAW_JSON
+  // sub-field back into a JS value after transformation.
   private parseSubFields(fieldMetadataType: FieldMetadataType, value: any) {
     const compositeType = compositeTypeDefinitions.get(fieldMetadataType);
 

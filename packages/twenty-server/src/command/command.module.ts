@@ -1,3 +1,5 @@
+// Nest module for the CLI entry point: pulls in the app module plus the modules
+// needed by registered CLI commands (database commands, metadata, workspace cleaning).
 import { Module } from '@nestjs/common';
 
 import { AppModule } from 'src/app.module';

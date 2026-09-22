@@ -4,6 +4,8 @@ import { isCallerTwentyStandardApp } from 'src/engine/metadata-modules/utils/is-
 import { type UniversalFlatObjectMetadata } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-object-metadata.type';
 import { type WorkspaceMigrationBuilderOptions } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-builder/types/workspace-migration-builder-options.type';
 
+// Checks whether nameSingular/namePlural still match what would be computed from
+// the current labels, so callers know if an "isLabelSyncedWithName" object needs a rename.
 export const areFlatObjectMetadataNamesSyncedWithLabels = ({
   flatObjectMetadata,
   buildOptions,

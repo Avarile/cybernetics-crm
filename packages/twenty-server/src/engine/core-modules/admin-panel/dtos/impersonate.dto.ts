@@ -1,3 +1,5 @@
+// GraphQL DTO returned when an admin starts impersonating a user, carrying
+// the login token and target workspace details.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 import { AuthToken } from 'src/engine/core-modules/auth/dto/auth-token.dto';

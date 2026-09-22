@@ -1,3 +1,6 @@
+// Lazily creates and caches the app's Redis client instances: a
+// queue-dedicated client, a general-purpose client, and a GraphQL
+// subscriptions pub/sub client built on top of it.
 import { Injectable, type OnModuleDestroy } from '@nestjs/common';
 
 import IORedis from 'ioredis';
@@ -14,6 +17,8 @@ export class RedisClientService implements OnModuleDestroy {
 
   constructor(private readonly twentyConfigService: TwentyConfigService) {}
 
+  // Returns (creating on first call) the Redis client used by the message
+  // queue, preferring REDIS_QUEUE_URL and falling back to REDIS_URL.
   getQueueClient() {
     if (!this.redisQueueClient) {
       const redisQueueUrl =
@@ -32,6 +37,7 @@ export class RedisClientService implements OnModuleDestroy {
     return this.redisQueueClient;
   }
 
+  // Returns (creating on first call) the general-purpose Redis client.
   getClient() {
     if (!this.redisClient) {
       const redisUrl = this.twentyConfigService.get('REDIS_URL');
@@ -48,6 +54,8 @@ export class RedisClientService implements OnModuleDestroy {
     return this.redisClient;
   }
 
+  // Returns (creating on first call) a GraphQL Redis pub/sub client, built
+  // from duplicated publisher/subscriber connections off the general client.
   getPubSubClient() {
     if (!this.redisPubSubClient) {
       const redisClient = this.getClient();
@@ -61,6 +69,7 @@ export class RedisClientService implements OnModuleDestroy {
     return this.redisPubSubClient;
   }
 
+  // Closes every created Redis connection on shutdown.
   async onModuleDestroy() {
     if (isDefined(this.redisQueueClient)) {
       await this.redisQueueClient.quit();

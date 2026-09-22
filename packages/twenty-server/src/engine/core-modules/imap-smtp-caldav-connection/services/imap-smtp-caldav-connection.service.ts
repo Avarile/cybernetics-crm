@@ -1,3 +1,6 @@
+// Service that test-connects to IMAP/SMTP/CALDAV servers with user-supplied
+// credentials and validates+tests a full set of protocol connection params
+// before they are saved.
 import { Injectable, Logger } from '@nestjs/common';
 
 import { msg } from '@lingui/core/macro';
@@ -34,6 +37,8 @@ export class ImapSmtpCaldavService {
     private readonly imapSmtpCaldavValidatorService: ImapSmtpCaldavValidatorService,
   ) {}
 
+  // Attempts to log into the IMAP server with the given credentials and list
+  // mailboxes, translating common failures into user-friendly errors.
   async testImapConnection(
     handle: string,
     params: ConnectionParameters,
@@ -107,6 +112,7 @@ export class ImapSmtpCaldavService {
     }
   }
 
+  // Verifies SMTP credentials/connectivity via nodemailer's transport.verify().
   async testSmtpConnection(
     handle: string,
     params: ConnectionParameters,
@@ -142,6 +148,8 @@ export class ImapSmtpCaldavService {
     return true;
   }
 
+  // Connects to the CalDAV server and verifies it exposes at least one
+  // calendar supporting events.
   async testCaldavConnection(
     handle: string,
     params: ConnectionParameters,
@@ -185,6 +193,8 @@ export class ImapSmtpCaldavService {
     return true;
   }
 
+  // Dispatches to the right protocol-specific connection test, unless
+  // connection testing is disabled by config.
   async testImapSmtpCaldav({
     handle,
     params,
@@ -214,6 +224,9 @@ export class ImapSmtpCaldavService {
     }
   }
 
+  // Validates each supplied protocol's params (merging in existing values
+  // where needed) and connection-tests each one before returning the full
+  // validated parameter set to persist.
   async validateAndTestConnectionParameters({
     connectionParameters,
     handle,

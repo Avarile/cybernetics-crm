@@ -1,3 +1,6 @@
+// Top-level facade that CRUD resolvers use to apply a GraphQL query's
+// filter/orderBy/selected-fields arguments onto a TypeORM query builder,
+// delegating to the specialized filter/order/selected-fields parsers.
 import { isNonEmptyString } from '@sniptt/guards';
 import { isDefined } from 'class-validator';
 import { type OrderByWithGroupBy } from 'twenty-shared/types';
@@ -60,6 +63,7 @@ export class GraphqlQueryParser {
     );
   }
 
+  // Applies the record filter to the query builder as a WHERE clause.
   public applyFilterToBuilder(
     // oxlint-disable-next-line typescript/no-explicit-any
     queryBuilder: WorkspaceSelectQueryBuilder<any>,
@@ -74,6 +78,8 @@ export class GraphqlQueryParser {
     );
   }
 
+  // Includes soft-deleted records in the query if the filter explicitly
+  // filters on deletedAt (otherwise soft-deleted rows stay excluded by default).
   public applyDeletedAtToBuilder(
     // oxlint-disable-next-line typescript/no-explicit-any
     queryBuilder: WorkspaceSelectQueryBuilder<any>,
@@ -118,6 +124,9 @@ export class GraphqlQueryParser {
     return false;
   };
 
+  // Parses orderBy, joins any relations it needs, and applies the
+  // resulting ORDER BY to the builder; returns the parsed clauses so the
+  // caller can also select their columns after setFindOptions.
   public applyOrderToBuilder(
     // oxlint-disable-next-line typescript/no-explicit-any
     queryBuilder: WorkspaceSelectQueryBuilder<any>,
@@ -145,6 +154,9 @@ export class GraphqlQueryParser {
     return parseResult.orderBy;
   }
 
+  // Adds any ordered-by columns that aren't already selected (e.g. a
+  // relation's column) to the SELECT list, aliased for DISTINCT
+  // compatibility. Must run after setFindOptions, which clears addSelect.
   public addRelationOrderColumnsToBuilder(
     // oxlint-disable-next-line typescript/no-explicit-any
     queryBuilder: WorkspaceSelectQueryBuilder<any>,
@@ -176,6 +188,9 @@ export class GraphqlQueryParser {
     }
   }
 
+  // Builds a raw SQL "ORDER BY ..." string from the parsed orderBy,
+  // applying ::text casts and LOWER() wrapping where needed, for use in
+  // raw-query contexts where TypeORM's builder API isn't applicable.
   public getOrderByRawSQL(
     orderBy: ObjectRecordOrderBy | OrderByWithGroupBy,
     objectNameSingular: string,
@@ -223,6 +238,7 @@ export class GraphqlQueryParser {
     return { orderByRawSQL, relationJoins: parseResult.relationJoins };
   }
 
+  // Applies orderBy for a group-by query using the group-by-aware order parser.
   public applyGroupByOrderToBuilder(
     // oxlint-disable-next-line typescript/no-explicit-any
     queryBuilder: WorkspaceSelectQueryBuilder<any>,
@@ -248,6 +264,7 @@ export class GraphqlQueryParser {
     return queryBuilder;
   }
 
+  // Parses the GraphQL selection set into TypeORM select/relations/aggregate options.
   public parseSelectedFields(
     // oxlint-disable-next-line typescript/no-explicit-any
     graphqlSelectedFields: Partial<Record<string, any>>,

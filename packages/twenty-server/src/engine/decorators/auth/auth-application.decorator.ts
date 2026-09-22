@@ -10,6 +10,9 @@ interface DecoratorOptions {
   allowUndefined?: boolean;
 }
 
+// Injects the authenticated application from the request, throwing unless
+// `allowUndefined` is passed and the endpoint requires an
+// APPLICATION_ACCESS token.
 export const AuthApplication = createParamDecorator(
   (options: DecoratorOptions | undefined, ctx: ExecutionContext) => {
     const request = getRequest(ctx);

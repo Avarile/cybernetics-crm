@@ -1,3 +1,4 @@
+// Converts an AppToken entity into the public WorkspaceInvitation DTO shape.
 import { type AppTokenEntity } from 'src/engine/core-modules/app-token/app-token.entity';
 import { INVITATION_APP_TOKEN_TYPES } from 'src/engine/core-modules/workspace-invitation/constants/invitation-app-token-types';
 import {
@@ -5,6 +6,8 @@ import {
   WorkspaceInvitationExceptionCode,
 } from 'src/engine/core-modules/workspace-invitation/workspace-invitation.exception';
 
+// Converts an AppToken entity into the public WorkspaceInvitation shape,
+// validating it is an invitation-type token with an email in its context.
 export const castAppTokenToWorkspaceInvitationUtil = (
   appToken: AppTokenEntity,
 ) => {

@@ -1,3 +1,5 @@
+// Maps ApplicationException codes to HTTP status codes for REST (non-
+// GraphQL) endpoints, delegating error formatting to the shared handler.
 import {
   type ArgumentsHost,
   Catch,
@@ -15,6 +17,7 @@ import {
 import { HttpExceptionHandlerService } from 'src/engine/core-modules/exception-handler/http-exception-handler.service';
 import { type CustomException } from 'src/utils/custom-exception';
 
+// Maps an ApplicationExceptionCode to its corresponding HTTP status code.
 const applicationExceptionCodeToHttpStatus = (
   code: ApplicationExceptionCode,
 ): number => {
@@ -58,6 +61,8 @@ export class ApplicationRestApiExceptionFilter implements ExceptionFilter {
     private readonly httpExceptionHandlerService: HttpExceptionHandlerService,
   ) {}
 
+  // Formats and sends the HTTP error response for a caught
+  // ApplicationException.
   catch(exception: ApplicationException, host: ArgumentsHost) {
     const response = host.switchToHttp().getResponse<Response>();
 

@@ -1,3 +1,5 @@
+// CLI command that registers the recurring cron job which removes stale
+// OAuth-only application registrations.
 import { Command, CommandRunner } from 'nest-commander';
 
 import { InjectMessageQueue } from 'src/engine/core-modules/message-queue/decorators/message-queue.decorator';
@@ -19,6 +21,7 @@ export class StaleRegistrationCleanupCronCommand extends CommandRunner {
     super();
   }
 
+  // Registers the recurring stale-registration cleanup cron schedule.
   async run(): Promise<void> {
     await this.messageQueueService.addCron<undefined>({
       jobName: StaleRegistrationCleanupCronJob.name,

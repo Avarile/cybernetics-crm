@@ -1,3 +1,6 @@
+// Service managing public domain registration, deletion, and DNS validation
+// status, coordinating with DnsManagerService (Cloudflare) for the
+// underlying hostname records.
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -34,6 +37,7 @@ export class PublicDomainService {
     private readonly applicationRepository: Repository<ApplicationEntity>,
   ) {}
 
+  // Deletes the domain's Cloudflare hostname registration and its DB record.
   async deletePublicDomain({
     domain,
     workspace,
@@ -52,6 +56,10 @@ export class PublicDomainService {
     });
   }
 
+  // Validates the domain isn't already used as a custom domain or public
+  // domain and that the application exists, registers the hostname with
+  // Cloudflare, then persists the record — rolling back the Cloudflare
+  // registration if persistence fails.
   async createPublicDomain({
     domain,
     workspace,
@@ -128,6 +136,8 @@ export class PublicDomainService {
     return publicDomain;
   }
 
+  // Fetches (or accepts precomputed) DNS records for the domain, updates
+  // isValidated if its working status changed, and returns the records.
   async checkPublicDomainValidRecords(
     publicDomain: PublicDomainEntity,
     domainValidRecords?: DomainValidRecords,
@@ -160,6 +170,7 @@ export class PublicDomainService {
     return publicDomainWithRecords;
   }
 
+  // Finds a public domain by its domain string across all workspaces.
   async findByDomain(domain: string) {
     return this.publicDomainRepositoryUnscoped.findOne({ where: { domain } });
   }

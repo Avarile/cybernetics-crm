@@ -1,6 +1,7 @@
 import { type FlatIndexMetadata } from 'src/engine/metadata-modules/flat-index-metadata/types/flat-index-metadata.type';
 import { type IndexMetadataDTO } from 'src/engine/metadata-modules/index-metadata/dtos/index-metadata.dto';
 
+// Maps a flat index metadata to the GraphQL IndexMetadataDTO shape.
 export const fromFlatIndexMetadataToIndexMetadataDto = (
   flatIndexMetadata: FlatIndexMetadata,
 ): IndexMetadataDTO => {

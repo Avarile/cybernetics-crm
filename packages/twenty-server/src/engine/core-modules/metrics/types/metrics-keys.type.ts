@@ -1,3 +1,4 @@
+// Canonical set of metric/counter names emitted across the app.
 export enum MetricsKeys {
   MessageChannelSyncJobActive = 'message-channel-sync-job/active',
   MessageChannelSyncJobFailedInsufficientPermissions = 'message-channel-sync-job/failed-insufficient-permissions',

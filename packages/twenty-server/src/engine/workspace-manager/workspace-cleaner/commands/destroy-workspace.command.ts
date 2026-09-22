@@ -6,6 +6,8 @@ import {
 } from 'src/database/commands/command-runners/migration.command-runner';
 import { CleanerWorkspaceService } from 'src/engine/workspace-manager/workspace-cleaner/services/cleaner.workspace-service';
 
+// CLI command to permanently destroy one or more workspaces that are
+// billing-deactivated and already soft-deleted.
 @Command({
   name: 'workspace:destroy',
   description: 'Destroy workspace',
@@ -30,6 +32,7 @@ export class DestroyWorkspaceCommand extends MigrationCommandRunner {
     return this.workspaceIds;
   }
 
+  // Destroys the workspaces passed via --workspace-id.
   override async runMigrationCommand(
     _passedParams: string[],
     options: MigrationCommandOptions,

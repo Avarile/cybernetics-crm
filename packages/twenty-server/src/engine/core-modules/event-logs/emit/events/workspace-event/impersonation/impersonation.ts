@@ -1,3 +1,4 @@
+// Track-event schema for impersonation lifecycle steps (attempt/login-token/token-exchange).
 import { z } from 'zod';
 
 import { registerEvent } from 'src/engine/core-modules/event-logs/emit/events/workspace-event/track';

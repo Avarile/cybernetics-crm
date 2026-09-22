@@ -12,6 +12,8 @@ const UP_TO_DATE_COUNT_KEY = 'upgrade-status:up-to-date-workspace-count';
 const COMPUTED_AT_KEY = 'upgrade-status:computed-at';
 
 const CACHE_TTL_MS = 60 * 60 * 1000;
+// Caches the last computed instance/workspace upgrade status snapshot, so
+// repeated status checks don't recompute it from the migration table each time
 @Injectable()
 export class UpgradeStatusCacheService {
   constructor(
@@ -39,6 +41,7 @@ export class UpgradeStatusCacheService {
     return isDefined(raw) ? raw : 0;
   }
 
+  // Overwrites the cached status snapshot with freshly computed values
   async write({
     behindWorkspaceIds,
     failedWorkspaceIds,
@@ -79,6 +82,7 @@ export class UpgradeStatusCacheService {
     ]);
   }
 
+  // Clears the cached status snapshot, forcing the next read to recompute it
   async invalidate(): Promise<void> {
     await Promise.all([
       this.cacheStorage.del(BEHIND_IDS_KEY),

@@ -5,6 +5,9 @@ import { isDefined } from 'twenty-shared/utils';
 import { translateStandardLabel } from 'src/engine/core-modules/i18n/utils/translate-standard-label.util';
 import { type ViewFieldGroupOverrides } from 'src/engine/metadata-modules/view-field-group/entities/view-field-group.entity';
 
+// Resolves a view field group's effective display name: an explicit name
+// override wins outright, otherwise the base name is translated as a
+// standard label via the owning application's i18n catalog.
 export const resolveViewFieldGroupName = ({
   name,
   applicationId,

@@ -1,3 +1,5 @@
+// A Nest Logger wrapper for CLI commands that adds a `verbose()` level, only
+// emitted when the command was invoked with a verbose flag.
 import { Logger } from '@nestjs/common';
 
 interface CommandLoggerOptions {
@@ -5,6 +7,7 @@ interface CommandLoggerOptions {
   constructorName: string;
 }
 
+// Type guard distinguishing a CommandLogger (has setVerbose) from a plain Nest Logger.
 export const isCommandLogger = (
   logger: Logger | CommandLogger,
 ): logger is CommandLogger => {

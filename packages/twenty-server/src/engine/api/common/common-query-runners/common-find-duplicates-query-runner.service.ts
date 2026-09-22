@@ -33,6 +33,8 @@ import { FlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-metada
 import { buildFieldMapsFromFlatObjectMetadata } from 'src/engine/metadata-modules/flat-field-metadata/utils/build-field-maps-from-flat-object-metadata.util';
 import { FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object-metadata/types/flat-object-metadata.type';
 
+// Handles findDuplicates: for each input record (by id or raw data), finds
+// other records matching the object's duplicate-detection rules.
 @Injectable()
 export class CommonFindDuplicatesQueryRunnerService extends CommonBaseQueryRunnerService<
   FindDuplicatesQueryArgs,
@@ -40,6 +42,9 @@ export class CommonFindDuplicatesQueryRunnerService extends CommonBaseQueryRunne
 > {
   protected readonly operationName = CommonQueryNames.FIND_DUPLICATES;
 
+  // Resolves the source records (by id lookup or from raw data), then for
+  // each one builds duplicate-matching conditions and fetches matches
+  // with pagination info, finally hydrating any requested nested relations.
   async run(
     args: CommonExtendedInput<FindDuplicatesQueryArgs>,
     queryRunnerContext: CommonExtendedQueryRunnerContext,
@@ -174,6 +179,8 @@ export class CommonFindDuplicatesQueryRunnerService extends CommonBaseQueryRunne
     return findDuplicatesOutput;
   }
 
+  // Coerces requested ids' field metadata and runs any raw `data` records
+  // through the data-arg-processor (without backfilling position).
   async computeArgs(
     args: CommonInput<FindDuplicatesQueryArgs>,
     queryRunnerContext: CommonBaseQueryRunnerContext,
@@ -214,6 +221,8 @@ export class CommonFindDuplicatesQueryRunnerService extends CommonBaseQueryRunne
     };
   }
 
+  // Runs each duplicate group's records through the common result-getter
+  // pipeline.
   async processQueryResult(
     queryResult: CommonFindDuplicatesOutputItem[],
     flatObjectMetadata: FlatObjectMetadata,
@@ -239,6 +248,8 @@ export class CommonFindDuplicatesQueryRunnerService extends CommonBaseQueryRunne
     return processedResults;
   }
 
+  // Requires exactly one of "data" or "ids", and non-empty "data" when
+  // provided.
   async validate(
     args: CommonInput<FindDuplicatesQueryArgs>,
     _queryRunnerContext: CommonBaseQueryRunnerContext,

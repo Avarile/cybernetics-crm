@@ -1,3 +1,4 @@
+// Clears a message channel's cached set of messages pending import.
 import { InjectCacheStorage } from 'src/engine/core-modules/cache-storage/decorators/cache-storage.decorator';
 import { CacheStorageService } from 'src/engine/core-modules/cache-storage/services/cache-storage.service';
 import { CacheStorageNamespace } from 'src/engine/core-modules/cache-storage/types/cache-storage-namespace.enum';
@@ -17,6 +18,7 @@ export class MessagingCleanCacheJob {
     private readonly cacheStorage: CacheStorageService,
   ) {}
 
+  // Deletes the channel's pending-import cache set.
   @Process(MessagingCleanCacheJob.name)
   async handle(data: MessagingCleanCacheJobData): Promise<void> {
     await this.cacheStorage.del(

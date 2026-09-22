@@ -1,3 +1,6 @@
+// Builds the `findMany` GraphQL query resolver for an object: delegates
+// filtering/pagination/aggregation to CommonFindManyQueryRunnerService
+// and formats the results as a Relay connection.
 import { Injectable } from '@nestjs/common';
 
 import graphqlFields from 'graphql-fields';
@@ -24,6 +27,8 @@ export class FindManyResolverFactory implements WorkspaceResolverBuilderFactoryI
     private readonly commonFindManyQueryRunnerService: CommonFindManyQueryRunnerService,
   ) {}
 
+  // Returns a resolver function that fetches a page of matching records
+  // and builds the resulting Relay connection (with aggregates and page info).
   create(
     context: WorkspaceSchemaBuilderContext,
   ): Resolver<FindManyResolverArgs> {

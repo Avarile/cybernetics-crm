@@ -5,6 +5,10 @@ import {
 import { isImapFlowError } from 'src/modules/messaging/message-import-manager/drivers/imap/utils/is-imap-flow-error.util';
 import { isImapNetworkError } from 'src/modules/messaging/message-import-manager/drivers/imap/utils/is-imap-network-error.util';
 
+// Classifies an IMAP message-list-fetch failure by inspecting network
+// error codes and ImapFlow response text/message patterns (invalid
+// search/sequence set -> sync cursor error, no matching messages -> no
+// next sync cursor), falling back to UNKNOWN otherwise.
 export const parseImapMessageListFetchError = (
   error: Error,
   options?: { cause?: Error },

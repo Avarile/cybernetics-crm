@@ -1,3 +1,4 @@
+// GraphQL args for the global `search` query.
 import { ArgsType, Field, Int } from '@nestjs/graphql';
 
 import { IsArray, IsInt, IsOptional, IsString, Max } from 'class-validator';

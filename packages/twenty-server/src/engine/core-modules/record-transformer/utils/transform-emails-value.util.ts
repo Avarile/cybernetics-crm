@@ -1,6 +1,8 @@
 import { isNonEmptyArray, isNonEmptyString } from '@sniptt/guards';
 import { isDefined } from 'class-validator';
 
+// Normalizes an EMAILS field's input: lowercases the primary email and each
+// additional email (best-effort, ignoring parse failures).
 export const transformEmailsValue = (
   // oxlint-disable-next-line typescript/no-explicit-any
   value: any,

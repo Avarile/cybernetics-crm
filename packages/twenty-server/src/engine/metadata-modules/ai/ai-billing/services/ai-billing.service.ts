@@ -1,3 +1,5 @@
+// Computes the dollar/credit cost of AI model and web-search usage, checks
+// remaining workspace credits, decrements them, and emits usage events for billing.
 import { Injectable, Logger } from '@nestjs/common';
 
 import { type LanguageModelUsage } from 'ai';
@@ -35,6 +37,7 @@ export class AiBillingService {
     private readonly workspaceCacheService: WorkspaceCacheService,
   ) {}
 
+  // Computes the dollar cost of a usage input against the model's pricing.
   calculateCost(modelId: ModelId, billingInput: BillingUsageInput): number {
     const model = this.aiModelRegistryService.getEffectiveModelConfig(modelId);
     const { usage, cacheCreationTokens = 0 } = billingInput;
@@ -59,6 +62,8 @@ export class AiBillingService {
     return breakdown.totalCostInDollars;
   }
 
+  // Costs a usage input, decrements the workspace's available credits (if
+  // billing is enabled), and emits the corresponding usage event.
   async calculateAndBillUsage(
     modelId: ModelId,
     billingInput: BillingUsageInput,
@@ -95,6 +100,8 @@ export class AiBillingService {
     );
   }
 
+  // Decrements credits for a usage input and reports whether the workspace
+  // has run out, used to stop an in-progress agent generation early.
   async decrementAndCheckAvailableCredits(
     modelId: ModelId,
     billingInput: BillingUsageInput,
@@ -118,6 +125,8 @@ export class AiBillingService {
     return { hasNoMoreAvailableCredits: remainingCredits <= 0 };
   }
 
+  // Bills per-call cost for native (provider-executed) web search calls and
+  // emits a usage event, no-op if there were no calls.
   async billNativeWebSearchUsage(
     nativeWebSearchCallCount: number,
     workspaceId: string,
@@ -172,6 +181,7 @@ export class AiBillingService {
     );
   }
 
+  // Emits a token-usage billing event for the current billing period.
   async emitAiTokenUsageEvent(
     workspaceId: string,
     creditsUsedMicro: number,

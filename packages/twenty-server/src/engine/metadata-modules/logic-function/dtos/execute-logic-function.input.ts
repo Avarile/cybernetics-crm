@@ -1,3 +1,5 @@
+// GraphQL mutation input to invoke a logic function with a JSON payload.
+
 import { Field, InputType } from '@nestjs/graphql';
 
 import { IsNotEmpty, IsObject, IsUUID } from 'class-validator';

@@ -1,3 +1,5 @@
+// NestJS module wiring the resolver/service for connecting and testing
+// generic IMAP/SMTP/CALDAV email/calendar accounts.
 import { Module } from '@nestjs/common';
 
 import { FeatureFlagModule } from 'src/engine/core-modules/feature-flag/feature-flag.module';

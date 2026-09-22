@@ -1,3 +1,4 @@
+// NestJS module wiring the global search resolver/service.
 import { Module } from '@nestjs/common';
 
 import { FileModule } from 'src/engine/core-modules/file/file.module';

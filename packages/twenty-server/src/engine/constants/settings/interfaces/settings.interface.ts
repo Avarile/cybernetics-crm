@@ -1,3 +1,4 @@
+// Shape of the static application settings object.
 export interface Settings {
   storage: {
     maxFileSize: `${number}MB`;

@@ -1,3 +1,5 @@
+// GraphQL subscription streaming live event-log rows for a workspace/table,
+// bridging the internal pub/sub channel to normalized EventLogRecord payloads.
 import { UseFilters, UseGuards, UsePipes } from '@nestjs/common';
 import { Args, Subscription } from '@nestjs/graphql';
 
@@ -63,6 +65,8 @@ export class EventLogsLiveResolver {
       variables: { table: EventLogTable },
     ) => normalizeEventLogRecords(payload.rows, variables.table),
   })
+  // Subscribes to live event-log rows for a table, marking the table watched
+  // and refreshing that watch on each heartbeat while the subscription lives.
   async eventLogsLive(
     @Args('table', { type: () => EventLogTable }) table: EventLogTable,
     @AuthWorkspace() workspace: WorkspaceEntity,

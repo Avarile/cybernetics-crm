@@ -1,3 +1,4 @@
+// CLI command registering the recurring pending-file-cleanup cron job.
 import { Command, CommandRunner } from 'nest-commander';
 
 import { PENDING_FILE_CLEANUP_CRON_PATTERN } from 'src/engine/core-modules/file/file-upload/crons/constants/pending-file-cleanup.constants';
@@ -19,6 +20,7 @@ export class PendingFileCleanupCronCommand extends CommandRunner {
     super();
   }
 
+  // Schedules the recurring pending-file-cleanup cron job on the cron queue.
   async run(): Promise<void> {
     await this.messageQueueService.addCron<undefined>({
       jobName: PendingFileCleanupCronJob.name,

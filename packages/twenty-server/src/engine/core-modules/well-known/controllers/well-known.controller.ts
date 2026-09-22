@@ -1,3 +1,6 @@
+// Serves standard `.well-known` discovery documents: an MCP server card and
+// an RFC 9727 API catalog (linkset) describing this instance's REST/GraphQL/
+// MCP endpoints.
 import { Controller, Get, Header, Req, UseGuards } from '@nestjs/common';
 
 import { type Request } from 'express';
@@ -20,6 +23,7 @@ export class WellKnownController {
   @Get('mcp/server-card.json')
   @UseGuards(PublicEndpointGuard, NoPermissionGuard)
   @Header('Cache-Control', DISCOVERY_CACHE_CONTROL)
+  // Serves the MCP server discovery card describing this instance's MCP endpoint.
   getMcpServerCard(@Req() request: Request) {
     const version =
       extractVersionMajorMinorPatch(
@@ -40,6 +44,8 @@ export class WellKnownController {
     'application/linkset+json; profile="https://www.rfc-editor.org/info/rfc9727"',
   )
   @Header('Cache-Control', DISCOVERY_CACHE_CONTROL)
+  // Serves the RFC 9727 API catalog linkset describing this instance's REST,
+  // metadata, GraphQL, and MCP endpoints.
   getApiCatalog(@Req() request: Request): string {
     return JSON.stringify(buildApiCatalog(getRequestBaseUrl(request)), null, 2);
   }

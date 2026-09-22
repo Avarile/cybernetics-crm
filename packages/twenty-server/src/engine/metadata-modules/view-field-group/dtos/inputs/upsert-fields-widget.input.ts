@@ -12,6 +12,9 @@ import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/
 import { UpsertFieldsWidgetFieldInput } from 'src/engine/metadata-modules/view-field-group/dtos/inputs/upsert-fields-widget-field.input';
 import { UpsertFieldsWidgetGroupInput } from 'src/engine/metadata-modules/view-field-group/dtos/inputs/upsert-fields-widget-group.input';
 
+// GraphQL input replacing the layout of a FIELDS page layout widget:
+// either grouped fields (with headers) or an ungrouped flat field list,
+// mutually exclusive.
 @InputType()
 export class UpsertFieldsWidgetInput {
   @IsUUID()

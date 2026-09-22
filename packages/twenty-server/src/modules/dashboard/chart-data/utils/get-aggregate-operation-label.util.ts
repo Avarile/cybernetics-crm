@@ -1,5 +1,6 @@
 import { AggregateOperations } from 'twenty-shared/types';
 
+// Maps an aggregate operation to its display label for chart axis titles.
 export const getAggregateOperationLabel = (
   operation: AggregateOperations,
 ): string => {

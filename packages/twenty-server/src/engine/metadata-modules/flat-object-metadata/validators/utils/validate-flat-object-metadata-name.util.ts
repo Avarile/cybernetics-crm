@@ -1,3 +1,7 @@
+// Validates an object's singular/plural name format: length bounds,
+// camelCase-starting-lowercase pattern, reserved keywords, and that the two
+// names aren't identical.
+
 import { msg } from '@lingui/core/macro';
 import {
   IDENTIFIER_MAX_CHAR_LENGTH,
@@ -13,6 +17,8 @@ import { type UniversalFlatObjectMetadata } from 'src/engine/workspace-manager/w
 const STARTS_WITH_LOWER_CASE_AND_CONTAINS_ONLY_CAPS_AND_LOWER_LETTERS_AND_NUMBER_STRING_REGEX =
   /^[a-z][a-zA-Z0-9]*$/;
 
+// Checks nameSingular and namePlural for length, casing/character format,
+// reserved keyword collisions, and rejects identical singular/plural names.
 export const validateFlatObjectMetadataNames = ({
   namePlural,
   nameSingular,

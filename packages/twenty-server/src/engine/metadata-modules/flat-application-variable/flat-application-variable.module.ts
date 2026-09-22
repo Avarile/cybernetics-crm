@@ -6,6 +6,7 @@ import { ApplicationVariableEntity } from 'src/engine/core-modules/application/a
 import { WorkspaceManyOrAllFlatEntityMapsCacheModule } from 'src/engine/metadata-modules/flat-entity/services/workspace-many-or-all-flat-entity-maps-cache.module';
 import { WorkspaceFlatApplicationVariableMapCacheService } from 'src/engine/metadata-modules/flat-application-variable/services/workspace-flat-application-variable-map-cache.service';
 
+// Provides the flat-application-variable map cache used to read application variables in denormalized form.
 @Module({
   imports: [
     TypeOrmModule.forFeature([ApplicationEntity, ApplicationVariableEntity]),

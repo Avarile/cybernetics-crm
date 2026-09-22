@@ -3,6 +3,8 @@ import { FieldMetadataType, RelationType } from 'twenty-shared/types';
 import { ROCKET_CUSTOM_OBJECT_SEED } from 'src/engine/workspace-manager/dev-seeder/metadata/custom-objects/constants/rocket-custom-object-seed.constant';
 import { type FieldMetadataSeed } from 'src/engine/workspace-manager/dev-seeder/metadata/types/field-metadata-seed.type';
 
+// Sample morph relation fields on the custom Pet object, linking to both
+// Survey Result and Rocket, to demo morph relations between custom objects.
 export const PET_CUSTOM_RELATION_FIELD_SEEDS: (FieldMetadataSeed & {
   targetObjectMetadataNames: string[];
 })[] = [

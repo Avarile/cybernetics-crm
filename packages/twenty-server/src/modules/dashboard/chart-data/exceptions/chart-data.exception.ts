@@ -37,6 +37,8 @@ const getChartDataExceptionUserFriendlyMessage = (
   }
 };
 
+// Thrown while resolving dashboard widget chart data: bad configuration,
+// missing metadata, failed query/transformation, or insufficient permissions.
 export class ChartDataException extends CustomException<ChartDataExceptionCode> {
   constructor(
     message: string,
@@ -50,6 +52,8 @@ export class ChartDataException extends CustomException<ChartDataExceptionCode> 
   }
 }
 
+// Builds a developer-facing log message for a chart data exception code,
+// optionally appending context (e.g. a widget or field id).
 export const generateChartDataExceptionMessage = (
   code: ChartDataExceptionCode,
   context?: string,

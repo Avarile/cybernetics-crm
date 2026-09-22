@@ -38,6 +38,7 @@ export interface S3DriverOptions extends S3ClientConfig {
   presignEndpoint?: string;
 }
 
+// AWS S3-backed storage driver, supporting presigned URLs for direct client up/download
 export class S3Driver implements StorageDriver {
   private s3Client: S3;
   private presignClient: S3 | undefined;
@@ -509,6 +510,7 @@ export class S3Driver implements StorageDriver {
     return listedObjects;
   }
 
+  // Deletes every object under a prefix, paginating until nothing remains
   private async emptyS3Directory(folderPath: string) {
     const listedObjects = await this.fetchS3FolderContents(folderPath);
 
@@ -536,6 +538,7 @@ export class S3Driver implements StorageDriver {
     }
   }
 
+  // Splits an S3 object key into its parent folder path and filename
   private extractFolderAndFilePaths(objectKey: string | undefined) {
     if (!isDefined(objectKey)) {
       return;
@@ -553,6 +556,8 @@ export class S3Driver implements StorageDriver {
     return { fromFolderPath, filename };
   }
 
+  // Moves every object under a folder prefix by moving each object individually,
+  // since S3 has no native folder-rename operation
   private async moveS3Folder(params: {
     from: { folderPath: string };
     to: { folderPath: string };

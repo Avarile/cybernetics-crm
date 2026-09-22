@@ -1,3 +1,6 @@
+// Builders for the shared named OpenAPI query/path parameters (limit,
+// filter, order_by, pagination cursors, group-by, etc) referenced via $ref
+// from generated paths.
 import { type OpenAPIV3_1 } from 'openapi-types';
 import {
   QUERY_DEFAULT_LIMIT_RECORDS,
@@ -5,6 +8,7 @@ import {
 } from 'twenty-shared/constants';
 import { OrderByDirection } from 'twenty-shared/types';
 
+// Documents the `limit` query parameter, with metadata-API-specific bounds.
 export const computeLimitParameters = (
   fromMetadata = false,
 ): OpenAPIV3_1.ParameterObject => {
@@ -22,6 +26,7 @@ export const computeLimitParameters = (
   };
 };
 
+// Documents the `order_by` query parameter.
 export const computeOrderByParameters = (): OpenAPIV3_1.ParameterObject => {
   return {
     name: 'order_by',
@@ -45,6 +50,7 @@ export const computeOrderByParameters = (): OpenAPIV3_1.ParameterObject => {
   };
 };
 
+// Documents the `depth` query parameter controlling nested-relation inclusion.
 export const computeDepthParameters = (): OpenAPIV3_1.ParameterObject => {
   return {
     name: 'depth',
@@ -61,6 +67,7 @@ export const computeDepthParameters = (): OpenAPIV3_1.ParameterObject => {
   };
 };
 
+// Documents the `upsert` query parameter for create endpoints.
 export const computeUpsertParameters = (): OpenAPIV3_1.ParameterObject => {
   return {
     name: 'upsert',
@@ -75,6 +82,7 @@ export const computeUpsertParameters = (): OpenAPIV3_1.ParameterObject => {
   };
 };
 
+// Documents the `soft_delete` query parameter for delete endpoints.
 export const computeSoftDeleteParameters = (): OpenAPIV3_1.ParameterObject => {
   return {
     name: 'soft_delete',
@@ -89,6 +97,7 @@ export const computeSoftDeleteParameters = (): OpenAPIV3_1.ParameterObject => {
   };
 };
 
+// Documents the `filter` query parameter and its syntax examples.
 export const computeFilterParameters = (): OpenAPIV3_1.ParameterObject => {
   return {
     name: 'filter',
@@ -122,6 +131,7 @@ export const computeFilterParameters = (): OpenAPIV3_1.ParameterObject => {
   };
 };
 
+// Documents the `starting_after` forward-pagination cursor parameter.
 export const computeStartingAfterParameters =
   (): OpenAPIV3_1.ParameterObject => {
     return {
@@ -136,6 +146,7 @@ export const computeStartingAfterParameters =
     };
   };
 
+// Documents the `ending_before` backward-pagination cursor parameter.
 export const computeEndingBeforeParameters =
   (): OpenAPIV3_1.ParameterObject => {
     return {
@@ -150,6 +161,7 @@ export const computeEndingBeforeParameters =
     };
   };
 
+// Documents the `id` path parameter used on single-record endpoints.
 export const computeIdPathParameter = (): OpenAPIV3_1.ParameterObject => {
   return {
     name: 'id',
@@ -163,6 +175,7 @@ export const computeIdPathParameter = (): OpenAPIV3_1.ParameterObject => {
   };
 };
 
+// Documents the `group_by` query parameter for group-by endpoints.
 export const computeGroupByParameters = (): OpenAPIV3_1.ParameterObject => {
   return {
     name: 'group_by',
@@ -189,6 +202,7 @@ export const computeGroupByParameters = (): OpenAPIV3_1.ParameterObject => {
   };
 };
 
+// Documents the `view_id` query parameter for applying a saved view's filters.
 export const computeViewIdParameters = (): OpenAPIV3_1.ParameterObject => {
   return {
     name: 'view_id',
@@ -202,6 +216,7 @@ export const computeViewIdParameters = (): OpenAPIV3_1.ParameterObject => {
   };
 };
 
+// Documents the `include_records_sample` query parameter for group-by endpoints.
 export const computeIncludeRecordsSampleParameters =
   (): OpenAPIV3_1.ParameterObject => {
     return {
@@ -217,6 +232,7 @@ export const computeIncludeRecordsSampleParameters =
     };
   };
 
+// Documents the `aggregate` query parameter for group-by endpoints.
 export const computeAggregateParameters = (): OpenAPIV3_1.ParameterObject => {
   return {
     name: 'aggregate',
@@ -239,6 +255,8 @@ export const computeAggregateParameters = (): OpenAPIV3_1.ParameterObject => {
   };
 };
 
+// Documents the `order_by_for_records` query parameter for group-by
+// endpoints' sampled records.
 export const computeOrderByForRecordsParameters =
   (): OpenAPIV3_1.ParameterObject => {
     return {

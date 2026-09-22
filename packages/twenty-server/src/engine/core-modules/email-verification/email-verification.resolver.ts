@@ -1,3 +1,5 @@
+// Public GraphQL resolver exposing the mutation to resend a user's email
+// verification link.
 import { UseFilters, UseGuards, UsePipes } from '@nestjs/common';
 import { Args, Context, Mutation } from '@nestjs/graphql';
 
@@ -28,6 +30,8 @@ export class EmailVerificationResolver {
   // TODO: this should be an authenticated endpoint
   @Mutation(() => ResendEmailVerificationTokenDTO)
   @UseGuards(PublicEndpointGuard, NoPermissionGuard)
+  // Resolves the requesting workspace from `origin`, then resends the
+  // verification email to the given address.
   async resendEmailVerificationToken(
     @Args()
     resendEmailVerificationTokenInput: ResendEmailVerificationTokenInput,

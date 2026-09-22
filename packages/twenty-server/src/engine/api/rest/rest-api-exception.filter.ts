@@ -9,6 +9,9 @@ import { type Response } from 'express';
 
 import { HttpExceptionHandlerService } from 'src/engine/core-modules/exception-handler/http-exception-handler.service';
 
+// Global exception filter for the REST API: forwards any thrown error to
+// the shared HTTP exception handler, defaulting to 400 for non-HttpException
+// errors (pending proper input validation).
 @Catch()
 export class RestApiExceptionFilter implements ExceptionFilter {
   constructor(

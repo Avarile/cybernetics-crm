@@ -15,6 +15,9 @@ import { buildAggregateFieldKey } from 'src/modules/dashboard/chart-data/utils/b
 import { getFieldOrderBy } from 'src/modules/dashboard/chart-data/utils/get-field-order-by.util';
 import { mapOrderByToDirection } from 'src/modules/dashboard/chart-data/utils/map-order-by-to-direction.util';
 
+// Translates a chart's GraphOrderBy setting into the record order-by clause:
+// sort by the field itself, by its aggregate value, or omit ordering
+// (position/manual sort is applied client-side after the query).
 export const getGroupByOrderBy = ({
   graphOrderBy,
   groupByFieldMetadata,

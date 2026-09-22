@@ -1,3 +1,5 @@
+// Builds and caches the local driver's deps/SDK layers on disk (marked ready
+// via sentinel files), guarded by distributed locks to avoid duplicate builds.
 import { promises as fs } from 'fs';
 import { join } from 'path';
 
@@ -30,6 +32,7 @@ export class LocalLayerManagerService {
     private readonly workspaceCacheService: WorkspaceCacheService,
   ) {}
 
+  // Builds the application's local dependency layer if not already present.
   async ensureDepsLayer({
     flatApplication,
     applicationUniversalIdentifier,
@@ -71,6 +74,7 @@ export class LocalLayerManagerService {
     );
   }
 
+  // Builds/refreshes the workspace's local SDK layer if missing or stale.
   async ensureSdkLayer({
     flatApplication,
     applicationUniversalIdentifier,

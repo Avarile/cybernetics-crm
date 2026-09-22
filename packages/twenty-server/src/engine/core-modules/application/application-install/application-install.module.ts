@@ -1,3 +1,5 @@
+// Wires together the resolver and service responsible for installing,
+// upgrading, and uninstalling applications in a workspace.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

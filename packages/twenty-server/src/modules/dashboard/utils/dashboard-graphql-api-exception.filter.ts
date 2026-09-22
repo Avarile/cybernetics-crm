@@ -5,6 +5,7 @@ import { DashboardException } from 'src/modules/dashboard/exceptions/dashboard.e
 import { dashboardGraphqlApiExceptionHandler } from 'src/modules/dashboard/utils/dashboard-graphql-api-exception-handler.util';
 
 @Catch(DashboardException)
+// Maps DashboardException instances to GraphQL error responses.
 export class DashboardGraphqlApiExceptionFilter implements GqlExceptionFilter {
   catch(exception: DashboardException, _host: ArgumentsHost) {
     return dashboardGraphqlApiExceptionHandler(exception);

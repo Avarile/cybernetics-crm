@@ -14,6 +14,7 @@ import { ViewFilterOperand } from 'twenty-shared/types';
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';
 import { ViewFilterValue } from 'src/engine/metadata-modules/view-filter/types/view-filter-value.type';
 
+// GraphQL/REST input for creating a new view filter on a field.
 @InputType()
 export class CreateViewFilterInput {
   @IsOptional()

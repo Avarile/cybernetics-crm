@@ -1,3 +1,5 @@
+// GraphQL object type exposing a logic function's execution logs.
+
 import { Field, HideField, ObjectType } from '@nestjs/graphql';
 
 @ObjectType('LogicFunctionLogs')

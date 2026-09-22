@@ -29,12 +29,15 @@ const HEALTH_LABELS: Record<UpgradeHealthEnum, string> = {
   [UpgradeHealthEnum.FAILED]: chalk.red('Failed'),
 };
 
+// CLI command that prints a colored report of instance and workspace upgrade
+// health, inferring each one's version from its migration history
 @Command({
   name: 'upgrade:status',
   description:
     'Display upgrade status for instance and workspace commands, inferring versions from migration history',
 })
 export class UpgradeStatusCommand extends CommandRunner {
+  // Accumulates repeated --workspace-id flags into a set
   @Option({
     flags: '-w, --workspace-id [workspace_id]',
     description:
@@ -67,6 +70,7 @@ export class UpgradeStatusCommand extends CommandRunner {
     super();
   }
 
+  // Fetches instance and workspace upgrade statuses and prints the formatted report
   override async run(
     _passedParams: string[],
     options: UpgradeStatusOptions,
@@ -125,6 +129,8 @@ export class UpgradeStatusCommand extends CommandRunner {
     ];
   }
 
+  // Renders the workspace section, grouping failed workspaces by the command
+  // they failed at, and hiding up-to-date workspaces if failedOnly is set
   private formatWorkspaceUpgradeStatuses(
     { upToDate, behind, failed }: GroupedWorkspaceUpgradeStatuses,
     failedOnly?: boolean,
@@ -225,6 +231,7 @@ export class UpgradeStatusCommand extends CommandRunner {
     return lines;
   }
 
+  // Renders the closing counts summary, broken down by failure/behind command
   private formatSummary(
     instanceStatus: InstanceUpgradeStatus,
     { upToDate, behind, failed }: GroupedWorkspaceUpgradeStatuses,
@@ -296,6 +303,7 @@ export class UpgradeStatusCommand extends CommandRunner {
     return lines;
   }
 
+  // Partitions workspace statuses into up-to-date, behind, and failed buckets
   private groupWorkspaceUpgradeStatusesByHealth(
     workspaceStatuses: WorkspaceUpgradeStatus[],
   ): GroupedWorkspaceUpgradeStatuses {

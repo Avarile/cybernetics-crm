@@ -35,6 +35,8 @@ import {
   type MessagingMessageListFetchJobData,
 } from 'src/modules/messaging/message-import-manager/jobs/messaging-message-list-fetch.job';
 
+// Creates or updates a generic IMAP/SMTP/CalDAV connected account, provisioning
+// its message/calendar channels and kicking off their initial sync.
 @Injectable()
 export class ImapSmtpCalDavAPIService {
   private readonly logger = new Logger(ImapSmtpCalDavAPIService.name);
@@ -61,6 +63,9 @@ export class ImapSmtpCalDavAPIService {
     private readonly connectedAccountTokenEncryptionService: ConnectedAccountTokenEncryptionService,
   ) {}
 
+  // Creates the connected account (or updates an existing one's credentials),
+  // provisions message/calendar channels as needed based on which protocols
+  // were configured, and triggers sync for newly enabled channels.
   async upsertConnectedAccount(input: {
     handle: string;
     userWorkspaceId: string;

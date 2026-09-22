@@ -1,3 +1,5 @@
+// Grades a completed agent turn by prompting an AI model with the turn's
+// transcript, falling back to a heuristic score if the model call fails.
 import { Injectable, Logger } from '@nestjs/common';
 
 import { msg } from '@lingui/core/macro';
@@ -23,6 +25,7 @@ export class AgentTurnGraderService {
     private readonly aiModelRegistryService: AiModelRegistryService,
   ) {}
 
+  // Loads the turn with its messages and persists an AI-generated evaluation for it.
   async evaluateTurn({
     turnId,
     workspaceId,
@@ -50,6 +53,8 @@ export class AgentTurnGraderService {
     });
   }
 
+  // Prompts the default speed model to score the turn 0-100 with a comment;
+  // falls back to a heuristic evaluation if no model is available or parsing fails.
   private async evaluateWithAI(
     turn: AgentTurnEntity & { messages: AgentMessageEntity[] },
   ): Promise<{ score: number; comment: string }> {
@@ -101,6 +106,8 @@ Respond ONLY with valid JSON in this exact format:
     }
   }
 
+  // Formats a turn's user request, assistant response, tool calls, and
+  // errors into a text block for the grading prompt.
   private buildEvaluationContext(
     turn: AgentTurnEntity & { messages: AgentMessageEntity[] },
   ): string {
@@ -149,6 +156,8 @@ Respond ONLY with valid JSON in this exact format:
     return context;
   }
 
+  // Deterministic score used when the AI grading call is unavailable or fails,
+  // based on error/tool counts and whether the agent produced any response.
   private getFallbackEvaluation(
     turn: AgentTurnEntity & { messages: AgentMessageEntity[] },
   ): {

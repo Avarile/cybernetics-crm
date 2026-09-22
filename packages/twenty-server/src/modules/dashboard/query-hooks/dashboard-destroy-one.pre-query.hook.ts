@@ -12,6 +12,8 @@ import { DashboardToPageLayoutSyncService } from 'src/modules/dashboard/services
 
 @Injectable()
 @WorkspaceQueryHook(`dashboard.destroyOne`)
+// Runs before `dashboard.destroyOne`; deletes the page layout belonging to
+// the dashboard being destroyed.
 export class DashboardDestroyOnePreQueryHook implements WorkspacePreQueryHookInstance {
   constructor(
     private readonly dashboardToPageLayoutSyncService: DashboardToPageLayoutSyncService,

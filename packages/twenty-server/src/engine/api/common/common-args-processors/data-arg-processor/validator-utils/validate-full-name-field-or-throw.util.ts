@@ -8,6 +8,9 @@ import {
   CommonQueryRunnerExceptionCode,
 } from 'src/engine/api/common/common-query-runners/errors/common-query-runner.exception';
 
+// Validates a full-name composite field input, checking firstName and
+// lastName subfields and rejecting unknown subfields; throws a
+// CommonQueryRunnerException on any violation.
 export const validateFullNameFieldOrThrow = (
   value: unknown,
   fieldName: string,

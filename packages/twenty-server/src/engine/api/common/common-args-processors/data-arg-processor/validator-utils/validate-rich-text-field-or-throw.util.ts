@@ -13,6 +13,8 @@ import {
 
 const URL_VALUE_PATTERN = /"(?:url|href)"\s*:\s*"([^"]*)"/gi;
 
+// Scans blocknote JSON for "url"/"href" values that use an unsafe protocol
+// (e.g. javascript:), guarding against stored-XSS via rich text content.
 const hasDangerousUrl = (json: string): boolean => {
   URL_VALUE_PATTERN.lastIndex = 0;
 
@@ -29,6 +31,8 @@ const hasDangerousUrl = (json: string): boolean => {
   return false;
 };
 
+// Validates the blocknote subfield: must be text that parses as a JSON
+// array of blocks and contains no dangerous URLs; throws otherwise.
 const validateBlocknoteFieldOrThrow = (
   value: unknown,
   fieldName: string,
@@ -70,6 +74,9 @@ const validateBlocknoteFieldOrThrow = (
   return textValue;
 };
 
+// Validates a rich-text composite field input, checking blocknote and
+// markdown subfields and rejecting unknown subfields; throws a
+// CommonQueryRunnerException on any violation.
 export const validateRichTextFieldOrThrow = (
   value: unknown,
   fieldName: string,

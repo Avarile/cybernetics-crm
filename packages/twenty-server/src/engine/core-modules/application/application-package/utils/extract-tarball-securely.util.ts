@@ -9,6 +9,9 @@ import {
 
 export const MAX_EXTRACTED_SIZE_BYTES = 500 * 1024 * 1024;
 
+// Extracts a tarball while guarding against zip-slip path traversal,
+// symlink/hardlink entries, and decompression bombs (enforcing a max
+// total extracted size).
 export const extractTarballSecurely = async (
   tarballPath: string,
   targetDir: string,

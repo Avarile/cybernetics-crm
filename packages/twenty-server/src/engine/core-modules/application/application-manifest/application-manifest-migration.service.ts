@@ -1,3 +1,6 @@
+// Converts a manifest into flat-entity metadata migrations and runs them
+// against a workspace, either as a full metadata sync or a pared-down,
+// purely-additive sync of just the pre-install logic function.
 import { Injectable } from '@nestjs/common';
 
 import { type Manifest } from 'twenty-shared/application';
@@ -33,6 +36,9 @@ export class ApplicationManifestMigrationService {
     private readonly logger: LoggerService,
   ) {}
 
+  // Registers only the manifest's declared pre-install logic function as a
+  // purely additive migration, leaving all other previously-synced metadata
+  // untouched so it can be safely run before the full manifest sync.
   async syncPreInstallLogicFunctionFromManifest({
     manifest,
     workspaceId,
@@ -158,6 +164,10 @@ export class ApplicationManifestMigrationService {
     );
   }
 
+  // Diffs the manifest's full metadata against what's currently synced for
+  // the application and builds/runs (or dry-run plans) the resulting
+  // workspace migration, inferring deletions for entities missing from the
+  // manifest. Also syncs the application's default role when not a dry run.
   async syncMetadataFromManifest({
     manifest,
     workspaceId,
@@ -262,6 +272,8 @@ export class ApplicationManifestMigrationService {
     };
   }
 
+  // Resolves the manifest's default role to its synced flat role id and
+  // persists it on the application record.
   private async syncDefaultRole({
     manifest,
     workspaceId,

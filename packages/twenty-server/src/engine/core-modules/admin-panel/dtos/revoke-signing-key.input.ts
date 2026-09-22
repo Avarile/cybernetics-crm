@@ -1,3 +1,4 @@
+// GraphQL args for revoking a signing key by id.
 import { ArgsType, Field } from '@nestjs/graphql';
 import { IsNotEmpty, IsUUID } from 'class-validator';
 

@@ -1,5 +1,7 @@
 /* @license Enterprise */
 
+// Service (enterprise-only) that rotates the current JWT signing key once
+// it exceeds the configured age, based on SIGNING_KEY_ROTATION_DAYS.
 import { Injectable, Logger } from '@nestjs/common';
 
 import { isDefined } from 'twenty-shared/utils';
@@ -24,6 +26,9 @@ export class SigningKeyRotationService {
     private readonly twentyConfigService: TwentyConfigService,
   ) {}
 
+  // Rotates the current signing key if SIGNING_KEY_ROTATION_DAYS is
+  // configured and the current key is older than that threshold; otherwise
+  // no-ops and reports why.
   async rotateIfDue(): Promise<SigningKeyRotationResult> {
     const rotationDays = this.twentyConfigService.get(
       'SIGNING_KEY_ROTATION_DAYS',

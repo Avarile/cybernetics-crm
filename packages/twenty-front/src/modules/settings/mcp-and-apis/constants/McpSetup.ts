@@ -10,7 +10,7 @@ export const MCP_SETUP = {
     value: 'Bearer <YOUR_API_KEY>',
   },
   server: {
-    name: 'twenty',
+    name: 'cybernetics',
     displayName: 'Cybernetics',
   },
   clientDocsUrls: {

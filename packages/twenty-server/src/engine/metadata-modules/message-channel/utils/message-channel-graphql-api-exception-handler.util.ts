@@ -20,6 +20,9 @@ import {
   MessageChannelExceptionCode,
 } from 'src/engine/metadata-modules/message-channel/message-channel.exception';
 
+// Maps a MessageChannelException (and related EmailingDomain/
+// ConnectedAccount exceptions raised during channel operations) to the
+// matching GraphQL error type, rethrowing anything else unchanged.
 export const messageChannelGraphqlApiExceptionHandler = (error: Error) => {
   if (error instanceof MessageChannelException) {
     switch (error.code) {

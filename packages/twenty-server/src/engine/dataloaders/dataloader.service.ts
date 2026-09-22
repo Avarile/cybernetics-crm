@@ -137,6 +137,11 @@ export type ApplicationTranslationCatalogLoaderPayload = {
   locale: keyof typeof APP_LOCALES;
 };
 
+// Builds a fresh IDataloaders set per GraphQL request: each loader
+// batches lookups for one metadata relation (relations, fields, indexes,
+// search fields, objects, view sub-entities) or application concern
+// (translations, standard-app id) against the workspace's cached flat
+// entity maps.
 @Injectable()
 export class DataloaderService {
   constructor(
@@ -146,6 +151,7 @@ export class DataloaderService {
     private readonly applicationTranslationCacheService: ApplicationTranslationCacheService,
   ) {}
 
+  // Instantiates and returns the full set of request-scoped DataLoaders.
   createLoaders(): IDataloaders {
     const relationLoader = this.createRelationLoader();
     const morphRelationLoader = this.createMorphRelationLoader();
@@ -191,6 +197,8 @@ export class DataloaderService {
     };
   }
 
+  // Resolves each requested field's to-one RELATION metadata (source and
+  // target sides), or null if the field isn't a relation.
   private createRelationLoader() {
     return new DataLoader<RelationLoaderPayload, RelationDTO | null>(
       async (dataLoaderParams: RelationLoaderPayload[]) => {
@@ -229,6 +237,8 @@ export class DataloaderService {
     );
   }
 
+  // Resolves each requested field's MORPH_RELATION targets (one relation
+  // per possible target type), or null if the field isn't a morph relation.
   private createMorphRelationLoader() {
     return new DataLoader<MorphRelationLoaderPayload, RelationDTO[] | null>(
       async (dataLoaderParams: MorphRelationLoaderPayload[]) => {
@@ -267,6 +277,7 @@ export class DataloaderService {
     );
   }
 
+  // Resolves each requested object's index metadata list.
   private createIndexMetadataLoader() {
     return new DataLoader<IndexMetadataLoaderPayload, IndexMetadataDTO[]>(
       async (dataLoaderParams: IndexMetadataLoaderPayload[]) => {
@@ -315,6 +326,7 @@ export class DataloaderService {
     );
   }
 
+  // Resolves each requested object's search-field metadata list.
   private createSearchFieldMetadataLoader() {
     return new DataLoader<
       SearchFieldMetadataLoaderPayload,
@@ -355,6 +367,9 @@ export class DataloaderService {
     });
   }
 
+  // Resolves each requested object's field metadata list, applying
+  // application-catalog i18n overrides, collapsing duplicate morph-relation
+  // fields, and renaming morph fields to their target-specific display name.
   private createFieldMetadataLoader() {
     return new DataLoader<FieldMetadataLoaderPayload, FieldMetadataDTO[]>(
       async (dataLoaderParams: FieldMetadataLoaderPayload[]) => {
@@ -486,6 +501,8 @@ export class DataloaderService {
     );
   }
 
+  // Resolves each requested index's field entries, ordered by their
+  // configured position.
   private createIndexFieldMetadataLoader() {
     return new DataLoader<
       IndexFieldMetadataLoaderPayload,
@@ -531,6 +548,8 @@ export class DataloaderService {
     });
   }
 
+  // Resolves each requested object metadata id to its DTO, or null if not
+  // found.
   private createObjectMetadataLoader() {
     return new DataLoader<
       ObjectMetadataLoaderPayload,
@@ -561,6 +580,7 @@ export class DataloaderService {
     });
   }
 
+  // Resolves each requested view's active field groups.
   private createViewFieldGroupsByViewIdLoader() {
     return new DataLoader<
       ViewFieldGroupsByViewIdLoaderPayload,
@@ -600,6 +620,8 @@ export class DataloaderService {
     });
   }
 
+  // Resolves each requested view-field-group's active view fields,
+  // honoring each field's overridden group assignment when present.
   private createViewFieldsByViewFieldGroupIdLoader() {
     return new DataLoader<
       ViewFieldsByViewFieldGroupIdLoaderPayload,
@@ -664,6 +686,7 @@ export class DataloaderService {
     });
   }
 
+  // Resolves each requested view's active view fields.
   private createViewFieldsByViewIdLoader() {
     return new DataLoader<
       ViewFieldsByViewIdLoaderPayload,
@@ -702,6 +725,7 @@ export class DataloaderService {
     });
   }
 
+  // Resolves each requested view's active view filters.
   private createViewFiltersByViewIdLoader() {
     return new DataLoader<
       ViewFiltersByViewIdLoaderPayload,
@@ -737,6 +761,7 @@ export class DataloaderService {
     });
   }
 
+  // Resolves each requested view's active view sorts.
   private createViewSortsByViewIdLoader() {
     return new DataLoader<
       ViewSortsByViewIdLoaderPayload,
@@ -772,6 +797,7 @@ export class DataloaderService {
     });
   }
 
+  // Resolves each requested view's active view groups.
   private createViewGroupsByViewIdLoader() {
     return new DataLoader<
       ViewGroupsByViewIdLoaderPayload,
@@ -807,6 +833,7 @@ export class DataloaderService {
     });
   }
 
+  // Resolves each requested view's active view filter groups.
   private createViewFilterGroupsByViewIdLoader() {
     return new DataLoader<
       ViewFilterGroupsByViewIdLoaderPayload,
@@ -844,6 +871,8 @@ export class DataloaderService {
     });
   }
 
+  // Resolves whether each requested application registration is
+  // configured (defaults to true if unknown).
   private createIsConfiguredLoader() {
     return new DataLoader<IsConfiguredLoaderPayload, boolean>(
       async (params: IsConfiguredLoaderPayload[]) => {
@@ -861,6 +890,8 @@ export class DataloaderService {
     );
   }
 
+  // Resolves the workspace's standard (built-in) application id for every
+  // request in the batch.
   private createStandardApplicationIdLoader() {
     return new DataLoader<StandardApplicationIdLoaderPayload, string>(
       async (params: StandardApplicationIdLoaderPayload[]) => {
@@ -882,6 +913,9 @@ export class DataloaderService {
     );
   }
 
+  // Resolves each requested application's translation catalog for the
+  // given locale, skipping the workspace's standard application (which
+  // has no custom catalog).
   private createApplicationTranslationCatalogLoader() {
     return new DataLoader<
       ApplicationTranslationCatalogLoaderPayload,
@@ -924,6 +958,8 @@ export class DataloaderService {
     });
   }
 
+  // Batches translation-catalog fetches across the distinct application
+  // registration ids referenced by the given application ids.
   private async loadApplicationCatalogByRegistrationId({
     applicationIds,
     flatApplicationMaps,

@@ -1,3 +1,7 @@
+// Translates a single GraphQL filter operator (eq, gt, like, search,
+// contains, ...) into a parameterized SQL WHERE fragment for one field,
+// handling date-time half-open-interval semantics, empty/null
+// equivalence for legacy data, and full-text search via to_tsquery.
 import { randomBytes } from 'crypto';
 
 import { FieldMetadataType } from 'twenty-shared/types';
@@ -17,6 +21,10 @@ type WhereConditionParts = {
   params: ObjectLiteral;
 };
 
+// Builds the {sql, params} pair for one filter operator on one field,
+// using randomized parameter name suffixes to avoid collisions across
+// nested filter branches. Throws GraphqlQueryRunnerException on an
+// unsupported operator.
 export const computeWhereConditionParts = ({
   operator,
   objectNameSingular,

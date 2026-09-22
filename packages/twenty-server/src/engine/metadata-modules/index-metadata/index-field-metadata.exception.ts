@@ -1,3 +1,6 @@
+// Exception type and error codes for index metadata operations (create,
+// delete, validation failures).
+
 import { type MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 

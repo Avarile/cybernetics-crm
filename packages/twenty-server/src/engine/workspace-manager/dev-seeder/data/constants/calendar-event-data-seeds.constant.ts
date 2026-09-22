@@ -1,3 +1,4 @@
+// Seed data for sample dev-seeded calendar events.
 type CalendarEventDataSeed = {
   id: string;
   title: string;

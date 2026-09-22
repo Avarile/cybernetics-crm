@@ -11,6 +11,7 @@ import { MessageQueueService } from 'src/engine/core-modules/message-queue/servi
   description:
     'Starts a cron job to reclaim expired (abandoned) code interpreter sandboxes',
 })
+// CLI command that registers the repeating cron job for sandbox cleanup
 export class CodeInterpreterSessionCleanupCronCommand extends CommandRunner {
   constructor(
     @InjectMessageQueue(MessageQueue.cronQueue)
@@ -19,6 +20,7 @@ export class CodeInterpreterSessionCleanupCronCommand extends CommandRunner {
     super();
   }
 
+  // Schedules the cleanup job to repeat on the configured cron pattern
   async run(): Promise<void> {
     await this.messageQueueService.addCron<undefined>({
       jobName: CodeInterpreterSessionCleanupCronJob.name,

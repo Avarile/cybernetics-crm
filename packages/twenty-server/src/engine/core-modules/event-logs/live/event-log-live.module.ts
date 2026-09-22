@@ -1,3 +1,4 @@
+// NestJS module providing the live event-log presence/publish service.
 import { Module } from '@nestjs/common';
 
 import { CacheStorageModule } from 'src/engine/core-modules/cache-storage/cache-storage.module';

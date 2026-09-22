@@ -1,3 +1,6 @@
+// Looks up a human-readable label and entity kind for a manifest entity by
+// its universal identifier, searching across every metadata kind. Used to
+// produce friendly error messages when a manifest sync fails.
 import { type Manifest } from 'twenty-shared/application';
 import { type AllMetadataName } from 'twenty-shared/metadata';
 import { isDefined } from 'twenty-shared/utils';
@@ -19,6 +22,7 @@ type ManifestEntityRegistryEntry = {
 
 const NO_MANIFEST_CANDIDATES: ManifestEntityCandidate[] = [];
 
+// Maps a manifest entity list to searchable candidates with their label.
 const toCandidates = <T extends { universalIdentifier?: string }>(
   entities: T[] | undefined,
   getLabel: (entity: T) => string | undefined,
@@ -251,6 +255,8 @@ const MANIFEST_ENTITY_REGISTRY_ENTRIES = Object.values(
   MANIFEST_ENTITY_REGISTRY,
 );
 
+// Searches every metadata kind's manifest entries for one matching the
+// given universal identifier and returns its kind and label, if found.
 export const findManifestEntityDescriptorByUniversalIdentifier = ({
   manifest,
   universalIdentifier,

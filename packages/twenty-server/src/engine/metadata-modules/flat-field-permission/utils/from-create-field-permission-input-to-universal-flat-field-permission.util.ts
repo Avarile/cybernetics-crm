@@ -6,6 +6,9 @@ import { resolveEntityRelationUniversalIdentifiers } from 'src/engine/metadata-m
 import { type FieldPermissionInput } from 'src/engine/metadata-modules/object-permission/dtos/upsert-field-permissions.input';
 import { type UniversalFlatFieldPermission } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-field-permission.type';
 
+// Builds a new universal flat field permission from a create-field-permission input,
+// generating fresh ids and resolving role/object metadata/field metadata references
+// to universal identifiers.
 export const fromCreateFieldPermissionInputToUniversalFlatFieldPermission = ({
   fieldPermissionInput,
   roleId,

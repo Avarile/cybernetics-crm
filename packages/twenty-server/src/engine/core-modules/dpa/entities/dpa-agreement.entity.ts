@@ -19,6 +19,8 @@ import { WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.ent
 registerEnumType(DpaAgreementType, { name: 'DpaAgreementType' });
 registerEnumType(DpaRegion, { name: 'DpaRegion' });
 
+// Record of a workspace's DPA acceptance — either a click-through acceptance or a
+// generated, pre-signed PDF agreement
 // The relation is declared explicitly (rather than extending WorkspaceRelatedEntity)
 // so the foreign-key name is deterministic and matches the create-table instance
 // command — TypeORM's default FK hash (FK_abba2f6707bd2bc18bbd52f3c3e) is

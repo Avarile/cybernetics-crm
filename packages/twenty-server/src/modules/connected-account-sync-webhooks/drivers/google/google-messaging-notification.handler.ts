@@ -32,6 +32,8 @@ export type GoogleMessagingNotificationRequest = {
 };
 
 @Injectable()
+// Handles Gmail Pub/Sub push notifications: verifies the OIDC token, decodes
+// the notified mailbox, and triggers a resync of its message channels.
 export class GoogleMessagingNotificationHandler implements WebhookNotificationHandler<GoogleMessagingNotificationRequest> {
   private readonly logger = new Logger(GoogleMessagingNotificationHandler.name);
 
@@ -101,6 +103,8 @@ export class GoogleMessagingNotificationHandler implements WebhookNotificationHa
     );
   }
 
+  // Verifies the Pub/Sub push request's OIDC bearer token was issued to and
+  // by the configured service account, to confirm the request really came from Google.
   private async verify(authorizationHeader: string | undefined): Promise<void> {
     const expectedEmail = this.twentyConfigService.get(
       'MESSAGING_GMAIL_PUBSUB_VERIFICATION_EMAIL',
@@ -154,6 +158,7 @@ export class GoogleMessagingNotificationHandler implements WebhookNotificationHa
     }
   }
 
+  // Decodes the base64 Pub/Sub message payload into the Gmail notification data.
   private decodeMessageData(
     body: GooglePubSubPushMessage,
   ): GmailPushDecodedData | undefined {

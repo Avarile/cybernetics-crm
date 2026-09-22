@@ -1,3 +1,5 @@
+// GraphQL resolver exposing CRUD operations for AI agents scoped to a workspace,
+// delegating to AgentService and mapping flat agent entities to their DTO shape.
 import { UseGuards, UseInterceptors } from '@nestjs/common';
 import { Args, Mutation, Query } from '@nestjs/graphql';
 
@@ -33,6 +35,7 @@ export class AgentResolver {
     private readonly aiModelRegistryService: AiModelRegistryService,
   ) {}
 
+  // Lists all agents defined in the workspace, including their assigned role.
   @Query(() => [AgentDTO])
   async findManyAgents(
     @AuthWorkspace() { id: workspaceId }: WorkspaceEntity,
@@ -43,6 +46,7 @@ export class AgentResolver {
     return flatAgentsWithRoleId.map(fromFlatAgentWithRoleIdToAgentDto);
   }
 
+  // Fetches a single agent by id.
   @Query(() => AgentDTO)
   async findOneAgent(
     @Args('input') { id }: AgentIdInput,
@@ -56,6 +60,7 @@ export class AgentResolver {
     return fromFlatAgentWithRoleIdToAgentDto(fatAgentWithRoleId);
   }
 
+  // Creates a custom agent, validating the requested model is available to the workspace first.
   @Mutation(() => AgentDTO)
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.AI_SETTINGS))
   async createOneAgent(
@@ -77,6 +82,7 @@ export class AgentResolver {
     return fromFlatAgentWithRoleIdToAgentDto(createdAgent);
   }
 
+  // Updates an existing agent, validating the requested model is available to the workspace first.
   @Mutation(() => AgentDTO)
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.AI_SETTINGS))
   async updateOneAgent(
@@ -98,6 +104,7 @@ export class AgentResolver {
     return fromFlatAgentWithRoleIdToAgentDto(updatedAgent);
   }
 
+  // Deletes an agent by id and returns its deleted state.
   @Mutation(() => AgentDTO)
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.AI_SETTINGS))
   async deleteOneAgent(

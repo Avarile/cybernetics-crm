@@ -1,3 +1,5 @@
+// GraphQL input identifying a logic function by id.
+
 import { Field, ID, InputType } from '@nestjs/graphql';
 
 @InputType()

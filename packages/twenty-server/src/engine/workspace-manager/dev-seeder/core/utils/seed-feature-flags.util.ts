@@ -9,6 +9,7 @@ type SeedFeatureFlagsArgs = {
   workspaceId: string;
 };
 
+// Inserts the default set of feature flag values for a dev-seeded workspace.
 export const seedFeatureFlags = async ({
   queryRunner,
   schemaName,
@@ -55,6 +56,7 @@ type DeleteFeatureFlagsArgs = {
   workspaceId: string;
 };
 
+// Removes all feature flag rows for the given workspace.
 export const deleteFeatureFlags = async ({
   queryRunner,
   schemaName,

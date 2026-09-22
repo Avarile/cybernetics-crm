@@ -1,3 +1,5 @@
+// GraphQL DTO for a model suggestion sourced from the models.dev catalog,
+// used to help admins pre-fill custom AI model configuration.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType('ModelsDevModelSuggestion')

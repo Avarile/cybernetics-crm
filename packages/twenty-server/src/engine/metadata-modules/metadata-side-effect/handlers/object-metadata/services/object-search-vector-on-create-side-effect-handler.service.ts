@@ -1,3 +1,7 @@
+// Side effect: provisions an object's full-text search surface on creation
+// (searchVector field, backing GIN index, and an initial searchFieldMetadata
+// row when the label identifier is a searchable field).
+
 import { Injectable } from '@nestjs/common';
 
 import { getFieldUniversalIdentifier } from 'twenty-shared/application';
@@ -25,6 +29,8 @@ export class ObjectSearchVectorOnCreateSideEffectHandlerService extends Metadata
       'When an object is created, provision its full-text search surface as a single self-contained side effect: the searchVector system field, the GIN index backing it, and (for searchable objects whose label identifier is a searchable field) the searchFieldMetadata row that keeps the searchVector populated instead of NULL.',
   },
 ) {
+  // Builds the searchVector field and its GIN index, plus (when applicable)
+  // an initial search field row for the object's label identifier field.
   buildSideEffects({
     flatEntity: flatObjectMetadata,
     allFlatEntityOperationRecordByMetadataName,
@@ -81,6 +87,9 @@ export class ObjectSearchVectorOnCreateSideEffectHandlerService extends Metadata
     };
   }
 
+  // Returns a search field metadata to create for the label identifier field,
+  // or undefined if the object isn't searchable, has no label identifier, the
+  // identifier is the system id field, or its type isn't searchable.
   private buildSearchFieldMetadata({
     flatObjectMetadata,
     searchVectorFlatFieldMetadata,
@@ -142,6 +151,7 @@ export class ObjectSearchVectorOnCreateSideEffectHandlerService extends Metadata
     });
   }
 
+  // Resolves a field's type, checking pending create operations first.
   private resolveLabelIdentifierFieldType({
     labelIdentifierFieldMetadataUniversalIdentifier,
     allFlatEntityOperationRecordByMetadataName,

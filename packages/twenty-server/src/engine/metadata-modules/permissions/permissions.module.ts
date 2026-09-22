@@ -14,6 +14,8 @@ import { UserRoleModule } from 'src/engine/metadata-modules/user-role/user-role.
 import { provideWorkspaceScopedRepository } from 'src/engine/twenty-orm/workspace-scoped-repository/provide-workspace-scoped-repository';
 import { WorkspaceCacheModule } from 'src/engine/workspace-cache/workspace-cache.module';
 
+// Wires up the core permissions service and API-key role service, along with the role
+// and role-target modules they depend on.
 @Module({
   imports: [
     TypeOrmModule.forFeature([

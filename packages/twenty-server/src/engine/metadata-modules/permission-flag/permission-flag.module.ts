@@ -8,6 +8,7 @@ import { PermissionsModule } from 'src/engine/metadata-modules/permissions/permi
 import { WorkspaceCacheStorageModule } from 'src/engine/workspace-cache-storage/workspace-cache-storage.module';
 import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace-migration/workspace-migration.module';
 
+// Wires up the permission-flag CRUD service and its required dependencies.
 @Module({
   imports: [
     WorkspaceManyOrAllFlatEntityMapsCacheModule,

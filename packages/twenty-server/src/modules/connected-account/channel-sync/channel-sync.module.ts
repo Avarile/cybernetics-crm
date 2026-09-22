@@ -10,6 +10,8 @@ import { ChannelSyncResolver } from 'src/modules/connected-account/channel-sync/
 import { ChannelSyncService } from 'src/modules/connected-account/channel-sync/services/channel-sync.service';
 import { MessagingCommonModule } from 'src/modules/messaging/common/messaging-common.module';
 
+// Exposes the mutation that manually kicks off message/calendar channel sync
+// for a connected account.
 @Module({
   imports: [
     TypeOrmModule.forFeature([CalendarChannelEntity, MessageChannelEntity]),

@@ -1,3 +1,7 @@
+// Thin facade over the outbound send/draft/persistence services, used by
+// the sendEmail resolver: converts a ComposedEmail into the outbound
+// driver's input shape and coordinates sending, draft resolution, and
+// best-effort persistence.
 import { Injectable, Logger } from '@nestjs/common';
 
 import { type ComposedEmail } from 'src/engine/core-modules/tool/tools/email-tool/types/composed-email.type';
@@ -18,6 +22,7 @@ export class SendEmailService {
     private readonly sentMessagePersistenceService: SentMessagePersistenceService,
   ) {}
 
+  // Sends a fresh (non-draft) composed email.
   async sendComposedEmail(data: ComposedEmail): Promise<SendMessageResult> {
     return this.messageOutboundService.sendMessage(
       this.toSendMessageInput(data),
@@ -25,6 +30,7 @@ export class SendEmailService {
     );
   }
 
+  // Sends a composed email that started life as a synced draft.
   async sendComposedDraft(
     data: ComposedEmail,
     draftMessageId: string,
@@ -38,6 +44,7 @@ export class SendEmailService {
     });
   }
 
+  // Deletes the draft's channel association after it's been sent.
   async deleteSentDraft(
     draftMessageId: string,
     connectedAccountId: string,
@@ -50,6 +57,7 @@ export class SendEmailService {
     });
   }
 
+  // Looks up the thread id of the now-synced sent message.
   async getSentMessageThreadId(
     messageExternalId: string,
     workspaceId: string,
@@ -60,6 +68,7 @@ export class SendEmailService {
     });
   }
 
+  // Maps a ComposedEmail to the outbound driver's SendMessageInput shape.
   private toSendMessageInput(data: ComposedEmail): SendMessageInput {
     return {
       to: data.recipients.to,
@@ -75,6 +84,8 @@ export class SendEmailService {
     };
   }
 
+  // Best-effort persists the sent message locally; logs and swallows any
+  // failure rather than failing the send (regular sync will pick it up).
   async persistSentMessage(
     sendResult: SendMessageResult,
     data: ComposedEmail,

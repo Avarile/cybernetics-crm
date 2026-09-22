@@ -10,6 +10,9 @@ import { type FlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-m
 
 import { parseNumberValue } from './parse-number-value.util';
 
+// Validates and coerces a single filter value according to the field's
+// type (numeric parsing, boolean parsing, UUID/date/date-time validation);
+// other types pass through unchanged.
 export const validateAndTransformValueByFieldType = (
   value: unknown,
   fieldMetadata: FlatFieldMetadata,

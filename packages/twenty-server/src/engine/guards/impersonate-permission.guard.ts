@@ -17,6 +17,9 @@ import {
 } from 'src/engine/metadata-modules/permissions/permissions.exception';
 import { PermissionsService } from 'src/engine/metadata-modules/permissions/permissions.service';
 
+// Restricts impersonation endpoints to user-authenticated callers who
+// either have server-level impersonate rights or the workspace's
+// IMPERSONATE setting permission; API-key callers are always rejected.
 @Injectable()
 export class ImpersonatePermissionGuard implements CanActivate {
   constructor(private readonly permissionsService: PermissionsService) {}

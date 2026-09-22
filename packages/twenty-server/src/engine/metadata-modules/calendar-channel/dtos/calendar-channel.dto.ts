@@ -19,6 +19,7 @@ import {
 
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';
 
+// GraphQL-facing representation of a calendar channel; hides internal sync cursor and workspace id from clients.
 @ObjectType('CalendarChannel')
 export class CalendarChannelDTO {
   @IsUUID()

@@ -48,6 +48,7 @@ const CALENDAR_CHANNEL_EVENT_ASSOCIATION_PAGE_TABS = {
   },
 } as const satisfies Record<string, StandardPageLayoutTabConfig>;
 
+// Fixed record page layout (tabs and widgets) for the standard "calendarChannelEventAssociation" object
 export const STANDARD_CALENDAR_CHANNEL_EVENT_ASSOCIATION_PAGE_LAYOUT_CONFIG = {
   name: 'Default Calendar Channel Event Association Layout',
   type: PageLayoutType.RECORD_PAGE,

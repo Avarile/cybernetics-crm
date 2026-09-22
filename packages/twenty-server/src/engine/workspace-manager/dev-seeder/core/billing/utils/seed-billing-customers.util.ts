@@ -8,6 +8,7 @@ type SeedBillingCustomersArgs = {
   workspaceId: string;
 };
 
+// Inserts a default billing customer row for the given dev-seeded workspace.
 export const seedBillingCustomers = async ({
   queryRunner,
   schemaName,

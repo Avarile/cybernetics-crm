@@ -1,3 +1,4 @@
+// Validates and normalizes a PHONES field's GraphQL input value before persistence.
 import { msg } from '@lingui/core/macro';
 import { isArray, isNonEmptyString } from '@sniptt/guards';
 import {
@@ -32,11 +33,15 @@ export type PhonesFieldGraphQLInput =
 type AdditionalPhoneMetadataWithNumber = Partial<AdditionalPhoneMetadata> &
   Required<Pick<AdditionalPhoneMetadata, 'number'>>;
 
+// Strips leading `+` from a calling code string for libphonenumber-js.
 const removePlusFromString = (str: string) => str.replace(/\+/g, '');
 
+// Converts an empty string to null while passing through null/undefined as-is.
 const nullIfEmptyString = (value: string | null | undefined) =>
   !isDefined(value) ? value : isNonEmptyString(value) ? value : null;
 
+// Validates a country code and calling code independently, and checks they
+// aren't mutually inconsistent.
 const validatePrimaryPhoneCountryCodeAndCallingCode = ({
   callingCode,
   countryCode,
@@ -82,6 +87,8 @@ const validatePrimaryPhoneCountryCodeAndCallingCode = ({
   }
 };
 
+// Parses a phone number with libphonenumber-js, converting parse failures
+// into a RecordTransformerException.
 const parsePhoneNumberExceptionWrapper = ({
   callingCode,
   countryCode,
@@ -103,6 +110,8 @@ const parsePhoneNumberExceptionWrapper = ({
   }
 };
 
+// Parses the phone number and cross-checks the inferred country/calling
+// code against any explicitly provided ones, throwing on conflicts.
 const validateAndInferMetadataFromPrimaryPhoneNumber = ({
   callingCode,
   countryCode,
@@ -154,6 +163,8 @@ const validateAndInferMetadataFromPrimaryPhoneNumber = ({
   };
 };
 
+// Validates a single phone entry, inferring country/calling code from the
+// number when a number is present, otherwise just normalizing empty strings.
 const validateAndInferPhoneInput = ({
   callingCode,
   countryCode,
@@ -186,6 +197,8 @@ const validateAndInferPhoneInput = ({
 type TransformPhonesValueArgs = {
   input: PhonesFieldGraphQLInput;
 };
+// Normalizes a PHONES field's input: validates/infers the primary phone's
+// country and calling code, and validates each additional phone the same way.
 export const transformPhonesValue = ({
   input,
 }: TransformPhonesValueArgs): PhonesFieldGraphQLInput => {

@@ -10,6 +10,7 @@ import { parseCorePath } from 'src/engine/api/rest/input-request-parsers/path-pa
 import { AuthenticatedRequest } from 'src/engine/api/rest/types/authenticated-request';
 import { workspaceQueryRunnerRestApiExceptionHandler } from 'src/engine/api/rest/utils/workspace-query-runner-rest-api-exception-handler.util';
 
+// REST handler for PATCH /rest/{objects}/{id}: updates a single record.
 @Injectable()
 export class RestApiUpdateOneHandler extends RestApiBaseHandler {
   constructor(
@@ -18,6 +19,8 @@ export class RestApiUpdateOneHandler extends RestApiBaseHandler {
     super();
   }
 
+  // Resolves the id from the path, runs the common updateOne query
+  // runner, and formats the updated record as a REST response.
   async handle(request: AuthenticatedRequest) {
     try {
       const { id, data, depth } = this.parseRequestArgs(request);

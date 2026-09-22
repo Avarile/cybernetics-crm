@@ -1,3 +1,6 @@
+// Side effect: deletes the backing UNIQUE index when a unique scalar field
+// is deleted.
+
 import { Injectable } from '@nestjs/common';
 
 import { isDefined } from 'twenty-shared/utils';
@@ -21,6 +24,8 @@ export class FieldUniqueBackingIndexOnDeleteSideEffectHandlerService extends Met
       'When a unique scalar field is deleted, cascade-delete the single-field UNIQUE index that backed its uniqueness constraint.',
   },
 ) {
+  // Skips non-unique and relation/morph-relation fields; otherwise
+  // regenerates the deterministic index name and deletes it if it exists.
   buildSideEffects({
     flatEntity: flatFieldMetadata,
     relatedFlatEntityMaps,

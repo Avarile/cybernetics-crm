@@ -1,3 +1,5 @@
+// Types describing IMAP/SMTP/CALDAV connection parameters in both their
+// at-rest (encrypted password) and in-flight (plaintext password) forms.
 import { z } from 'zod';
 
 import { ACCOUNT_TYPES } from 'twenty-shared/constants';

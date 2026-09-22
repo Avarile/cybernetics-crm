@@ -4,6 +4,8 @@ import { isNonEmptyString } from '@sniptt/guards';
 import { FileTypeParser } from 'file-type';
 import { isDefined } from 'twenty-shared/utils';
 
+// Fetches a URL and returns its raw bytes as a Buffer, validating that the
+// response is non-empty and reports an image/* content type.
 export const getImageBufferFromUrl = async (
   url: string,
   axiosInstance: AxiosInstance,
@@ -48,6 +50,8 @@ export const getImageBufferFromUrl = async (
   }
 };
 
+// Downloads a URL and sniffs its actual file type (including PDFs, treated as
+// non-images), returning the buffer and extension only when it's a real image.
 export const fetchImageWithTypeFromUrl = async (
   imageUrl: string,
   axiosInstance: AxiosInstance,

@@ -5,6 +5,7 @@ import {
   ConnectedAccountSyncWebhookExceptionCode,
 } from 'src/modules/connected-account-sync-webhooks/connected-account-sync-webhook.exception';
 
+// Maps a sync webhook exception code to its HTTP status code.
 export const getConnectedAccountSyncWebhookExceptionStatusCode = (
   exception: ConnectedAccountSyncWebhookException,
 ): 400 | 403 => {

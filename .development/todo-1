@@ -1,40 +1,238 @@
-tim@apple.dev comes from the dev seed data, not from a migration. The login form prefill and a number of tools, tests and docs also hardcode it.
+A. Safe to update now (display only, nothing depends on the value)
 
-  Where the user is created
+ #: A1
+ Where: twenty-emails/src/emails/clean-suspended-workspace.email.tsx:45,49
+ What the user sees: "give Twenty another try". The CTA button links to https://app.twenty.com/, which sends your users to Twenty's cloud signup. This is
+ the most important item. Pass serverUrl in as the invite emails already do.
+ ────────────────────────────────────────
+ #: A2
+ Where: twenty-emails/src/components/Footer.tsx:21-57
+ What the user sees: Footer of every email: links to twenty.com, GitHub, docs.twenty.com, plus "Twenty.com, Public Benefit Corporation" and 4 aria-labels
+ ────────────────────────────────────────
+ #: A3
+ Where: twenty-emails/src/components/BaseHead.tsx:8
+ What the user sees: <title>Twenty email</title>
+ ────────────────────────────────────────
+ #: A4
+ Where: twenty-emails/src/components/WhatIsTwenty.tsx:12
+ What the user sees: "What is Twenty?" (invite email)
+ ────────────────────────────────────────
+ #: A5
+ Where: twenty-emails/src/emails/send-invite-link.email.tsx:48
+ What the user sees: "Join your team on Twenty" (heading inside the email body; the subject is already rebranded)
+ ────────────────────────────────────────
+ #: A6
+ Where: twenty-emails/src/emails/password-update-notify.email.tsx:46
+ What the user sees: "Connect to Twenty" button
+ ────────────────────────────────────────
+ #: A7
+ Where: twenty-emails/src/emails/send-email-verification-link.email.tsx:25-26
+ What the user sees: "your Twenty account" / "account on Twenty!" (plain strings, not i18n)
+ ────────────────────────────────────────
+ #: A8
+ Where: twenty-emails/src/emails/billing-trial-converting.email.tsx:65
+ What the user sees: "If Twenty is working for you…"
+ ────────────────────────────────────────
+ #: A9
+ Where: twenty-front/src/modules/settings/billing/constants/SettingsBillingPlanComparisonRows.ts:283
+ What the user sees: "Subdomain (yourco.twenty.com)"
+ ────────────────────────────────────────
+ #: A10
+ Where: twenty-front/src/modules/settings/data-model/constants/SettingsCompositeFieldTypeConfigs.ts:124-189
+ What the user sees: Sample values in field previews: tim@twenty.com, twenty.com, github.com/twentyhq/twenty
+ ────────────────────────────────────────
+ #: A11
+ Where: twenty-front/src/locales/tr-TR.po:3124
+ What the user sees: Bad upstream Turkish translation: "Book a Call" is shown as "using Twenty"
+ ────────────────────────────────────────
+ #: A12
+ Where: twenty-front/src/modules/apollo/services/apollo.factory.ts:39, modules/auth/services/AuthService.ts:19
+ What the user sees: Console output: the Twenty / Twenty-Refresh labels on GraphQL logs in the browser console. They only print when debug mode is on.
+ ────────────────────────────────────────
+ #: A13
+ Where: twenty-server/src/engine/core-modules/open-api/utils/base-schema.utils.ts:124-134,163
+ What the user sees: API playground (Settings → APIs): twenty-<schema>.json filename in the curl example, felix@twenty.com contact, and ToS, license and
+ "more info" links to twentyhq/twenty and twenty.com. Point the license link at your fork's repo (AGPL expects you to offer your source).
+ ────────────────────────────────────────
+ #: A14
+ Where: twenty-server/src/engine/core-modules/well-known/utils/build-mcp-server-card.util.ts:14,19,21
+ What the user sees: MCP server card (/.well-known/...): name: 'com.twenty/twenty', websiteUrl and repo URL. Safe on a self-hosted server that isn't
+ registered in the MCP registry.
+ ────────────────────────────────────────
+ #: A15
+ Where: twenty-front/src/modules/settings/mcp-and-apis/constants/McpSetup.ts:13
+ What the user sees: name: 'twenty': the server key in the MCP config snippets users copy. Changing it only affects new setups.
+ ────────────────────────────────────────
+ #: A16
+ Where: twenty-server/.../workspace-migration-flat-entity-maps.service.ts:252
+ What the user sees: Server log/error: "Twenty standard application not found in workspace". Low value, because "Twenty standard application" is also an
+ internal concept name.
 
-  The user row is defined in packages/twenty-server/src/engine/workspace-manager/dev-seeder/core/utils/seed-users.util.ts:24, in seedUsers.
-  - It creates Tim Apple with id USER_DATA_SEED_IDS.TIM.
-  - The password tim@apple.dev is stored as a fixed bcrypt hash ($2b$10$3LwXj...).
-  - The other seeded users (Jony, Phil, Jane, Scott) use that same hash, so their password is also tim@apple.dev.
+ After A1–A8: run Lingui extract/compile for twenty-emails (32 locale files translate these strings). After A9 and A11: run it for twenty-front.
 
-  It runs through this chain:
-  1. npx nx database:reset twenty-server, whose default seed configuration is at packages/twenty-server/project.json:237.
-  2. That runs workspace:seed:dev, defined in src/database/commands/data-seed-dev-workspace.command.ts.
-  3. That calls dev-seeder/services/dev-seeder.service.ts, which calls seedUsers.
+ B. Safe in code, but you need to supply a replacement (or remove it)
 
-  The same seeder also puts the email into the workspace data (all under dev-seeder/):
-  - data/constants/workspace-member-data-seeds.constant.ts:51
-  - data/constants/connected-account-data-seeds.constant.ts:51
-  - data/constants/message-participant-data-seeds.constant.ts:148
-  - core/utils/seed-metadata-entities.util.ts (lines 142, 216, 424)
+ #: B1
+ Where: twenty-front/src/modules/auth/sign-in-up/components/FooterNote.tsx:77-130
+ What / why: Sign-in page: "By using Cybernetics, you agree to the Terms / Privacy / DPA", but the links go to twenty.com/legal/*. You need your own Terms
+ and Privacy URLs. Until then, removing the links is safer than keeping Twenty's.
+ ────────────────────────────────────────
+ #: B2
+ Where: twenty-front/src/pages/settings/community/SettingsCommunity.tsx:65-157 + assets/cover-{light,dark}.png
+ What / why: Twenty's Discord invite, x.com/twentycrm, twenty.com/partners/list, twenty.com/releases. The cover image is a grid of Twenty's contributors'
+ faces. Replace or hide the page.
+ ────────────────────────────────────────
+ #: B3
+ Where: twenty-shared/src/constants/DocumentationBaseUrl.ts:1 (docs.twenty.com)
+ What / why: Drives every "docs" link in the front end and the server's /.well-known API catalog. Only change it if you host docs (e.g. deploy
+ twenty-docs);
+ otherwise the links 404.
+ ────────────────────────────────────────
+ #: B4
+ Where: Hardcoded docs/dev links: twenty-front/.../WorkflowEditActionFormBuilder.tsx:254,
+ pages/settings/applications/utils/get{Standard,Custom}ApplicationDescription.ts:26-33, twenty-server/.../compute-my-first-dashboard-widgets.util.ts:191
+ What / why: Same decision as B3. The dashboard one is seeded into new workspaces only.
+ ────────────────────────────────────────
+ #: B5
+ Where: twenty-front/.../McpSetup.ts:2-3 + buildMcpSetupCategories.tsx:51
+ What / why: "ChatGPT — Official app" card opens Twenty's ChatGPT app, which connects to Twenty's cloud, not your server. Remove the card; renaming it
+ won't
+ fix that.
+ ────────────────────────────────────────
+ #: B6
+ Where: twenty-front/.../SettingsAdminVersionDisplay.tsx:47 + twenty-server/.../admin-panel-version.service.ts:24
+ What / why: Admin panel version link and "latest version" check both use Docker Hub twentycrm/twenty. Change both together only if you publish your own
+ image tags.
+ ────────────────────────────────────────
+ #: B7
+ Where: twenty-server/.../prefill-workflows.util.ts:506,513, prefill-people.util.ts:50-122
+ What / why: Sample data seeded into new workspaces: twenty.com values and avatars hosted on twentyhq.github.io. The avatars depend on Twenty's hosting, so
 
-  Other places it's hardcoded
+ self-host them if you change them. Existing workspaces are unaffected.
 
-  - Login prefill: packages/twenty-front/src/modules/auth/sign-in-up/hooks/useSignInUpForm.ts:67-68 fills in the email and password. It only does this when the server setting SIGN_IN_PREFILLED is on
-    (defined in twenty-server/src/engine/core-modules/twenty-config/config-variables.ts:76-84).
-  - SDK and app scaffolder:
-    - twenty-sdk/src/cli/commands/docker/index.ts:111
-    - twenty-sdk/src/cli/constants/dev-api-key.ts
-    - create-twenty-app/src/create-app.command.ts:568
-    - create-twenty-app/src/constants/template/SETUP.md
-  - Tests:
-    - twenty-server/test/integration/graphql/... (auth spec and the access token helper)
-    - twenty-e2e-testing/.env.example
-    - twenty-e2e-testing/lib/pom/loginPage.ts
-    - twenty-apps/examples/postcard/e2e/auth.setup.ts
-    - twenty-front/scripts/mock-data/utils.ts
-    - Frontend mock data and stories
-  - Docs: twenty-docs/**/local-setup.mdx and quick-start.mdx, including every translated copy.
+ C. Legal: needs a rewrite, not a word swap
 
-  To change the default user for the rebrand, start with seed-users.util.ts. If you also change the password, you'll need a new bcrypt hash. Then update the login prefill in useSignInUpForm.ts, the SDK
-  and scaffolder strings, and the test credentials so they all match.
+ - DPA (reachable at /settings/legal/dpa): twenty-server/.../dpa/constants/dpa-template.constant.ts (~109 mentions), dpa-template-version.constant.ts:8,
+   subprocessors.json, dpa/config/dpa-region-config.constant.ts ("Twenty.com SAS/PBC", a named DPO, privacy@twenty.com), resolve-dpa.util.ts:38,63
+   (pre-signed by Twenty's signatory), dpa.service.ts:118, config-variables.ts:499. Front end: pages/settings/legal/SettingsLegalDpaNew.tsx:96,143 and
+   modules/settings/legal/components/SettingsDpaAgreementsTable.tsx:39 (Twenty-DPA-*.pdf). A find-and-replace would make your company claim Twenty's legal
+   entities and signatory. Recommendation: hide the Legal/DPA section until counsel writes your own DPA.
+ - Onboarding trust badges (twenty-front/src/modules/onboarding/components/import-contacts/OnboardingTrustBadges.tsx,
+   public/images/onboarding/trust-badges/*): SOC2, GDPR, "+10k", PwC and République Française logos on the Import Contacts step. These are Twenty's
+   certifications and customers. Remove them unless they apply to you.
+
+ D. Keep as-is (functional; renaming breaks things or nobody sees it)
+
+ - X-Twenty-Webhook-{Timestamp,Signature,Nonce} headers (webhook/jobs/call-webhook.job.ts:61-67, documented in open-api/utils/computeWebhooks.utils.ts).
+   Developers who receive webhooks see these names and verify signatures with them. Only rename them if no webhook consumers exist yet, and change both
+   files together.
+ - <!-- BEGIN/END: Twenty Config --> markers (twenty-front/index.html:33,39 ↔ twenty-server/src/utils/generate-front-config.ts:23-36). These must match
+   each other and only show in view-source.
+ - User-Agent: Twenty-Marketplace / Twenty-AppUpgrade. Sent to the registry, never shown to users.
+ - ENTERPRISE_API_URL → twenty.com/api/enterprise (enterprise licence check).
+ - twenty-icons.com (TwentyIconsBaseUrl.ts, getLogoUrlFromDomainName.ts). Company-logo image service; only change it if you host a replacement.
+ - create-twenty-app npm command in Settings → Applications → Developer, and engines.twenty in app manifests. These are real package names and part of the
+   app SDK contract.
+ - Internal IDs: IndexedDB twenty-front-* (renaming wipes client caches), BroadcastChannel twenty-sign-out, SES prefix twenty-workspace (renaming orphans
+   existing SES resources), .twenty-layer-ready.
+ - Unused constants: twenty-ui GITHUB_LINK and TWENTY_PRICING_LINK. Nothing in the front end renders them.
+ - Orphan catalogs twenty-server/.../i18n/locales/{hy-AM,uz-UZ}.po still have old "Twenty" strings, but these locales aren't in APP_LOCALES, so they never
+   load.
+ - Dev-only seed data: "Twenty Star History" widget (dev-seeder/.../get-page-layout-widget-data-seeds.util.ts:525).
+
+ Caveats for already-created workspaces
+
+ Prefill data and the standard-app agent/skill prompts are copied into each workspace's database when the workspace is created. Changing the source only
+ affects new workspaces. Existing ones need a standard-app sync or a manual edit.
+
+ ---
+
+ Proposed implementation (if approved)
+
+ 1. Do all of group A: A1 first (pass serverUrl into CleanSuspendedWorkspaceEmail from its server caller), then the text swaps. Fix A11 by editing the
+    msgstr directly.
+ 2. Group B/C: implement only after you provide the replacement URLs (terms, privacy, website, repo, community) or confirm to remove/hide B1, B2, B5 and
+    the DPA section and trust badges.
+ 3. Leave group D alone.
+
+ Verification
+
+ - grep -rIn "\bTwenty\b\|twenty\.com\|twentyhq\|twentycrm" packages/twenty-{front,server,emails,shared,ui}/src packages/twenty-front/index.html should
+   return only group D items and comments.
+ - npx nx run twenty-emails:lingui:extract / twenty-front:lingui:extract, then compile. Don't hand-edit the generated catalogs.
+ - npx nx typecheck twenty-front twenty-server twenty-emails, then npx nx lint:diff-with-main twenty-front and twenty-server.
+ - Preview the emails (twenty-emails dev preview) for the invite, verification, suspended-workspace and trial-converting emails. In the app, check the
+   sign-in footer, Settings → Billing plan table, the data-model field previews, and the API playground.
+
+● Both searches are done. Here's the full audit, grouped by area, with a safety note on each.
+
+  1. Functional issues (not just cosmetic — flag these first)
+
+  Item: Install scripts pull the upstream repo
+  Where: packages/twenty-docker/scripts/install.sh:47,48,77,81, 1-click.sh:1,14,16
+  Why it's not just branding: Fetches docker-compose.yml/.env.example from raw.githubusercontent.com/twentyhq/twenty and image tags from
+  hub.docker.com/v2/repositories/twentycrm/twenty. A fresh self-host install would pull the original Twenty project's  files/image, not yours.
+  ────────────────────────────────────────
+  Item: Docker images pulled are twentycrm/twenty
+  Where: docker-compose.yml:5,62, podman-compose.yml:23,39, helm/twenty/values.yaml:3,161-165
+  Why it's not just branding: Same root cause — unless you've published your own image under a Cybernetics repo, these deployments run upstream's binary,
+  not
+  your rebranded build.
+  ────────────────────────────────────────
+  Item: Outgoing webhook headers: X-Twenty-Webhook-Signature/Timestamp/Nonce
+  Where: call-webhook.job.ts:61-67, documented in computeWebhooks.utils.ts (OpenAPI)
+  Why it's not just branding: Sent on the wire to every customer's webhook endpoint. Renaming is an API contract break for anyone already relying on these
+  header names — needs versioning/comms, not a silent rename.
+
+  Not safe to just find-replace. These need an infra/release decision (own image registry + compose source, and a webhook-header migration plan) before
+  editing.
+
+  2. Legal document — needs legal review, not a text swap
+
+  packages/twenty-server/src/engine/core-modules/dpa/** — the Data Processing Agreement admins preview/sign in Settings:
+  - Processor entity names: Twenty.com SAS (EU), Twenty.com PBC (US)
+  - Real people hardcoded as DPO/signatory: Stéphanie Joly, privacy@twenty.com, Félix Malfait, CEO
+  - 111 occurrences of "Twenty" as Processor throughout the full clause text (dpa-template.constant.ts), plus trust.twenty.com references, document title,
+    error/warning strings in dpa.service.ts and resolve-dpa.util.ts
+
+  Not safe to edit as a copy-paste rebrand. This is a real legal document — the entity name, DPO contact, and signatory need to reflect who Cybernetics'
+  actual legal/compliance owner says they should be. Flag to whoever owns compliance before touching.
+
+  3. Safe, cosmetic — frontend app (mostly already rebranded)
+
+  Tab titles, manifest.json, favicon, meta description already say "Cybernetics." Remaining leftovers, all safe text/link swaps:
+  - index.html:20,27 — stale og:image/twitter:image still points at old social-card PNG
+  - DOCUMENTATION_BASE_URL = 'https://docs.twenty.com' (twenty-shared/src/constants/DocumentationBaseUrl.ts) — single constant driving every
+    "Documentation"/"Learn more" link app-wide
+  - Settings → Community page: X/Twitter, partners, changelog links (SettingsCommunity.tsx:71,133,157)
+  - Settings → Applications: CLI snippets (npx create-twenty-app@latest, yarn twenty dev) and doc links
+  - Settings → Legal DPA: description copy + downloaded filename Twenty-DPA-*.pdf (blocked on #2 above being resolved first)
+  - Settings → Admin Panel: version link → hub.docker.com/r/twentycrm/twenty
+  - Settings → MCP & APIs: ChatGPT integration link path /apps/twenty/...
+  - Dead code, zero importers: TwentyPricingLink.ts
+
+  4. Safe, cosmetic — but large volume
+
+  - twenty-website (marketing site): ~207 hits across ~50 files — SITE_NAME/Twitter handle constant, every page's <title>/meta description, nav menu, footer
+    copyright, homepage hero copy, Privacy Policy & Terms body text, case studies, FAQ, public /llms.txt. Essentially un-rebranded — treat as its own
+    dedicated pass, not a spot-fix.
+  - twenty-docs: docs.json site name, page titles (e.g. "Why Twenty"), and ~3,100 .mdx files (only 2 touched so far) — same, needs a dedicated pass.
+  - Zapier integration (twenty-zapier): help text and action description shown in Zapier's UI, plus package.json description (confirm against actual Zapier
+    Developer Platform listing separately, since that's not always sourced from package.json).
+  - Admin Panel config descriptions (config-variables.ts): a few env-var help strings mention Twenty/*.withtwenty.com/twenty.com — one is even inconsistent
+    with itself (says "Twenty, Inc." while the DPA constant says "Twenty.com PBC").
+  - Seeded demo data: a dev-seeder dashboard widget titled "Twenty Star History" — confirm whether dev-seeder output ever reaches real user workspaces
+    before prioritizing.
+
+  5. Already clean / low priority
+
+  Emails (twenty-emails) are well rebranded — only a dead code comment, react-email dev-preview-only props (never sent to real users), and orphaned .po
+  strings for three unsupported locales. GraphQL/OpenAPI titles, server startup logging, console.log/warn/error, and toast/error-boundary UI text are all
+  clean.
+
+  ---
+
+  Bottom line on safety: categories 3–5 are safe mechanical text/link edits I can do directly. Category 2 (DPA) needs a legal-review decision before any
+  edit. Category 1 (install scripts/images/webhook headers) needs an infra decision (own registry + compose source, webhook-header migration) — editing the
+  strings without fixing the underlying pipeline would leave deployments silently broken. Want me to start with the safe frontend-app fixes (category 3)
+  while you sort out 1 and 2?

@@ -37,6 +37,9 @@ export type StartChannelSyncInput = {
   workspaceId: string;
 };
 
+// Kicks off sync for a connected account's message and calendar channels
+// that are still pending configuration, and registers their webhook
+// subscriptions if enabled.
 @Injectable()
 export class ChannelSyncService {
   private readonly logger = new Logger(ChannelSyncService.name);
@@ -57,6 +60,7 @@ export class ChannelSyncService {
     private readonly twentyConfigService: TwentyConfigService,
   ) {}
 
+  // Starts both message and calendar channel sync for the connected account.
   async startChannelSync(input: StartChannelSyncInput): Promise<void> {
     const { connectedAccountId, workspaceId } = input;
 
@@ -64,6 +68,8 @@ export class ChannelSyncService {
     await this.startCalendarChannelSync(connectedAccountId, workspaceId);
   }
 
+  // Schedules a message list fetch for each pending-configuration message
+  // channel (skipping email groups) and best-effort registers its webhook.
   private async startMessageChannelSync(
     connectedAccountId: string,
     workspaceId: string,
@@ -121,6 +127,8 @@ export class ChannelSyncService {
     }, authContext);
   }
 
+  // Schedules an event list fetch for each pending-configuration calendar
+  // channel and best-effort registers its webhook.
   private async startCalendarChannelSync(
     connectedAccountId: string,
     workspaceId: string,

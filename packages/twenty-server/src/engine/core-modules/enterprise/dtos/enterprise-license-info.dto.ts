@@ -1,5 +1,6 @@
 /* @license Enterprise */
 
+// GraphQL DTO summarizing the current enterprise license's validity.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()

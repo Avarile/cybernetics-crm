@@ -1,3 +1,7 @@
+// Validates an object's names and labels together: individual name/label
+// format checks, name-label sync consistency, and uniqueness against other
+// objects in the workspace.
+
 import { msg, t } from '@lingui/core/macro';
 import { isDefined } from 'twenty-shared/utils';
 
@@ -17,6 +21,8 @@ type ValidateNoOtherObjectWithSameNameExistsOrThrowsParams = {
   universalFlatObjectMetadataMaps: UniversalFlatEntityMaps<UniversalFlatObjectMetadata>;
 };
 
+// Returns true if any other object in the workspace already uses the given
+// singular or plural name (in either slot), excluding the object itself.
 export const doesOtherObjectWithSameNameExists = ({
   universalFlatObjectMetadataMaps,
   objectMetadataNamePlural,
@@ -38,6 +44,9 @@ export const doesOtherObjectWithSameNameExists = ({
           existingObjectMetadataUniversalIdentifier,
     );
 
+// Runs name and label format validation, checks names stay synced with
+// labels when isLabelSyncedWithName is set, and rejects name collisions with
+// other objects in the workspace.
 export const validateFlatObjectMetadataNameAndLabels = ({
   optimisticUniversalFlatObjectMetadataMaps,
   universalFlatObjectMetadataToValidate,

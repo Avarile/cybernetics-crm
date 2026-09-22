@@ -4,6 +4,8 @@ import { assertUnreachable } from 'twenty-shared/utils';
 
 import { CustomException } from 'src/utils/custom-exception';
 
+// Exception thrown by the view filter module for missing records or
+// invalid input.
 export class ViewFilterException extends CustomException<ViewFilterExceptionCode> {
   constructor(
     message: string,
@@ -32,6 +34,8 @@ export enum ViewFilterExceptionMessageKey {
   VIEW_NOT_FOUND = 'VIEW_NOT_FOUND',
 }
 
+// Builds the internal (developer-facing) exception message for a given
+// error key, optionally including the offending record's id.
 export const generateViewFilterExceptionMessage = (
   key: ViewFilterExceptionMessageKey,
   id?: string,
@@ -54,6 +58,7 @@ export const generateViewFilterExceptionMessage = (
   }
 };
 
+// Builds the localized, user-facing message for a given error key.
 export const generateViewFilterUserFriendlyExceptionMessage = (
   key: ViewFilterExceptionMessageKey,
 ): MessageDescriptor | undefined => {

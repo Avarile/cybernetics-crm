@@ -1,5 +1,7 @@
 /* @license Enterprise */
 
+// Translates an application charge into a workspace usage event so it is
+// counted against the workspace's billing/credit balance.
 import { Injectable, Logger } from '@nestjs/common';
 
 import { type ChargeDto } from 'src/engine/core-modules/billing/app-billing/dtos/charge.dto';
@@ -38,6 +40,8 @@ export class AppBillingService {
     private readonly workspaceCacheService: WorkspaceCacheService,
   ) {}
 
+  // Resolves the workspace's current billing period, then emits a
+  // USAGE_RECORDED event so downstream usage/billing listeners pick it up.
   async emitChargeEvent(params: {
     workspaceId: string;
     applicationId: string;

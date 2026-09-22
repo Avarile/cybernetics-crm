@@ -3,6 +3,8 @@ import { type AiSdkPackage } from 'twenty-shared/ai';
 import { type NativeModelToolKey } from 'src/engine/metadata-modules/ai/ai-models/types/native-model-tool-key.type';
 import { getNativeModelToolsForSdkPackage } from 'src/engine/metadata-modules/ai/ai-models/utils/get-native-model-tools-for-sdk-package.util';
 
+// Returns which native tool keys are available for an SDK package, as a
+// flags map, or undefined if the package has no native tools.
 export const getNativeModelCapabilities = (
   sdkPackage?: AiSdkPackage | null,
 ): Partial<Record<NativeModelToolKey, boolean>> | undefined => {

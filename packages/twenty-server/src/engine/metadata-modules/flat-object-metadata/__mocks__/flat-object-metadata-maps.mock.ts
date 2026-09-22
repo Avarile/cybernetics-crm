@@ -1,3 +1,5 @@
+// Builds a flat entity maps mock populated with all standard flat object metadata mocks,
+// used as a baseline workspace metadata state in tests.
 import { createEmptyFlatEntityMaps } from 'src/engine/metadata-modules/flat-entity/constant/create-empty-flat-entity-maps.constant';
 import { addFlatEntityToFlatEntityMapsOrThrow } from 'src/engine/metadata-modules/flat-entity/utils/add-flat-entity-to-flat-entity-maps-or-throw.util';
 import { ALL_FLAT_OBJECT_METADATA_MOCKS } from 'src/engine/metadata-modules/flat-object-metadata/__mocks__/all-flat-object-metadatas.mock';

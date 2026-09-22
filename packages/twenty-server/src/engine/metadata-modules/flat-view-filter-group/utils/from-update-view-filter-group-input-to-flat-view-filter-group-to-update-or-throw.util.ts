@@ -16,6 +16,9 @@ import {
 import { type UniversalFlatViewFilterGroup } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-view-filter-group.type';
 import { mergeUpdateInExistingRecord } from 'src/utils/merge-update-in-existing-record.util';
 
+// Applies an update-view-filter-group input onto the matching existing flat group, throwing
+// if it doesn't exist, and re-resolving the parent group universal identifier when that
+// foreign key changes.
 export const fromUpdateViewFilterGroupInputToFlatViewFilterGroupToUpdateOrThrow =
   ({
     updateViewFilterGroupInput: rawUpdateViewFilterGroupInput,

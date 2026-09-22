@@ -1,3 +1,5 @@
+// NestJS module wiring UserWorkspaceService, which manages user-workspace
+// memberships (creation, deletion, workspace discovery, avatars).
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

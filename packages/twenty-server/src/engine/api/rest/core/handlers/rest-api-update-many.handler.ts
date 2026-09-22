@@ -10,6 +10,8 @@ import { parseFilterRestRequest } from 'src/engine/api/rest/input-request-parser
 import { AuthenticatedRequest } from 'src/engine/api/rest/types/authenticated-request';
 import { workspaceQueryRunnerRestApiExceptionHandler } from 'src/engine/api/rest/utils/workspace-query-runner-rest-api-exception-handler.util';
 
+// REST handler for PATCH /rest/{objects} with a filter: bulk-updates
+// records matching the filter with the given data.
 @Injectable()
 export class RestApiUpdateManyHandler extends RestApiBaseHandler {
   constructor(
@@ -18,6 +20,8 @@ export class RestApiUpdateManyHandler extends RestApiBaseHandler {
     super();
   }
 
+  // Parses the request body/filter/depth, runs the common updateMany
+  // query runner, and formats the updated records as a REST response.
   async handle(request: AuthenticatedRequest) {
     try {
       const { data, depth, filter } = this.parseRequestArgs(request);

@@ -7,6 +7,8 @@ const tableName = 'emailingDomain';
 
 const DEV_EMAILING_DOMAIN = 'dev.twenty.local';
 
+// Derives per-workspace dev email-group domain names (verified/pending)
+// namespaced by a prefix of the workspace id, to keep them unique per seed.
 export const getSeededEmailGroupDomains = (workspaceId: string) => {
   const prefix = workspaceId.slice(0, 8);
 
@@ -22,6 +24,8 @@ type SeedEmailingDomainsArgs = {
   workspaceId: string;
 };
 
+// Inserts a verified and a pending sample emailing domain (with fake
+// verification records) into the dev-seeded workspace.
 export const seedEmailingDomains = async ({
   queryRunner,
   schemaName,

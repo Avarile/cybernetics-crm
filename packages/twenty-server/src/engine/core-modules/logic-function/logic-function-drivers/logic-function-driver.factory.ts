@@ -20,6 +20,7 @@ import { ConfigGroupHashService } from 'src/engine/core-modules/twenty-config/se
 import { TwentyConfigService } from 'src/engine/core-modules/twenty-config/twenty-config.service';
 import { WorkspaceCacheService } from 'src/engine/workspace-cache/services/workspace-cache.service';
 
+// Builds and caches the active LogicFunctionDriver (disabled/local/lambda) based on config, rebuilding when the relevant config group changes
 @Injectable()
 export class LogicFunctionDriverFactory extends DriverFactoryBase<LogicFunctionDriver> {
   constructor(
@@ -33,6 +34,7 @@ export class LogicFunctionDriverFactory extends DriverFactoryBase<LogicFunctionD
     super(twentyConfigService, configGroupHashService);
   }
 
+  // Cache key that changes whenever config affecting the driver instance (e.g. lambda config group) changes
   protected buildConfigKey(): string {
     const driverType = this.twentyConfigService.get('LOGIC_FUNCTION_TYPE');
 
@@ -43,6 +45,7 @@ export class LogicFunctionDriverFactory extends DriverFactoryBase<LogicFunctionD
     return driverType;
   }
 
+  // Instantiates the concrete driver matching LOGIC_FUNCTION_TYPE, wiring lambda credentials/resource naming when applicable
   protected createDriver(): LogicFunctionDriver {
     const driverType = this.twentyConfigService.get('LOGIC_FUNCTION_TYPE');
 

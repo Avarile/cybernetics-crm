@@ -10,6 +10,8 @@ import { type Observable, catchError } from 'rxjs';
 import { commandMenuItemGraphqlApiExceptionHandler } from 'src/engine/metadata-modules/command-menu-item/utils/command-menu-item-graphql-api-exception-handler.util';
 
 @Injectable()
+// Catches errors thrown by the command menu item resolver and converts
+// them into the appropriate GraphQL API error type.
 export class CommandMenuItemGraphqlApiExceptionInterceptor implements NestInterceptor {
   intercept(
     _context: ExecutionContext,

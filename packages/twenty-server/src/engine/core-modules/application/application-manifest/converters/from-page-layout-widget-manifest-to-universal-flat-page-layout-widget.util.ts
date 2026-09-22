@@ -1,3 +1,5 @@
+// Converts a manifest-declared page layout widget into the universal flat
+// entity shape used to build workspace migrations.
 import { type PageLayoutWidgetManifest } from 'twenty-shared/application';
 import { DEFAULT_WIDGET_SIZE } from 'twenty-shared/constants';
 

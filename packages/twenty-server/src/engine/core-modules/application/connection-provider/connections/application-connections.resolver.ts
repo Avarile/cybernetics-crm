@@ -1,3 +1,5 @@
+// GraphQL resolver for an authenticated application to list or fetch its
+// own connections (ConnectedAccounts) within the workspace.
 import { UseGuards } from '@nestjs/common';
 import { Args, ID, Query } from '@nestjs/graphql';
 
@@ -20,6 +22,7 @@ export class ApplicationConnectionsResolver {
     private readonly listService: ApplicationConnectionsListService,
   ) {}
 
+  // Lists the requesting application's connections in the workspace.
   @Query(() => [AppConnectionObjectDto])
   async appConnections(
     @AuthApplication() application: FlatApplication,
@@ -36,6 +39,7 @@ export class ApplicationConnectionsResolver {
     });
   }
 
+  // Returns a single connection by id.
   @Query(() => AppConnectionObjectDto)
   async appConnection(
     @AuthApplication() application: FlatApplication,

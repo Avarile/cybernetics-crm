@@ -2,6 +2,8 @@ import { FieldMetadataType } from 'twenty-shared/types';
 
 import { type FieldMetadataSeed } from 'src/engine/workspace-manager/dev-seeder/metadata/types/field-metadata-seed.type';
 
+// Sample custom fields on the custom Pet object, covering most field types,
+// used to demo custom object field type support.
 export const PET_CUSTOM_FIELD_SEEDS: FieldMetadataSeed[] = [
   {
     type: FieldMetadataType.SELECT,

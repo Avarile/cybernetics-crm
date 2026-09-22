@@ -1,3 +1,5 @@
+// The kinds of database mutations the query runner emits batch events
+// for, registered as a GraphQL enum for use in the schema.
 import { registerEnumType } from '@nestjs/graphql';
 
 export enum DatabaseEventAction {

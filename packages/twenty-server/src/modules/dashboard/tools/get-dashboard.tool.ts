@@ -17,6 +17,9 @@ const getDashboardSchema = z.object({
   dashboardId: z.string().uuid().describe('The UUID of the dashboard to fetch'),
 });
 
+// AI agent tool: fetches a dashboard's full layout (tabs + widgets), and for
+// chart widgets resolves their group-by/aggregate field ids into readable
+// names so the agent doesn't need separate metadata lookups.
 export const createGetDashboardTool = (
   deps: Pick<
     DashboardToolDependencies,

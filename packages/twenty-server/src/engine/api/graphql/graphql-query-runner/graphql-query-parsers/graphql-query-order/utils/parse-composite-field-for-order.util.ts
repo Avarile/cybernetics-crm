@@ -1,3 +1,5 @@
+// Expands an orderBy request on a composite field's sub-properties into
+// one OrderByClause per underlying column.
 import { compositeTypeDefinitions } from 'twenty-shared/types';
 import { capitalize } from 'twenty-shared/utils';
 

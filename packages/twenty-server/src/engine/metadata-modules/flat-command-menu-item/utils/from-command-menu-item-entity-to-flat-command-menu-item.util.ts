@@ -6,6 +6,9 @@ import { fromEntityToScalarEntity } from 'src/engine/metadata-modules/flat-entit
 import { type FromEntityToFlatEntityArgs } from 'src/engine/workspace-cache/types/from-entity-to-flat-entity-args.type';
 import { resolveManyToOneRelationIdsToUniversalIdentifiers } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/utils/resolve-many-to-one-relation-ids-to-universal-identifiers.util';
 
+// Converts a command menu item TypeORM entity into its flat form,
+// resolving relation ids to universal identifiers and translating any
+// overrides into universal-identifier-based universal overrides.
 export const fromCommandMenuItemEntityToFlatCommandMenuItem = (
   args: FromEntityToFlatEntityArgs<'commandMenuItem'>,
 ): FlatCommandMenuItem => {

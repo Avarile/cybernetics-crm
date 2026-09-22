@@ -16,6 +16,9 @@ import { type MicrosoftGraphNotification } from 'src/modules/connected-account-s
 import { type WebhookNotificationHandler } from 'src/modules/connected-account-sync-webhooks/types/webhook-notification-handler.type';
 
 @Injectable()
+// Handles Microsoft Graph calendar change notifications: verifies each
+// notification's client state, renews the subscription on lifecycle events,
+// and otherwise triggers a resync of the matching calendar channel.
 export class MicrosoftCalendarNotificationHandler implements WebhookNotificationHandler<
   MicrosoftGraphNotification[]
 > {

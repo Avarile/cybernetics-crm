@@ -9,6 +9,9 @@ import {
 } from 'src/engine/api/common/common-query-runners/errors/common-query-runner.exception';
 import { STANDARD_ERROR_MESSAGE } from 'src/engine/api/common/common-query-runners/errors/standard-error-message.constant';
 
+// Validates a RATING or SELECT field input against the field's configured
+// options, requiring options to be provided and the value to be one of
+// them (or null); throws a CommonQueryRunnerException otherwise.
 export const validateRatingAndSelectFieldOrThrow = (
   value: unknown,
   fieldName: string,

@@ -1,3 +1,5 @@
+// Cleans up tool-call message parts left in an unfinished state (e.g. after a
+// stream is interrupted) so they can be safely persisted and replayed.
 import {
   isToolUIPart,
   type UIDataTypes,

@@ -16,6 +16,9 @@ import {
 } from 'src/modules/dashboard/exceptions/dashboard.exception';
 import { DashboardWorkspaceEntity } from 'src/modules/dashboard/standard-objects/dashboard.workspace-entity';
 
+// Duplicates a dashboard: duplicates its underlying page layout, then
+// creates a new dashboard record pointing at the copy, with a "(copy)"-style
+// title suffix and actor fields set from the requesting user.
 @Injectable()
 export class DashboardDuplicationService {
   private readonly logger = new Logger(DashboardDuplicationService.name);
@@ -26,6 +29,8 @@ export class DashboardDuplicationService {
     private readonly actorFromAuthContextService: ActorFromAuthContextService,
   ) {}
 
+  // Looks up the source dashboard, duplicates its page layout, and creates
+  // the new dashboard record pointing at the duplicated layout.
   async duplicateDashboard(
     dashboardId: string,
     authContext: WorkspaceAuthContext,
@@ -101,6 +106,8 @@ export class DashboardDuplicationService {
     );
   }
 
+  // Inserts the new dashboard record (copy-suffixed title, actor fields set)
+  // and returns it.
   private async createDuplicatedDashboard(
     originalDashboard: DashboardWorkspaceEntity,
     newPageLayoutId: string,

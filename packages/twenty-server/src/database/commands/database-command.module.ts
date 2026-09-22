@@ -53,6 +53,9 @@ import { MessagingImportManagerModule } from 'src/modules/messaging/message-impo
 import { WorkflowRunQueueModule } from 'src/modules/workflow/workflow-runner/workflow-run-queue/workflow-run-queue.module';
 import { AutomatedTriggerModule } from 'src/modules/workflow/workflow-trigger/automated-trigger/automated-trigger.module';
 
+// Root module for the CLI command app: registers every nest-commander CLI command
+// (cron registration, dev seeding, instance-command generation/execution, workspace
+// export, upgrade commands, etc.) along with the feature modules they depend on.
 @Module({
   imports: [
     UpgradeVersionCommandModule,

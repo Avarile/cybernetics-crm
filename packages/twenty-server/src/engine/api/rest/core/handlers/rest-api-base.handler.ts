@@ -55,6 +55,9 @@ export interface FormatResult {
   totalCount?: number;
 }
 
+// Base class for REST core handlers: resolves the target object from the
+// request path, loads workspace metadata/permissions, and computes the
+// select-fields the caller is allowed to read.
 export abstract class RestApiBaseHandler {
   @Inject()
   protected readonly workspaceCacheService: WorkspaceCacheService;
@@ -83,6 +86,8 @@ export abstract class RestApiBaseHandler {
     FormatResult | { data: FormatResult[] } | CommonGroupByOutputItem[]
   >;
 
+  // Resolves the caller's role (from API key, user, or application
+  // context) and returns that role's per-object permissions.
   private getObjectsPermissions = async (authContext: WorkspaceAuthContext) => {
     let roleId: string;
 
@@ -127,6 +132,8 @@ export abstract class RestApiBaseHandler {
     return { objectsPermissions: rolesPermissions[roleId] };
   };
 
+  // Computes the caller's permission-filtered select-fields map for an
+  // object, expanded to the requested relation depth.
   async computeSelectedFields({
     authContext,
     depth,
@@ -152,6 +159,8 @@ export abstract class RestApiBaseHandler {
     });
   }
 
+  // Resolves the target object from the request path plus the auth
+  // context and workspace metadata maps needed to run a query runner.
   async buildCommonOptions(request: AuthenticatedRequest) {
     const { object: parsedObject } = parseCorePath(request);
 
@@ -175,6 +184,10 @@ export abstract class RestApiBaseHandler {
     };
   }
 
+  // Validates the request's access token, ensures the workspace's
+  // metadata cache is warm, and resolves the path's object name (plural
+  // or, as a fallback for a better error hint, singular) to its flat
+  // object metadata.
   private async getObjectMetadata(
     request: AuthenticatedRequest,
     parsedObject: string,

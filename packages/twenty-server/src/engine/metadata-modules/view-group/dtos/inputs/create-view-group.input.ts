@@ -10,6 +10,8 @@ import {
 
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';
 
+// GraphQL/REST input for creating a new view group (a distinct value of
+// the view's group-by field, e.g. a Kanban column).
 @InputType()
 export class CreateViewGroupInput {
   @IsOptional()

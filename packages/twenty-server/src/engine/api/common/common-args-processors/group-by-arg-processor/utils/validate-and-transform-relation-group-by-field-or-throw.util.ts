@@ -18,6 +18,10 @@ import { type FlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-m
 import { buildFieldMapsFromFlatObjectMetadata } from 'src/engine/metadata-modules/flat-field-metadata/utils/build-field-maps-from-flat-object-metadata.util';
 import { type FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object-metadata/types/flat-object-metadata.type';
 
+// Resolves the single nested field named under a relation groupBy entry
+// (e.g. company.{ name: true }) to its field metadata on the related
+// object, enforcing that exactly one supported, non-relation nested field
+// is selected.
 const getNestedFieldMetadataDetails = ({
   fieldNames,
   fieldName,
@@ -121,6 +125,8 @@ const getNestedFieldMetadataDetails = ({
   };
 };
 
+// Validates a groupBy definition on a composite subfield reached through a
+// relation, requiring exactly one supported subfield selected as true.
 const validateAndTransformNestedCompositeFieldOrThrow = ({
   nestedFieldGroupByDefinition,
   nestedFieldName,
@@ -173,6 +179,9 @@ const validateAndTransformNestedCompositeFieldOrThrow = ({
   });
 };
 
+// Validates a groupBy entry that reaches one hop through a relation field,
+// dispatching to date-granularity, composite-subfield, or plain-field
+// handling for the nested field; throws on any other shape.
 export const validateAndTransformRelationGroupByFieldOrThrow = ({
   fieldNames,
   fieldName,

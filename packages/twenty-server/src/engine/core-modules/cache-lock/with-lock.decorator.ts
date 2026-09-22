@@ -1,3 +1,6 @@
+// Method decorator that wraps a method call in CacheLockService.withLock,
+// resolving the lock key from a named property on the method's first
+// (object) argument.
 import { Inject } from '@nestjs/common';
 
 import {
@@ -5,6 +8,8 @@ import {
   CacheLockService,
 } from 'src/engine/core-modules/cache-lock/cache-lock.service';
 
+// Wraps the decorated method so it only runs while holding a lock keyed by
+// `lockKeyParamPath` read off its first argument.
 export const WithLock = (
   lockKeyParamPath: string,
   options?: CacheLockOptions,

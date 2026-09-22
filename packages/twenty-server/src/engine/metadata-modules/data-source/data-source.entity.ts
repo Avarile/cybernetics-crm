@@ -12,6 +12,7 @@ import { WorkspaceRelatedEntity } from 'src/engine/workspace-manager/types/works
 
 export type DataSourceType = DataSourceOptions['type'];
 
+// Legacy record of a workspace's connected data source (e.g. a remote schema).
 // @deprecated - This entity is kept only to preserve the dataSource table.
 // All code should use workspace.databaseSchema instead.
 @Entity('dataSource')

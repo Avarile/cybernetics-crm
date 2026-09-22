@@ -1,3 +1,5 @@
+// Wires up the inbound email (email group) driver's S3 client, storage and
+// parsing services.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

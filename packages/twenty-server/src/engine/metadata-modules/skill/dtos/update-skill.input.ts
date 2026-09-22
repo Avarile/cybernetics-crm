@@ -10,6 +10,7 @@ import {
 
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';
 
+// Input for updating a custom skill's fields by id.
 @InputType()
 export class UpdateSkillInput {
   @IsUUID()

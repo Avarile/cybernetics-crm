@@ -1,3 +1,5 @@
+// Core-entity cache provider that computes and caches the listed, vetted,
+// and configured marketplace catalog as DTOs keyed by universal identifier.
 import { Injectable } from '@nestjs/common';
 
 import { CoreEntityCache } from 'src/engine/core-entity-cache/decorators/core-entity-cache.decorator';
@@ -21,6 +23,8 @@ export class MarketplaceCatalogCacheProviderService extends CoreEntityCacheProvi
     super();
   }
 
+  // Rebuilds the cached catalog from listed registrations, filtering out
+  // any app whose required configuration (e.g. secrets) is incomplete.
   async computeForCache(): Promise<Record<string, MarketplaceAppDTO>> {
     const registrations =
       await this.applicationRegistrationService.findManyListedCatalogCards();
@@ -47,6 +51,7 @@ export class MarketplaceCatalogCacheProviderService extends CoreEntityCacheProvi
       );
   }
 
+  // Maps an application registration catalog card to the GraphQL DTO shape.
   private toMarketplaceAppDTO(
     catalogCard: ApplicationRegistrationCatalogCard,
   ): MarketplaceAppDTO {

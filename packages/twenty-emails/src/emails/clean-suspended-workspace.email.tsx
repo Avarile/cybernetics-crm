@@ -10,6 +10,7 @@ type CleanSuspendedWorkspaceEmailProps = {
   daysSinceInactive: number;
   userName: string;
   workspaceDisplayName: string | undefined;
+  link: string;
   locale: keyof typeof APP_LOCALES;
 };
 
@@ -17,6 +18,7 @@ export const CleanSuspendedWorkspaceEmail = ({
   daysSinceInactive,
   userName,
   workspaceDisplayName,
+  link,
   locale,
 }: CleanSuspendedWorkspaceEmailProps) => {
   const i18n = createI18nInstance(locale);
@@ -42,13 +44,10 @@ export const CleanSuspendedWorkspaceEmail = ({
         <Trans id="Its data has been removed and can no longer be recovered." />
         <br />
         <br />
-        <Trans id="If you'd ever like to give Twenty another try, you can start a fresh workspace in minutes — we'd love to have you back." />
+        <Trans id="If you'd ever like to give Cybernetics another try, you can start a fresh workspace in minutes — we'd love to have you back." />
       </MainText>
       <br />
-      <CallToAction
-        href="https://app.twenty.com/"
-        value={i18n._('Start a new workspace')}
-      />
+      <CallToAction href={link} value={i18n._('Start a new workspace')} />
       <br />
       <br />
     </BaseEmail>
@@ -59,6 +58,7 @@ CleanSuspendedWorkspaceEmail.PreviewProps = {
   daysSinceInactive: 1,
   userName: 'John Doe',
   workspaceDisplayName: 'My Workspace',
+  link: 'https://app.example.com/',
   locale: 'en',
 };
 

@@ -17,6 +17,9 @@ const fileTypeParser = new FileTypeParser({
   customDetectors: [detectPdf],
 });
 
+// Detects a file's real mime type/extension from its magic bytes, falling
+// back to the declared extension (via Twenty's mime policy or mrmime), and
+// throws if the declared extension contradicts a positively detected type.
 export const extractFileInfoOrThrow = async ({
   file,
   filename,

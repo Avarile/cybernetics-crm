@@ -1,3 +1,5 @@
+// Converts a manifest-declared view into the universal flat entity shape
+// used to build workspace migrations.
 import { type ViewManifest } from 'twenty-shared/application';
 import {
   ViewOpenRecordIn,

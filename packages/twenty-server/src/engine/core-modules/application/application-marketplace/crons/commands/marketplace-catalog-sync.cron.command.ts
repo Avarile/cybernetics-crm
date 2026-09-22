@@ -1,3 +1,5 @@
+// CLI command that registers the recurring marketplace catalog sync cron
+// job (and triggers one immediate run) on the cron queue.
 import { Command, CommandRunner } from 'nest-commander';
 
 import { MARKETPLACE_CATALOG_SYNC_CRON_PATTERN } from 'src/engine/core-modules/application/application-marketplace/crons/constants/marketplace-catalog-sync-cron-pattern.constant';
@@ -19,6 +21,8 @@ export class MarketplaceCatalogSyncCronCommand extends CommandRunner {
     super();
   }
 
+  // Enqueues one immediate sync job and registers the recurring cron
+  // schedule for future syncs.
   async run(): Promise<void> {
     await this.messageQueueService.add(MarketplaceCatalogSyncCronJob.name, {});
 

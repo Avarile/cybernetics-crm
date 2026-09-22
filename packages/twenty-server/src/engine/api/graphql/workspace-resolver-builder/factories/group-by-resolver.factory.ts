@@ -1,3 +1,7 @@
+// Builds the `groupBy` GraphQL query resolver for an object: delegates
+// aggregation to CommonGroupByQueryRunnerService, and — only when the
+// client actually selected nested `edges.node` fields — formats each
+// group's records as its own Relay connection alongside its aggregate values.
 import { Injectable } from '@nestjs/common';
 
 import { isDefined } from 'class-validator';
@@ -24,6 +28,9 @@ export class GroupByResolverFactory implements WorkspaceResolverBuilderFactoryIn
     private readonly commonGroupByQueryRunnerService: CommonGroupByQueryRunnerService,
   ) {}
 
+  // Returns a resolver function that runs the group-by aggregate query
+  // (fetching underlying records too, if the client asked for them) and
+  // formats each group into its GraphQL output shape.
   create(
     context: WorkspaceSchemaBuilderContext,
   ): Resolver<GroupByResolverArgs> {

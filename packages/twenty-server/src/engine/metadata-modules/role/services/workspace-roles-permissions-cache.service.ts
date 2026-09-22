@@ -28,16 +28,25 @@ import { WorkspaceScopedRepository } from 'src/engine/twenty-orm/workspace-scope
 import { WorkspaceCache } from 'src/engine/workspace-cache/decorators/workspace-cache.decorator';
 import { regroupEntitiesByRelatedEntityId } from 'src/engine/workspace-cache/utils/regroup-entities-by-related-entity-id';
 
+// Workflow-related standard objects, which are gated by the WORKFLOWS
+// settings permission flag rather than a role's general object permissions.
 const WORKFLOW_STANDARD_OBJECT_UNIVERSAL_IDENTIFIERS = [
   STANDARD_OBJECTS.workflow.universalIdentifier,
   STANDARD_OBJECTS.workflowRun.universalIdentifier,
   STANDARD_OBJECTS.workflowVersion.universalIdentifier,
 ] as const;
+// The WorkspaceMember standard object, gated by the WORKSPACE_MEMBERS
+// settings permission flag and always readable.
 const WORKSPACE_MEMBER_OBJECT_UNIVERSAL_IDENTIFIER =
   STANDARD_OBJECTS.workspaceMember.universalIdentifier;
 
 @Injectable()
 @WorkspaceCache('rolesPermissions')
+// Computes and caches, per role, the effective read/update/soft-delete/
+// destroy permissions and restricted fields for every object in the
+// workspace — resolving role defaults, per-object/per-field overrides,
+// system-object always-allow rules, and settings-gated special cases
+// (workflows, workspace members) into one lookup structure.
 export class WorkspaceRolesPermissionsCacheService extends WorkspaceCacheProvider<ObjectsPermissionsByRoleId> {
   constructor(
     @InjectRepository(ObjectMetadataEntity)
@@ -58,6 +67,12 @@ export class WorkspaceRolesPermissionsCacheService extends WorkspaceCacheProvide
     super();
   }
 
+  // Builds the full per-role, per-object effective permissions map for the
+  // workspace: loads roles and their permission-related entities, then for
+  // each role/object pair applies the precedence rules (system objects
+  // always allowed, workflow/workspace-member objects gated by settings
+  // permission flags, otherwise role defaults overridden by per-object and
+  // per-field permission rows) and attaches any row-level predicates.
   async computeForCache(
     workspaceId: string,
   ): Promise<ObjectsPermissionsByRoleId> {
@@ -250,6 +265,7 @@ export class WorkspaceRolesPermissionsCacheService extends WorkspaceCacheProvide
     return permissionsByRoleId;
   }
 
+  // Loads the minimal object metadata fields needed to compute permissions.
   private async getWorkspaceObjectMetadataCollection(
     workspaceId: string,
   ): Promise<ObjectMetadataEntity[]> {
@@ -268,6 +284,9 @@ export class WorkspaceRolesPermissionsCacheService extends WorkspaceCacheProvide
     return workspaceObjectMetadata;
   }
 
+  // Checks whether a role can access a settings-gated object group (e.g.
+  // workflows, workspace members), via either the role's canUpdateAllSettings
+  // flag or an explicit matching permission flag.
   private hasSettingsGatedObjectPermissions(
     role: RoleEntity,
     rolePermissionFlags: RolePermissionFlagEntity[],
@@ -287,6 +306,9 @@ export class WorkspaceRolesPermissionsCacheService extends WorkspaceCacheProvide
     return hasPermissionFromRole || hasPermissionFromSettingPermissions;
   }
 
+  // Resolves a role permission flag's universal identifier, falling back
+  // to the legacy `flag` column for entities not yet upgraded to carry the
+  // `permissionFlag` relation.
   private getRolePermissionFlagUniversalIdentifier(
     rolePermissionFlag: RolePermissionFlagEntity,
   ): string {

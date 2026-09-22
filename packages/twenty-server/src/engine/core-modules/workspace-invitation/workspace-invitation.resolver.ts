@@ -1,3 +1,4 @@
+// GraphQL resolver for inviting, listing, deleting, and resending workspace invitations.
 import { UseFilters, UseGuards, UsePipes } from '@nestjs/common';
 import { Args, Mutation, Query } from '@nestjs/graphql';
 
@@ -40,6 +41,7 @@ export class WorkspaceInvitationResolver {
   ) {}
 
   @Mutation(() => String)
+  // Deletes a pending workspace invitation.
   async deleteWorkspaceInvitation(
     @Args('appTokenId') appTokenId: string,
     @AuthWorkspace() { id: workspaceId }: WorkspaceEntity,
@@ -52,6 +54,7 @@ export class WorkspaceInvitationResolver {
 
   @Mutation(() => SendInvitationsDTO)
   @UseGuards(UserAuthGuard)
+  // Resends a pending workspace invitation from the current user.
   async resendWorkspaceInvitation(
     @Args('appTokenId') appTokenId: string,
     @AuthWorkspace() workspace: WorkspaceEntity,
@@ -86,12 +89,14 @@ export class WorkspaceInvitationResolver {
   }
 
   @Query(() => [WorkspaceInvitation])
+  // Lists the workspace's pending invitations.
   async findWorkspaceInvitations(@AuthWorkspace() workspace: WorkspaceEntity) {
     return this.workspaceInvitationService.loadWorkspaceInvitations(workspace);
   }
 
   @Mutation(() => SendInvitationsDTO)
   @UseGuards(UserAuthGuard)
+  // Sends workspace invitations to one or more emails from the current user.
   async sendInvitations(
     @Args() sendInviteLinkInput: SendInvitationsInput,
     @AuthUser() user: AuthContextUser,

@@ -11,6 +11,7 @@ type StandardViewGroupBuilder<P extends AllStandardObjectName> = (
   args: Omit<CreateStandardViewGroupArgs<P>, 'context'>,
 ) => Record<string, FlatViewGroup>;
 
+// Registry of per-object view group builders, one per standard object that declares view groups
 const STANDARD_FLAT_VIEW_GROUP_METADATA_BUILDERS_BY_OBJECT_NAME = {
   opportunity: computeStandardOpportunityViewGroups,
   task: computeStandardTaskViewGroups,
@@ -18,6 +19,8 @@ const STANDARD_FLAT_VIEW_GROUP_METADATA_BUILDERS_BY_OBJECT_NAME = {
   [P in AllStandardObjectName]?: StandardViewGroupBuilder<P>;
 };
 
+// Builds every standard object's fixed view group set and assembles them into a single FlatEntityMaps,
+// used as the "target" state when seeding or syncing a workspace's standard view groups
 export const buildStandardFlatViewGroupMetadataMaps = (
   args: Omit<CreateStandardViewGroupArgs, 'context' | 'objectName'>,
 ): FlatEntityMaps<FlatViewGroup> => {

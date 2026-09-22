@@ -26,12 +26,18 @@ import { buildStandardFlatViewGroupMetadataMaps } from 'src/engine/workspace-man
 import { buildStandardFlatViewMetadataMaps } from 'src/engine/workspace-manager/twenty-standard-application/utils/view/build-standard-flat-view-metadata-maps.util';
 import { type IdByUniversalIdentifierByMetadataName } from 'src/engine/workspace-manager/workspace-migration/services/utils/enrich-create-workspace-migration-action-with-ids.util';
 
+// Arguments accepted by computeTwentyStandardApplicationAllFlatEntityMaps
 export type ComputeTwentyStandardApplicationAllFlatEntityMapsArgs = {
   now: string;
   workspaceId: string;
   twentyStandardApplicationId: string;
 };
 
+// Top-level orchestrator that builds the complete "target" state of the standard application: it
+// generates fresh ids, then builds every standard metadata kind (objects, fields, indexes, views,
+// roles, agents, skills, page layouts, navigation/command menu items) in dependency order, since each
+// builder depends on the flat entity maps produced by the ones before it. The resulting
+// TwentyStandardAllFlatEntityMaps is diffed against a workspace's current state to sync it up to date.
 export const computeTwentyStandardApplicationAllFlatEntityMaps = ({
   now,
   workspaceId,

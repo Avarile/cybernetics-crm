@@ -1,3 +1,5 @@
+// Assertion helper that throws a NOT_FOUND exception when an approved access
+// domain lookup came back empty.
 import { isDefined } from 'twenty-shared/utils';
 
 import { type CustomException } from 'src/utils/custom-exception';

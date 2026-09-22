@@ -1,3 +1,5 @@
+// Service for reading and updating per-workspace feature flags, backed by
+// the cached workspace feature-flags map.
 import { Injectable } from '@nestjs/common';
 
 import { FeatureFlagKey } from 'twenty-shared/types';
@@ -24,6 +26,7 @@ export class FeatureFlagService {
     private readonly workspaceCacheService: WorkspaceCacheService,
   ) {}
 
+  // Returns whether a feature flag is enabled for the workspace.
   public async isFeatureEnabled(
     key: FeatureFlagKey,
     workspaceId: string,
@@ -33,6 +36,7 @@ export class FeatureFlagService {
     return !!featureFlagMap[key];
   }
 
+  // Returns the workspace's feature flags as a DTO list.
   public async getWorkspaceFeatureFlags(
     workspaceId: string,
   ): Promise<FeatureFlagDTO[]> {
@@ -47,6 +51,8 @@ export class FeatureFlagService {
     }));
   }
 
+  // Returns the workspace's feature flags as a key-to-boolean map, reading
+  // from the workspace cache (recomputing if stale).
   public async getWorkspaceFeatureFlagsMap(
     workspaceId: string,
   ): Promise<FeatureFlagMap> {
@@ -58,6 +64,8 @@ export class FeatureFlagService {
     return workspaceFeatureFlagsMap;
   }
 
+  // Enables the given feature flags for the workspace and invalidates the
+  // cached feature-flags map so subsequent reads pick up the change.
   public async enableFeatureFlags(
     keys: FeatureFlagKey[],
     workspaceId: string,
@@ -78,6 +86,9 @@ export class FeatureFlagService {
     }
   }
 
+  // Creates or updates a single feature flag's value for the workspace,
+  // validating the key (and, if requested, that it's a public flag) before
+  // persisting and invalidating the cached feature-flags map.
   public async upsertWorkspaceFeatureFlag({
     workspaceId,
     featureFlag,

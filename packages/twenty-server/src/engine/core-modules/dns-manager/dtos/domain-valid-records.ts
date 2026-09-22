@@ -1,3 +1,5 @@
+// GraphQL DTO describing the DNS records (redirection + SSL validation) a
+// customer must configure to verify ownership of a custom/public domain.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';

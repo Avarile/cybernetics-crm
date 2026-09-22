@@ -1,3 +1,6 @@
+// Marks a resolver class as belonging to the 'admin' GraphQL schema scope
+// (only picked up when building the admin-panel schema), by tagging it
+// with metadata read at schema-build time.
 import { applyDecorators, SetMetadata } from '@nestjs/common';
 import { Resolver } from '@nestjs/graphql';
 

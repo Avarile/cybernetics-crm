@@ -1,3 +1,5 @@
+// GraphQL DTO representing one config-variable category group (e.g. "Email",
+// "Security") and its member variables, for the admin config UI.
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 
 import { ConfigVariableDTO } from 'src/engine/core-modules/admin-panel/dtos/config-variable.dto';

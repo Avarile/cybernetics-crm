@@ -1,3 +1,5 @@
+// Cron job (every 10 minutes) that emits a monitoring event per message
+// channel's current sync status across all active workspaces.
 import { InjectRepository } from '@nestjs/typeorm';
 
 import snakeCase from 'lodash.snakecase';
@@ -35,6 +37,9 @@ export class MessagingMessageChannelSyncStatusMonitoringCronJob {
     MessagingMessageChannelSyncStatusMonitoringCronJob.name,
     MESSAGING_MESSAGE_CHANNEL_SYNC_STATUS_MONITORING_CRON_PATTERN,
   )
+  // For each active workspace, tracks a monitoring event per message
+  // channel keyed by its current sync status; a per-workspace failure is
+  // reported but doesn't stop the rest of the run.
   async handle(): Promise<void> {
     await this.messagingMonitoringService.track({
       eventName: 'message_channel.monitoring.sync_status.start',

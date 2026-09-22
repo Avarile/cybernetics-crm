@@ -8,6 +8,8 @@ type SeedBillingSubscriptionsArgs = {
   workspaceId: string;
 };
 
+// Inserts a default active billing subscription row for the given
+// dev-seeded workspace.
 export const seedBillingSubscriptions = async ({
   queryRunner,
   schemaName,

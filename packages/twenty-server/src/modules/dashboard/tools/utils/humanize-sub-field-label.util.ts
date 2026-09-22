@@ -1,3 +1,5 @@
+// Converts a camelCase/snake_case/kebab-case sub-field name into a
+// human-readable "Title Case" label (e.g. "addressCity" -> "Address City").
 export const humanizeSubFieldLabel = (value: string) => {
   if (!value) return '';
 

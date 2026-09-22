@@ -1,3 +1,4 @@
+// Maps EventLogEmitterException codes to GraphQL user-input errors.
 import { Catch, type ExceptionFilter } from '@nestjs/common';
 
 import { assertUnreachable } from 'twenty-shared/utils';
@@ -10,6 +11,7 @@ import { UserInputError } from 'src/engine/core-modules/graphql/utils/graphql-er
 
 @Catch(EventLogEmitterException)
 export class EventLogEmitterExceptionFilter implements ExceptionFilter {
+  // Converts known emitter exception codes into UserInputError.
   catch(exception: EventLogEmitterException) {
     switch (exception.code) {
       case EventLogEmitterExceptionCode.INVALID_TYPE:

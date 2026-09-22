@@ -10,6 +10,11 @@ import { type FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object
 import { formatData } from 'src/engine/twenty-orm/utils/format-data.util';
 import { getCompositeFieldMetadataMap } from 'src/engine/twenty-orm/utils/format-result.util';
 
+// Builds an ObjectRecordFilter matching records that could be duplicates
+// of the given records, per the object's configured duplicate-criteria
+// column groups (only using a criteria group when every one of its
+// columns has a sufficiently long value on the record); optionally
+// excludes a known existing record id from the match.
 export const buildDuplicateConditions = (
   flatObjectMetadata: FlatObjectMetadata,
   flatObjectMetadataMaps: FlatEntityMaps<FlatObjectMetadata>,

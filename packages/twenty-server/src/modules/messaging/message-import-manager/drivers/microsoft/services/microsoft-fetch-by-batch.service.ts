@@ -1,3 +1,5 @@
+// Fetches full message bodies from Microsoft Graph using its $batch
+// endpoint, chunking requests into groups of 20 (Graph's batch size limit).
 import { Injectable } from '@nestjs/common';
 
 import { MicrosoftOAuth2ClientProvider } from 'src/modules/connected-account/oauth2-client-manager/drivers/microsoft/microsoft-oauth2-client.provider';
@@ -10,6 +12,9 @@ export class MicrosoftFetchByBatchService {
     private readonly microsoftOAuth2ClientProvider: MicrosoftOAuth2ClientProvider,
   ) {}
 
+  // Splits message ids into batches of 20 and issues one Graph $batch
+  // request per group, returning both the id groupings and raw responses
+  // so callers can zip results back to their originating message ids.
   async fetchAllByBatches(
     messageIds: string[],
     connectedAccount: Pick<ConnectedAccountEntity, 'id' | 'provider'>,

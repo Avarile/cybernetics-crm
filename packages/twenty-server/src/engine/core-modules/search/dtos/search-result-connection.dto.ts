@@ -1,3 +1,4 @@
+// GraphQL cursor-paginated connection DTO for global search results.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 import { SearchResultEdgeDTO } from 'src/engine/core-modules/search/dtos/search-result-edge.dto';

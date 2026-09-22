@@ -1,3 +1,5 @@
+// GraphQL input for partially updating an API key's name, expiry, or
+// revocation timestamp.
 import { Field, InputType } from '@nestjs/graphql';
 
 import {

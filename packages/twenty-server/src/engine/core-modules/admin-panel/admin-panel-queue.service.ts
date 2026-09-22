@@ -1,3 +1,5 @@
+// Admin-panel service for inspecting and managing BullMQ queue jobs
+// (list, retry, delete) from the admin UI.
 import { Injectable } from '@nestjs/common';
 
 import { msg } from '@lingui/core/macro';
@@ -24,6 +26,8 @@ type JobOperationResult = {
 export class AdminPanelQueueService {
   constructor(private readonly redisClient: RedisClientService) {}
 
+  // Lists jobs for a queue in a given state, paginated, along with total
+  // counts per state and the queue's retention configuration.
   async getQueueJobs(
     queueName: MessageQueue,
     state: JobStateEnum,
@@ -117,6 +121,8 @@ export class AdminPanelQueueService {
     }
   }
 
+  // Retries specific failed jobs by id, or all failed jobs in the queue when
+  // no ids are given (signaled by retriedCount: -1).
   async retryJobs(
     queueName: MessageQueue,
     jobIds: string[],
@@ -189,6 +195,7 @@ export class AdminPanelQueueService {
     }
   }
 
+  // Deletes specific jobs from the queue by id, reporting per-job success.
   async deleteJobs(
     queueName: MessageQueue,
     jobIds: string[],

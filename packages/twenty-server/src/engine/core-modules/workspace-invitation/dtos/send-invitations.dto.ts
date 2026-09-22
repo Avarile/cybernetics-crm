@@ -1,3 +1,5 @@
+// GraphQL response DTO for the sendInvitations/resendWorkspaceInvitation
+// mutations, reporting per-email success/errors.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 import { WorkspaceInvitation } from 'src/engine/core-modules/workspace-invitation/dtos/workspace-invitation.dto';

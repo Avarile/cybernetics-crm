@@ -29,6 +29,8 @@ import { type MicrosoftGraphNotificationPayload } from 'src/modules/connected-ac
 @Controller()
 @UseFilters(ConnectedAccountSyncWebhookApiExceptionFilter)
 @UseGuards(PublicEndpointGuard, NoPermissionGuard)
+// Public HTTP entry points for Google/Microsoft push notifications
+// (messaging and calendar), routing each to its provider-specific handler.
 export class ConnectedAccountSyncWebhooksController {
   constructor(
     private readonly googleMessagingNotificationHandler: GoogleMessagingNotificationHandler,
@@ -95,6 +97,8 @@ export class ConnectedAccountSyncWebhooksController {
     return '';
   }
 
+  // Microsoft Graph subscription setup sends a validation token that must be
+  // echoed back as plain text to confirm the endpoint.
   private respondToValidationHandshake(
     validationToken: string,
     response: Response,

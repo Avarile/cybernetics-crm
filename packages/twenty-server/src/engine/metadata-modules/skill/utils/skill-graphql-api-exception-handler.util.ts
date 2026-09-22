@@ -11,6 +11,7 @@ import {
   SkillExceptionCode,
 } from 'src/engine/metadata-modules/skill/skill.exception';
 
+// Maps a SkillException code to the appropriate GraphQL error type; rethrows anything else unchanged.
 export const skillGraphqlApiExceptionHandler = (error: Error) => {
   if (error instanceof SkillException) {
     switch (error.code) {

@@ -8,6 +8,7 @@ import { STANDARD_PAGE_LAYOUTS } from 'src/engine/workspace-manager/twenty-stand
 import { type StandardObjectMetadataRelatedEntityIds } from 'src/engine/workspace-manager/twenty-standard-application/utils/get-standard-object-metadata-related-entity-ids.util';
 import { type StandardPageLayoutMetadataRelatedEntityIds } from 'src/engine/workspace-manager/twenty-standard-application/utils/get-standard-page-layout-metadata-related-entity-ids.util';
 
+// Per-layout content (name, type, target object, default tab) supplied by each standard page layout's builder
 export type CreateStandardPageLayoutContext = {
   layoutName: string;
   name: string;
@@ -16,6 +17,7 @@ export type CreateStandardPageLayoutContext = {
   defaultTabUniversalIdentifier: string | null;
 };
 
+// Arguments accepted by createStandardPageLayoutFlatMetadata
 export type CreateStandardPageLayoutArgs = {
   now: string;
   workspaceId: string;
@@ -25,6 +27,7 @@ export type CreateStandardPageLayoutArgs = {
   context: CreateStandardPageLayoutContext;
 };
 
+// Resolves a standard object's name from its fixed universal identifier
 export const findObjectNameByUniversalIdentifier = (
   objectUniversalIdentifier: string,
 ): string => {
@@ -39,6 +42,7 @@ export const findObjectNameByUniversalIdentifier = (
   );
 };
 
+// Resolves a standard page layout tab's config key from its fixed universal identifier
 const findTabKeyByUniversalIdentifier = (
   layoutName: string,
   tabUniversalIdentifier: string,
@@ -61,6 +65,8 @@ const findTabKeyByUniversalIdentifier = (
   );
 };
 
+// Builds a single standard page layout's FlatPageLayout, resolving its id, target object id, and
+// default-tab id from the standard page layout's fixed config and pre-generated related entity ids
 export const createStandardPageLayoutFlatMetadata = ({
   context: {
     layoutName,

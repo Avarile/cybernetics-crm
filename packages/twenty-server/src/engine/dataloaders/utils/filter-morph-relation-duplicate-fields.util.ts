@@ -4,6 +4,10 @@ import { pickMorphGroupSurvivorOrThrow } from 'twenty-shared/utils';
 import { type FlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-metadata/types/flat-field-metadata.type';
 import { isFlatFieldMetadataOfType } from 'src/engine/metadata-modules/flat-field-metadata/utils/is-flat-field-metadata-of-type.util';
 
+// Morph-relation fields on the same object can produce multiple flat
+// field entries sharing a morphId (one per possible target type); this
+// collapses each such group down to its single "survivor" field so it
+// isn't listed as a duplicate.
 export const filterMorphRelationDuplicateFields = (
   flatFieldMetadatas: FlatFieldMetadata[],
 ): FlatFieldMetadata[] => {

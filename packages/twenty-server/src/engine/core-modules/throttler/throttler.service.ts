@@ -1,3 +1,5 @@
+// Token-bucket rate limiter backed by cache storage: each key has a token
+// balance that refills linearly over `timeWindow` up to `maxTokens`.
 import { Injectable } from '@nestjs/common';
 
 import { InjectCacheStorage } from 'src/engine/core-modules/cache-storage/decorators/cache-storage.decorator';
@@ -15,6 +17,8 @@ export class ThrottlerService {
     private readonly cacheStorage: CacheStorageService,
   ) {}
 
+  // Consumes tokens from the bucket if enough are available, throwing a
+  // ThrottlerException otherwise. Returns the remaining token count.
   async tokenBucketThrottleOrThrow(
     key: string,
     tokensToConsume: number,
@@ -48,6 +52,8 @@ export class ThrottlerService {
     return availableTokens - tokensToConsume;
   }
 
+  // Consumes tokens from the bucket without enforcing the limit (can go
+  // negative), used for tracking usage rather than gating it.
   async consumeTokens(
     key: string,
     tokensToConsume: number,
@@ -72,6 +78,8 @@ export class ThrottlerService {
     );
   }
 
+  // Computes the current token balance for a bucket by refilling it
+  // linearly from its last known state, capped at maxTokens.
   async getAvailableTokensCount(
     key: string,
     maxTokens: number,

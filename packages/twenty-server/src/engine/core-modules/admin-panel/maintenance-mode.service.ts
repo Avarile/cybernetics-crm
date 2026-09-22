@@ -1,3 +1,5 @@
+// Manages the instance-wide maintenance-mode banner: its scheduled window
+// (stored as a config key/value pair) and per-user dismissal state.
 import { Injectable } from '@nestjs/common';
 
 import { isNonEmptyString } from '@sniptt/guards';
@@ -41,6 +43,7 @@ export class MaintenanceModeService {
     });
   }
 
+  // Returns the currently scheduled maintenance window, or null if unset/invalid.
   async getMaintenanceMode(): Promise<MaintenanceModeValue | null> {
     const maintenanceModeKeyValuePairs = await this.keyValuePairService.get({
       userId: null,
@@ -70,6 +73,8 @@ export class MaintenanceModeService {
     return value;
   }
 
+  // Schedules a maintenance window, clearing prior banner dismissals so all
+  // users see the new notice.
   async setMaintenanceMode(value: MaintenanceModeValue): Promise<void> {
     if (new Date(value.endAt) <= new Date(value.startAt)) {
       throw new AdminPanelException(
@@ -89,6 +94,7 @@ export class MaintenanceModeService {
     });
   }
 
+  // Clears the scheduled maintenance window and any banner dismissals.
   async clearMaintenanceMode(): Promise<void> {
     await this.clearMaintenanceModeBannerDismissals();
 
@@ -100,6 +106,7 @@ export class MaintenanceModeService {
     });
   }
 
+  // Checks whether a given user has dismissed the maintenance-mode banner.
   async isMaintenanceModeBannerDismissed(
     userId: string,
     workspaceId: string,
@@ -113,6 +120,7 @@ export class MaintenanceModeService {
     return isDismissed === true;
   }
 
+  // Records that a user has dismissed the maintenance-mode banner.
   async dismissMaintenanceModeBanner(
     userId: string,
     workspaceId: string,

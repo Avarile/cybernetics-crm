@@ -1,3 +1,5 @@
+// Type guard: true when the error's shape matches a Gmail API error
+// response (a GaxiosError carrying a response.data.error payload).
 import { type GaxiosError } from 'gaxios';
 import { z } from 'zod';
 

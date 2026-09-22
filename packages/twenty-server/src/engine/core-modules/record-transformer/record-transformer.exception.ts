@@ -1,3 +1,5 @@
+// Exception type for record input transformation/validation errors
+// (invalid URLs, invalid or conflicting phone number metadata).
 import { type MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { assertUnreachable } from 'twenty-shared/utils';

@@ -47,6 +47,11 @@ type WriteRowsOptions = {
   excludedColumns?: Set<string>;
 };
 
+// Exports a single workspace to a standalone .sql file: the workspace's core-schema
+// rows (as INSERT statements, so a superuser isn't required to restore), a CREATE
+// SCHEMA plus DDL for the workspace's own schema (regenerated from metadata rather
+// than dumped, since generated/computed columns can't be COPYed), and the
+// workspace's data rows (as fast COPY statements).
 @Injectable()
 export class WorkspaceExportService {
   private readonly logger = new Logger(WorkspaceExportService.name);
@@ -63,6 +68,8 @@ export class WorkspaceExportService {
     private readonly searchFieldMetadataRepository: Repository<SearchFieldMetadataEntity>,
   ) {}
 
+  // Loads the workspace's metadata, then writes core rows, workspace schema DDL, and
+  // workspace data rows to a new .sql file under `outputPath`, returning its path.
   async exportWorkspace({
     workspaceId,
     outputPath,
@@ -167,6 +174,8 @@ export class WorkspaceExportService {
     return filePath;
   }
 
+  // Writes INSERT statements for the workspace row itself, every core-schema entity
+  // scoped by workspaceId, and the users belonging to this workspace.
   private async writeCoreEntityRows(
     workspaceId: string,
     queryRunner: QueryRunner,
@@ -229,6 +238,8 @@ export class WorkspaceExportService {
     }
   }
 
+  // Returns the set of jsonb/json column names for an entity, used to format their
+  // values correctly on export.
   private buildJsonColumnSet(entityMetadata: EntityMetadata): Set<string> {
     return new Set(
       entityMetadata.columns
@@ -237,6 +248,8 @@ export class WorkspaceExportService {
     );
   }
 
+  // Streams a table's matching rows to the file as batched multi-row INSERT
+  // statements, paging through in BATCH_SIZE chunks ordered by id.
   private async writeRows({
     schemaName,
     tableName,
@@ -294,6 +307,8 @@ export class WorkspaceExportService {
     }
   }
 
+  // Streams a table's rows to the file as a Postgres COPY block (faster than INSERT
+  // for large workspace data tables), paging through in BATCH_SIZE chunks.
   private async writeCopyRows({
     schemaName,
     tableName,
@@ -349,6 +364,9 @@ export class WorkspaceExportService {
     }
   }
 
+  // Regenerates the workspace's schema DDL from object/field metadata and writes it
+  // to the file (rather than dumping the live schema, since generated/computed
+  // columns need to be re-derived rather than copied).
   private writeWorkspaceSchemaDdl(
     workspaceId: string,
     schemaName: string,
@@ -376,6 +394,8 @@ export class WorkspaceExportService {
     stream.write('\n');
   }
 
+  // Writes COPY blocks for every active object's data table, honoring --tables and
+  // skipping (with a warning) any table that fails to export.
   private async writeWorkspaceDataRows(
     workspaceId: string,
     schemaName: string,

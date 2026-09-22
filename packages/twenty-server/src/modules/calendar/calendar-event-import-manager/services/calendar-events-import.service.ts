@@ -33,6 +33,9 @@ import { type CalendarChannelEventAssociationWorkspaceEntity } from 'src/modules
 import { EmailAliasManagerService } from 'src/modules/connected-account/email-alias-manager/services/email-alias-manager.service';
 import { type WorkspaceMemberWorkspaceEntity } from 'src/modules/workspace-member/standard-objects/workspace-member.workspace-entity';
 
+// Pops a batch of pending event ids for a calendar channel, fetches their
+// full data from the provider, filters out blocklisted/self-sent events, saves
+// the rest, and reschedules or completes the channel's sync based on progress.
 @Injectable()
 export class CalendarEventsImportService {
   constructor(
@@ -51,6 +54,9 @@ export class CalendarEventsImportService {
     private readonly userWorkspaceRepository: Repository<UserWorkspaceEntity>,
   ) {}
 
+  // Imports one batch of pending calendar events for a channel: fetches,
+  // filters by blocklist/channel handles, saves, deletes cancelled
+  // associations, and updates the channel's sync stage.
   public async processCalendarEventsImport(
     calendarChannel: CalendarChannelEntity,
     connectedAccount: ConnectedAccountEntity,

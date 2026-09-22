@@ -13,6 +13,7 @@ import { type AllStandardObjectFieldName } from 'src/engine/workspace-manager/tw
 import { type AllStandardObjectName } from 'src/engine/workspace-manager/twenty-standard-application/types/all-standard-object-name.type';
 import { type StandardBuilderArgs } from 'src/engine/workspace-manager/twenty-standard-application/types/metadata-standard-buillder-args.type';
 
+// Context for a standard RELATION or MORPH_RELATION field: its target object/field and relation settings
 export type CreateStandardRelationFieldContext<
   O extends AllStandardObjectName,
   T extends AllStandardObjectName,
@@ -43,6 +44,7 @@ export type CreateStandardMorphOrRelationFieldContext<
   junctionTargetFieldUniversalIdentifier?: string;
 };
 
+// Arguments accepted by createStandardRelationFieldFlatMetadata
 export type CreateStandardRelationFieldArgs<
   O extends AllStandardObjectName,
   T extends AllStandardObjectName,
@@ -51,6 +53,8 @@ export type CreateStandardRelationFieldArgs<
   context: CreateStandardRelationFieldContext<O, T>;
 };
 
+// Builds a single standard RELATION/MORPH_RELATION field's FlatFieldMetadata, resolving both its own
+// and its target field's id and universal identifier from the standard objects' fixed definitions
 export const createStandardRelationFieldFlatMetadata = <
   O extends AllStandardObjectName,
   T extends AllStandardObjectName,

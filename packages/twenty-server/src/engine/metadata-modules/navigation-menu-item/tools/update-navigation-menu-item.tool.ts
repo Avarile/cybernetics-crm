@@ -1,3 +1,5 @@
+// Agent tool for updating a navigation menu item's editable properties.
+
 import { z } from 'zod';
 
 import { type UpdateNavigationMenuItemInput } from 'src/engine/metadata-modules/navigation-menu-item/dtos/update-navigation-menu-item.input';
@@ -39,6 +41,7 @@ type UpdateNavigationMenuItemParams = z.infer<
   typeof updateNavigationMenuItemSchema
 >;
 
+// Builds the update_navigation_menu_item agent tool definition.
 export const createUpdateNavigationMenuItemTool = (
   deps: Pick<NavigationMenuItemToolDependencies, 'navigationMenuItemService'>,
   context: NavigationMenuItemToolContext,

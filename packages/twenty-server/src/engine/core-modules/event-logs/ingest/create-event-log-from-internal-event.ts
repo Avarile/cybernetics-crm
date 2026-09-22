@@ -1,3 +1,5 @@
+// Queue processor translating internal object-record CRUD events (created/
+// updated/deleted/upserted) into event-log envelopes for ingestion.
 import { type ObjectRecordEvent } from 'twenty-shared/database-events';
 import { isDefined } from 'twenty-shared/utils';
 
@@ -30,6 +32,8 @@ export class CreateEventLogFromInternalEvent {
   ) {}
 
   @Process(CreateEventLogFromInternalEvent.name)
+  // Converts a batch of internal object-record events into envelopes and
+  // ingests them, no-op if event ingestion is disabled.
   async handle(batch: WorkspaceEventBatch<ObjectRecordEvent>): Promise<void> {
     if (!this.workspaceEventSinkService.isEnabled()) {
       return;
@@ -44,6 +48,8 @@ export class CreateEventLogFromInternalEvent {
     await this.workspaceEventSinkService.ingest(envelopes);
   }
 
+  // Maps a batch's job-name suffix (.created/.updated/.deleted/.upserted) to
+  // its track-event name and builds one envelope per event in the batch.
   private toEnvelopes(
     batch: WorkspaceEventBatch<ObjectRecordEvent>,
   ): WorkspaceEventEnvelope[] {
@@ -71,6 +77,7 @@ export class CreateEventLogFromInternalEvent {
     );
   }
 
+  // Merges event properties with the record/object identifiers for the event log row.
   private objectProperties(
     batch: WorkspaceEventBatch<ObjectRecordEvent>,
     eventData: ObjectRecordEvent,

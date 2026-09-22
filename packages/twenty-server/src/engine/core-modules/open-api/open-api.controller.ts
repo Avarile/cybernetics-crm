@@ -1,3 +1,5 @@
+// Public endpoints serving the generated OpenAPI (Swagger) schemas for the
+// core REST API and the metadata REST API.
 import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
 
 import { Request, Response } from 'express';
@@ -12,6 +14,7 @@ export class OpenApiController {
 
   @Get(['open-api/core', 'rest/open-api/core'])
   @UseGuards(PublicEndpointGuard, NoPermissionGuard)
+  // Serves the OpenAPI schema for the workspace's core (record CRUD) REST API.
   async generateOpenApiSchemaCore(
     @Req() request: Request,
     @Res() res: Response,
@@ -23,6 +26,7 @@ export class OpenApiController {
 
   @Get(['open-api/metadata', 'rest/open-api/metadata'])
   @UseGuards(PublicEndpointGuard, NoPermissionGuard)
+  // Serves the OpenAPI schema for the workspace's metadata REST API.
   async generateOpenApiSchemaMetaData(
     @Req() request: Request,
     @Res() res: Response,

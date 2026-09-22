@@ -16,6 +16,8 @@ import {
 } from 'src/engine/metadata-modules/front-component/utils/get-front-component-seed-project-files.util';
 import { type SeedFrontComponentDefinition } from 'src/engine/workspace-manager/standard-objects-prefill-data/utils/prefill-front-component-definitions.util';
 
+// Seeds sample front components (source + built bundle) into a workspace's
+// file storage and front-component metadata, skipping ones already created.
 @Injectable()
 export class PrefillFrontComponentService {
   constructor(
@@ -25,6 +27,8 @@ export class PrefillFrontComponentService {
     private readonly applicationService: ApplicationService,
   ) {}
 
+  // For each given front component definition not already present, writes
+  // its source/built files to storage and creates its metadata record.
   async ensureSeeded({
     workspaceId,
     definitions,

@@ -43,6 +43,8 @@ import { ConnectedAccountModule } from 'src/modules/connected-account/connected-
 import { EmailAliasManagerModule } from 'src/modules/connected-account/email-alias-manager/email-alias-manager.module';
 import { RefreshTokensManagerModule } from 'src/modules/connected-account/refresh-tokens-manager/connected-account-refresh-tokens-manager.module';
 
+// Wires up calendar event import: per-provider drivers, sync cron jobs/commands,
+// and the services that fetch, save, and clean up imported calendar events.
 @Module({
   imports: [
     ObjectMetadataRepositoryModule.forFeature([BlocklistWorkspaceEntity]),

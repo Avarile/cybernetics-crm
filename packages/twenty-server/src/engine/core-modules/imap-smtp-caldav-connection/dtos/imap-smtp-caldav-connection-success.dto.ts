@@ -1,3 +1,4 @@
+// GraphQL response DTO returned after saving an IMAP/SMTP/CALDAV account.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType('ImapSmtpCaldavConnectionSuccess')

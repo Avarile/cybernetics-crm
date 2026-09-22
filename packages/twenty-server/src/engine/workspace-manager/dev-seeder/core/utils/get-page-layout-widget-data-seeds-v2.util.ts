@@ -23,6 +23,9 @@ const getFieldId = (
   return object?.fields?.find((field) => field.name === fieldName)?.id;
 };
 
+// Defines the "v2" sample dashboard widgets (line/pie charts) shown across
+// the sales, customer, and team dashboard tabs. Widgets are dropped when
+// their referenced object/field doesn't exist in the workspace.
 export const getPageLayoutWidgetDataSeedsV2 = (
   workspaceId: string,
   objectMetadataItems: ObjectMetadataEntity[],

@@ -1,3 +1,4 @@
+// GraphQL DTOs for a resolved place's structured address and coordinates.
 import { Field, Float, ObjectType } from '@nestjs/graphql';
 
 @ObjectType('Location')

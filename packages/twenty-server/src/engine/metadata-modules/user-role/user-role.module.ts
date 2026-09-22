@@ -9,6 +9,7 @@ import { UserRoleService } from 'src/engine/metadata-modules/user-role/user-role
 import { provideWorkspaceScopedRepository } from 'src/engine/twenty-orm/workspace-scoped-repository/provide-workspace-scoped-repository';
 import { WorkspaceCacheModule } from 'src/engine/workspace-cache/workspace-cache.module';
 
+// Wires up the user-role assignment service and its required dependencies.
 @Module({
   imports: [
     TypeOrmModule.forFeature([RoleEntity, RoleTargetEntity]),

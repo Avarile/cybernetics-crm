@@ -12,12 +12,14 @@ import {
   AiExceptionCode,
 } from 'src/engine/metadata-modules/ai/ai.exception';
 
+// REST exception filter mapping AiException codes to HTTP status codes.
 @Catch(AiException)
 export class AiRestApiExceptionFilter implements ExceptionFilter {
   constructor(
     private readonly httpExceptionHandlerService: HttpExceptionHandlerService,
   ) {}
 
+  // Maps each AI exception code to the appropriate HTTP status before delegating to the error handler.
   catch(exception: AiException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();

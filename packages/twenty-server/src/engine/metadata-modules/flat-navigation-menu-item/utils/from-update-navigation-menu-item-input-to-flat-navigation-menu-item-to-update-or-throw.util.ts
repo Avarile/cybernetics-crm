@@ -13,6 +13,9 @@ import {
 } from 'src/engine/metadata-modules/navigation-menu-item/navigation-menu-item.exception';
 import { mergeUpdateInExistingRecord } from 'src/utils/merge-update-in-existing-record.util';
 
+// Applies an update-navigation-menu-item input onto the matching existing flat item,
+// throwing if it doesn't exist, and re-resolving folder/page layout universal identifiers
+// when those foreign keys change.
 export const fromUpdateNavigationMenuItemInputToFlatNavigationMenuItemToUpdateOrThrow =
   ({
     flatNavigationMenuItemMaps,

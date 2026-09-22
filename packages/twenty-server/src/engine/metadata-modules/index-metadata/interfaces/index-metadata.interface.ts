@@ -1,3 +1,6 @@
+// Plain interface describing an index for legacy (non-flat) code paths that
+// still reference the TypeORM entities directly.
+
 import { type IndexFieldMetadataInterface } from 'src/engine/metadata-modules/index-metadata/interfaces/index-field-metadata.interface';
 
 import { type IndexType } from 'src/engine/metadata-modules/index-metadata/types/indexType.types';

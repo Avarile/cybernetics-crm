@@ -1,3 +1,6 @@
+// Shared test fixtures: flat object/field metadata for a small set of
+// standard and custom objects (person, company, custom objects), used
+// across engine core-module tests.
 import { FieldMetadataType } from 'twenty-shared/types';
 
 import { type FlatEntityMaps } from 'src/engine/metadata-modules/flat-entity/types/flat-entity-maps.type';

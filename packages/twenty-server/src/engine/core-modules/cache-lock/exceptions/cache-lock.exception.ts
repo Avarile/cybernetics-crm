@@ -1,3 +1,4 @@
+// Exception type thrown by CacheLockService when a lock cannot be acquired.
 import { type MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 

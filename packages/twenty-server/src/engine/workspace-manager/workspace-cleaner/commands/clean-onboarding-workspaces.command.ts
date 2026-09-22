@@ -11,6 +11,8 @@ import {
 import { WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.entity';
 import { CleanerWorkspaceService } from 'src/engine/workspace-manager/workspace-cleaner/services/cleaner.workspace-service';
 
+// CLI command to clean up onboarding workspaces (workspaces stuck in
+// pending/ongoing creation) that are older than 7 days.
 @Command({
   name: 'workspace:clean:onboarding',
   description: 'Clean onboarding workspaces',
@@ -38,6 +40,7 @@ export class CleanOnboardingWorkspacesCommand extends MigrationCommandRunner {
     return this.workspaceIds;
   }
 
+  // Finds workspaces still stuck in pending/ongoing creation after 7 days.
   async fetchOnboardingWorkspaceIds(): Promise<string[]> {
     const sevenDaysAgo = new Date();
 
@@ -58,6 +61,8 @@ export class CleanOnboardingWorkspacesCommand extends MigrationCommandRunner {
     return onboardingWorkspaces.map((workspace) => workspace.id);
   }
 
+  // Resolves the target workspace ids (explicit or auto-discovered) and
+  // delegates the actual cleanup to CleanerWorkspaceService.
   override async runMigrationCommand(
     _passedParams: string[],
     options: MigrationCommandOptions,

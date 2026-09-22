@@ -1,3 +1,5 @@
+// Resolves stored files to a presigned redirect URL or a readable stream/
+// buffer for serving, and handles deleting a workspace's whole file folder.
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -38,6 +40,8 @@ export class FileService {
     private readonly applicationRepository: Repository<ApplicationEntity>,
   ) {}
 
+  // Resolves an uploaded file by its application/folder/path and returns a
+  // presigned URL or stream for it, or null if not found.
   async getFilePresignedUrlOrStreamByPath({
     workspaceId,
     applicationId,
@@ -81,6 +85,8 @@ export class FileService {
     });
   }
 
+  // Returns a readable stream for an uploaded file by id, restricted to an
+  // allow-list of folders, or null if not found/not allowed.
   async getFileStreamById({
     fileId,
     workspaceId,
@@ -146,6 +152,8 @@ export class FileService {
     }
   }
 
+  // Resolves an uploaded file by id (scoped to a folder) and returns a
+  // presigned URL or stream for it, or null if not found.
   async getFilePresignedUrlOrStreamById(params: {
     fileId: string;
     workspaceId: string;
@@ -187,6 +195,8 @@ export class FileService {
     });
   }
 
+  // Prefers a presigned URL from storage; falls back to streaming the file
+  // through the server when presigning isn't supported.
   private async getFilePresignedUrlOrStream({
     resourcePath,
     fileFolder,
@@ -238,6 +248,7 @@ export class FileService {
     }
   }
 
+  // Reads an uploaded file's full content into a buffer by id, or null if not found.
   async getFileContentById({
     fileId,
     workspaceId,
@@ -300,6 +311,7 @@ export class FileService {
     }
   }
 
+  // Deletes a workspace's entire storage folder if it exists.
   async deleteWorkspaceFolder(workspaceId: string) {
     const isWorkspaceFolderFound =
       await this.fileStorageService.checkIfWorkspaceFolderExists(workspaceId);

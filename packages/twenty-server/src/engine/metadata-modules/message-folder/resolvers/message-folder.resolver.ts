@@ -16,6 +16,7 @@ import {
 import { MessageFolderGraphqlApiExceptionInterceptor } from 'src/engine/metadata-modules/message-folder/interceptors/message-folder-graphql-api-exception.interceptor';
 import { MessageFolderMetadataService } from 'src/engine/metadata-modules/message-folder/message-folder-metadata.service';
 
+// GraphQL entry points for reading and updating a user's message folders.
 @UseGuards(WorkspaceAuthGuard)
 @UseInterceptors(MessageFolderGraphqlApiExceptionInterceptor)
 @MetadataResolver(() => MessageFolderDTO)
@@ -24,6 +25,7 @@ export class MessageFolderResolver {
     private readonly messageFolderMetadataService: MessageFolderMetadataService,
   ) {}
 
+  // Returns the current user's message folders, optionally scoped to one message channel.
   @Query(() => [MessageFolderDTO])
   @UseGuards(NoPermissionGuard)
   async myMessageFolders(
@@ -49,6 +51,7 @@ export class MessageFolderResolver {
     });
   }
 
+  // Updates a single message folder after verifying it belongs to the current user.
   @Mutation(() => MessageFolderDTO)
   @UseGuards(NoPermissionGuard)
   async updateMessageFolder(
@@ -69,6 +72,7 @@ export class MessageFolderResolver {
     });
   }
 
+  // Updates several message folders' sync status after verifying each belongs to the current user.
   @Mutation(() => [MessageFolderDTO])
   @UseGuards(NoPermissionGuard)
   async updateMessageFolders(

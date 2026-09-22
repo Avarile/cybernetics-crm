@@ -1,3 +1,5 @@
+// Universal identifiers for the standard page layouts seeded into every
+// workspace.
 export const PAGE_LAYOUT_SEEDS = {
   SALES_DASHBOARD: 'SALES_DASHBOARD',
   CUSTOMER_DASHBOARD: 'CUSTOMER_DASHBOARD',

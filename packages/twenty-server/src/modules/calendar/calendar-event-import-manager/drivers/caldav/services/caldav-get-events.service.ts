@@ -6,6 +6,8 @@ import { type CalDavSyncCursor } from 'src/modules/calendar/calendar-event-impor
 import { parseCalDAVError } from 'src/modules/calendar/calendar-event-import-manager/drivers/caldav/utils/parse-caldav-error.util';
 import { type GetCalendarEventsResponse } from 'src/modules/calendar/calendar-event-import-manager/services/calendar-get-events.service';
 
+// Import-manager driver entry point for CalDAV: reports which event hrefs
+// changed or were cancelled since the last sync cursor.
 @Injectable()
 export class CalDavGetEventsService {
   private readonly logger = new Logger(CalDavGetEventsService.name);

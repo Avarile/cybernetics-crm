@@ -7,6 +7,8 @@ import { getPageLayoutWidgetFlatEntitySeeds } from 'src/engine/workspace-manager
 import { WorkspaceMigrationBuilderException } from 'src/engine/workspace-manager/workspace-migration/exceptions/workspace-migration-builder-exception';
 import { type WorkspaceMigrationValidateBuildAndRunService } from 'src/engine/workspace-manager/workspace-migration/services/workspace-migration-validate-build-and-run-service';
 
+// Builds and applies (via a workspace migration) the seed page layouts,
+// tabs, widgets, and navigation menu items for a workspace.
 export const seedPageLayouts = async ({
   workspaceId,
   flatApplication,

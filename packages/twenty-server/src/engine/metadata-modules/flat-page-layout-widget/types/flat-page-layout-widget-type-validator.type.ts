@@ -1,3 +1,6 @@
+// Shapes for the per-WidgetType validator function maps used by
+// FlatPageLayoutWidgetTypeValidatorService (generic, creation-only, update-only).
+
 import {
   type GenericValidateFlatPageLayoutWidgetTypeSpecificitiesArgs,
   type ValidateFlatPageLayoutWidgetTypeSpecificitiesForCreationArgs,

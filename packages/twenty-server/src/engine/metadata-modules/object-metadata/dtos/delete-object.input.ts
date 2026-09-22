@@ -1,3 +1,5 @@
+// GraphQL mutation input identifying an object to delete by id.
+
 import { Field, InputType } from '@nestjs/graphql';
 import { IsUUID } from 'class-validator';
 

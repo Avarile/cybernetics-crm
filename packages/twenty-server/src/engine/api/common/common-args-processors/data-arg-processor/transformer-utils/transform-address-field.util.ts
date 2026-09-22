@@ -3,6 +3,8 @@ import { isNull, isUndefined } from '@sniptt/guards';
 import { transformNumericField } from 'src/engine/api/common/common-args-processors/data-arg-processor/transformer-utils/transform-numeric-field.util';
 import { transformTextField } from 'src/engine/api/common/common-args-processors/data-arg-processor/transformer-utils/transform-text-field.util';
 
+// Normalizes an address composite field input, transforming each text
+// subfield and the lat/lng numeric subfields, leaving undefined ones as-is.
 export const transformAddressField = (
   value: {
     addressStreet1?: string | null;

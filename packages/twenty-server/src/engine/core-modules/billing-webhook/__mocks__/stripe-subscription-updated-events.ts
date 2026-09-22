@@ -1,3 +1,4 @@
+// Stripe subscription.updated event fixtures used to test billing webhook handling
 import type Stripe from 'stripe';
 
 export const mockStripeSubscriptionUpdatedEventWithoutUpdatedItem: Stripe.CustomerSubscriptionUpdatedEvent =

@@ -77,6 +77,9 @@ type EntityActionsBuilderRunContext = {
   workspaceId: string;
 };
 
+// Wraps a per-metadata-kind builder service into a runnable task: it looks up that kind's from/to flat
+// entity maps, runs the builder's validate-and-build, and records either the resulting actions or the
+// validation failures onto the shared orchestrator reports
 const createEntityActionsBuilderTask = <T extends AllMetadataName>(
   metadataName: T,
   builderService: WorkspaceEntityMigrationBuilderService<T>,
@@ -123,6 +126,11 @@ const createEntityActionsBuilderTask = <T extends AllMetadataName>(
   },
 });
 
+// Core orchestrator of the workspace migration builder: given "from" and "to" flat entity maps per
+// metadata kind, it runs every per-entity-kind builder in dependency order (each may mutate a shared
+// optimistic view of the target state, which later builders read), aggregates their validation
+// failures and generated actions, runs cross-entity validation, and produces either a failure report
+// or the final ordered list of workspace migration actions to execute
 @Injectable()
 export class WorkspaceMigrationBuildOrchestratorService {
   private readonly entityActionsBuilderTasksInExecutionOrder: ReadonlyArray<EntityActionsBuilderTask>;
@@ -294,6 +302,9 @@ export class WorkspaceMigrationBuildOrchestratorService {
     ];
   }
 
+  // Builds the initial "optimistic" flat entity maps that per-entity builders read and mutate as they
+  // run: either the caller-provided dependency maps (when this build is nested inside another), or
+  // else the "from" (current) state of every entity kind being migrated
   private setupOptimisticCache({
     fromToAllFlatEntityMaps,
     dependencyAllFlatEntityMaps,
@@ -330,6 +341,9 @@ export class WorkspaceMigrationBuildOrchestratorService {
     );
   }
 
+  // Runs every per-entity-kind builder in order, then cross-entity validation, then (on success)
+  // aggregates and orders the resulting actions into a single WorkspaceMigration; returns a failure
+  // report instead if any builder or cross-entity check failed
   public async buildWorkspaceMigration({
     workspaceId,
     buildOptions,

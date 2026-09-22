@@ -1,3 +1,6 @@
+// GraphQL object type exposing a navigation menu item to the API, including
+// the resolved identifier of its target record when applicable.
+
 import { Field, HideField, ObjectType } from '@nestjs/graphql';
 
 import {

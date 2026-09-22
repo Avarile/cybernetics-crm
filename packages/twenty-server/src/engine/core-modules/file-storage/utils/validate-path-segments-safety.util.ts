@@ -6,6 +6,8 @@ const MAX_SEGMENT_LENGTH = 255;
 const MAX_PATH_LENGTH = 1024;
 const SAFE_SEGMENT_PATTERN = /^[a-zA-Z0-9._-]+$/;
 
+// Validates overall length, absence of empty/trailing segments, and that every
+// path segment matches the safe character whitelist
 export const validatePathSegmentsSafety = ({
   resourcePath,
 }: {

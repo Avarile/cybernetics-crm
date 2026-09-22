@@ -1,3 +1,4 @@
+// Base entity for records that belong to exactly one workspace.
 import { Column, JoinColumn, ManyToOne, Relation } from 'typeorm';
 
 import type { WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.entity';

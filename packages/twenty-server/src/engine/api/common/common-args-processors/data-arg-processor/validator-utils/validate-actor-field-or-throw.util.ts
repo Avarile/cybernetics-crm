@@ -11,6 +11,9 @@ import {
   CommonQueryRunnerExceptionCode,
 } from 'src/engine/api/common/common-query-runners/errors/common-query-runner.exception';
 
+// Validates an actor composite field input, checking each subfield
+// (source, context, name, workspaceMemberId) and rejecting unknown
+// subfields; throws a CommonQueryRunnerException on any violation.
 export const validateActorFieldOrThrow = (
   value: unknown,
   fieldName: string,

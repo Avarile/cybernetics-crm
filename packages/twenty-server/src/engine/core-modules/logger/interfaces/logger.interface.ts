@@ -1,3 +1,4 @@
+// Logger driver types and configuration options for LoggerModule.
 import { type LogLevel } from '@nestjs/common';
 
 export type TwentyLogLevel = LogLevel | 'performance';

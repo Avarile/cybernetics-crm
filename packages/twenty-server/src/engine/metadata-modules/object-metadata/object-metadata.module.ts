@@ -1,3 +1,6 @@
+// Wires up object metadata CRUD (GraphQL via nestjs-query, plus a REST
+// controller) and record counting with their required modules.
+
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
@@ -107,4 +110,6 @@ import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace
   ],
   exports: [ObjectMetadataService, ObjectMetadataToolsFactory],
 })
+// Provides object metadata CRUD and tool integration services to other
+// modules.
 export class ObjectMetadataModule {}

@@ -4,6 +4,8 @@ import { isEncryptedString } from 'src/engine/core-modules/secret-encryption/bra
 import { type SecretEncryptionService } from 'src/engine/core-modules/secret-encryption/secret-encryption.service';
 import { type FlatApplicationVariable } from 'src/engine/metadata-modules/flat-application-variable/types/flat-application-variable.type';
 
+// Builds an env-var map from application variables, decrypting any
+// encrypted values.
 export const buildEnvVar = (
   flatApplicationVariables: FlatApplicationVariable[],
   secretEncryptionService: SecretEncryptionService,

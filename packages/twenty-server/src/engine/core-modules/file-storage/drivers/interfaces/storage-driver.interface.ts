@@ -1,5 +1,6 @@
 import { type Readable } from 'stream';
 
+// Contract implemented by each file storage backend (local disk, S3)
 export interface StorageDriver {
   readFile(params: { filePath: string }): Promise<Readable>;
   writeFile(params: {

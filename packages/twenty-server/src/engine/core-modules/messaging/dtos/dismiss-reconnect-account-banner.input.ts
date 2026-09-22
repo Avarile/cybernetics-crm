@@ -1,3 +1,4 @@
+// GraphQL args for dismissing the "reconnect this account" banner.
 import { ArgsType, Field } from '@nestjs/graphql';
 
 import { IsNotEmpty, IsUUID } from 'class-validator';

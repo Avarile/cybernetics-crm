@@ -1,3 +1,6 @@
+// Builds the `destroyMany` GraphQL mutation resolver for an object:
+// delegates the hard-delete logic to CommonDestroyManyQueryRunnerService
+// and formats the resulting records back into GraphQL shape.
 import { Injectable } from '@nestjs/common';
 
 import graphqlFields from 'graphql-fields';
@@ -24,6 +27,8 @@ export class DestroyManyResolverFactory implements WorkspaceResolverBuilderFacto
     private readonly commonDestroyManyQueryRunnerService: CommonDestroyManyQueryRunnerService,
   ) {}
 
+  // Returns a resolver function that permanently deletes the matching
+  // records and formats each one for the GraphQL response.
   create(
     context: WorkspaceSchemaBuilderContext,
   ): Resolver<DestroyManyResolverArgs> {

@@ -1,8 +1,13 @@
 import { v5 as uuidv5 } from 'uuid';
 
+// Source code and id generators for the code-step logic functions used by
+// the seeded "create company when adding a new person" workflow: extracting
+// a domain from an email, detecting personal email providers, and matching
+// an existing company by domain.
 const CREATE_COMPANY_WHEN_ADDING_NEW_PERSON_LOGIC_FUNCTION_ID_NAMESPACE =
   'd41b0a2d-aa97-44dc-ad5d-89774164af27';
 
+// Deterministically derives (workspace-scoped) ids for each logic function.
 export const getCreateCompanyWhenAddingNewPersonCodeStepLogicFunctionIds = (
   workspaceId: string,
 ) => ({
@@ -150,6 +155,8 @@ export type PrefilledWorkflowCodeStepLogicFunctionDefinition = {
   sourceHandlerCode: string;
 };
 
+// Returns the definitions (id, name, description, source) for the logic
+// functions to seed for the "create company when adding a new person" flow.
 export const getCreateCompanyWhenAddingNewPersonCodeStepLogicFunctionDefinitions =
   (workspaceId: string): PrefilledWorkflowCodeStepLogicFunctionDefinition[] => {
     const {

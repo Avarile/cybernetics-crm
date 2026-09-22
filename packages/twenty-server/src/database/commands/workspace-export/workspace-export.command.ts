@@ -10,6 +10,8 @@ type WorkspaceExportCommandOptions = {
   tables?: string;
 };
 
+// CLI command (`workspace:export`): dumps one workspace's core rows, generated
+// schema DDL, and data rows to a .sql file via WorkspaceExportService.
 @Command({
   name: 'workspace:export',
   description: 'Export a workspace as SQL INSERT statements',
@@ -48,6 +50,8 @@ export class WorkspaceExportCommand extends CommandRunner {
     return value;
   }
 
+  // Exports the given workspace (optionally filtered to specific tables) and logs
+  // the resulting file path, or the failure.
   async run(
     _passedParams: string[],
     options: WorkspaceExportCommandOptions,

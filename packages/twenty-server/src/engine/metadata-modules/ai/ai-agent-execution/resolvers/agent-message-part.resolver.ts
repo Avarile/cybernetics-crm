@@ -1,3 +1,5 @@
+// Resolves file-related fields on AgentMessagePart that require signing a
+// URL or reading the joined file entity, rather than being stored directly.
 import { Parent, ResolveField, Resolver } from '@nestjs/graphql';
 
 import { FileFolder } from 'twenty-shared/types';
@@ -12,6 +14,7 @@ import { AgentMessagePartEntity } from 'src/engine/metadata-modules/ai/ai-agent-
 export class AgentMessagePartResolver {
   constructor(private readonly fileUrlService: FileUrlService) {}
 
+  // Signs a temporary URL for the part's attached file, if any.
   @ResolveField(() => String, { nullable: true })
   async fileUrl(
     @Parent() part: AgentMessagePartEntity,
@@ -28,6 +31,7 @@ export class AgentMessagePartResolver {
     });
   }
 
+  // Reads the MIME type off the joined file entity.
   @ResolveField(() => String, { nullable: true })
   fileMediaType(@Parent() part: AgentMessagePartEntity): string | null {
     return part.file?.mimeType ?? null;

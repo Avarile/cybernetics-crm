@@ -2,6 +2,8 @@ import { Field, HideField, InputType } from '@nestjs/graphql';
 
 import { IsBoolean, IsOptional, IsString, IsUUID } from 'class-validator';
 
+// GraphQL input for creating a new workspace role, including its object-
+// and settings-level permission defaults and assignability flags.
 @InputType()
 export class CreateRoleInput {
   @IsUUID()

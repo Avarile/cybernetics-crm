@@ -1,3 +1,4 @@
+// GraphQL DTO for a scheduled maintenance-mode window.
 import { Field, GraphQLISODateTime, ObjectType } from '@nestjs/graphql';
 
 @ObjectType('MaintenanceMode')

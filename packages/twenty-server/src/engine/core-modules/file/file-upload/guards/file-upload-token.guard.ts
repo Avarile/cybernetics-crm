@@ -1,3 +1,5 @@
+// Guards the streaming upload endpoint with a short-lived, file-scoped JWT
+// upload token, rejecting tokens of any other type or for a different file.
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 
 import { FileUploadTokenJwtPayload } from 'src/engine/core-modules/auth/types/file-upload-token-jwt-payload.type';
@@ -8,6 +10,8 @@ import { JwtWrapperService } from 'src/engine/core-modules/jwt/services/jwt-wrap
 export class FileUploadTokenGuard implements CanActivate {
   constructor(private readonly jwtWrapperService: JwtWrapperService) {}
 
+  // Verifies the query-string upload token matches an upload-type JWT for
+  // this exact file, and stashes the workspaceId onto the request.
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const fileId = request.params.id;

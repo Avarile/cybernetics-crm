@@ -1,3 +1,5 @@
+// NestJS module wiring event ingestion: builds the active EVENT_SINKS list
+// from config (clickhouse/console) and provides the sink dispatcher service.
 import { Logger, Module } from '@nestjs/common';
 
 import { isDefined } from 'twenty-shared/utils';

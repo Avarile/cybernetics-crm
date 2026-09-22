@@ -1,3 +1,5 @@
+// Wires the services that fetch application packages and validate their
+// server/workspace version compatibility.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

@@ -5,6 +5,10 @@ import {
 import { isImapFlowError } from 'src/modules/messaging/message-import-manager/drivers/imap/utils/is-imap-flow-error.util';
 import { isImapNetworkError } from 'src/modules/messaging/message-import-manager/drivers/imap/utils/is-imap-network-error.util';
 
+// Classifies a per-message IMAP import failure by inspecting network
+// error codes and ImapFlow response text/message patterns (message
+// missing/expunged -> not found, oversized/fetch failures -> temporary),
+// falling back to UNKNOWN otherwise.
 export const parseImapMessagesImportError = (
   error: Error,
   messageExternalId: string,

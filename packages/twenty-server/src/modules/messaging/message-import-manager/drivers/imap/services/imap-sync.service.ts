@@ -1,3 +1,6 @@
+// Computes which message UIDs are new/changed in an IMAP folder since the
+// last sync cursor, preferring QRESYNC (server-side modseq diff) when
+// supported and falling back to a plain UID-range SEARCH otherwise.
 import { Injectable, Logger } from '@nestjs/common';
 
 import { type ImapFlow } from 'imapflow';
@@ -18,6 +21,8 @@ type SyncResult = {
 export class ImapSyncService {
   private readonly logger = new Logger(ImapSyncService.name);
 
+  // Validates the folder's UIDVALIDITY hasn't changed, then fetches the
+  // new/changed message UIDs since the previous cursor.
   async syncFolder(
     client: ImapFlow,
     folderPath: string,
@@ -36,6 +41,9 @@ export class ImapSyncService {
     return { messageUids };
   }
 
+  // Throws SYNC_CURSOR_ERROR if the folder's UIDVALIDITY changed since the
+  // previous cursor, since UIDs are no longer comparable and a full
+  // resync is required.
   private validateUidValidity(
     previousCursor: ImapSyncCursor | null,
     mailboxState: MailboxState,
@@ -56,6 +64,8 @@ export class ImapSyncService {
     }
   }
 
+  // Tries QRESYNC when the client/cursor support it, falling back to a
+  // plain UID-range fetch if QRESYNC isn't usable or fails.
   private async fetchNewMessageUids(
     client: ImapFlow,
     previousCursor: ImapSyncCursor | null,
@@ -86,6 +96,7 @@ export class ImapSyncService {
     return this.fetchWithUidRange(client, lastSyncedUid, maxUid);
   }
 
+  // Searches for all UIDs strictly newer than the last synced UID.
   private async fetchWithUidRange(
     client: ImapFlow,
     lastSyncedUid: number,
@@ -105,6 +116,7 @@ export class ImapSyncService {
     return uids;
   }
 
+  // Searches for UIDs modified since the last known MODSEQ (QRESYNC).
   private async fetchWithQresync(
     client: ImapFlow,
     lastSyncedUid: number,

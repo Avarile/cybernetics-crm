@@ -1,3 +1,5 @@
+// Public webhook endpoint (`/webhooks/server/:resolver`) that dispatches an
+// incoming HTTP request to a workspace's resolver logic function.
 import {
   Controller,
   Param,
@@ -25,6 +27,8 @@ export class ServerRouteTriggerController {
   ) {}
 
   @Post(':resolverLogicFunctionUniversalIdentifier')
+  // Handles the incoming webhook, dispatching it through the resolver logic
+  // function and writing the resulting route trigger response.
   async post(
     @Param('resolverLogicFunctionUniversalIdentifier')
     resolverLogicFunctionUniversalIdentifier: string,

@@ -1,3 +1,7 @@
+// Shared helpers for the source-based logic function workflow: resolving a
+// function plus its owning application, computing handler paths, and running
+// create/update metadata changes through the workspace migration pipeline.
+
 import { Injectable } from '@nestjs/common';
 
 import { join } from 'path';
@@ -24,6 +28,8 @@ export class LogicFunctionFromSourceHelperService {
     private readonly workspaceMigrationValidateBuildAndRunService: WorkspaceMigrationValidateBuildAndRunService,
   ) {}
 
+  // Resolves the flat logic function and the workspace's custom application,
+  // throwing if either can't be found.
   async findLogicFunctionAndApplicationOrThrow({
     id,
     workspaceId,
@@ -53,6 +59,8 @@ export class LogicFunctionFromSourceHelperService {
     };
   }
 
+  // Computes the source and built handler file paths for a logic function's
+  // dedicated subfolder.
   buildHandlerPaths(logicFunctionId: string) {
     const logicFunctionSubfolder =
       getLogicFunctionSubfolderForFromSource(logicFunctionId);
@@ -69,6 +77,8 @@ export class LogicFunctionFromSourceHelperService {
     };
   }
 
+  // Runs the flat logic function through the workspace migration pipeline
+  // to create it, throwing on validation failure.
   async createOneFromMetadata({
     universalFlatLogicFunctionToCreate,
     workspaceId,
@@ -105,6 +115,8 @@ export class LogicFunctionFromSourceHelperService {
     return universalFlatLogicFunctionToCreate;
   }
 
+  // Runs the flat logic function through the workspace migration pipeline
+  // to update it, then returns the recomputed entity from cache.
   async updateOneFromMetadata({
     flatLogicFunctionToUpdate,
     workspaceId,

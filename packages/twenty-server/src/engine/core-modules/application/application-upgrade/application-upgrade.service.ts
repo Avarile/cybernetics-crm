@@ -1,3 +1,6 @@
+// Checks NPM-sourced application registrations for newer published
+// versions and applies an in-workspace version upgrade by reinstalling at
+// the target version.
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -31,6 +34,9 @@ export class ApplicationUpgradeService {
     private readonly twentyConfigService: TwentyConfigService,
   ) {}
 
+  // Queries the registry for an NPM-sourced registration's latest version
+  // and, if it changed, records it and emits a publish metric. Returns
+  // the latest version, or null for non-NPM sources or on failure.
   async checkForUpdates(
     appRegistration: ApplicationRegistrationEntity,
   ): Promise<string | null> {
@@ -91,6 +97,7 @@ export class ApplicationUpgradeService {
     }
   }
 
+  // Runs checkForUpdates against every NPM-sourced registration.
   async checkAllForUpdates(): Promise<void> {
     const npmRegistrations = await this.appRegistrationRepository.find({
       where: { sourceType: ApplicationRegistrationSourceType.NPM },
@@ -101,6 +108,9 @@ export class ApplicationUpgradeService {
     }
   }
 
+  // Upgrades an NPM-sourced app to the target version in a workspace by
+  // reinstalling at that version; rejects LOCAL/TARBALL/OAUTH_ONLY sources,
+  // which have no versioned registry to upgrade from.
   async upgradeApplication(params: {
     appRegistrationId: string;
     targetVersion: string;

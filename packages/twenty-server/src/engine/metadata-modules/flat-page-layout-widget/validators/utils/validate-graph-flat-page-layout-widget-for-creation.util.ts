@@ -1,3 +1,5 @@
+// Validates a graph-type page layout widget's configuration on creation.
+
 import { msg, t } from '@lingui/core/macro';
 import { isDefined } from 'twenty-shared/utils';
 
@@ -8,6 +10,8 @@ import { validateGraphConfigurationByType } from 'src/engine/metadata-modules/fl
 import { validateGraphConfigurationType } from 'src/engine/metadata-modules/flat-page-layout-widget/validators/utils/validate-graph-configuration-type.util';
 import { PageLayoutWidgetExceptionCode } from 'src/engine/metadata-modules/page-layout-widget/exceptions/page-layout-widget.exception';
 
+// Requires configuration, validates its graph type, then runs the base
+// graph field checks plus the chart-type-specific checks.
 export const validateGraphFlatPageLayoutWidgetForCreation = (
   args: ValidateFlatPageLayoutWidgetTypeSpecificitiesForCreationArgs,
 ): FlatPageLayoutWidgetValidationError[] => {

@@ -1,5 +1,6 @@
 type EmailAddress = string | string[];
 
+// Shared input shape each outbound driver's sendMessage/createDraft take.
 export type SendMessageInput = {
   body: string;
   subject: string;

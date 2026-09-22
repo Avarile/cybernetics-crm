@@ -37,6 +37,9 @@ export type ConnectedAccountTokens = ConnectedAccountEncryptedTokens;
 
 const CONNECTED_ACCOUNT_ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 60;
 
+// Central point for getting valid (encrypted) tokens for a connected account:
+// reuses the existing access token if still fresh, otherwise refreshes it
+// through the provider-specific driver and re-persists the result encrypted.
 @Injectable()
 export class ConnectedAccountRefreshTokensService {
   private readonly logger = new Logger(
@@ -52,6 +55,8 @@ export class ConnectedAccountRefreshTokensService {
     private readonly connectedAccountRepository: Repository<ConnectedAccountEntity>,
   ) {}
 
+  // Returns encrypted tokens ready to use: the existing pair if the access
+  // token is still valid, otherwise a freshly refreshed and re-encrypted pair.
   async resolveTokens(
     connectedAccount: ConnectedAccountEntity,
     workspaceId: string,
@@ -87,6 +92,7 @@ export class ConnectedAccountRefreshTokensService {
     );
   }
 
+  // Returns the account's current encrypted tokens as-is.
   private getExistingEncryptedTokens(
     connectedAccount: ConnectedAccountEntity,
     workspaceId: string,
@@ -104,6 +110,8 @@ export class ConnectedAccountRefreshTokensService {
     };
   }
 
+  // Decrypts the stored refresh token, refreshes via the provider driver,
+  // re-encrypts the new pair, and persists it on the connected account.
   private async performRefreshAndSave(
     connectedAccount: ConnectedAccountEntity,
     encryptedRefreshToken: EncryptedString,
@@ -145,6 +153,8 @@ export class ConnectedAccountRefreshTokensService {
     };
   }
 
+  // OAuth providers' access tokens expire after a fixed window (with a
+  // safety buffer); non-OAuth providers have no expiring access token.
   async isAccessTokenStillValid(
     connectedAccount: ConnectedAccountEntity,
   ): Promise<boolean> {
@@ -179,6 +189,8 @@ export class ConnectedAccountRefreshTokensService {
     }
   }
 
+  // Dispatches the actual token exchange to the driver matching the
+  // account's provider.
   async refreshTokens(
     connectedAccount: ConnectedAccountEntity,
     refreshToken: PlaintextString,

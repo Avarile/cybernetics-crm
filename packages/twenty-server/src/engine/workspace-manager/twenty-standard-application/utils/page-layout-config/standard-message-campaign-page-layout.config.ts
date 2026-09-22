@@ -67,6 +67,7 @@ const MESSAGE_CAMPAIGN_PAGE_TABS = {
   },
 } as const satisfies Record<string, StandardPageLayoutTabConfig>;
 
+// Fixed record page layout (tabs and widgets) for the standard "messageCampaign" object
 export const STANDARD_MESSAGE_CAMPAIGN_PAGE_LAYOUT_CONFIG = {
   name: 'Default Campaign Layout',
   type: PageLayoutType.RECORD_PAGE,

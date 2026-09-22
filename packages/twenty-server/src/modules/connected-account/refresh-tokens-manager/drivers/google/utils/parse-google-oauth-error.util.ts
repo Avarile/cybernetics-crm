@@ -6,6 +6,8 @@ import {
 } from 'src/engine/metadata-modules/connected-account/exceptions/connected-account-refresh-tokens.exception';
 import { isGmailNetworkError } from 'src/modules/messaging/message-import-manager/drivers/gmail/utils/is-gmail-network-error.util';
 
+// Maps a Google OAuth token refresh error (network or API status code) to a
+// typed refresh-access-token exception.
 export const parseGoogleOAuthError = (
   error: unknown,
 ): ConnectedAccountRefreshAccessTokenException => {

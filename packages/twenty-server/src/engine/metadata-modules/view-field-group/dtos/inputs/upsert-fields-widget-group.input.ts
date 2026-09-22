@@ -13,6 +13,8 @@ import {
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';
 import { UpsertFieldsWidgetFieldInput } from 'src/engine/metadata-modules/view-field-group/dtos/inputs/upsert-fields-widget-field.input';
 
+// A view field group and its member fields, as part of a fields-widget
+// upsert request.
 @InputType()
 export class UpsertFieldsWidgetGroupInput {
   @IsUUID()

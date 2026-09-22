@@ -1,3 +1,6 @@
+// Test fixture: field-metadata configs for one synthetic field per
+// FieldMetadataType, used to build test objects for the data-arg-processor
+// input-validation test suite.
 import { joinColumnNameForManyToOneMorphRelationField1 } from 'test/integration/graphql/suites/inputs-validation/utils/setup-test-objects-with-all-field-types.util';
 import {
   type FieldMetadataDefaultOption,

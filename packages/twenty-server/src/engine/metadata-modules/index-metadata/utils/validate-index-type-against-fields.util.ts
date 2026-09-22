@@ -1,3 +1,6 @@
+// Validates that the requested index type is compatible with the selected
+// fields (currently only restricts GIN indexes).
+
 import { msg } from '@lingui/core/macro';
 import { GIN_COMPATIBLE_FIELD_TYPES } from 'twenty-shared/constants';
 import { type FieldMetadataType } from 'twenty-shared/types';

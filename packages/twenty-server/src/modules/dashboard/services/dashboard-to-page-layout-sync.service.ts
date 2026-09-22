@@ -10,6 +10,9 @@ import { GlobalWorkspaceOrmManager } from 'src/engine/twenty-orm/global-workspac
 import { buildSystemAuthContext } from 'src/engine/twenty-orm/utils/build-system-auth-context.util';
 import type { DashboardWorkspaceEntity } from 'src/modules/dashboard/standard-objects/dashboard.workspace-entity';
 
+// Keeps each dashboard backed by exactly one page layout: creates a fresh
+// layout (with a default tab) for new dashboards, and cleans up layouts
+// when their dashboards are destroyed.
 @Injectable()
 export class DashboardToPageLayoutSyncService {
   constructor(
@@ -18,6 +21,7 @@ export class DashboardToPageLayoutSyncService {
     private readonly pageLayoutTabService: PageLayoutTabService,
   ) {}
 
+  // Creates a new dashboard-type page layout with a default tab, returning its id.
   public async createPageLayoutForDashboard({
     workspaceId,
   }: {
@@ -43,6 +47,8 @@ export class DashboardToPageLayoutSyncService {
     return pageLayout.id;
   }
 
+  // Destroys the page layouts belonging to the given (possibly
+  // soft-deleted) dashboards.
   public async destroyPageLayoutsForDashboards({
     dashboardIds,
     workspaceId,

@@ -1,6 +1,9 @@
 import { type FlatViewField } from 'src/engine/metadata-modules/flat-view-field/types/flat-view-field.type';
 import { type ViewFieldDTO } from 'src/engine/metadata-modules/view-field/dtos/view-field.dto';
 
+// Converts a flat view field into its GraphQL DTO, applying any overrides
+// on top of the base fields and converting timestamp strings to Date
+// objects.
 export const fromFlatViewFieldToViewFieldDto = (
   flatViewField: FlatViewField,
 ): ViewFieldDTO => {

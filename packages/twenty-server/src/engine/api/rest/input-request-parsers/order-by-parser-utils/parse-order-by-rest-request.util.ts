@@ -3,6 +3,8 @@ import { type ObjectRecordOrderBy } from 'src/engine/api/graphql/workspace-query
 import { parseOrderBy } from 'src/engine/api/rest/input-request-parsers/order-by-parser-utils/utils/parse-order-by-rest-request-common.util';
 import { type AuthenticatedRequest } from 'src/engine/api/rest/types/authenticated-request';
 
+// Parses the `?order_by=` REST query param for plain (non-groupBy) list
+// requests.
 export const parseOrderByRestRequest = (
   request: AuthenticatedRequest,
 ): ObjectRecordOrderBy => {

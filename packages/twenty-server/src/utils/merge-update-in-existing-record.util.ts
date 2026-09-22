@@ -1,3 +1,5 @@
+// Returns a copy of `existing` with only the given `properties` overwritten from
+// `update`, and only where those fields are actually present in the update payload.
 export const mergeUpdateInExistingRecord = <
   TExisting,
   P extends keyof TExisting,

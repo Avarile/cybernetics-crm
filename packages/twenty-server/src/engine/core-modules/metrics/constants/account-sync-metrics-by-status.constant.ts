@@ -1,3 +1,5 @@
+// Groupings of message/calendar account-sync metric cache keys by status,
+// used to build the per-status counts shown in health/admin metrics.
 import { MetricsKeys } from 'src/engine/core-modules/metrics/types/metrics-keys.type';
 
 export const MESSAGE_SYNC_METRICS_BY_STATUS = [

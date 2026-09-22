@@ -1,3 +1,5 @@
+// Field types stored as a composite of multiple sub-values (e.g. address's
+// street/city/country, or full name's first/last).
 import { FieldMetadataType } from 'twenty-shared/types';
 
 const compositeFieldTypes = [

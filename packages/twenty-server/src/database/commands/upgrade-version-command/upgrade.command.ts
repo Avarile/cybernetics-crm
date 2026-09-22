@@ -23,6 +23,9 @@ export type ParsedUpgradeCommandOptions = {
   verbose?: boolean;
 };
 
+// CLI command (`upgrade`): the top-level entry point for upgrading workspaces —
+// reads the full upgrade sequence (instance + workspace commands, in order) and
+// hands it to UpgradeSequenceRunnerService, reporting per-workspace success/failure.
 @Command({
   name: 'upgrade',
   description: 'Upgrade workspaces to the latest version',
@@ -104,6 +107,8 @@ export class UpgradeCommand extends CommandRunner {
     return limit;
   }
 
+  // Validates option combinations, logs the resolved upgrade sequence, runs it via
+  // UpgradeSequenceRunnerService, and throws if any workspace failed.
   override async run(
     _passedParams: string[],
     options: RawUpgradeCommandOptions,
@@ -197,6 +202,7 @@ export class UpgradeCommand extends CommandRunner {
     }
   }
 
+  // Invalidates the cached upgrade-status, logging (not throwing) on failure.
   private async safeInvalidateUpgradeStatusCache(): Promise<void> {
     try {
       await this.upgradeStatusService.invalidateInstanceAndAllWorkspacesStatus();

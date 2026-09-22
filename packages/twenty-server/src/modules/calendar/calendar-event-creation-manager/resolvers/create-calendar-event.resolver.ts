@@ -30,6 +30,9 @@ import { CreateCalendarEventService } from 'src/modules/calendar/calendar-event-
   WorkspaceAuthGuard,
   SettingsPermissionGuard(PermissionFlagType.CREATE_CALENDAR_EVENT_TOOL),
 )
+// GraphQL mutation for creating a calendar event on a connected account:
+// verifies ownership, validates/composes the input, creates it with the
+// provider, then persists it locally.
 export class CreateCalendarEventResolver {
   private readonly logger = new Logger(CreateCalendarEventResolver.name);
 

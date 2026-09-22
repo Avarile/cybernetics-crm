@@ -1,3 +1,5 @@
+// Seed data for sample participants (workspace members and people) on
+// dev-seeded messages.
 import { MessageParticipantRole } from 'twenty-shared/types';
 
 import { MESSAGE_DATA_SEED_IDS } from 'src/engine/workspace-manager/dev-seeder/data/constants/message-data-seeds.constant';

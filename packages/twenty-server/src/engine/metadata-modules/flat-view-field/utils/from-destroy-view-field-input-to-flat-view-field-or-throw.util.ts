@@ -13,6 +13,8 @@ import {
 } from 'src/engine/metadata-modules/view-field/exceptions/view-field.exception';
 import { type UniversalFlatViewField } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-view-field.type';
 
+// Looks up the flat view field targeted by a permanent-destroy request,
+// throwing if it doesn't exist.
 export const fromDestroyViewFieldInputToFlatViewFieldOrThrow = ({
   destroyViewFieldInput,
   flatViewFieldMaps,

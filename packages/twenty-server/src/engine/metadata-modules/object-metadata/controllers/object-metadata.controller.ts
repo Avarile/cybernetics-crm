@@ -1,3 +1,6 @@
+// REST controller exposing object metadata CRUD, backed by a legacy/new
+// response format toggle controlled by a feature flag.
+
 import {
   Body,
   Controller,
@@ -83,6 +86,8 @@ export class ObjectMetadataController {
     private readonly flatEntityMapsCacheService: WorkspaceManyOrAllFlatEntityMapsCacheService,
   ) {}
 
+  // Computes which field ids are backed by a system unique index, needed to
+  // populate the isUnique flag on field DTOs.
   private async loadUniqueFieldMetadataIds(
     workspaceId: string,
   ): Promise<ReadonlySet<string>> {
@@ -94,6 +99,7 @@ export class ObjectMetadataController {
     return computeUniqueFieldMetadataIdsFromFlatIndexMaps(flatIndexMaps);
   }
 
+  // Paginates objects by id cursor, attaching each object's fields.
   @Get()
   async findMany(
     @Req() request: AuthenticatedRequest,
@@ -134,6 +140,7 @@ export class ObjectMetadataController {
       : toLegacyObjectMetadataListResponse(result);
   }
 
+  // Looks up a single object by id with its fields, throwing if not found.
   @Get(':id')
   async findOne(
     @Param('id', new ParseUUIDPipe()) id: string,
@@ -168,6 +175,7 @@ export class ObjectMetadataController {
       : toLegacyObjectMetadataFindOneResponse(result);
   }
 
+  // Creates a new object and returns it with its (initially system) fields.
   @Post()
   async createOne(
     @Body() input: CreateObjectInput,
@@ -200,6 +208,7 @@ export class ObjectMetadataController {
       : toLegacyObjectMetadataCreateResponse(result);
   }
 
+  // Updates an object (PATCH semantics), delegating to handleUpdate.
   @Patch(':id')
   async updateOnePatch(
     @Param('id', new ParseUUIDPipe()) id: string,
@@ -209,6 +218,7 @@ export class ObjectMetadataController {
     return this.handleUpdate({ id, update, workspaceId });
   }
 
+  // Updates an object (PUT semantics), delegating to handleUpdate.
   @Put(':id')
   async updateOnePut(
     @Param('id', new ParseUUIDPipe()) id: string,
@@ -218,6 +228,7 @@ export class ObjectMetadataController {
     return this.handleUpdate({ id, update, workspaceId });
   }
 
+  // Deletes an object and returns its DTO.
   @Delete(':id')
   async deleteOne(
     @Param('id', new ParseUUIDPipe()) id: string,
@@ -235,6 +246,8 @@ export class ObjectMetadataController {
       : toLegacyObjectMetadataDeleteResponse(result);
   }
 
+  // Shared update logic for PATCH/PUT: updates the object and returns it
+  // with its fields, in legacy or new response format.
   private async handleUpdate({
     id,
     update,
@@ -271,6 +284,8 @@ export class ObjectMetadataController {
       : toLegacyObjectMetadataUpdateResponse(result);
   }
 
+  // Checks the feature flag controlling which REST metadata response format
+  // to return.
   private async isNewMetadataFormat(workspaceId: string): Promise<boolean> {
     return this.featureFlagService.isFeatureEnabled(
       FeatureFlagKey.IS_REST_METADATA_API_NEW_FORMAT_DIRECT,
@@ -278,6 +293,7 @@ export class ObjectMetadataController {
     );
   }
 
+  // Batch-loads fields for multiple objects and groups them by object id.
   private async findFieldsForObjectIds(
     workspaceId: string,
     objectIds: string[],
@@ -305,6 +321,7 @@ export class ObjectMetadataController {
     return grouped;
   }
 
+  // Combines an object entity and its fields into the response DTO shape.
   private toObjectWithFieldsDto(
     object: ObjectMetadataEntity,
     fields: FieldMetadataEntity[],

@@ -1,3 +1,4 @@
+// GraphQL response describing the actions produced by a workspace migration.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 import GraphQLJSON from 'graphql-type-json';

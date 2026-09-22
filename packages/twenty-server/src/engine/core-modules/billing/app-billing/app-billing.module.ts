@@ -1,5 +1,7 @@
 /* @license Enterprise */
 
+// Wires the app-billing REST controller and service used by external
+// applications to report chargeable usage.
 import { Module } from '@nestjs/common';
 
 import { AppBillingController } from 'src/engine/core-modules/billing/app-billing/app-billing.controller';

@@ -11,12 +11,14 @@ import { type StandardBuilderArgs } from 'src/engine/workspace-manager/twenty-st
 import { type UniversalFlatFieldMetadata } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-field-metadata.type';
 import { type UniversalFlatObjectMetadata } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-object-metadata.type';
 
+// Per-search-field content (target field and position) supplied by each standard search field builder
 export type CreateStandardSearchFieldOptions<O extends AllStandardObjectName> =
   {
     fieldName: AllStandardObjectFieldName<O>;
     position: number;
   };
 
+// Arguments accepted by createStandardSearchFieldFlatMetadata
 export type CreateStandardSearchFieldArgs<
   O extends AllStandardObjectName = AllStandardObjectName,
 > = StandardBuilderArgs<'searchFieldMetadata'> & {
@@ -24,6 +26,8 @@ export type CreateStandardSearchFieldArgs<
   context: CreateStandardSearchFieldOptions<O>;
 };
 
+// Builds a single standard search field's FlatSearchFieldMetadata, resolving its target field, object,
+// and search-vector field ids/universal identifiers from the standard object's fixed definitions
 export const createStandardSearchFieldFlatMetadata = <
   O extends AllStandardObjectName,
 >({

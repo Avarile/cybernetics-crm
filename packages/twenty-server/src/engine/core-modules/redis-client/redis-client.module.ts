@@ -1,3 +1,5 @@
+// Global module exposing RedisClientService, the shared source of Redis
+// connections (queue, general-purpose, pub/sub).
 import { Global, Module } from '@nestjs/common';
 
 import { RedisClientService } from 'src/engine/core-modules/redis-client/redis-client.service';

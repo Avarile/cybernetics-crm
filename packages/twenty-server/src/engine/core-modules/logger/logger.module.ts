@@ -1,3 +1,6 @@
+// Global module that provisions LoggerService with a concrete logger driver
+// (currently only a NestJS ConsoleLogger), built synchronously via forRoot
+// or asynchronously (e.g. from config) via forRootAsync.
 import {
   ConsoleLogger,
   type DynamicModule,
@@ -21,6 +24,7 @@ import { LoggerService } from 'src/engine/core-modules/logger/logger.service';
   exports: [LoggerService],
 })
 export class LoggerModule extends ConfigurableModuleClass {
+  // Builds the module with a synchronously-provided logger driver.
   static forRoot(options: typeof OPTIONS_TYPE): DynamicModule {
     const provider = {
       provide: LOGGER_DRIVER,
@@ -37,6 +41,8 @@ export class LoggerModule extends ConfigurableModuleClass {
     };
   }
 
+  // Builds the module with an asynchronously-resolved logger driver
+  // (e.g. depending on injected config), applying its configured log levels.
   static forRootAsync(options: typeof ASYNC_OPTIONS_TYPE): DynamicModule {
     const provider = {
       provide: LOGGER_DRIVER,

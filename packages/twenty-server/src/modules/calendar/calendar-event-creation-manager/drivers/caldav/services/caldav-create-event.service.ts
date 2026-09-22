@@ -14,6 +14,8 @@ import { CalDavClientProvider } from 'src/modules/calendar/calendar-event-import
 import { CalDavFetchEventsService } from 'src/modules/calendar/calendar-event-import-manager/drivers/caldav/services/caldav-fetch-events.service';
 import { type FetchedCalendarEvent } from 'src/modules/calendar/common/types/fetched-calendar-event';
 
+// Creates a calendar event on a CalDAV account by generating an iCal object,
+// uploading it to the first writable calendar, then resolving its server href.
 @Injectable()
 export class CalDavCreateEventService implements CalendarEventCreationDriver {
   constructor(

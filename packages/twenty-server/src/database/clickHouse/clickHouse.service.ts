@@ -13,6 +13,10 @@ import {
 
 import { TwentyConfigService } from 'src/engine/core-modules/twenty-config/twenty-config.service';
 
+// Wraps the ClickHouse client SDK: manages a main (default) client plus a pool of
+// per-clientId connections (e.g. per-workspace analytics), and exposes insert/select/
+// exec helpers used by analytics features. All ClickHouse errors are caught and logged
+// rather than thrown, so callers get empty/failure results instead of exceptions.
 @Injectable()
 export class ClickHouseService implements OnModuleInit, OnModuleDestroy {
   private mainClient: ClickHouseClient | undefined;
@@ -34,10 +38,14 @@ export class ClickHouseService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
+  // Returns the default client configured from CLICKHOUSE_URL, if any.
   public getMainClient(): ClickHouseClient | undefined {
     return this.mainClient;
   }
 
+  // Returns a cached client for `clientId`, creating and pinging a new one on first
+  // use. Concurrent calls for the same clientId wait for the in-flight initialization
+  // instead of creating duplicate connections.
   public async connectToClient(
     clientId: string,
     url?: string,
@@ -75,6 +83,7 @@ export class ClickHouseService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
+  // Creates a client and pings it to confirm connectivity before returning it.
   private async createAndInitializeClient(
     url?: string,
   ): Promise<ClickHouseClient> {
@@ -94,6 +103,7 @@ export class ClickHouseService implements OnModuleInit, OnModuleDestroy {
     return client;
   }
 
+  // Closes and evicts the cached client for `clientId`, if one exists.
   public async disconnectFromClient(clientId: string) {
     if (!this.clients.has(clientId)) {
       return;
@@ -108,6 +118,7 @@ export class ClickHouseService implements OnModuleInit, OnModuleDestroy {
     this.clients.delete(clientId);
   }
 
+  // Verifies the main client connection at startup, logging (not throwing) on failure.
   async onModuleInit() {
     if (this.mainClient) {
       // Just ping to verify the connection
@@ -119,6 +130,7 @@ export class ClickHouseService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
+  // Closes the main client and every pooled per-clientId client on shutdown.
   async onModuleDestroy() {
     // Close main client
     if (this.mainClient) {
@@ -131,6 +143,8 @@ export class ClickHouseService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
+  // Inserts rows into `table` in chunks (see insertInChunks), using the client for
+  // `clientId` or the main client. Returns success: false on any error rather than throwing.
   // oxlint-disable-next-line typescript/no-explicit-any
   public async insert<T extends Record<string, any>>(
     table: string,
@@ -191,6 +205,7 @@ export class ClickHouseService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
+  // Creates a ClickHouse database if it doesn't already exist, via the main client.
   public async createDatabase(databaseName: string): Promise<boolean> {
     try {
       if (!this.mainClient) {
@@ -209,6 +224,7 @@ export class ClickHouseService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
+  // Drops a ClickHouse database if it exists, via the main client.
   public async dropDatabase(databaseName: string): Promise<boolean> {
     try {
       if (!this.mainClient) {
@@ -227,6 +243,7 @@ export class ClickHouseService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
+  // Runs a DDL/administrative command (as opposed to select/insert) against ClickHouse.
   public async executeCommand(
     query: string,
     // oxlint-disable-next-line typescript/no-explicit-any
@@ -255,6 +272,8 @@ export class ClickHouseService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
+  // Batches `values` into chunks bounded by row count and/or estimated JSON size
+  // (maxMemoryMB), flushing each chunk as an async insert to avoid one huge request.
   // oxlint-disable-next-line typescript/no-explicit-any
   private async insertInChunks<T extends Record<string, any>>(
     client: ClickHouseClient,

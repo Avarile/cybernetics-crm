@@ -25,6 +25,8 @@ import { WorkspaceMigrationBuilderException } from 'src/engine/workspace-manager
 import { WorkspaceMigrationValidateBuildAndRunService } from 'src/engine/workspace-manager/workspace-migration/services/workspace-migration-validate-build-and-run-service';
 
 @Injectable()
+// CRUD (including batch create) for view field groups, backed by the
+// flat entity maps and applied through validated workspace migrations.
 export class ViewFieldGroupService {
   constructor(
     private readonly workspaceMigrationValidateBuildAndRunService: WorkspaceMigrationValidateBuildAndRunService,
@@ -32,6 +34,7 @@ export class ViewFieldGroupService {
     private readonly applicationService: ApplicationService,
   ) {}
 
+  // Creates a single view field group (thin wrapper over createMany).
   async createOne({
     createViewFieldGroupInput,
     workspaceId,
@@ -54,6 +57,8 @@ export class ViewFieldGroupService {
     return createdViewFieldGroup;
   }
 
+  // Builds flat view field groups for each input and applies them all in
+  // one validated workspace migration.
   async createMany({
     createViewFieldGroupInputs,
     workspaceId,
@@ -127,6 +132,8 @@ export class ViewFieldGroupService {
     }).map(fromFlatViewFieldGroupToViewFieldGroupDto);
   }
 
+  // Applies partial updates to an existing view field group via a
+  // validated workspace migration.
   async updateOne({
     updateViewFieldGroupInput,
     workspaceId,
@@ -200,6 +207,8 @@ export class ViewFieldGroupService {
     );
   }
 
+  // Soft-deletes a view field group (sets deletedAt) via a validated
+  // workspace migration.
   async deleteOne({
     deleteViewFieldGroupInput,
     workspaceId,
@@ -271,6 +280,8 @@ export class ViewFieldGroupService {
     );
   }
 
+  // Permanently removes a view field group via a validated workspace
+  // migration.
   async destroyOne({
     destroyViewFieldGroupInput,
     workspaceId,
@@ -335,6 +346,8 @@ export class ViewFieldGroupService {
     });
   }
 
+  // Returns all active view field groups belonging to a specific view,
+  // ordered by position.
   async findByViewId(
     workspaceId: string,
     viewId: string,
@@ -354,6 +367,7 @@ export class ViewFieldGroupService {
       .sort((a, b) => a.position - b.position);
   }
 
+  // Finds a single active view field group by id.
   async findById(
     id: string,
     workspaceId: string,

@@ -1,3 +1,5 @@
+// GraphQL representation of an agent's assembled system prompt, broken into
+// labeled sections with estimated token counts (for a settings preview UI).
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 
 @ObjectType('AiSystemPromptSection')

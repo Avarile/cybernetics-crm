@@ -1,3 +1,5 @@
+// Service validating a single protocol's connection parameters against the
+// Zod schemas and guarding against connecting to private/internal hosts.
 import { Injectable } from '@nestjs/common';
 
 import { msg } from '@lingui/core/macro';
@@ -16,6 +18,9 @@ export class ImapSmtpCaldavValidatorService {
     private readonly secureHttpClientService: SecureHttpClientService,
   ) {}
 
+  // Validates one protocol's connection params against the appropriate
+  // schema (create vs update), rejects private/internal hosts (SSRF guard),
+  // and resolves the password to use (new value or existing one).
   async validateProtocolConnectionParams({
     params,
     existingProtocolParams,

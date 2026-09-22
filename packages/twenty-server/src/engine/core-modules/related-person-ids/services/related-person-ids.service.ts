@@ -1,3 +1,6 @@
+// Resolves the set of Person record ids related to any given record, by
+// discovering relation paths from the record's object to Person in the
+// workspace's metadata graph and walking each path's join columns.
 import { Injectable } from '@nestjs/common';
 
 import { isDefined } from 'twenty-shared/utils';
@@ -23,6 +26,9 @@ export class RelatedPersonIdsService {
     private readonly workspaceCacheService: WorkspaceCacheService,
   ) {}
 
+  // Returns the record itself if it is a person, otherwise discovers every
+  // relation path from its object to Person and walks each one, collecting
+  // and deduplicating the resulting person ids.
   async getRelatedPersonIds({
     workspaceId,
     objectNameSingular,
@@ -72,6 +78,9 @@ export class RelatedPersonIdsService {
     );
   }
 
+  // Follows a relation path hop by hop starting from `recordId`, querying
+  // each hop's join column (forward for many-to-one, reverse for one-to-many)
+  // to arrive at the final set of ids at the end of the path.
   private async walkRelationPath({
     workspaceId,
     recordId,

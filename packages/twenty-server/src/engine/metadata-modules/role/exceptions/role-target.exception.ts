@@ -4,6 +4,8 @@ import { assertUnreachable } from 'twenty-shared/utils';
 
 import { CustomException } from 'src/utils/custom-exception';
 
+// Exception thrown by the role target module (role assignments to
+// members/agents/API keys) for missing records or invalid assignments.
 export enum RoleTargetExceptionCode {
   ROLE_TARGET_NOT_FOUND = 'ROLE_TARGET_NOT_FOUND',
   INVALID_ROLE_TARGET_DATA = 'INVALID_ROLE_TARGET_DATA',
@@ -12,6 +14,7 @@ export enum RoleTargetExceptionCode {
   ROLE_NOT_FOUND = 'ROLE_NOT_FOUND',
 }
 
+// Maps an exception code to the localized message shown to end users.
 const getRoleTargetExceptionUserFriendlyMessage = (
   code: RoleTargetExceptionCode,
 ) => {

@@ -91,12 +91,14 @@ const UpdateManyViewFieldsInputSchema = z.object({
 });
 
 @Injectable()
+// Builds the AI agent tool set for reading and writing view fields.
 export class ViewFieldToolsFactory {
   constructor(
     private readonly viewFieldService: ViewFieldService,
     private readonly flatEntityMapsCacheService: WorkspaceManyOrAllFlatEntityMapsCacheService,
   ) {}
 
+  // Resolves a field metadata id to its name, for enriching tool output.
   private async resolveFieldName(
     workspaceId: string,
     fieldMetadataId: string,
@@ -120,6 +122,8 @@ export class ViewFieldToolsFactory {
       ?.name;
   }
 
+  // Builds the read-only tools (listing view fields, with resolved field
+  // names) exposed to AI agents.
   generateReadTools(workspaceId: string): ToolSet {
     return {
       get_view_fields: {
@@ -159,6 +163,9 @@ export class ViewFieldToolsFactory {
     };
   }
 
+  // Builds the write tools (create/update/delete, single and batch) for
+  // view fields exposed to AI agents, translating workspace migration
+  // validation errors into agent-friendly error messages.
   generateWriteTools(workspaceId: string): ToolSet {
     return {
       create_view_field: {

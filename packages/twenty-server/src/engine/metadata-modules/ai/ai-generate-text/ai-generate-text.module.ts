@@ -1,3 +1,5 @@
+// NestJS module for the standalone REST text-generation endpoint used
+// outside of the chat/agent flows (e.g. by workflow builders).
 import { Module } from '@nestjs/common';
 
 import { TokenModule } from 'src/engine/core-modules/auth/token/token.module';

@@ -84,6 +84,9 @@ type ObjectMetadataIds = {
   messageMetadataId: string;
 };
 
+// Generates and inserts "created" and "linked" timeline activity records
+// (the activity feed events) for all seeded sample records, so dev-seeded
+// workspaces show a populated activity timeline.
 @Injectable()
 export class TimelineActivitySeederService {
   private readonly ENTITY_CODES = {
@@ -111,6 +114,8 @@ export class TimelineActivitySeederService {
 
   constructor(private readonly objectMetadataService: ObjectMetadataService) {}
 
+  // Returns the timeline activity event name for a linked (e.g. note/task
+  // attached to a target) activity of the given type.
   private getLinkedActivityName(activityType: string): string {
     if (activityType === 'note' || activityType === 'task') {
       return `linked-${activityType}.created`;
@@ -119,6 +124,9 @@ export class TimelineActivitySeederService {
     return `${activityType}.linked`;
   }
 
+  // Builds "created" activities for each seeded record and "linked"
+  // activities for records attached to a target (notes, tasks, calendar
+  // events, messages), then bulk-inserts them all.
   async seedTimelineActivities({
     entityManager,
     schemaName,
@@ -213,6 +221,7 @@ export class TimelineActivitySeederService {
     );
   }
 
+  // Resolves the linked object's metadata id for the given entity type.
   private getLinkedObjectMetadataId(
     type: string,
     metadataIds: ObjectMetadataIds,
@@ -227,6 +236,7 @@ export class TimelineActivitySeederService {
     return metadataMap[type as keyof typeof metadataMap] || '';
   }
 
+  // Bulk-inserts timeline activities in chunks of 1000.
   private async insertTimelineActivities(
     entityManager: WorkspaceEntityManager,
     schemaName: string,
@@ -268,6 +278,7 @@ export class TimelineActivitySeederService {
     }
   }
 
+  // Builds a "created" timeline activity record for a single seeded record.
   private createTimelineActivity({
     entityType,
     recordSeed,
@@ -319,6 +330,8 @@ export class TimelineActivitySeederService {
     return timelineActivity;
   }
 
+  // Deterministically derives a fixed-format id for a "created" activity
+  // from its entity type and index.
   private generateTimelineActivityId(type: string, index: number): string {
     const prefix = '20202020';
     const code =
@@ -328,6 +341,8 @@ export class TimelineActivitySeederService {
     return `${prefix}-${code}-4000-8001-${paddedIndex}00000001`;
   }
 
+  // Builds the "after" properties payload stored on a created activity,
+  // picking the relevant fields per entity type.
   private getEventAfterRecordProperties(
     type: string,
     recordSeed: RecordSeedWithId,
@@ -390,6 +405,8 @@ export class TimelineActivitySeederService {
     return getter ? getter() : commonProperties;
   }
 
+  // Builds one linked activity record per target the given seed record is
+  // attached to (a note/task/calendar event/message can have several).
   private computeLinkedTimelineActivityRecords({
     activityType,
     recordSeed,
@@ -430,6 +447,8 @@ export class TimelineActivitySeederService {
     );
   }
 
+  // Resolves the target(s) (person/company/opportunity) a given record
+  // (note/task/calendar event/message) is linked to.
   private getActivityTargetInfos(
     activityType: 'note' | 'task' | 'calendarEvent' | 'message',
     recordSeed: RecordSeedWithId,
@@ -450,6 +469,7 @@ export class TimelineActivitySeederService {
     return getter ? getter() : [];
   }
 
+  // Resolves the seeded note-target's person/company/opportunity link.
   private getNoteTargetInfos(
     recordSeed: RecordSeedWithId,
   ): ActivityTargetInfo[] {
@@ -474,6 +494,7 @@ export class TimelineActivitySeederService {
     return [];
   }
 
+  // Resolves the seeded task-target's person/company/opportunity link.
   private getTaskTargetInfos(
     recordSeed: RecordSeedWithId,
   ): ActivityTargetInfo[] {
@@ -498,6 +519,8 @@ export class TimelineActivitySeederService {
     return [];
   }
 
+  // Resolves the people (and their companies) participating in a seeded
+  // calendar event.
   private getCalendarEventTargetInfos(
     recordSeed: RecordSeedWithId,
     calendarEventParticipants: CalendarEventParticipantDataSeed[],
@@ -529,6 +552,8 @@ export class TimelineActivitySeederService {
     return targetInfos;
   }
 
+  // Resolves the people (and their companies) participating in a seeded
+  // message.
   private getMessageTargetInfos(
     recordSeed: RecordSeedWithId,
     messageParticipants: MessageParticipantDataSeed[],
@@ -560,6 +585,8 @@ export class TimelineActivitySeederService {
     return targetInfos;
   }
 
+  // Builds a single linked activity record pointing a seeded record at one
+  // of its targets.
   private computeLinkedActivityRecord({
     activityType,
     recordSeed,
@@ -614,6 +641,8 @@ export class TimelineActivitySeederService {
     return linkedActivity;
   }
 
+  // Builds the cached display name and "after" properties for a linked
+  // activity, picking the relevant fields per entity type.
   private getLinkedRecordData(
     activityType: string,
     recordSeed: RecordSeedWithId,
@@ -667,6 +696,8 @@ export class TimelineActivitySeederService {
     return getter();
   }
 
+  // Deterministically derives a fixed-format id for a linked activity from
+  // its entity type, target type, and index.
   private generateLinkedTimelineActivityId(
     type: string,
     targetType: string,
@@ -683,6 +714,8 @@ export class TimelineActivitySeederService {
     return `${prefix}-${entityCode}-${targetCode}-8001-${indexHex}0001`;
   }
 
+  // Looks up the object metadata ids for note/task/calendarEvent/message in
+  // the workspace, throwing if any are missing.
   private async getObjectMetadataIds(
     workspaceId: string,
   ): Promise<ObjectMetadataIds> {

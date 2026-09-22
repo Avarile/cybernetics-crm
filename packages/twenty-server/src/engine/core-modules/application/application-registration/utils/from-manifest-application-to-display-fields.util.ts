@@ -3,6 +3,8 @@ import { type ApplicationManifest } from 'twenty-shared/application';
 import { type ApplicationRegistrationGalleryImage } from 'src/engine/core-modules/application/application-registration/types/application-registration-gallery-image.type';
 import { toGalleryImagePaths } from 'src/engine/core-modules/application/application-registration/utils/to-gallery-image-paths.util';
 
+// Extracts a manifest's display metadata (description, author, links,
+// gallery image paths) into the registration entity's display columns.
 export const fromManifestApplicationToDisplayFields = (
   application: ApplicationManifest | undefined,
 ) => ({

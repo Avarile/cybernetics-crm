@@ -1,3 +1,4 @@
+// Human-readable error messages used across the admin panel health checks
 export const HEALTH_ERROR_MESSAGES = {
   NO_ACTIVE_WORKERS: 'No active workers found',
   WORKER_TIMEOUT: 'Worker check timeout',

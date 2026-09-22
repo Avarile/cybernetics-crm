@@ -1,3 +1,5 @@
+// GraphQL input for creating a field, derived from FieldMetadataDTO minus
+// server-managed fields, plus relation-creation payloads for relation/morph fields.
 import { Field, HideField, InputType, OmitType } from '@nestjs/graphql';
 
 import { Type } from 'class-transformer';

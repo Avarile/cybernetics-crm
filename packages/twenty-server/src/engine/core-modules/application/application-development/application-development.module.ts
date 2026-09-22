@@ -1,3 +1,6 @@
+// NestJS module wiring the "application development" resolver/service, which
+// lets developers sync a local application manifest into a workspace for
+// iterative development without going through the full registration flow.
 import { Module } from '@nestjs/common';
 
 import { ApplicationRegistrationModule } from 'src/engine/core-modules/application/application-registration/application-registration.module';

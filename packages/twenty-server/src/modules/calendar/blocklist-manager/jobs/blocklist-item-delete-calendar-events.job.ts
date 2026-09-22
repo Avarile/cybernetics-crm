@@ -25,6 +25,9 @@ export type BlocklistItemDeleteCalendarEventsJobData = WorkspaceEventBatch<
   queueName: MessageQueue.calendarQueue,
   scope: Scope.REQUEST,
 })
+// When blocklist entries are created/updated, deletes calendar event
+// associations whose participants match the newly blocklisted handles
+// (excluding the channel's own handle/aliases), then prunes orphaned events.
 export class BlocklistItemDeleteCalendarEventsJob {
   constructor(
     private readonly globalWorkspaceOrmManager: GlobalWorkspaceOrmManager,

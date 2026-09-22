@@ -51,6 +51,9 @@ const createCompleteDashboardSchema = z.object({
     .describe('Widgets to add'),
 });
 
+// AI agent tool: creates a full dashboard in one call — page layout, first
+// tab, and any given widgets (skipping/reporting individual widget
+// failures rather than aborting the whole dashboard).
 export const createCreateCompleteDashboardTool = (
   deps: DashboardToolDependencies,
   context: DashboardToolContext,
@@ -231,6 +234,7 @@ AGGREGATION OPERATIONS: COUNT, SUM, AVG, MIN, MAX, COUNT_EMPTY, COUNT_NOT_EMPTY`
   },
 });
 
+// Inserts the dashboard record pointing at the newly created page layout.
 const createDashboardRecord = async (
   deps: DashboardToolDependencies,
   context: DashboardToolContext,

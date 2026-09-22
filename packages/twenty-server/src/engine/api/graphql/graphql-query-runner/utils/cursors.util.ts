@@ -1,3 +1,6 @@
+// Encodes/decodes base64 pagination cursors: a cursor carries the
+// record's id plus the values of whatever fields it was ordered by, so
+// keyset pagination can resume from that exact position.
 import { type ObjectRecord } from 'twenty-shared/types';
 import { isDefined, isPlainObject } from 'twenty-shared/utils';
 
@@ -21,6 +24,8 @@ export interface CursorData {
   [key: string]: any;
 }
 
+// Decodes a base64 cursor string back into its underlying field values,
+// throwing an INVALID_CURSOR exception if it isn't valid base64 JSON.
 export const decodeCursor = <T = CursorData>(cursor: string): T => {
   try {
     return JSON.parse(Buffer.from(cursor, 'base64').toString());
@@ -33,6 +38,9 @@ export const decodeCursor = <T = CursorData>(cursor: string): T => {
   }
 };
 
+// Builds a cursor for a record from the fields it was ordered by (plus
+// its id as a tiebreaker), expanding composite fields to only the
+// sub-fields actually used in the orderBy.
 export const encodeCursor = <T extends ObjectRecord = ObjectRecord>({
   objectRecord,
   order,
@@ -98,10 +106,13 @@ export const encodeCursor = <T extends ObjectRecord = ObjectRecord>({
   return encodeCursorData(cursorData);
 };
 
+// Base64-encodes a cursor data object into an opaque cursor string.
 export const encodeCursorData = (cursorData: CursorData) => {
   return Buffer.from(JSON.stringify(cursorData)).toString('base64');
 };
 
+// Decodes whichever of `after`/`before` was provided on a find-many
+// query's pagination args, or returns undefined if neither was given.
 export const getCursor = (
   // oxlint-disable-next-line typescript/no-explicit-any
   args: FindManyResolverArgs<any, any>,
@@ -113,6 +124,8 @@ export const getCursor = (
   return undefined;
 };
 
+// Derives hasNextPage/hasPreviousPage from fetching one extra record
+// beyond the requested limit (the classic "limit+1" pagination trick).
 export const getPaginationInfo = (
   objectRecords: ObjectRecord[],
   limit: number,

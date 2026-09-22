@@ -2,6 +2,7 @@ import { type BullMQDriverOptions } from 'src/engine/core-modules/message-queue/
 import { type MetricsService } from 'src/engine/core-modules/metrics/metrics.service';
 import { type TwentyConfigService } from 'src/engine/core-modules/twenty-config/twenty-config.service';
 
+// Options for building the message queue module with either the BullMQ or sync driver
 export enum MessageQueueDriverType {
   BullMQ = 'bull-mq',
   Sync = 'sync',

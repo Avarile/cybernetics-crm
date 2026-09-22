@@ -1,3 +1,6 @@
+// TypeORM entity for a single locale's translated message catalog, either
+// for a specific application registration or (when the registration is
+// null) the standard Twenty locale catalog.
 import {
   Column,
   CreateDateColumn,

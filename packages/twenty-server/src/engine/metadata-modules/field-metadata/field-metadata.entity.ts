@@ -40,6 +40,9 @@ import { ViewEntity } from 'src/engine/metadata-modules/view/entities/view.entit
 import { SyncableEntity } from 'src/engine/workspace-manager/types/syncable-entity.interface';
 import { JsonbProperty } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/jsonb-property.type';
 
+// TypeORM entity for a field's metadata (type, options, settings, relation
+// target). Generic over FieldMetadataType so relation/morph-only columns are
+// typed as present only for the relevant field types.
 // This entity is used as a reference test case for type utilities in:
 // Modifying relations or properties may require updating type test expectations for Typecheck to pass.
 @Entity('fieldMetadata')

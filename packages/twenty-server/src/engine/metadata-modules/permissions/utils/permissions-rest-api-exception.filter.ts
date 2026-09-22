@@ -12,6 +12,8 @@ import { PermissionsException } from 'src/engine/metadata-modules/permissions/pe
 import { permissionRestApiExceptionCodeToHttpStatus } from 'src/engine/metadata-modules/permissions/utils/permission-rest-api-exception-code-to-http-status.util';
 import { type CustomException } from 'src/utils/custom-exception';
 
+// Routes PermissionsException instances thrown in REST controllers to an HTTP error
+// response with the appropriate status code.
 @Injectable()
 @Catch(PermissionsException)
 export class PermissionsRestApiExceptionFilter implements ExceptionFilter {

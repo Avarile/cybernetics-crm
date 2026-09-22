@@ -15,6 +15,8 @@ type RunSingleMigrationResult =
   | { status: 'already-executed' }
   | { status: 'failed'; error: unknown };
 
+// Executes fast and slow instance commands exactly once, recording success/failure
+// and rolling back the schema transaction on error
 @Injectable()
 export class InstanceCommandRunnerService {
   private readonly logger = new Logger(InstanceCommandRunnerService.name);
@@ -28,6 +30,8 @@ export class InstanceCommandRunnerService {
     private readonly upgradeStatusService: UpgradeStatusService,
   ) {}
 
+  // Runs a fast instance command's up() inside a transaction, skipping it if
+  // already recorded as completed, and records the outcome either way
   async runFastInstanceCommand({
     command,
     name,
@@ -106,6 +110,8 @@ export class InstanceCommandRunnerService {
     }
   }
 
+  // Invalidates the cached upgrade status, swallowing failures so a cache miss
+  // never blocks the migration itself
   private async safeInvalidateUpgradeStatusCache(): Promise<void> {
     try {
       await this.upgradeStatusService.invalidateInstanceAndAllWorkspacesStatus();
@@ -118,6 +124,8 @@ export class InstanceCommandRunnerService {
     }
   }
 
+  // Runs a slow command's data migration first (outside the schema transaction),
+  // then falls through to the standard fast-command flow for its up()/recording
   async runSlowInstanceCommand({
     command,
     name,

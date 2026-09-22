@@ -5,6 +5,8 @@ import { ViewSortDirection } from 'twenty-shared/types';
 
 registerEnumType(ViewSortDirection, { name: 'ViewSortDirection' });
 
+// GraphQL representation of a view sort: which field to sort by, in what
+// direction, applied to a specific view.
 @ObjectType('ViewSort')
 export class ViewSortDTO {
   @Field(() => UUIDScalarType)

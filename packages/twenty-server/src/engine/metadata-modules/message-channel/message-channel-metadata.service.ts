@@ -37,6 +37,9 @@ import { INBOUND_EMAIL_LOCAL_PART_RANDOM_BYTES } from 'src/modules/messaging/mes
 import { getDomainFromEmail } from 'src/utils/get-domain-from-email';
 
 @Injectable()
+// CRUD and lifecycle management for message channels (individual mailbox
+// syncs and shared email-group inboxes), including ownership checks and
+// email-group provisioning/teardown (forwarding address, emailing domain).
 export class MessageChannelMetadataService {
   constructor(
     @InjectRepository(MessageChannelEntity)
@@ -47,10 +50,13 @@ export class MessageChannelMetadataService {
     private readonly workspaceEventEmitter: WorkspaceEventEmitter,
   ) {}
 
+  // Returns every message channel in the workspace.
   async findAll(workspaceId: string): Promise<MessageChannelDTO[]> {
     return this.repository.find({ where: { workspaceId } });
   }
 
+  // Returns the message channels visible to a member: those on their own
+  // connected accounts plus any shared workspace-wide accounts' channels.
   async findByUserWorkspaceId({
     userWorkspaceId,
     workspaceId,
@@ -77,6 +83,8 @@ export class MessageChannelMetadataService {
     });
   }
 
+  // Returns the message channels for a connected account, after verifying
+  // the member has access to that account.
   async findByConnectedAccountIdForUser({
     connectedAccountId,
     userWorkspaceId,
@@ -95,6 +103,7 @@ export class MessageChannelMetadataService {
     return this.findByConnectedAccountId({ connectedAccountId, workspaceId });
   }
 
+  // Returns the message channels belonging to a single connected account.
   async findByConnectedAccountId({
     connectedAccountId,
     workspaceId,
@@ -107,6 +116,8 @@ export class MessageChannelMetadataService {
     });
   }
 
+  // Returns the message channels belonging to any of several connected
+  // accounts.
   async findByConnectedAccountIds({
     connectedAccountIds,
     workspaceId,
@@ -123,6 +134,7 @@ export class MessageChannelMetadataService {
     });
   }
 
+  // Finds a message channel by id within a workspace.
   async findById({
     id,
     workspaceId,
@@ -133,6 +145,8 @@ export class MessageChannelMetadataService {
     return this.repository.findOne({ where: { id, workspaceId } });
   }
 
+  // Loads a message channel and throws unless it exists and is either on
+  // a workspace-shared connected account or owned by the given member.
   async verifyOwnership({
     id,
     userWorkspaceId,
@@ -179,6 +193,7 @@ export class MessageChannelMetadataService {
     return messageChannel;
   }
 
+  // Persists a new message channel record.
   async create(
     data: Partial<MessageChannelEntity> & {
       workspaceId: string;
@@ -194,6 +209,7 @@ export class MessageChannelMetadataService {
     return this.repository.save(entity);
   }
 
+  // Applies a partial update to a message channel.
   async update({
     id,
     workspaceId,
@@ -211,6 +227,11 @@ export class MessageChannelMetadataService {
     return this.repository.findOneOrFail({ where: { id, workspaceId } });
   }
 
+  // Provisions a shared email-group inbox: validates the server is
+  // configured for inbound email (or running in emailing-domain demo
+  // mode), registers the sending domain, generates a unique inbound
+  // forwarding address, and creates the backing connected account and
+  // message channel configured for send-and-receive contact auto-creation.
   async createEmailGroupChannel({
     handle,
     userWorkspaceId,
@@ -288,6 +309,9 @@ export class MessageChannelMetadataService {
     return { messageChannel, forwardingAddress };
   }
 
+  // Returns the existing email-group channel for a sender address, or
+  // creates one if none exists yet (e.g. on first inbound message to a
+  // new group address).
   async getOrCreateEmailGroupChannel({
     fromAddress,
     userWorkspaceId,
@@ -318,6 +342,8 @@ export class MessageChannelMetadataService {
     return messageChannel;
   }
 
+  // Deletes a message channel and emits a deletion event for dependent
+  // modules to clean up.
   async delete({
     id,
     workspaceId,
@@ -340,6 +366,9 @@ export class MessageChannelMetadataService {
     return messageChannel;
   }
 
+  // Tears down an email-group channel after verifying ownership: deletes
+  // its backing connected account, then removes the emailing domain
+  // registration if no other email-group channel still uses that domain.
   async deleteEmailGroupChannel({
     id,
     userWorkspaceId,
@@ -389,6 +418,8 @@ export class MessageChannelMetadataService {
     return messageChannel;
   }
 
+  // Checks whether any email-group channel in the workspace still uses
+  // the given sending domain.
   private async hasEmailGroupChannelForDomain(
     workspaceId: string,
     domain: string,

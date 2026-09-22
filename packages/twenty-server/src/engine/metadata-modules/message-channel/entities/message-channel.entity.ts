@@ -54,6 +54,9 @@ registerEnumType(MessageChannelPendingGroupEmailsAction, {
   'isSyncEnabled',
   'syncStage',
 ])
+// TypeORM entity for a message (email) channel: tracks sync
+// configuration/state for a connected account's mailbox, or a shared
+// email-group inbox, including webhook subscription and throttle state.
 export class MessageChannelEntity extends WorkspaceRelatedEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;

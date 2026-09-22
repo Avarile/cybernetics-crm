@@ -19,8 +19,13 @@ type SelectFields = {
   [key: string]: boolean | SelectFields;
 };
 
+// Builds a TypeORM-style select-fields map for an object, expanding
+// relation fields up to a given depth while respecting field-level read
+// permissions.
 @Injectable()
 export class CommonSelectFieldsHelper {
+  // Computes the selectable fields for an object plus, if depth allows,
+  // the select fields of its relations.
   computeFromDepth = ({
     objectsPermissions,
     flatObjectMetadataMaps,
@@ -63,6 +68,9 @@ export class CommonSelectFieldsHelper {
     };
   };
 
+  // Recursively resolves relation fields' select-fields maps up to the
+  // given depth, skipping relations the caller can't read and handling
+  // junction-table relations specially (e.g. hard-coded note/task targets).
   private getRelationsAndRelationsSelectFields({
     flatObjectMetadataMaps,
     flatFieldMetadataMaps,

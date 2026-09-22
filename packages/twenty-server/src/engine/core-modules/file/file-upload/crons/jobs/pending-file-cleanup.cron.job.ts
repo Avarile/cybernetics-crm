@@ -1,3 +1,4 @@
+// Queue processor running the pending-file cleanup on a cron schedule.
 import { Injectable, Logger } from '@nestjs/common';
 
 import { SentryCronMonitor } from 'src/engine/core-modules/cron/sentry-cron-monitor.decorator';
@@ -23,6 +24,7 @@ export class PendingFileCleanupCronJob {
     PendingFileCleanupCronJob.name,
     PENDING_FILE_CLEANUP_CRON_PATTERN,
   )
+  // Runs the pending-file cleanup, reporting exceptions to the handler and rethrowing.
   async handle(): Promise<void> {
     try {
       const deletedCount =

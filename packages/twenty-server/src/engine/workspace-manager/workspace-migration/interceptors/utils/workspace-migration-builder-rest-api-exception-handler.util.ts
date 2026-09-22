@@ -5,6 +5,8 @@ import { type WorkspaceMigrationBuilderException } from 'src/engine/workspace-ma
 import { buildMetadataValidationErrorPayload } from 'src/engine/workspace-manager/workspace-migration/interceptors/utils/build-metadata-validation-error-payload.util';
 import { translateUserFriendlyMessageDescriptors } from 'src/engine/core-modules/i18n/utils/translate-user-friendly-message-descriptors.util';
 
+// Converts a WorkspaceMigrationBuilderException into a translated 400 JSON error response, with a
+// validation summary payload
 export const workspaceMigrationBuilderRestApiExceptionHandler = ({
   exception,
   response,

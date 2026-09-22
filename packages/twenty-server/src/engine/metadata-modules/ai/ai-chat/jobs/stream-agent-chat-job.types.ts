@@ -1,3 +1,5 @@
+// Payload for StreamAgentChatJob: everything needed to resume/run a single
+// streaming chat turn without re-reading the whole thread from the request.
 import type {
   ExtendedUIMessage,
   ExtendedUIMessagePart,

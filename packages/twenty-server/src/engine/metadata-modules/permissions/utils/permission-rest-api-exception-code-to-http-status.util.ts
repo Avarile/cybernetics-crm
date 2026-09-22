@@ -2,6 +2,7 @@ import { assertUnreachable } from 'twenty-shared/utils';
 
 import { PermissionsExceptionCode } from 'src/engine/metadata-modules/permissions/permissions.exception';
 
+// Maps a PermissionsException code to the HTTP status code to return from the REST API.
 export const permissionRestApiExceptionCodeToHttpStatus = (
   code: PermissionsExceptionCode,
 ): number => {

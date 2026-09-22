@@ -11,6 +11,8 @@ import {
 } from 'src/engine/metadata-modules/front-component/front-component.exception';
 import { mergeUpdateInExistingRecord } from 'src/utils/merge-update-in-existing-record.util';
 
+// Applies an update-front-component input onto the matching existing flat front
+// component, throwing if the target component doesn't exist.
 export const fromUpdateFrontComponentInputToFlatFrontComponentToUpdateOrThrow =
   ({
     flatFrontComponentMaps,

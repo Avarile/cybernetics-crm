@@ -1,3 +1,5 @@
+// Request-scoped GraphQL context type, exposing the authenticated user
+// and resolved workspace to resolvers.
 import { type YogaDriverServerContext } from '@graphql-yoga/nestjs';
 
 import { type FlatAuthContextUser } from 'src/engine/core-modules/auth/types/flat-auth-context-user.type';

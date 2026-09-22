@@ -1,3 +1,5 @@
+// Wires up saving message participants and matching them to people/
+// workspace members as those records change.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

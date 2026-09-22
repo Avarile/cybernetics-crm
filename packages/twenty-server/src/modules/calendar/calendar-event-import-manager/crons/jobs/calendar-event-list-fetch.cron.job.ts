@@ -30,6 +30,9 @@ export const CALENDAR_EVENT_LIST_FETCH_CRON_PATTERN = '*/5 * * * *';
 @Processor({
   queueName: MessageQueue.cronQueue,
 })
+// Every 5 minutes, finds calendar channels pending an event list fetch
+// (skipping throttled ones), marks them scheduled, and queues a fetch job
+// for each active workspace.
 export class CalendarEventListFetchCronJob {
   private readonly logger = new Logger(CalendarEventListFetchCronJob.name);
 

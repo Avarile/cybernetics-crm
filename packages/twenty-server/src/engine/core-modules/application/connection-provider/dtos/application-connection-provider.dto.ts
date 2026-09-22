@@ -1,3 +1,5 @@
+// GraphQL DTOs describing an application's connection provider and its
+// OAuth config (as shown to workspace admins before connecting an account).
 import { Field, ObjectType } from '@nestjs/graphql';
 
 import { type ConnectionProviderType } from 'twenty-shared/application';

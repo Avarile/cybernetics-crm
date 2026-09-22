@@ -10,6 +10,7 @@ type ToolPartWithOutput = ExtendedUIMessagePart & {
   output?: { result?: AskQuestionsToolResult };
 };
 
+// Finds an ask_questions tool part awaiting the user's answer, if any.
 export const findPendingQuestionPart = (
   parts: ExtendedUIMessagePart[],
 ): ToolPartWithOutput | undefined => {

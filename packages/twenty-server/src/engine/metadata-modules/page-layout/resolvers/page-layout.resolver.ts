@@ -33,6 +33,9 @@ import { WorkspaceMigrationGraphqlApiExceptionInterceptor } from 'src/engine/wor
 @UseFilters(PageLayoutGraphqlApiExceptionFilter)
 @UseGuards(WorkspaceAuthGuard)
 @UsePipes(ResolverValidationPipe)
+// GraphQL resolver exposing CRUD for page layouts, plus updating a
+// layout with its full tabs/widgets tree and resetting layouts, tabs, or
+// widgets back to their standard-app defaults.
 export class PageLayoutResolver {
   constructor(
     private readonly pageLayoutService: PageLayoutService,
@@ -40,6 +43,7 @@ export class PageLayoutResolver {
     private readonly pageLayoutResetService: PageLayoutResetService,
   ) {}
 
+  // Lists page layouts, optionally filtered by object metadata id and/or type.
   @Query(() => [PageLayoutDTO])
   @UseGuards(NoPermissionGuard)
   async getPageLayouts(
@@ -62,6 +66,7 @@ export class PageLayoutResolver {
     return this.pageLayoutService.findByWorkspaceId(workspace.id);
   }
 
+  // Fetches a single page layout by id.
   @Query(() => PageLayoutDTO, { nullable: true })
   @UseGuards(NoPermissionGuard)
   async getPageLayout(
@@ -74,6 +79,7 @@ export class PageLayoutResolver {
     });
   }
 
+  // Creates a new page layout.
   @Mutation(() => PageLayoutDTO)
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.LAYOUTS))
   async createPageLayout(
@@ -86,6 +92,7 @@ export class PageLayoutResolver {
     });
   }
 
+  // Updates a page layout's fields (not its tabs/widgets).
   @Mutation(() => PageLayoutDTO)
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.LAYOUTS))
   async updatePageLayout(
@@ -100,6 +107,7 @@ export class PageLayoutResolver {
     });
   }
 
+  // Permanently destroys a page layout.
   @Mutation(() => Boolean)
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.LAYOUTS))
   async destroyPageLayout(
@@ -112,6 +120,8 @@ export class PageLayoutResolver {
     });
   }
 
+  // Replaces a page layout's fields and its full set of tabs (with their
+  // widgets) in one call, diffing against the existing state.
   @Mutation(() => PageLayoutDTO)
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.LAYOUTS))
   async updatePageLayoutWithTabsAndWidgets(
@@ -126,6 +136,8 @@ export class PageLayoutResolver {
     });
   }
 
+  // Resets a standard-app page layout back to its default, discarding
+  // workspace overrides and custom tabs/widgets.
   @Mutation(() => PageLayoutDTO)
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.LAYOUTS))
   async resetPageLayoutToDefault(
@@ -138,6 +150,7 @@ export class PageLayoutResolver {
     });
   }
 
+  // Resets a standard-app page layout widget back to its default.
   @Mutation(() => PageLayoutWidgetDTO)
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.LAYOUTS))
   async resetPageLayoutWidgetToDefault(
@@ -150,6 +163,7 @@ export class PageLayoutResolver {
     });
   }
 
+  // Resets a standard-app page layout tab back to its default.
   @Mutation(() => PageLayoutTabDTO)
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.LAYOUTS))
   async resetPageLayoutTabToDefault(

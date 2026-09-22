@@ -4,12 +4,14 @@ import { GlobalWorkspaceOrmManager } from 'src/engine/twenty-orm/global-workspac
 import { buildSystemAuthContext } from 'src/engine/twenty-orm/utils/build-system-auth-context.util';
 import { BlocklistWorkspaceEntity } from 'src/modules/blocklist/standard-objects/blocklist.workspace-entity';
 
+// System-level (permission-bypassing) access to a workspace's blocklist entries.
 @Injectable()
 export class BlocklistRepository {
   constructor(
     private readonly globalWorkspaceOrmManager: GlobalWorkspaceOrmManager,
   ) {}
 
+  // Fetches a single blocklist entry by id, bypassing permission checks.
   public async getById(
     id: string,
     workspaceId: string,
@@ -35,6 +37,7 @@ export class BlocklistRepository {
     );
   }
 
+  // Fetches all blocklist entries belonging to a given workspace member.
   public async getByWorkspaceMemberId(
     workspaceMemberId: string,
     workspaceId: string,

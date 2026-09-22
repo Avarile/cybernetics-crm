@@ -1,3 +1,5 @@
+// NestJS module wiring up the AI agent resolver, service, and repository,
+// alongside the modules it depends on for models, roles, and migrations.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

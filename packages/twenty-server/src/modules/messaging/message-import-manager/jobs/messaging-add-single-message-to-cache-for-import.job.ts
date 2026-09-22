@@ -1,3 +1,6 @@
+// Adds a single message's external id to the cache set of messages
+// pending import for a message channel, so the regular import job will
+// pick it up (used by the single-message-import CLI command).
 import { InjectCacheStorage } from 'src/engine/core-modules/cache-storage/decorators/cache-storage.decorator';
 import { CacheStorageService } from 'src/engine/core-modules/cache-storage/services/cache-storage.service';
 import { CacheStorageNamespace } from 'src/engine/core-modules/cache-storage/types/cache-storage-namespace.enum';
@@ -18,6 +21,7 @@ export class MessagingAddSingleMessageToCacheForImportJob {
     private readonly cacheStorage: CacheStorageService,
   ) {}
 
+  // Adds the message's external id to the channel's pending-import cache set.
   @Process(MessagingAddSingleMessageToCacheForImportJob.name)
   async handle(
     data: MessagingAddSingleMessageToCacheForImportJobData,

@@ -18,6 +18,8 @@ import {
   MessageFolderExceptionCode,
 } from 'src/engine/metadata-modules/message-folder/message-folder.exception';
 
+// Maps message-folder (and related message-channel/connected-account) domain exceptions
+// to the appropriate GraphQL error type; rethrows anything else unchanged.
 export const messageFolderGraphqlApiExceptionHandler = (error: Error) => {
   if (error instanceof MessageFolderException) {
     switch (error.code) {

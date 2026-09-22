@@ -40,6 +40,9 @@ const updateDashboardWidgetSchema = z.object({
   configuration: widgetConfigurationSchemaWithoutDefaults.optional(),
 });
 
+// AI agent tool: partially updates an existing widget (title, type,
+// position, object, or configuration), resolving any object/field names
+// given instead of UUIDs against the widget's (possibly newly set) object.
 export const createUpdateDashboardWidgetTool = (
   deps: Pick<
     DashboardToolDependencies,

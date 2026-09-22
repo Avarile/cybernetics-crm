@@ -4,6 +4,7 @@ import { sanitizeCalendarEvent } from 'src/modules/calendar/calendar-event-impor
 import { CalendarEventParticipantResponseStatus } from 'src/modules/calendar/common/standard-objects/calendar-event-participant.workspace-entity';
 import { type FetchedCalendarEvent } from 'src/modules/calendar/common/types/fetched-calendar-event';
 
+// Converts Google Calendar API events into the shared FetchedCalendarEvent shape.
 export const formatGoogleCalendarEvents = (
   events: calendarV3.Schema$Event[],
 ): FetchedCalendarEvent[] => {

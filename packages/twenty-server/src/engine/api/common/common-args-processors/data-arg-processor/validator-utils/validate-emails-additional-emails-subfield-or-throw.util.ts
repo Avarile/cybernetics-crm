@@ -9,6 +9,8 @@ import {
   CommonQueryRunnerExceptionCode,
 } from 'src/engine/api/common/common-query-runners/errors/common-query-runner.exception';
 
+// Validates the additionalEmails subfield: null, a single email string, or
+// an array of valid email strings; throws otherwise.
 export const validateEmailsAdditionalEmailsSubfieldOrThrow = (
   value: unknown,
   fieldName: string,

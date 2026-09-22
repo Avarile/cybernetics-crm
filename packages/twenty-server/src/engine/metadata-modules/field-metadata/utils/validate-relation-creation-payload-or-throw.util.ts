@@ -13,6 +13,7 @@ import {
   FieldMetadataExceptionCode,
 } from 'src/engine/metadata-modules/field-metadata/field-metadata.exception';
 
+// Validation shape for a relation-creation payload attached to a create-field input.
 class RelationCreationPayloadValidation {
   @IsUUID()
   targetObjectMetadataId?: string;
@@ -27,6 +28,8 @@ class RelationCreationPayloadValidation {
   type: RelationType;
 }
 
+// Validates a relation-creation payload's shape, throwing a
+// FieldMetadataException with the collected constraint messages if invalid.
 export const validateRelationCreationPayloadOrThrow = async (
   relationCreationPayload: RelationCreationPayloadValidation,
 ) => {

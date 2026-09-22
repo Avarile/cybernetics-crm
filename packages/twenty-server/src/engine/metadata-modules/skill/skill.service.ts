@@ -21,6 +21,7 @@ import {
 import { WorkspaceMigrationBuilderException } from 'src/engine/workspace-manager/workspace-migration/exceptions/workspace-migration-builder-exception';
 import { WorkspaceMigrationValidateBuildAndRunService } from 'src/engine/workspace-manager/workspace-migration/services/workspace-migration-validate-build-and-run-service';
 
+// CRUD and activation operations for skills, applying each change as a workspace migration.
 @Injectable()
 export class SkillService {
   constructor(
@@ -29,6 +30,7 @@ export class SkillService {
     private readonly applicationService: ApplicationService,
   ) {}
 
+  // Returns all skills in the workspace, alphabetically by label.
   async findAll(workspaceId: string): Promise<SkillDTO[]> {
     const { flatSkillMaps } =
       await this.workspaceManyOrAllFlatEntityMapsCacheService.getOrRecomputeManyOrAllFlatEntityMaps(
@@ -44,6 +46,7 @@ export class SkillService {
       .map(fromFlatSkillToSkillDto);
   }
 
+  // Returns a single skill by id, or null if not found.
   async findById(id: string, workspaceId: string): Promise<SkillDTO | null> {
     const { flatSkillMaps } =
       await this.workspaceManyOrAllFlatEntityMapsCacheService.getOrRecomputeManyOrAllFlatEntityMaps(
@@ -65,6 +68,7 @@ export class SkillService {
     return fromFlatSkillToSkillDto(flatSkill);
   }
 
+  // Creates a custom skill via a workspace migration and returns the created record.
   async create(
     input: CreateSkillInput,
     workspaceId: string,
@@ -120,6 +124,7 @@ export class SkillService {
     );
   }
 
+  // Updates a custom skill via a workspace migration and returns the updated record.
   async update(
     input: UpdateSkillInput,
     workspaceId: string,
@@ -182,6 +187,7 @@ export class SkillService {
     );
   }
 
+  // Deletes a custom skill via a workspace migration and returns the deleted record.
   async delete(id: string, workspaceId: string): Promise<SkillDTO> {
     const { workspaceCustomFlatApplication } =
       await this.applicationService.findWorkspaceTwentyStandardAndCustomApplicationOrThrow(
@@ -228,6 +234,7 @@ export class SkillService {
     return fromFlatSkillToSkillDto(flatSkillToDelete);
   }
 
+  // Returns all active flat skills in the workspace, alphabetically by label.
   async findAllFlatSkills(workspaceId: string): Promise<FlatSkill[]> {
     const { flatSkillMaps } =
       await this.workspaceManyOrAllFlatEntityMapsCacheService.getOrRecomputeManyOrAllFlatEntityMaps(
@@ -243,6 +250,7 @@ export class SkillService {
       .sort((a, b) => a.label.localeCompare(b.label));
   }
 
+  // Returns the active flat skills matching the given names.
   async findFlatSkillsByNames(
     names: string[],
     workspaceId: string,
@@ -266,6 +274,7 @@ export class SkillService {
       );
   }
 
+  // Marks a skill active via a workspace migration and returns the updated record.
   async activate(id: string, workspaceId: string): Promise<SkillDTO> {
     const { workspaceCustomFlatApplication } =
       await this.applicationService.findWorkspaceTwentyStandardAndCustomApplicationOrThrow(
@@ -331,6 +340,7 @@ export class SkillService {
     );
   }
 
+  // Marks a skill inactive via a workspace migration and returns the updated record.
   async deactivate(id: string, workspaceId: string): Promise<SkillDTO> {
     const { workspaceCustomFlatApplication } =
       await this.applicationService.findWorkspaceTwentyStandardAndCustomApplicationOrThrow(
@@ -396,6 +406,7 @@ export class SkillService {
     );
   }
 
+  // Returns a skill by id, throwing SkillException if it doesn't exist.
   async findByIdOrThrow(id: string, workspaceId: string): Promise<SkillDTO> {
     const skill = await this.findById(id, workspaceId);
 

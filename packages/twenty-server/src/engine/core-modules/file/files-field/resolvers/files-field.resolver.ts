@@ -1,3 +1,5 @@
+// GraphQL mutations for uploading a file into a FILES-type field, addressed
+// either by field metadata id or by its universal identifier.
 import { UseFilters, UseGuards, UsePipes } from '@nestjs/common';
 import { Args, Mutation } from '@nestjs/graphql';
 
@@ -26,6 +28,7 @@ export class FilesFieldResolver {
 
   @Mutation(() => FileWithSignedUrlDTO)
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.UPLOAD_FILE))
+  // Uploads a file into a FILES field identified by fieldMetadataId.
   async uploadFilesFieldFile(
     @AuthWorkspace()
     { id: workspaceId }: WorkspaceEntity,
@@ -51,6 +54,7 @@ export class FilesFieldResolver {
 
   @Mutation(() => FileWithSignedUrlDTO)
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.UPLOAD_FILE))
+  // Uploads a file into a FILES field identified by its universal identifier.
   async uploadFilesFieldFileByUniversalIdentifier(
     @AuthWorkspace()
     { id: workspaceId }: WorkspaceEntity,

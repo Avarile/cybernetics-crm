@@ -1,3 +1,5 @@
+// GraphQL DTOs for the paginated list of workspaces that have a given
+// application registration installed.
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';

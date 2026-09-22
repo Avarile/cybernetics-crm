@@ -5,6 +5,8 @@ import { type FlatApplication } from 'src/engine/core-modules/application/types/
 import { type FlatRole } from 'src/engine/metadata-modules/flat-role/types/flat-role.type';
 import { type CreateRoleInput } from 'src/engine/metadata-modules/role/dtos/create-role.input';
 
+// Builds a new flat role from a create-role input, applying default permission flags
+// and initializing all its related-entity id/universal-identifier lists as empty.
 export const fromCreateRoleInputToFlatRoleToCreate = ({
   createRoleInput,
   workspaceId,

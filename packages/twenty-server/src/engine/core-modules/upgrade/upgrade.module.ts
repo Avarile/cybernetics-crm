@@ -21,6 +21,8 @@ import { WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.ent
 import { UpgradeAwareEntityMetadataAdapter } from 'src/engine/twenty-orm/upgrade-aware/upgrade-aware-entity-metadata.adapter';
 import { WorkspaceVersionModule } from 'src/engine/workspace-manager/workspace-version/workspace-version.module';
 
+// Wires up the upgrade command registry, sequence runner/reader, status
+// tracking, and health gauges
 @Module({
   imports: [
     CoreEntityCacheModule,

@@ -1,3 +1,6 @@
+// Generates a typed JS/TS SDK client for a workspace's GraphQL schema by
+// copying the twenty-client-sdk template package, injecting the schema, and
+// packaging the result as a zip archive stored in file storage.
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -51,6 +54,8 @@ export class SdkClientGenerationService {
     private readonly messageQueueService: MessageQueueService,
   ) {}
 
+  // Enqueues SDK client generation jobs for the workspace's standard and
+  // custom applications.
   async enqueueSdkClientGenerationForWorkspace(
     workspaceId: string,
   ): Promise<void> {
@@ -78,6 +83,8 @@ export class SdkClientGenerationService {
     );
   }
 
+  // Builds the workspace's GraphQL schema for the given application and
+  // generates/stores the SDK client archive from it.
   async generateSdkClientForApplication({
     workspaceId,
     applicationId,
@@ -110,6 +117,9 @@ export class SdkClientGenerationService {
     return archiveBuffer;
   }
 
+  // Copies the SDK template package into a temp dir, injects the given
+  // schema, zips the result, uploads it to file storage, and marks the
+  // application's SDK layer stale so consumers know to refresh.
   private async generateAndStore({
     workspaceId,
     applicationId,

@@ -20,6 +20,10 @@ import {
 } from 'src/engine/metadata-modules/flat-index-metadata/types/flat-index-metadata.type';
 import { type FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object-metadata/types/flat-object-metadata.type';
 
+// Resolves a single index field to the record property path(s) and
+// column(s) that participate in its unique constraint: the join column
+// for a to-one relation, one or all unique-constraint subfields for a
+// composite field, or the field itself.
 const computeConflictingPropertiesForIndexField = ({
   flatFieldMetadata,
   subFieldName,
@@ -80,6 +84,8 @@ const computeConflictingPropertiesForIndexField = ({
   return [{ fullPath: flatFieldMetadata.name, column: flatFieldMetadata.name }];
 };
 
+// Resolves every field of a unique index (in index order) to its
+// conflicting properties; returns undefined if any field can't be resolved.
 const computeConflictingPropertiesForIndex = ({
   flatIndexFieldMetadatas,
   flatFieldMetadataMaps,
@@ -125,6 +131,8 @@ const computeConflictingPropertiesForIndex = ({
   return { baseFields, conflictingProperties };
 };
 
+// Builds the list of field groups (the id field plus every unique index)
+// that a createMany upsert should check for conflicts against.
 export const getConflictingFields = (
   flatObjectMetadata: FlatObjectMetadata,
   flatFieldMetadataMaps: FlatEntityMaps<FlatFieldMetadata>,

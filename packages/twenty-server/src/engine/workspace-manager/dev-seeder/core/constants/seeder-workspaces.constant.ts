@@ -2,6 +2,8 @@ import { WorkspaceActivationStatus } from 'twenty-shared/workspace';
 
 import { type WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.entity';
 
+// Fixed ids and creation inputs for the standard dev-seeded workspaces
+// (Apple, YCombinator, plus two empty ones) used across e2e/dev seeding.
 export const WORKSPACE_FIELDS_TO_SEED = [
   'id',
   'displayName',

@@ -25,6 +25,8 @@ import { WorkspaceMigrationBuilderException } from 'src/engine/workspace-manager
 import { WorkspaceMigrationValidateBuildAndRunService } from 'src/engine/workspace-manager/workspace-migration/services/workspace-migration-validate-build-and-run-service';
 
 @Injectable()
+// CRUD (including batch create) for view fields, backed by the flat
+// entity maps and applied through validated workspace migrations.
 export class ViewFieldService {
   constructor(
     private readonly workspaceMigrationValidateBuildAndRunService: WorkspaceMigrationValidateBuildAndRunService,
@@ -32,6 +34,7 @@ export class ViewFieldService {
     private readonly applicationService: ApplicationService,
   ) {}
 
+  // Creates a single view field (thin wrapper over createMany).
   async createOne({
     createViewFieldInput,
     workspaceId,
@@ -54,6 +57,8 @@ export class ViewFieldService {
     return createdViewField;
   }
 
+  // Builds flat view fields for each input and applies them all in one
+  // validated workspace migration.
   async createMany({
     createViewFieldInputs,
     workspaceId,
@@ -133,6 +138,9 @@ export class ViewFieldService {
     }).map(fromFlatViewFieldToViewFieldDto);
   }
 
+  // Applies partial updates to an existing view field via a validated
+  // workspace migration. Overridable properties become overrides instead
+  // of direct mutations when the caller doesn't own the field.
   async updateOne({
     updateViewFieldInput,
     workspaceId,
@@ -209,6 +217,8 @@ export class ViewFieldService {
     );
   }
 
+  // Soft-deletes a view field (sets deletedAt) via a validated workspace
+  // migration.
   async deleteOne({
     deleteViewFieldInput,
     workspaceId,
@@ -278,6 +288,7 @@ export class ViewFieldService {
     );
   }
 
+  // Permanently removes a view field via a validated workspace migration.
   async destroyOne({
     destroyViewFieldInput,
     workspaceId,
@@ -341,6 +352,7 @@ export class ViewFieldService {
     });
   }
 
+  // Returns all active view fields in the workspace, ordered by position.
   async findByWorkspaceId(workspaceId: string): Promise<ViewFieldDTO[]> {
     const { flatViewFieldMaps } =
       await this.workspaceManyOrAllFlatEntityMapsCacheService.getOrRecomputeManyOrAllFlatEntityMaps(
@@ -357,6 +369,8 @@ export class ViewFieldService {
       .sort((a, b) => a.position - b.position);
   }
 
+  // Returns all active view fields belonging to a specific view, ordered
+  // by position.
   async findByViewId(
     workspaceId: string,
     viewId: string,
@@ -376,6 +390,7 @@ export class ViewFieldService {
       .sort((a, b) => a.position - b.position);
   }
 
+  // Finds a single active view field by id.
   async findById(
     id: string,
     workspaceId: string,

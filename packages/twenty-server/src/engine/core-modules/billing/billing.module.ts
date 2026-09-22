@@ -1,5 +1,7 @@
 /* @license Enterprise */
 
+// Root module wiring all billing services, entities, commands and the
+// GraphQL resolver used for Stripe-backed subscriptions and usage billing.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

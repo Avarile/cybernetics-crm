@@ -8,6 +8,9 @@ import {
   CommonQueryRunnerExceptionCode,
 } from 'src/engine/api/common/common-query-runners/errors/common-query-runner.exception';
 
+// Validates a RAW_JSON field input: null passes through, a string must be
+// parseable JSON, otherwise the value must already be an object; throws a
+// CommonQueryRunnerException otherwise.
 export const validateRawJsonFieldOrThrow = (
   value: unknown,
   fieldName: string,

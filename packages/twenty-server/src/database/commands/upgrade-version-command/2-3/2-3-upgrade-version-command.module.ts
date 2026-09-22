@@ -8,6 +8,9 @@ import { ApplicationModule } from 'src/engine/core-modules/application/applicati
 import { WorkspaceCacheModule } from 'src/engine/workspace-cache/workspace-cache.module';
 import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace-migration/workspace-migration.module';
 
+// Registers the 2.3 workspace commands (drop message direction field, backfill
+// image-identifier field metadata, delete gauge widgets) as providers for the
+// upgrade runner.
 @Module({
   imports: [
     ApplicationModule,

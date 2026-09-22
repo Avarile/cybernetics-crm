@@ -23,6 +23,9 @@ const FK_COLUMNS_TO_DROP = [
   },
 ];
 
+// Workspace command (1.21.0): drops the foreign keys on the workspace-schema
+// messaging/calendar association tables that pointed at now-migrated
+// messageChannel/calendarChannel/messageFolder rows (those now live in core).
 @RegisteredWorkspaceCommand('1.21.0', 1775500010000)
 @Command({
   name: 'upgrade:1-21:drop-workspace-messaging-fks',
@@ -37,6 +40,8 @@ export class DropWorkspaceMessagingFksCommand extends ProvisionedWorkspaceComman
     super(workspaceIteratorService);
   }
 
+  // Looks up and drops each listed table/column's FK constraint (skipping ones
+  // already gone), logging what would happen under --dry-run.
   override async runOnWorkspace({
     workspaceId,
     dataSource,

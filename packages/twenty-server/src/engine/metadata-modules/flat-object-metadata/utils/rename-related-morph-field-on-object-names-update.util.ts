@@ -1,3 +1,7 @@
+// When an object's singular/plural name changes, renames the morph-relation
+// fields (and join columns) on other objects that target it, and recomputes
+// any indexes referencing those renamed fields.
+
 import {
   RelationType,
   type FieldMetadataType,
@@ -23,6 +27,8 @@ type UpdateMorphFlatFieldNameArgs = FromTo<
 > & {
   fromMorphFlatFieldMetadata: UniversalFlatFieldMetadata<FieldMetadataType.MORPH_RELATION>;
 };
+// Recomputes a single morph-relation field's name and join column name using
+// the target object's updated singular/plural names.
 const updateMorphFlatFieldName = ({
   fromMorphFlatFieldMetadata,
   fromRelationTargetFlatObjectMetadata,
@@ -75,6 +81,8 @@ type RenameRelatedMorphFieldOnObjectNamesUpdateReturnType = {
   morphFlatFieldMetadatasToUpdate: UniversalFlatFieldMetadata<FieldMetadataType.MORPH_RELATION>[];
   morphRelatedFlatIndexesToUpdate: UniversalFlatIndexMetadata[];
 };
+// Finds every morph-relation field targeting this object, renames each one,
+// and recomputes the indexes tied to those fields' old names.
 export const renameRelatedMorphFieldOnObjectNamesUpdate = ({
   fromFlatObjectMetadata,
   toFlatObjectMetadata,

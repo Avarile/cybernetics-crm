@@ -14,6 +14,8 @@ import { ViewEntity } from 'src/engine/metadata-modules/view/entities/view.entit
 import { WorkspaceCacheStorageModule } from 'src/engine/workspace-cache-storage/workspace-cache-storage.module';
 import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace-migration/workspace-migration.module';
 
+// Wires up the view field CRUD service, its REST controller, GraphQL
+// resolver, and AI tool factory.
 @Module({
   imports: [
     TypeOrmModule.forFeature([ViewFieldEntity, ViewEntity]),

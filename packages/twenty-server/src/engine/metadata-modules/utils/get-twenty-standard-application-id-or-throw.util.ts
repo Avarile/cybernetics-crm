@@ -7,6 +7,8 @@ import {
 } from 'src/engine/core-modules/application/application.exception';
 import { type FlatApplicationCacheMaps } from 'src/engine/core-modules/application/types/flat-application-cache-maps.type';
 
+// Looks up the id of the built-in Twenty standard application from the
+// cached application maps, throwing if it's somehow missing.
 export const getTwentyStandardApplicationIdOrThrow = (
   flatApplicationMaps: FlatApplicationCacheMaps,
 ): string => {

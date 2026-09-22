@@ -1,3 +1,6 @@
+// Cascade-deletes navigation menu items whose target record or view has
+// been deleted, triggered by the deletion job/listener.
+
 import { Injectable } from '@nestjs/common';
 
 import { isDefined } from 'twenty-shared/utils';
@@ -9,6 +12,7 @@ import { fromDeleteNavigationMenuItemInputToFlatNavigationMenuItemOrThrow } from
 import { WorkspaceMigrationBuilderException } from 'src/engine/workspace-manager/workspace-migration/exceptions/workspace-migration-builder-exception';
 import { WorkspaceMigrationValidateBuildAndRunService } from 'src/engine/workspace-manager/workspace-migration/services/workspace-migration-validate-build-and-run-service';
 
+// True for a RECORD-type item pointing at one of the deleted ids.
 const isNavigationMenuItemForDeletedRecord = (
   item: FlatNavigationMenuItem,
   deletedIdsSet: Set<string>,
@@ -17,6 +21,7 @@ const isNavigationMenuItemForDeletedRecord = (
   !isDefined(item.viewId) &&
   deletedIdsSet.has(item.targetRecordId);
 
+// True for a VIEW-type item pointing at one of the deleted ids.
 const isNavigationMenuItemForDeletedView = (
   item: FlatNavigationMenuItem,
   deletedIdsSet: Set<string>,
@@ -30,6 +35,8 @@ export class NavigationMenuItemDeletionService {
     private readonly applicationService: ApplicationService,
   ) {}
 
+  // Finds every navigation menu item referencing one of the deleted
+  // records/views and deletes them through the workspace migration pipeline.
   async deleteNavigationMenuItemsForDeletedRecords(
     deletedRecordIds: string[],
     workspaceId: string,

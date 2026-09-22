@@ -1,3 +1,6 @@
+// Public (unauthenticated) GraphQL resolver exposing the marketplace
+// listing and app detail for use outside a workspace context (e.g. the
+// marketing site's app directory).
 import { UseFilters, UseGuards } from '@nestjs/common';
 import { Args, Query } from '@nestjs/graphql';
 
@@ -20,6 +23,7 @@ export class MarketplacePublicResolver {
     private readonly marketplaceQueryService: MarketplaceQueryService,
   ) {}
 
+  // Returns marketplace apps, defaulting to only Twenty-vetted ones.
   @Query(() => [MarketplaceAppDTO], { name: 'publicMarketplaceApps' })
   @UseGuards(PublicEndpointGuard, NoPermissionGuard)
   async findManyPublicMarketplaceApps(
@@ -29,6 +33,8 @@ export class MarketplacePublicResolver {
     return this.marketplaceQueryService.findManyMarketplaceApps({ isVetted });
   }
 
+  // Returns the detail view for a marketplace app, throwing if it isn't
+  // publicly listed (even if the registration itself exists).
   @Query(() => MarketplaceAppDetailDTO, { name: 'publicMarketplaceAppDetail' })
   @UseGuards(PublicEndpointGuard, NoPermissionGuard)
   async findPublicMarketplaceAppDetail(

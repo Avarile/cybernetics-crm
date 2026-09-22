@@ -1,3 +1,5 @@
+// Installs, tracks and serves precompiled ("prebuilt") logic function
+// bundles on local disk, keyed by function id with a checksum sidecar file.
 import { promises as fs } from 'fs';
 import { dirname, join } from 'path';
 
@@ -29,6 +31,8 @@ export class LocalPrebuiltBundleService {
     private readonly logicFunctionResourceService: LogicFunctionResourceService,
   ) {}
 
+  // Downloads the function's built code and installs it locally as a
+  // prebuilt bundle, recording its checksum.
   async installPrebuiltBundle({
     flatLogicFunction,
     applicationUniversalIdentifier,
@@ -81,6 +85,7 @@ export class LocalPrebuiltBundleService {
     );
   }
 
+  // Reads the checksum of the currently installed local prebuilt bundle, if any.
   async getInstalledBundleChecksum(
     flatLogicFunction: FlatLogicFunction,
   ): Promise<string | null> {
@@ -96,6 +101,7 @@ export class LocalPrebuiltBundleService {
     }
   }
 
+  // Copies the installed prebuilt bundle into a temporary execution dir for a run.
   async copyPrebuiltBundleIntoExecutionDir({
     flatLogicFunction,
     sourceTemporaryDir,

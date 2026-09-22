@@ -1,3 +1,5 @@
+// Manages server-admin/impersonation grants: requires step-up 2FA, prevents
+// revoking the last full admin, and notifies admins by email on changes.
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -41,6 +43,7 @@ export class AdminPanelServerAdminService {
     private readonly eventLogEmitterService: EventLogEmitterService,
   ) {}
 
+  // Lists users with full-admin-panel or impersonation access.
   async getServerAdmins(): Promise<ServerAdminDTO[]> {
     const admins = await this.userRepository.find({
       where: [{ canAccessFullAdminPanel: true }, { canImpersonate: true }],
@@ -50,6 +53,9 @@ export class AdminPanelServerAdminService {
     return admins.map((admin) => this.toServerAdminDTO(admin));
   }
 
+  // Updates a target user's admin-panel/impersonation access after verifying
+  // step-up auth, guarding against revoking the last full admin, then logs,
+  // emits an event and emails admins about the change.
   async updateServerAdminAccess({
     actor,
     actorWorkspaceId,
@@ -144,6 +150,8 @@ export class AdminPanelServerAdminService {
     return this.toServerAdminDTO(targetUser);
   }
 
+  // Requires a valid 2FA OTP from the actor before allowing sensitive admin
+  // access changes (skipped in development).
   private async assertFreshStepUpAuthentication({
     actorUserId,
     actorWorkspaceId,
@@ -204,6 +212,8 @@ export class AdminPanelServerAdminService {
     );
   }
 
+  // Emails all full admins plus the affected user, grouped by locale, that
+  // server-admin access changed; failures are logged, not thrown.
   private async notifyAdministrators({
     actor,
     targetUser,
@@ -287,6 +297,7 @@ export class AdminPanelServerAdminService {
     }
   }
 
+  // Records a server-admin-access-changed event for audit/analytics.
   private emitServerAdminAccessChangedEvent({
     actor,
     actorWorkspaceId,

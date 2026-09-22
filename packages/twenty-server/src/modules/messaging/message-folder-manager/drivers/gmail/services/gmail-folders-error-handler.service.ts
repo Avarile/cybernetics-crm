@@ -1,3 +1,5 @@
+// Normalizes Gmail folder-listing errors into a MessageImportDriverException,
+// classifying network vs. Gmail API errors before re-throwing.
 import { Injectable, Logger } from '@nestjs/common';
 
 import {
@@ -15,6 +17,8 @@ export class GmailFoldersErrorHandlerService {
 
   constructor() {}
 
+  // Logs the error, then throws a parsed network/API error, or a generic
+  // MessageImportDriverException if the error shape isn't recognized.
   public handleError(error: unknown): void {
     const constructorName = (error as unknown)?.constructor?.name ?? 'Unknown';
 

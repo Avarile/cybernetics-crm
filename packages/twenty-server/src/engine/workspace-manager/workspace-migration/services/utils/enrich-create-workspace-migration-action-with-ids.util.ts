@@ -7,10 +7,15 @@ import { type UniversalCreateObjectAction } from 'src/engine/workspace-manager/w
 import { type UniversalCreatePageLayoutAction } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-builder/builders/page-layout/types/workspace-migration-page-layout-action.type';
 import { type WorkspaceMigration } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-builder/types/workspace-migration.type';
 
+// Pre-resolved ids to use for entities being created, keyed by metadata kind then universal
+// identifier — lets a "create" action reuse an already-known id instead of generating a fresh one
 export type IdByUniversalIdentifierByMetadataName = {
   [P in AllMetadataName]?: Record<string, string>;
 };
 
+// Builds the field-id-by-universal-identifier map for a "create object" action: reuses any provided
+// field ids (from a prior build pass) and generates fresh ids for the rest, so the object's fields can
+// be created with stable, pre-known ids
 const buildFieldIdByUniversalIdentifierForObjectAction = ({
   action,
   fieldMetadataIdByUniversalIdentifier,
@@ -41,6 +46,8 @@ const buildFieldIdByUniversalIdentifierForObjectAction = ({
   return fieldIdByUniversalIdentifier;
 };
 
+// Merges a "create page layout" action's own tab id map with any externally provided page layout tab
+// ids, so its tabs can be created with stable, pre-known ids
 const buildTabIdByUniversalIdentifier = ({
   action,
   pageLayoutTabIdByUniversalIdentifier,
@@ -60,6 +67,9 @@ const buildTabIdByUniversalIdentifier = ({
   return tabIdByUniversalIdentifier;
 };
 
+// Builds a universal-identifier-to-id map covering every field created across all "create fieldMetadata"
+// actions (including their related field, for relation pairs), reusing each action's own generated id
+// as the fallback so later lookups (e.g. resolving relation targets) stay consistent
 const buildFieldIdByUniversalIdentifierForFieldActions = ({
   actions,
   providedFieldIdByUniversalIdentifier,
@@ -111,6 +121,7 @@ const buildFieldIdByUniversalIdentifierForFieldActions = ({
   return fieldIdByUniversalIdentifier;
 };
 
+// Extracts a field's junction target field universal identifier from its universal settings, if present
 const getJunctionTargetFieldUniversalIdentifier = (
   universalSettings: UniversalCreateFieldAction['flatEntity']['universalSettings'],
 ): string | null | undefined => {
@@ -124,6 +135,8 @@ const getJunctionTargetFieldUniversalIdentifier = (
   return universalSettings.junctionTargetFieldUniversalIdentifier;
 };
 
+// Builds the subset of the field id map containing only the ids a "create field" action's own relation
+// target and junction target fields reference, so the action carries just what it needs
 const buildReferencedFieldIdByUniversalIdentifierForFieldAction = ({
   action,
   fieldIdByUniversalIdentifier,
@@ -170,6 +183,9 @@ const buildReferencedFieldIdByUniversalIdentifierForFieldAction = ({
   return referencedFieldIdByUniversalIdentifier;
 };
 
+// Rewrites every "create" action in a workspace migration to use pre-resolved ids (from
+// idByUniversalIdentifierByMetadataName) instead of freshly generated ones, so a migration that's
+// re-run or replayed against a system that already knows some entities' ids stays consistent with them
 export const enrichCreateWorkspaceMigrationActionsWithIds = ({
   workspaceMigration,
   idByUniversalIdentifierByMetadataName,

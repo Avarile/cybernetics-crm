@@ -5,6 +5,8 @@ import {
   SEED_APPLE_WORKSPACE_ID,
   SEED_YCOMBINATOR_WORKSPACE_ID,
 } from 'src/engine/workspace-manager/dev-seeder/core/constants/seeder-workspaces.constant';
+// Seeds a sample AI agent chat thread with a couple of turns/messages for
+// the YCombinator dev-seeded workspace (skipped for Apple).
 import { USER_WORKSPACE_DATA_SEED_IDS } from 'src/engine/workspace-manager/dev-seeder/core/utils/seed-user-workspaces.util';
 
 const agentChatThreadTableName = 'agentChatThread';
@@ -50,6 +52,7 @@ type SeedChatThreadsArgs = {
   workspaceId: string;
 };
 
+// Inserts a single default chat thread for the workspace's admin user.
 const seedChatThreads = async ({
   queryRunner,
   schemaName,
@@ -104,6 +107,9 @@ type SeedChatMessagesArgs = {
   threadId: string;
 };
 
+// Inserts sample turns/messages/message-parts (a short back-and-forth
+// conversation) into the given chat thread, with content tailored to the
+// Apple or YCombinator seed workspace.
 const seedChatMessages = async ({
   queryRunner,
   schemaName,
@@ -385,6 +391,8 @@ type SeedAgentsArgs = {
   workspaceId: string;
 };
 
+// Seeds a sample chat thread and messages for the given workspace, skipped
+// for the Apple seed workspace.
 export const seedAgents = async ({
   queryRunner,
   schemaName,

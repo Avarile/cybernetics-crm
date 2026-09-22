@@ -8,6 +8,8 @@ import { ApplicationModule } from 'src/engine/core-modules/application/applicati
 import { WorkspaceCacheModule } from 'src/engine/workspace-cache/workspace-cache.module';
 import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace-migration/workspace-migration.module';
 
+// Registers the 1.22 workspace commands (command-menu-item/select-all fixes,
+// standard-skills backfill) as providers for the upgrade runner.
 @Module({
   imports: [
     ApplicationModule,

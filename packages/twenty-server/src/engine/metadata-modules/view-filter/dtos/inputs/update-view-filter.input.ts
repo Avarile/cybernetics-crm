@@ -16,6 +16,7 @@ import { ViewFilterOperand } from 'twenty-shared/types';
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';
 import { ViewFilterValue } from 'src/engine/metadata-modules/view-filter/types/view-filter-value.type';
 
+// Partial set of view filter fields that can be updated.
 @InputType()
 class UpdateViewFilterInputUpdates {
   @IsOptional()
@@ -53,6 +54,7 @@ class UpdateViewFilterInputUpdates {
   relationTargetFieldMetadataId?: string;
 }
 
+// GraphQL/REST input for updating an existing view filter by id.
 @InputType()
 export class UpdateViewFilterInput {
   @IsUUID()

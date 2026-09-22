@@ -12,6 +12,10 @@ import {
 
 const DEFAULT_ORDER_DIRECTION = OrderByDirection.AscNullsFirst;
 
+// Parses the comma-separated `field[Direction],field2` order-by DSL (e.g.
+// "field_1[AscNullsFirst],field_2[DescNullsLast],field_3") into an
+// ObjectRecordOrderBy, defaulting missing directions and always adding an
+// id tiebreaker; throws on an unrecognized direction.
 export const parseOrderBy = (
   orderByQuery: string | string[] | ParsedQs | ParsedQs[] | undefined,
 ): ObjectRecordOrderBy => {

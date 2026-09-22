@@ -15,6 +15,9 @@ import { WorkspaceCacheModule } from 'src/engine/workspace-cache/workspace-cache
 import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace-migration/workspace-migration.module';
 import { WorkspaceMigrationRunnerModule } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-runner/workspace-migration-runner.module';
 
+// Registers the 2.19 workspace commands (backfill custom application registration,
+// system unique-index universal identifiers, deterministic field universal
+// identifiers) as providers for the upgrade runner.
 @Module({
   imports: [
     ApplicationModule,

@@ -1,3 +1,4 @@
+// Builds ActorMetadata for changes attributed to an API key.
 import { type ActorMetadata, FieldActorSource } from 'twenty-shared/types';
 
 import { type FlatApiKey } from 'src/engine/core-modules/api-key/types/flat-api-key.type';
@@ -5,6 +6,7 @@ import { type FlatApiKey } from 'src/engine/core-modules/api-key/types/flat-api-
 type BuildCreatedByFromApiKeyArgs = {
   apiKey: FlatApiKey;
 };
+// Builds ActorMetadata attributing a change to an API key.
 export const buildCreatedByFromApiKey = ({
   apiKey,
 }: BuildCreatedByFromApiKeyArgs): ActorMetadata => ({

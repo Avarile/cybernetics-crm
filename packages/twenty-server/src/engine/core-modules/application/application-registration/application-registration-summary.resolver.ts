@@ -13,6 +13,7 @@ export class ApplicationRegistrationSummaryResolver {
     private readonly applicationRegistrationAssetUrlService: ApplicationRegistrationAssetUrlService,
   ) {}
 
+  // Resolves the registration's logo display URL for the summary DTO.
   @ResolveField(() => String, { nullable: true })
   logoUrl(
     @Parent() registration: ApplicationRegistrationEntity,

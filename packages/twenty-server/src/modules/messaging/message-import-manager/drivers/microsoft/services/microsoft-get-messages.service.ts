@@ -1,3 +1,5 @@
+// Fetches full Microsoft Graph message bodies (via batched requests) and
+// parses each into the pipeline's normalized message shape.
 import { Injectable, Logger } from '@nestjs/common';
 
 import { type EmailAddress } from 'addressparser';
@@ -32,6 +34,8 @@ export class MicrosoftGetMessagesService {
     private readonly microsoftMessagesImportErrorHandler: MicrosoftMessagesImportErrorHandler,
   ) {}
 
+  // Fetches and formats the given message ids; on error, reports it and
+  // returns an empty list rather than propagating.
   async getMessages(
     messageIds: string[],
     connectedAccount: ConnectedAccountType,
@@ -56,6 +60,7 @@ export class MicrosoftGetMessagesService {
     }
   }
 
+  // Flattens and formats every batch response's messages.
   public formatBatchResponsesAsMessages(
     batchResponses: MicrosoftGraphBatchResponse[],
     connectedAccount: ConnectedAccountType,
@@ -68,6 +73,9 @@ export class MicrosoftGetMessagesService {
     });
   }
 
+  // Parses each raw batch response entry, throwing on the first
+  // per-message error, and maps successful ones into normalized messages
+  // with participants built from from/reply-to/to/cc/bcc.
   private formatBatchResponseAsMessages(
     batchResponse: MicrosoftGraphBatchResponse,
     connectedAccount: ConnectedAccountType,
@@ -170,6 +178,9 @@ export class MicrosoftGetMessagesService {
     return messages.filter(isDefined);
   }
 
+  // Maps each raw $batch response entry to its body on success, or an
+  // { error } wrapper on failure (logging anything other than the
+  // expected transient 429/503 statuses).
   private parseBatchResponse(batchResponse: MicrosoftGraphBatchResponse) {
     if (!batchResponse?.responses) {
       return [];

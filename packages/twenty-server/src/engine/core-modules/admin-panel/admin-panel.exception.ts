@@ -1,3 +1,5 @@
+// Exception type and error codes for the admin panel, with user-friendly
+// messages resolved per error code.
 import { type MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { assertUnreachable } from 'twenty-shared/utils';
@@ -24,6 +26,8 @@ const getAdminPanelExceptionUserFriendlyMessage = (
   }
 };
 
+// Exception thrown by admin panel services/resolvers, defaulting to a
+// friendly message derived from the exception code when none is provided.
 export class AdminPanelException extends CustomException<
   keyof typeof AdminPanelExceptionCode
 > {

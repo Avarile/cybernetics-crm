@@ -1,3 +1,7 @@
+// Implements the full source-based logic function lifecycle: create (from
+// source or a seed project), duplicate, update, delete, build (transpile),
+// and execute, coordinating file storage, the executor, and metadata sync.
+
 import { Injectable } from '@nestjs/common';
 
 import crypto from 'crypto';
@@ -39,6 +43,10 @@ export class LogicFunctionFromSourceService {
     private readonly workspaceMigrationValidateBuildAndRunService: WorkspaceMigrationValidateBuildAndRunService,
   ) {}
 
+  // Creates a logic function either from explicit source code (uploading it
+  // and marking the build stale) or, if no source is given, from a seed
+  // project (uploaded and built by seedSourceFiles), then persists the
+  // metadata and returns the resulting DTO.
   async createOneFromSource({
     input,
     workspaceId,
@@ -127,6 +135,8 @@ export class LogicFunctionFromSourceService {
     });
   }
 
+  // Copies an existing logic function's source/built files under a new id
+  // and creates a matching metadata record with the same settings.
   async duplicateOneWithSource({
     existingLogicFunctionId,
     workspaceId,
@@ -201,6 +211,8 @@ export class LogicFunctionFromSourceService {
     return { id: created.id };
   }
 
+  // Uploads new source code if provided, then applies the requested field
+  // updates to the logic function's metadata.
   async updateOneFromSource({
     updateLogicFunctionFromSourceInput,
     workspaceId,
@@ -240,6 +252,8 @@ export class LogicFunctionFromSourceService {
     });
   }
 
+  // Deletes the logic function's metadata via the migration pipeline and
+  // returns its DTO (source/built files are not removed here).
   async deleteOneWithSource({
     id,
     workspaceId,
@@ -291,6 +305,8 @@ export class LogicFunctionFromSourceService {
     });
   }
 
+  // Fetches the function's source, transpiles it, uploads the built code,
+  // and updates the metadata with the new checksum and up-to-date flag.
   async buildOneFromSource({
     id,
     workspaceId,
@@ -344,6 +360,8 @@ export class LogicFunctionFromSourceService {
     });
   }
 
+  // Rebuilds the function first if its build is stale, then executes it
+  // live with the given payload and maps the executor's result to the DTO.
   async executeOneFromSource({
     id,
     payload,
@@ -387,6 +405,7 @@ export class LogicFunctionFromSourceService {
     };
   }
 
+  // Fetches the raw source code for a logic function from storage.
   async getSourceCode({
     id,
     workspaceId,
@@ -407,6 +426,7 @@ export class LogicFunctionFromSourceService {
     });
   }
 
+  // Reloads the flat logic function from cache by id and converts it to a DTO.
   private async findFlatLogicFunctionByIdAndConvertToDto({
     id,
     workspaceId,

@@ -9,6 +9,9 @@ import { isDefined } from 'twenty-shared/utils';
 import { type FlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-metadata/types/flat-field-metadata.type';
 import { GRAPH_DEFAULT_DATE_GRANULARITY } from 'src/modules/dashboard/chart-data/constants/graph-default-date-granularity.constant';
 
+// Builds the record order-by clause for a relation group-by field: sorts by
+// the relation id when ungrouped by sub-field, or drills into the related
+// object's (possibly nested, possibly date) sub-field.
 export const getRelationFieldOrderBy = (
   groupByFieldMetadata: FlatFieldMetadata,
   groupBySubFieldName: string | null | undefined,

@@ -1,5 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 
+// Result of checking whether a requested subdomain is valid and available
 @ObjectType()
 export class SubdomainAvailabilityDTO {
   @Field(() => Boolean)

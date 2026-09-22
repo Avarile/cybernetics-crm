@@ -1,3 +1,6 @@
+// Validates that a widget's configuration type is present and set to
+// STANDALONE_RICH_TEXT, narrowing the configuration on success.
+
 import { msg, t } from '@lingui/core/macro';
 import { isDefined } from 'twenty-shared/utils';
 

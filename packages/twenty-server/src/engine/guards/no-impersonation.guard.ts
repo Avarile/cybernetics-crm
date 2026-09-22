@@ -6,6 +6,8 @@ import {
 } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
 
+// Blocks access to a resolver while the caller is currently impersonating
+// another user (e.g. for endpoints that shouldn't be usable mid-impersonation).
 @Injectable()
 export class NoImpersonationGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {

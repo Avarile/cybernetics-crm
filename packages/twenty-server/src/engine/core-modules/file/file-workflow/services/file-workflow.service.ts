@@ -1,3 +1,4 @@
+// Stores files uploaded for use within workflow steps.
 import { Injectable } from '@nestjs/common';
 
 import { isNonEmptyString } from '@sniptt/guards';
@@ -18,6 +19,8 @@ export class FileWorkflowService {
     private readonly fileUrlService: FileUrlService,
   ) {}
 
+  // Writes a file buffer to storage under the Workflow folder and returns
+  // its metadata with a signed download URL.
   async uploadFile({
     file,
     filename,

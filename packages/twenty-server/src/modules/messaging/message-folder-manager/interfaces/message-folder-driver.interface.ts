@@ -1,3 +1,5 @@
+// Contract each mail provider (Gmail, Microsoft, IMAP) implements to
+// discover a connected account's remote folders/labels for folder sync.
 import { type MessageChannelEntity } from 'src/engine/metadata-modules/message-channel/entities/message-channel.entity';
 import { type ConnectedAccountEntity } from 'src/engine/metadata-modules/connected-account/entities/connected-account.entity';
 import { type MessageFolderEntity } from 'src/engine/metadata-modules/message-folder/entities/message-folder.entity';

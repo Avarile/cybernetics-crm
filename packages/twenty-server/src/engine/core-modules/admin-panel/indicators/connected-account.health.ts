@@ -1,3 +1,6 @@
+// Terminus health indicator for connected-account sync (email/calendar),
+// flagging degraded health when message or calendar sync job failure rates
+// exceed the configured threshold.
 import { Injectable } from '@nestjs/common';
 import {
   type HealthIndicatorResult,
@@ -117,6 +120,8 @@ export class ConnectedAccountHealth {
     }
   }
 
+  // Runs message-sync and calendar-sync checks in parallel and reports down
+  // if either is unhealthy.
   async isHealthy(): Promise<HealthIndicatorResult> {
     const indicator = this.healthIndicatorService.check('connectedAccount');
 

@@ -23,6 +23,8 @@ const getWebhookSubscriptionDriverExceptionUserFriendlyMessage = (
   }
 };
 
+// Thrown by webhook subscription drivers (Google/Microsoft) when a
+// subscription can't be created, renewed, or deleted.
 export class WebhookSubscriptionDriverException extends CustomException<WebhookSubscriptionDriverExceptionCode> {
   constructor(
     message: string,

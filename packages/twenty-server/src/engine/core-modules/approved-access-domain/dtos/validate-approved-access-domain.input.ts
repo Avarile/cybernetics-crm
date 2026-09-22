@@ -1,3 +1,4 @@
+// GraphQL input for validating an approved access domain's ownership token.
 import { Field, InputType } from '@nestjs/graphql';
 
 import { IsNotEmpty, IsString, IsUUID } from 'class-validator';

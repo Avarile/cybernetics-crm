@@ -1,3 +1,4 @@
+// GraphQL resolver exposing the mutation to impersonate another user.
 import { UseFilters, UseGuards, UsePipes } from '@nestjs/common';
 import { Args, Mutation } from '@nestjs/graphql';
 
@@ -38,6 +39,7 @@ export class ImpersonationResolver {
     CustomPermissionGuard,
   )
   @Mutation(() => ImpersonateDTO)
+  // Generates a login token letting the current admin log in as the target user.
   async impersonate(
     @Args() { workspaceId, userId: toImpersonateUserId }: ImpersonateInput,
     @AuthUserWorkspaceId() impersonatorUserWorkspaceId: string,

@@ -1,3 +1,5 @@
+// Builds a random, human-friendly subdomain like "bold-azure-fox" as a fallback
+// when no usable subdomain can be derived from the user's input
 export const generateRandomSubdomain = () => {
   const prefixes = [
     'bold',

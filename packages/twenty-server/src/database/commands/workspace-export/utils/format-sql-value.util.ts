@@ -2,6 +2,10 @@ import { isDefined } from 'twenty-shared/utils';
 
 import { escapeLiteral } from 'src/engine/workspace-manager/workspace-migration/utils/remove-sql-injection.util';
 
+// Formats a single field's value as a SQL literal for an INSERT statement: null,
+// TRUE/FALSE, numbers/bigints as-is, dates as escaped ISO strings, arrays as
+// Postgres array literals (or JSON if array of objects), objects/JSON columns as
+// escaped JSON text, everything else as an escaped string literal.
 export const formatSqlValue = (
   value: unknown,
   isJsonColumn = false,

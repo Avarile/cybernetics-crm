@@ -6,6 +6,8 @@ import {
   CommonQueryRunnerExceptionCode,
 } from 'src/engine/api/common/common-query-runners/errors/common-query-runner.exception';
 
+// Throws unless the value is a boolean, as required by the isEmptyArray
+// operator.
 export const validateIsEmptyArrayOperatorValueOrThrow = (
   value: unknown,
   fieldName: string,

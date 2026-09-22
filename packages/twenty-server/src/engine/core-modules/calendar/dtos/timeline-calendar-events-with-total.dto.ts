@@ -1,3 +1,5 @@
+// GraphQL DTO wrapping a page of timeline calendar events with the total
+// count and the person ids the query resolved against.
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';

@@ -1,5 +1,10 @@
 import { type QueryRunner } from 'typeorm';
 
+// SQL for a legacy TypeORM migration: makes universalIdentifier and applicationId
+// required (and rebuilds the corresponding unique index / FK) across the remaining
+// core entities not covered by the earlier per-entity migrations — roleTarget,
+// rowLevelPermissionPredicate(Group), viewFilterGroup, viewSort, cronTrigger,
+// databaseEventTrigger, routeTrigger, serverlessFunction, skill, and pageLayout(Tab/Widget).
 export const makeRemainingEntitiesUniversalIdentifierAndApplicationIdNotNullableQueries =
   async (queryRunner: QueryRunner): Promise<void> => {
     await queryRunner.query(

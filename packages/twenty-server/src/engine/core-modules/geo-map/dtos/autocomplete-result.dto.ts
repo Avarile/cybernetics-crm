@@ -1,3 +1,4 @@
+// GraphQL DTO for a single Google Places address autocomplete suggestion.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType('AutocompleteResult')

@@ -35,6 +35,9 @@ import { WorkspaceMigrationBuilderException } from 'src/engine/workspace-manager
 import { WorkspaceMigrationValidateBuildAndRunService } from 'src/engine/workspace-manager/workspace-migration/services/workspace-migration-validate-build-and-run-service';
 
 @Injectable()
+// CRUD and navigation-field-resolution logic for command menu items,
+// backed by the flat entity maps and applied through workspace migrations
+// so that changes are validated and persisted consistently.
 export class CommandMenuItemService {
   constructor(
     private readonly workspaceMigrationValidateBuildAndRunService: WorkspaceMigrationValidateBuildAndRunService,
@@ -43,6 +46,7 @@ export class CommandMenuItemService {
     private readonly i18nService: I18nService,
   ) {}
 
+  // Returns all command menu items for the workspace, ordered by position.
   async findAll(workspaceId: string): Promise<CommandMenuItemDTO[]> {
     const { flatCommandMenuItemMaps } =
       await this.workspaceManyOrAllFlatEntityMapsCacheService.getOrRecomputeManyOrAllFlatEntityMaps(
@@ -58,6 +62,7 @@ export class CommandMenuItemService {
       .map(fromFlatCommandMenuItemToCommandMenuItemDto);
   }
 
+  // Finds a command menu item by id, returning null if not found.
   async findById(
     id: string,
     workspaceId: string,
@@ -82,6 +87,7 @@ export class CommandMenuItemService {
     return fromFlatCommandMenuItemToCommandMenuItemDto(flatCommandMenuItem);
   }
 
+  // Same as findById but throws when the item does not exist.
   async findByIdOrThrow(
     id: string,
     workspaceId: string,
@@ -98,6 +104,8 @@ export class CommandMenuItemService {
     return commandMenuItem;
   }
 
+  // Builds a flat command menu item from the input and applies it through
+  // a validated workspace migration, then returns the persisted DTO.
   async create(
     input: CreateCommandMenuItemInput,
     workspaceId: string,
@@ -173,6 +181,8 @@ export class CommandMenuItemService {
     );
   }
 
+  // Applies partial updates to an existing command menu item via a
+  // validated workspace migration.
   async update(
     input: UpdateCommandMenuItemInput,
     workspaceId: string,
@@ -249,6 +259,9 @@ export class CommandMenuItemService {
     );
   }
 
+  // Clears overrides on a standard-app command menu item, restoring it to
+  // its default definition. Rejects items owned by the custom application,
+  // since those have no "default" to reset back to.
   async reset(id: string, workspaceId: string): Promise<CommandMenuItemDTO> {
     const { workspaceCustomFlatApplication } =
       await this.applicationService.findWorkspaceTwentyStandardAndCustomApplicationOrThrow(
@@ -333,6 +346,9 @@ export class CommandMenuItemService {
     );
   }
 
+  // Deletes a command menu item. If the caller doesn't own the item
+  // (i.e. it belongs to the standard app), it is deactivated instead of
+  // hard-deleted so the standard definition can later be reset/re-enabled.
   async delete(id: string, workspaceId: string): Promise<CommandMenuItemDTO> {
     const { workspaceCustomFlatApplication } =
       await this.applicationService.findWorkspaceTwentyStandardAndCustomApplicationOrThrow(
@@ -404,6 +420,8 @@ export class CommandMenuItemService {
     );
   }
 
+  // Returns all flat command menu items (not DTOs) for the workspace,
+  // ordered by position, for internal consumers that need the raw shape.
   async findAllFlatCommandMenuItems(
     workspaceId: string,
   ): Promise<FlatCommandMenuItem[]> {
@@ -420,6 +438,8 @@ export class CommandMenuItemService {
       .sort((a, b) => a.position - b.position);
   }
 
+  // Loads the object metadata targeted by a NAVIGATION command menu item,
+  // returning null if the item isn't a navigation type or has no target.
   async loadNavigationObjectMetadata({
     commandMenuItem,
     objectMetadataLoader,
@@ -445,6 +465,9 @@ export class CommandMenuItemService {
     });
   }
 
+  // Resolves and translates a navigation-derived field (label, shortLabel,
+  // or icon) for a command menu item, interpolating placeholders against
+  // the linked object metadata and applying the application's i18n catalog.
   async resolveNavigationField({
     commandMenuItem,
     fieldName,
@@ -506,6 +529,7 @@ export class CommandMenuItemService {
     });
   }
 
+  // Finds the command menu item linked to a given workflow version, if any.
   async findByWorkflowVersionId(
     workflowVersionId: string,
     workspaceId: string,

@@ -7,6 +7,8 @@ import { Process } from 'src/engine/core-modules/message-queue/decorators/proces
 import { Processor } from 'src/engine/core-modules/message-queue/decorators/processor.decorator';
 import { MessageQueue } from 'src/engine/core-modules/message-queue/message-queue.constants';
 
+// Cron job that reclaims code interpreter sandboxes that have been idle past
+// the configured max age
 @Injectable()
 @Processor(MessageQueue.cronQueue)
 export class CodeInterpreterSessionCleanupCronJob {
@@ -18,6 +20,7 @@ export class CodeInterpreterSessionCleanupCronJob {
     private readonly codeInterpreterService: CodeInterpreterService,
   ) {}
 
+  // Sweeps and logs the number of expired sandboxes reclaimed
   @Process(CodeInterpreterSessionCleanupCronJob.name)
   @SentryCronMonitor(
     CodeInterpreterSessionCleanupCronJob.name,

@@ -1,3 +1,7 @@
+// Dispatches incoming public HTTP requests to a workspace's "resolver"
+// logic function, which determines the actual target logic function and
+// payload to invoke (a level of indirection letting a public URL route to a
+// workspace-chosen handler without requiring auth on the resolver itself).
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -38,6 +42,9 @@ export class ServerRouteTriggerService {
     private readonly logicFunctionExecutorService: LogicFunctionExecutorService,
   ) {}
 
+  // Finds the resolver logic function, ensures it doesn't require auth,
+  // runs it to determine the target function/payload, then runs the target
+  // function and returns its response.
   async handle({
     request,
     resolverLogicFunctionUniversalIdentifier,
@@ -107,6 +114,8 @@ export class ServerRouteTriggerService {
     return buildRouteTriggerResponse(targetResult.data);
   }
 
+  // Looks up a server-route-trigger-enabled logic function by universal
+  // identifier, requiring it belong to its application's owner workspace.
   private async findResolver({
     logicFunctionUniversalIdentifier,
   }: {
@@ -131,6 +140,8 @@ export class ServerRouteTriggerService {
     );
   }
 
+  // Validates and extracts the resolver's returned target function
+  // identifier/workspace/payload, throwing if the shape is invalid.
   private parseResolverResult(result: {
     data: object | null;
     error?: { errorMessage: string };
@@ -169,6 +180,8 @@ export class ServerRouteTriggerService {
     };
   }
 
+  // Looks up and executes a logic function, mapping executor failures to a
+  // ServerRouteTriggerException with a sanitized public error message.
   private async runFunction({
     logicFunctionUniversalIdentifier,
     workspaceId,
@@ -220,6 +233,8 @@ export class ServerRouteTriggerService {
     }
   }
 
+  // Maps an exception code to a public-safe error message (avoiding leaking
+  // internal error details for platform errors).
   private getPublicErrorMessageForCode(
     code: ServerRouteTriggerExceptionCode,
   ): string {
@@ -233,6 +248,8 @@ export class ServerRouteTriggerService {
     }
   }
 
+  // Translates a LogicFunctionExecutionException code into the
+  // corresponding ServerRouteTriggerExceptionCode.
   private mapExecutorErrorToServerRouteCode(
     error: unknown,
   ): ServerRouteTriggerExceptionCode {

@@ -1,3 +1,6 @@
+// Soft-deletes OAuth-only application registrations that have been idle
+// past the grace period and have no active (non-deleted) installation in
+// any workspace, processed in batches to avoid large single queries.
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -20,6 +23,9 @@ export class StaleRegistrationCleanupService {
     private readonly applicationRepository: Repository<ApplicationEntity>,
   ) {}
 
+  // Pages through OAuth-only registrations older than the cutoff date,
+  // soft-deletes any that have no active installation, and returns the
+  // total number deleted.
   async cleanupStaleRegistrations(): Promise<number> {
     const cutoffDate = this.calculateCutoffDate();
     let totalDeleted = 0;
@@ -85,6 +91,8 @@ export class StaleRegistrationCleanupService {
     return totalDeleted;
   }
 
+  // Fetches one keyset-paginated batch of OAuth-only registrations older
+  // than the cutoff date, ordered by creation time.
   private async findStaleRegistrationBatch(
     cutoffDate: Date,
     batchSize: number,
@@ -118,6 +126,8 @@ export class StaleRegistrationCleanupService {
     }));
   }
 
+  // Computes midnight UTC minus the grace period as the cutoff for
+  // staleness.
   private calculateCutoffDate(): Date {
     const cutoffDate = new Date();
 

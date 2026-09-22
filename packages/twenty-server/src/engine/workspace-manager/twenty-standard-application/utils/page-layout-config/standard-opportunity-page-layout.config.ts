@@ -151,6 +151,7 @@ const OPPORTUNITY_PAGE_TABS = {
   },
 } as const satisfies Record<string, StandardPageLayoutTabConfig>;
 
+// Fixed record page layout (tabs and widgets) for the standard "opportunity" object
 export const STANDARD_OPPORTUNITY_PAGE_LAYOUT_CONFIG = {
   name: 'Default Opportunity Layout',
   type: PageLayoutType.RECORD_PAGE,

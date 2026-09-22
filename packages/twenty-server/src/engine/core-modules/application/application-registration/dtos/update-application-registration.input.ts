@@ -1,3 +1,4 @@
+// GraphQL input for updating an application registration's editable fields.
 import { Field, InputType } from '@nestjs/graphql';
 
 import { Type } from 'class-transformer';

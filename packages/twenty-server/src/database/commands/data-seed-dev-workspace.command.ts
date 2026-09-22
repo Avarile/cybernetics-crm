@@ -13,6 +13,8 @@ type DataSeedWorkspaceOptions = {
   light?: boolean;
 };
 
+// CLI command (`workspace:seed:dev`): seeds the dev seed workspace(s) (Apple, and
+// YCombinator unless --light) with demo data via DevSeederService, for local development.
 @Command({
   name: 'workspace:seed:dev',
   description:
@@ -34,6 +36,7 @@ export class DataSeedWorkspaceCommand extends CommandRunner {
     return true;
   }
 
+  // Seeds the Apple workspace (and YCombinator, unless --light) with dev fixture data.
   async run(
     _passedParams: string[],
     options: DataSeedWorkspaceOptions,

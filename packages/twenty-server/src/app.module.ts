@@ -1,3 +1,6 @@
+// Root NestJS module: wires together the core engine, feature modules, GraphQL API
+// modules, static frontend serving, and the request middleware chain (auth
+// hydration, MCP guards, REST middleware) for the main server process.
 import {
   type DynamicModule,
   type MiddlewareConsumer,
@@ -78,6 +81,8 @@ const MIGRATED_REST_METHODS = [
   ],
 })
 export class AppModule {
+  // Builds the list of modules that should only be registered under certain
+  // conditions (e.g. serving the built frontend only when it exists on disk).
   private static getConditionalModules(): DynamicModule[] {
     const modules: DynamicModule[] = [];
     const frontPath = join(__dirname, 'front');
@@ -111,6 +116,7 @@ export class AppModule {
     return modules;
   }
 
+  // Registers middleware for GraphQL, metadata, admin-panel, MCP, and REST routes.
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(

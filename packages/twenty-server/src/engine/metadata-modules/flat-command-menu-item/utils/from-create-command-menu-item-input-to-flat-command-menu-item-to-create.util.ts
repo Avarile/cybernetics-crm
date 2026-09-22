@@ -8,6 +8,9 @@ import { type FlatCommandMenuItem } from 'src/engine/metadata-modules/flat-comma
 import { type AllFlatEntityMaps } from 'src/engine/metadata-modules/flat-entity/types/all-flat-entity-maps.type';
 import { resolveEntityRelationUniversalIdentifiers } from 'src/engine/metadata-modules/flat-entity/utils/resolve-entity-relation-universal-identifiers.util';
 
+// Builds a new flat command menu item from a create input, generating its
+// id, resolving referenced entities to universal identifiers, and
+// defaulting unset fields.
 export const fromCreateCommandMenuItemInputToFlatCommandMenuItemToCreate = ({
   createCommandMenuItemInput,
   workspaceId,

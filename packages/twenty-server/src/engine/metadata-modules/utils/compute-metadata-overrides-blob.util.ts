@@ -1,5 +1,7 @@
 import { fastDeepEqual, isDefined } from 'twenty-shared/utils';
 
+// Inputs for computing which overridable properties diverge from the base
+// (standard) entity and should be stored as an overrides blob.
 type ComputeMetadataOverridesBlobArgs<
   TProperties extends object,
   TOverrides,
@@ -10,6 +12,11 @@ type ComputeMetadataOverridesBlobArgs<
   existingOverrides: TOverrides | null;
 };
 
+// Splits updated properties into an overrides blob (only the overridable
+// properties that differ from the existing base entity) and the remaining,
+// directly-persisted properties. Removes a property from overrides once
+// its updated value matches the base entity again, so overrides only ever
+// capture true divergences.
 export const computeMetadataOverridesBlob = <
   TProperties extends object,
   TOverrides = Record<string, unknown>,

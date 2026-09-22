@@ -8,6 +8,7 @@ import {
   CommonQueryRunnerExceptionCode,
 } from 'src/engine/api/common/common-query-runners/errors/common-query-runner.exception';
 
+// Validates that a text field input is a string or null; throws otherwise.
 export const validateTextFieldOrThrow = (
   value: unknown,
   fieldName: string,

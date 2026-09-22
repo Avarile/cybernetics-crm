@@ -7,6 +7,8 @@ import {
 
 import { type MessageFolderEntity } from 'src/engine/metadata-modules/message-folder/entities/message-folder.entity';
 
+// Builds the entity data for discovered folders that have no matching
+// existing folder by external id, i.e. newly-found remote folders.
 export const computeFoldersToCreate = ({
   discoveredFolders,
   existingFolders,

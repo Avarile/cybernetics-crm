@@ -4,6 +4,7 @@ import {
   type CreateStandardViewFieldArgs,
 } from 'src/engine/workspace-manager/twenty-standard-application/utils/view-field/create-standard-view-field-flat-metadata.util';
 
+// Builds the fixed set of standard view fields for the "dashboard" object's views
 export const computeStandardDashboardViewFields = (
   args: Omit<CreateStandardViewFieldArgs<'dashboard'>, 'context'>,
 ): Record<string, FlatViewField> => {

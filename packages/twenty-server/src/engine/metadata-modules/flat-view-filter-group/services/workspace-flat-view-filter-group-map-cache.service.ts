@@ -19,6 +19,9 @@ import { createIdToUniversalIdentifierMap } from 'src/engine/workspace-cache/uti
 import { regroupEntitiesByRelatedEntityId } from 'src/engine/workspace-cache/utils/regroup-entities-by-related-entity-id';
 import { addFlatEntityToFlatEntityMapsThroughMutationOrThrow } from 'src/engine/workspace-manager/workspace-migration/utils/add-flat-entity-to-flat-entity-maps-through-mutation-or-throw.util';
 
+// Builds and caches the workspace's flat-view-filter-group maps by loading group entities
+// (with their view filters and child groups regrouped by parent id) and resolving relation
+// ids to universal identifiers.
 @Injectable()
 @WorkspaceCache('flatViewFilterGroupMaps')
 export class WorkspaceFlatViewFilterGroupMapCacheService extends WorkspaceCacheProvider<FlatViewFilterGroupMaps> {
@@ -35,6 +38,9 @@ export class WorkspaceFlatViewFilterGroupMapCacheService extends WorkspaceCacheP
     super();
   }
 
+  // Loads view filter groups, applications, view filters and views for the workspace,
+  // regroups view filters and child groups by their parent, then assembles
+  // flat-view-filter-group maps.
   async computeForCache(workspaceId: string): Promise<FlatViewFilterGroupMaps> {
     const [viewFilterGroups, applications, viewFilters, views] =
       await Promise.all([

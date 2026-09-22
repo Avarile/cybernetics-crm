@@ -1,3 +1,6 @@
+// GraphQL resolver exposing custom index CRUD mutations and the
+// indexFieldMetadataList field resolver on IndexMetadataDTO.
+
 import { UseFilters, UseGuards, UsePipes } from '@nestjs/common';
 import { Args, Context, Mutation, Parent, ResolveField } from '@nestjs/graphql';
 
@@ -31,6 +34,7 @@ import { PermissionsGraphqlApiExceptionFilter } from 'src/engine/metadata-module
 export class IndexMetadataResolver {
   constructor(private readonly indexMetadataService: IndexMetadataService) {}
 
+  // Resolves the fields belonging to an index via the batching dataloader.
   @ResolveField(() => [IndexFieldMetadataDTO], { nullable: false })
   async indexFieldMetadataList(
     @AuthWorkspace() workspace: WorkspaceEntity,
@@ -53,6 +57,7 @@ export class IndexMetadataResolver {
     }
   }
 
+  // Creates a custom index on an object, requiring DATA_MODEL permission.
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.DATA_MODEL))
   @Mutation(() => IndexMetadataDTO)
   async createOneIndex(
@@ -71,6 +76,7 @@ export class IndexMetadataResolver {
     }
   }
 
+  // Deletes a custom index, requiring DATA_MODEL permission.
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.DATA_MODEL))
   @Mutation(() => IndexMetadataDTO)
   async deleteOneIndex(

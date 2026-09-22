@@ -6,6 +6,7 @@ import { TWENTY_STANDARD_APPLICATION } from 'src/engine/workspace-manager/twenty
 import { type AllStandardRoleName } from 'src/engine/workspace-manager/twenty-standard-application/types/all-standard-role-name.type';
 import { type StandardBuilderArgs } from 'src/engine/workspace-manager/twenty-standard-application/types/metadata-standard-buillder-args.type';
 
+// Per-role content (label, permission flags) supplied by each standard role's builder
 export type CreateStandardRoleContext = {
   roleName: AllStandardRoleName;
   label: string;
@@ -23,10 +24,12 @@ export type CreateStandardRoleContext = {
   canBeAssignedToApiKeys: boolean;
 };
 
+// Arguments accepted by createStandardRoleFlatMetadata
 export type CreateStandardRoleArgs = StandardBuilderArgs<'role'> & {
   context: CreateStandardRoleContext;
 };
 
+// Builds a single standard role's FlatRole, resolving its universal identifier from STANDARD_ROLE
 export const createStandardRoleFlatMetadata = ({
   context: {
     roleName,

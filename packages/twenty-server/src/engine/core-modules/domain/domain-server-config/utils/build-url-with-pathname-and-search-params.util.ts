@@ -7,6 +7,7 @@ type BuildUrlWithPathnameAndSearchParamsProps = {
   hash?: string;
 };
 
+// Mutates and returns baseUrl with the given pathname, search params, and hash applied
 export const buildUrlWithPathnameAndSearchParams = ({
   baseUrl,
   pathname,

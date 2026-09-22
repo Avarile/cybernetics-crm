@@ -1,3 +1,4 @@
+// GraphQL DTO for a single instance signing key and its revocation/usage state.
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';

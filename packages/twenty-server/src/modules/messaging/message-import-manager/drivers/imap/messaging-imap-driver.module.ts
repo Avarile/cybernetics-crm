@@ -1,3 +1,5 @@
+// Wires up the IMAP import driver's services (client connection, folder
+// discovery, message list/fetch, parsing, sync and error handling).
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';

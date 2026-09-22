@@ -1,3 +1,4 @@
+// Exception type for SDK client generation/archive errors.
 import { type MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { assertUnreachable } from 'twenty-shared/utils';

@@ -1,3 +1,6 @@
+// TypeORM entity for an instance-wide asymmetric JWT signing key. At most
+// one row can be the "current" (active for signing) key at a time; older
+// keys are kept (with revokedAt set) so tokens they signed can still verify.
 import {
   Check,
   Column,

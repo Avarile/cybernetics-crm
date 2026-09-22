@@ -1,5 +1,7 @@
 import { type QueryRunner } from 'typeorm';
 
+// SQL for a legacy TypeORM migration: rebuilds the unique index enforcing a single
+// global (no user/workspace) keyValuePair per key.
 export const addGlobalKeyValuePairUniqueIndexQueries = async (
   queryRunner: QueryRunner,
 ): Promise<void> => {

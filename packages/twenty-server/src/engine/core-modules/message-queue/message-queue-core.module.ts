@@ -24,11 +24,13 @@ import { MessageQueueService } from 'src/engine/core-modules/message-queue/servi
 import { getQueueToken } from 'src/engine/core-modules/message-queue/utils/get-queue-token.util';
 import { MetricsModule } from 'src/engine/core-modules/metrics/metrics.module';
 
+// Registers the message queue driver and a per-MessageQueue service provider globally
 @Global()
 @Module({})
 export class MessageQueueCoreModule extends ConfigurableModuleClass {
   private static readonly logger = new Logger(MessageQueueCoreModule.name);
 
+  // Builds the module synchronously with a driver created from static options
   static register(options: typeof OPTIONS_TYPE): DynamicModule {
     const dynamicModule = super.register(options);
 
@@ -57,6 +59,7 @@ export class MessageQueueCoreModule extends ConfigurableModuleClass {
     };
   }
 
+  // Builds the module with a driver resolved asynchronously via the given factory
   static registerAsync(options: typeof ASYNC_OPTIONS_TYPE): DynamicModule {
     const dynamicModule = super.registerAsync(options);
 
@@ -93,6 +96,8 @@ export class MessageQueueCoreModule extends ConfigurableModuleClass {
     };
   }
 
+  // Instantiates the driver matching the configured type, falling back to the
+  // sync driver (with a warning) for an unrecognized type
   static async createDriver(config: typeof OPTIONS_TYPE) {
     switch (config.type) {
       case MessageQueueDriverType.BullMQ: {
@@ -115,6 +120,8 @@ export class MessageQueueCoreModule extends ConfigurableModuleClass {
     }
   }
 
+  // Creates one MessageQueueService provider per MessageQueue, all sharing the
+  // single configured driver instance
   static createQueueProviders(): Provider[] {
     return Object.values(MessageQueue).map((queueName) => ({
       provide: getQueueToken(queueName),

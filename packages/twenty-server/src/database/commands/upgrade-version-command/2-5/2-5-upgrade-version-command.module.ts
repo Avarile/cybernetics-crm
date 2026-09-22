@@ -7,6 +7,8 @@ import { WorkspaceSchemaManagerModule } from 'src/engine/twenty-orm/workspace-sc
 import { WorkspaceCacheModule } from 'src/engine/workspace-cache/workspace-cache.module';
 import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace-migration/workspace-migration.module';
 
+// Registers the 2.5 workspace commands (rebuild unique phone indexes, normalize
+// composite field defaults) as providers for the upgrade runner.
 @Module({
   imports: [
     WorkspaceCacheModule,

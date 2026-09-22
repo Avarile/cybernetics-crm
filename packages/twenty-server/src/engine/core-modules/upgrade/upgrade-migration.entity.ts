@@ -13,6 +13,8 @@ import { WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.ent
 
 export type UpgradeMigrationStatus = 'completed' | 'failed';
 
+// Audit log of every instance/workspace upgrade command attempt, used to infer
+// each instance's and workspace's current upgrade cursor
 @Entity({ name: 'upgradeMigration', schema: 'core' })
 @Index('UQ_upgrade_migration_instance', ['name', 'attempt'], {
   unique: true,

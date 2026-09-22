@@ -1,3 +1,6 @@
+// Validates pie-chart-specific configuration fields beyond the base graph
+// fields.
+
 import { msg, t } from '@lingui/core/macro';
 import { isDefined } from 'twenty-shared/utils';
 
@@ -6,6 +9,7 @@ import { type WidgetConfigurationType } from 'src/engine/metadata-modules/page-l
 import { PageLayoutWidgetExceptionCode } from 'src/engine/metadata-modules/page-layout-widget/exceptions/page-layout-widget.exception';
 import { type UniversalFlatPageLayoutWidget } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-page-layout-widget.type';
 
+// Requires a group-by field to be set on a pie chart widget's configuration.
 export const validatePieChartConfiguration = ({
   graphUniversalConfiguration,
   widgetTitle,

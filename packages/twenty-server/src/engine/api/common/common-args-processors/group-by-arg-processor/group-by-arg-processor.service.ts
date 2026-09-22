@@ -27,8 +27,11 @@ import { type FlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-m
 import { type FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object-metadata/types/flat-object-metadata.type';
 import { resolveAggregateFieldKey } from 'src/engine/core-modules/record-crud/utils/resolve-aggregate-field-key.util';
 
+// Validates groupBy args and resolves aggregate field keys for the common
+// (GraphQL/REST/MCP) query runners.
 @Injectable()
 export class GroupByArgProcessorService {
+  // Normalizes a groupBy arg (single entry or array) into an array.
   process({
     groupBy,
   }: {
@@ -53,6 +56,8 @@ export class GroupByArgProcessorService {
     return [groupBy];
   }
 
+  // Delegates to the validateAndTransformGroupByFieldsOrThrow util to
+  // validate groupBy entries against object/field metadata.
   validateAndTransformGroupByFieldsOrThrow({
     groupBy,
     flatObjectMetadata,
@@ -76,6 +81,8 @@ export class GroupByArgProcessorService {
     });
   }
 
+  // Returns the aggregations available on an object's readable fields,
+  // filtered by the caller's field-level read permissions.
   getAvailableAggregations({
     flatObjectMetadata,
     flatFieldMetadataMaps,
@@ -93,6 +100,8 @@ export class GroupByArgProcessorService {
     return getAvailableAggregationsFromObjectFields(objectFields);
   }
 
+  // Throws if any requested aggregate field key isn't among the available
+  // aggregations for the object.
   validateAggregateFieldKeysOrThrow({
     aggregateFieldKeys,
     availableAggregations,
@@ -116,6 +125,9 @@ export class GroupByArgProcessorService {
     );
   }
 
+  // Resolves an MCP-tool-style (operation, fieldName) pair to an aggregate
+  // field key, handling COUNT's special "no field name" case; throws if
+  // the combination doesn't map to an available aggregation.
   resolveToolAggregateFieldKeyOrThrow({
     aggregateOperation,
     aggregateFieldName,

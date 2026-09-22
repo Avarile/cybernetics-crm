@@ -8,6 +8,8 @@ const removeSpacesAndLowerCase = (email: string): string => {
   return email.replace(/\s/g, '').toLowerCase();
 };
 
+// Converts parsed email addresses into normalized participants of the
+// given role, dropping any address missing an "@" (malformed).
 export const formatAddressObjectAsParticipants = (
   addressObjects: EmailAddress[],
   role: MessageParticipantRole,

@@ -6,6 +6,7 @@ import {
   type CreateStandardViewFilterArgs,
 } from 'src/engine/workspace-manager/twenty-standard-application/utils/view-filter/create-standard-view-filter-flat-metadata.util';
 
+// Builds the fixed set of standard view filters for the "task" object's views
 export const computeStandardTaskViewFilters = (
   args: Omit<CreateStandardViewFilterArgs<'task'>, 'context'>,
 ): Record<string, FlatViewFilter> => {

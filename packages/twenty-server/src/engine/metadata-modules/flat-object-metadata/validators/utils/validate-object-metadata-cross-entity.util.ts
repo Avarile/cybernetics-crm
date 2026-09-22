@@ -1,3 +1,7 @@
+// Runs cross-entity validation (identifier field checks against the
+// optimistic field metadata maps) for object metadata create/update actions
+// reported by the workspace migration orchestrator.
+
 import { isDefined } from 'twenty-shared/utils';
 
 import { findFlatEntityByUniversalIdentifierOrThrow } from 'src/engine/metadata-modules/flat-entity/utils/find-flat-entity-by-universal-identifier-or-throw.util';
@@ -20,6 +24,9 @@ type ValidateObjectMetadataSystemFieldsIntegrityArgs = {
     'flatFieldMetadataMaps' | 'flatObjectMetadataMaps'
   >;
 };
+// For each created object, validates its label/image identifiers; for each
+// updated object whose label identifier changed, revalidates identifiers
+// too. Collects per-entity validation error reports.
 export const validateObjectMetadataCrossEntity = ({
   optimisticUniversalFlatMaps,
   orchestratorActionsReport,

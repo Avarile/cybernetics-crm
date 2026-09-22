@@ -5,6 +5,8 @@ import { type ConflictingFieldGroup } from 'src/engine/api/common/common-query-r
 import { type PartialObjectRecordWithId } from 'src/engine/api/common/common-query-runners/common-create-many-query-runner/types/partial-object-record-with-id.type';
 import { getMatchingRecordId } from 'src/engine/api/common/common-query-runners/common-create-many-query-runner/utils/get-matching-record-id.util';
 
+// Splits incoming records into those that match an existing record on a
+// unique index (to be updated) and those that don't (to be inserted).
 export const categorizeRecords = (
   records: Partial<ObjectRecord>[],
   conflictingFieldGroups: ConflictingFieldGroup[],

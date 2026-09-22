@@ -7,6 +7,8 @@ import {
 import { type ResolvedEncryptionKeys } from 'src/engine/core-modules/secret-encryption/types/resolved-encryption-keys.type';
 import { type EnvironmentConfigDriver } from 'src/engine/core-modules/twenty-config/drivers/environment-config.driver';
 
+// Resolves the primary encryption key (ENCRYPTION_KEY, falling back to legacy
+// APP_SECRET) and an optional fallback key used during key rotation
 export const resolveEncryptionKeysOrThrow = ({
   environmentConfigDriver,
 }: {

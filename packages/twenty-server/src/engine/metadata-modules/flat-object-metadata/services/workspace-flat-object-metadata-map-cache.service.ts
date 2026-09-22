@@ -1,3 +1,5 @@
+// Workspace cache provider that computes the flat object metadata maps for a workspace
+// by joining object metadata with fields, indexes, views, permissions and search fields.
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -47,6 +49,8 @@ export class WorkspaceFlatObjectMetadataMapCacheService extends WorkspaceCachePr
     super();
   }
 
+  // Loads all object metadata for the workspace plus their related fields, indexes,
+  // views, permissions and search fields, then assembles the flat entity maps.
   async computeForCache(
     workspaceId: string,
   ): Promise<FlatEntityMaps<FlatObjectMetadata>> {

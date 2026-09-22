@@ -1,3 +1,4 @@
+// CLI command registering the recurring cron-trigger dispatch job.
 import { Command, CommandRunner } from 'nest-commander';
 
 import { InjectMessageQueue } from 'src/engine/core-modules/message-queue/decorators/message-queue.decorator';
@@ -20,6 +21,7 @@ export class CronTriggerCronCommand extends CommandRunner {
     super();
   }
 
+  // Schedules the recurring cron-trigger dispatch job.
   async run(): Promise<void> {
     await this.messageQueueService.addCron<undefined>({
       jobName: CronTriggerCronJob.name,

@@ -1,3 +1,5 @@
+// Key namespaces used to prefix cache keys, keeping different modules'/
+// engine features' cached data from colliding on the shared Redis instance.
 export enum CacheStorageNamespace {
   ModuleMessaging = 'module:messaging',
   ModuleEmailing = 'module:emailing',

@@ -8,6 +8,7 @@ import { ViewSortDirection } from 'twenty-shared/types';
 import { ViewSortService } from 'src/engine/metadata-modules/view-sort/services/view-sort.service';
 import { WorkspaceMigrationBuilderException } from 'src/engine/workspace-manager/workspace-migration/exceptions/workspace-migration-builder-exception';
 
+// Sort direction values exposed to the AI tool schemas below.
 const VIEW_SORT_DIRECTION_OPTIONS = Object.values(ViewSortDirection);
 
 const GetViewSortsInputSchema = z.object({
@@ -51,9 +52,11 @@ const DeleteViewSortInputSchema = z.object({
 });
 
 @Injectable()
+// Builds the AI agent tool set for reading and writing view sorts.
 export class ViewSortToolsFactory {
   constructor(private readonly viewSortService: ViewSortService) {}
 
+  // Builds the read-only tools (listing view sorts) exposed to AI agents.
   generateReadTools(workspaceId: string): ToolSet {
     return {
       get_view_sorts: {
@@ -77,6 +80,9 @@ export class ViewSortToolsFactory {
     };
   }
 
+  // Builds the write tools (create/update/delete view sorts) exposed to AI
+  // agents, translating workspace migration validation errors into
+  // agent-friendly error messages.
   generateWriteTools(workspaceId: string): ToolSet {
     return {
       create_view_sort: {

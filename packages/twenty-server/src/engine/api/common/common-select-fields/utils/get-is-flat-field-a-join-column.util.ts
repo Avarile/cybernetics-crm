@@ -2,6 +2,9 @@ import { isDefined } from 'twenty-shared/utils';
 
 import { type FlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-metadata/types/flat-field-metadata.type';
 
+// True when a field represents the "many" side of a junction-table
+// relation (has junctionTargetFieldId), including the hard-coded
+// noteTargets/taskTargets activity relations.
 export const getIsFlatFieldAJoinColumn = ({
   flatField,
 }: {

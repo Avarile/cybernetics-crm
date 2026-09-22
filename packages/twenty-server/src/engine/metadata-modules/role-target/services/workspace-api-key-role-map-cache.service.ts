@@ -9,6 +9,7 @@ import { InjectWorkspaceScopedRepository } from 'src/engine/twenty-orm/workspace
 import { WorkspaceScopedRepository } from 'src/engine/twenty-orm/workspace-scoped-repository/workspace-scoped-repository';
 import { WorkspaceCache } from 'src/engine/workspace-cache/decorators/workspace-cache.decorator';
 
+// Builds and caches a map from API key id to its assigned role id.
 @Injectable()
 @WorkspaceCache('apiKeyRoleMap')
 export class WorkspaceApiKeyRoleMapCacheService extends WorkspaceCacheProvider<
@@ -21,6 +22,7 @@ export class WorkspaceApiKeyRoleMapCacheService extends WorkspaceCacheProvider<
     super();
   }
 
+  // Loads all role targets assigned to an API key and indexes their role id by API key id.
   async computeForCache(workspaceId: string): Promise<Record<string, string>> {
     const roleTargetsMap = await this.roleTargetRepository.find(workspaceId, {
       where: {

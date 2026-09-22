@@ -1,5 +1,9 @@
 /* @license Enterprise */
 
+// Wires up the event-log cleanup feature: the cron command that schedules
+// the recurring job, the cron job that fans out per-workspace work, and the
+// job/service that actually deletes old ClickHouse rows.
+
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

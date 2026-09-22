@@ -3,6 +3,8 @@ import { createCipheriv, randomBytes } from 'crypto';
 import { SECRET_ENCRYPTION_GCM_IV_LENGTH } from 'src/engine/core-modules/secret-encryption/constants/secret-encryption.constant';
 import { deriveGcmKey } from 'src/engine/core-modules/secret-encryption/utils/derive-gcm-key.util';
 
+// Encrypts plaintext with AES-GCM using a workspace-derived key, packing
+// IV + ciphertext + auth tag into the returned base64 payload
 export const encryptAesGcmV2 = ({
   plaintext,
   rawKey,

@@ -1,3 +1,5 @@
+// Newline-separated list of free/disposable email provider domains, used to flag
+// work-email vs. personal-email addresses (see is-work-email.ts).
 const emailProviders = `0.pl
 0-00.usa.cc
 001.igg.biz

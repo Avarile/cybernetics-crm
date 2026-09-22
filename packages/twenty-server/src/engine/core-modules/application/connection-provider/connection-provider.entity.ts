@@ -1,3 +1,5 @@
+// TypeORM entity for a connection provider declared by an application's
+// manifest (e.g. an OAuth integration it can connect accounts to).
 import {
   type ConnectionProviderType,
   type StoredOAuthConnectionProviderConfig,

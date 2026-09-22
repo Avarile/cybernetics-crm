@@ -1,8 +1,11 @@
+// Shared helpers for the setup-db/truncate-db CLI scripts.
 import { rawDataSource } from 'src/database/typeorm/raw/raw.datasource';
 
 export const camelToSnakeCase = (str: string) =>
   str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
 
+// Runs a raw SQL query against the raw data source, logging success/failure to the
+// console. Can optionally treat an "already exists" error as a success (idempotent DDL).
 export const performQuery = async <T = unknown>(
   query: string,
   consoleDescription: string,

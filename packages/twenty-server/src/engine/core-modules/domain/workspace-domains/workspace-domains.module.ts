@@ -6,6 +6,7 @@ import { WorkspaceDomainsService } from 'src/engine/core-modules/domain/workspac
 import { PublicDomainEntity } from 'src/engine/core-modules/public-domain/public-domain.entity';
 import { WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.entity';
 
+// Wires up the service that resolves workspaces from request domains/subdomains
 @Module({
   imports: [
     DomainServerConfigModule,

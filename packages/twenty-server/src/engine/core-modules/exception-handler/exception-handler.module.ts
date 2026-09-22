@@ -12,12 +12,15 @@ import { ExceptionHandlerService } from 'src/engine/core-modules/exception-handl
 import { HttpExceptionHandlerService } from 'src/engine/core-modules/exception-handler/http-exception-handler.service';
 import { ExceptionHandlerDriver } from 'src/engine/core-modules/exception-handler/interfaces';
 
+// Registers the exception handler service globally, instantiating the console
+// or Sentry driver based on the configured options
 @Global()
 @Module({
   providers: [ExceptionHandlerService, HttpExceptionHandlerService],
   exports: [ExceptionHandlerService, HttpExceptionHandlerService],
 })
 export class ExceptionHandlerModule extends ConfigurableModuleClass {
+  // Synchronously builds the module with a driver instance chosen from static options
   static forRoot(options: typeof OPTIONS_TYPE): DynamicModule {
     const provider = {
       provide: EXCEPTION_HANDLER_DRIVER,
@@ -34,6 +37,8 @@ export class ExceptionHandlerModule extends ConfigurableModuleClass {
     };
   }
 
+  // Builds the module with a driver instance resolved asynchronously via the
+  // provided factory/inject options
   static forRootAsync(options: typeof ASYNC_OPTIONS_TYPE): DynamicModule {
     const provider = {
       provide: EXCEPTION_HANDLER_DRIVER,

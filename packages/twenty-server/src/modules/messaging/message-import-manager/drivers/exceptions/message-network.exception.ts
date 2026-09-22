@@ -1,3 +1,5 @@
+// Low-level network error codes (Node/Axios) recognized when classifying
+// import driver failures as transient network errors.
 export enum MessageNetworkExceptionCode {
   ECONNREFUSED = 'ECONNREFUSED',
   ECONNRESET = 'ECONNRESET',

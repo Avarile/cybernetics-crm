@@ -13,6 +13,8 @@ export type CreateWebhookSubscriptionJobData = {
 };
 
 @Processor(MessageQueue.webhookQueue)
+// Creates a provider webhook subscription for a message or calendar channel,
+// dispatching to the matching subscription service.
 export class CreateWebhookSubscriptionJob {
   constructor(
     private readonly messagingWebhookSubscriptionService: MessagingWebhookSubscriptionService,

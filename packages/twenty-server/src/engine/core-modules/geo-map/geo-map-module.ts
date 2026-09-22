@@ -1,3 +1,5 @@
+// NestJS module wiring the geo-map resolver/service used for address
+// autocomplete and place-details lookups via the Google Maps API.
 import { Module } from '@nestjs/common';
 
 import { TokenModule } from 'src/engine/core-modules/auth/token/token.module';

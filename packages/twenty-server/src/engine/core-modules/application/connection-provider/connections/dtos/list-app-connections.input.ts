@@ -1,3 +1,4 @@
+// GraphQL input for filtering the appConnections query.
 import { Field, InputType } from '@nestjs/graphql';
 
 import { IsIn, IsOptional, IsString, IsUUID } from 'class-validator';

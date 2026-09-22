@@ -12,6 +12,9 @@ export class QueryRunnerArgsFactory {
     private readonly recordInputTransformerService: RecordInputTransformerService,
   ) {}
 
+  // Runs a single field's value through the record input transformer
+  // (composite/relation coercion) based on its field metadata, falling
+  // back to the original value if the field is unknown or unchanged.
   async overrideValueByFieldMetadata(
     key: string,
     // oxlint-disable-next-line typescript/no-explicit-any

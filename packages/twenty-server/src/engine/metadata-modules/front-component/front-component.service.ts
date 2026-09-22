@@ -27,6 +27,9 @@ import { WorkspaceMigrationBuilderException } from 'src/engine/workspace-manager
 import { WorkspaceMigrationValidateBuildAndRunService } from 'src/engine/workspace-manager/workspace-migration/services/workspace-migration-validate-build-and-run-service';
 
 @Injectable()
+// CRUD for front components, backed by the flat entity maps and applied
+// through validated workspace migrations, plus serving their built JS
+// bundle from storage (presigned URL or direct stream).
 export class FrontComponentService {
   constructor(
     private readonly workspaceMigrationValidateBuildAndRunService: WorkspaceMigrationValidateBuildAndRunService,
@@ -36,6 +39,7 @@ export class FrontComponentService {
     private readonly twentyConfigService: TwentyConfigService,
   ) {}
 
+  // Returns all front components in the workspace, sorted by name.
   async findAll(workspaceId: string): Promise<FrontComponentDTO[]> {
     const { flatFrontComponentMaps } =
       await this.workspaceManyOrAllFlatEntityMapsCacheService.getOrRecomputeManyOrAllFlatEntityMaps(
@@ -51,6 +55,7 @@ export class FrontComponentService {
       .map(fromFlatFrontComponentToFrontComponentDto);
   }
 
+  // Finds a front component by id, returning null if not found.
   async findById(
     id: string,
     workspaceId: string,
@@ -75,6 +80,9 @@ export class FrontComponentService {
     return fromFlatFrontComponentToFrontComponentDto(flatFrontComponent);
   }
 
+  // Registers a new front component via a validated workspace migration,
+  // owned by the given application (defaulting to the workspace's custom
+  // application when none is provided).
   async createOne({
     input,
     workspaceId,
@@ -141,6 +149,8 @@ export class FrontComponentService {
     return createdFlatFrontComponent;
   }
 
+  // Applies partial updates to an existing front component via a
+  // validated workspace migration.
   async updateOne({
     id,
     update,
@@ -216,6 +226,8 @@ export class FrontComponentService {
     return updatedFlatFrontComponent;
   }
 
+  // Permanently removes a front component via a validated workspace
+  // migration, throwing if it doesn't exist.
   async destroyOne({
     id,
     workspaceId,
@@ -282,6 +294,7 @@ export class FrontComponentService {
     return existingFlatFrontComponent;
   }
 
+  // Same as findById but throws a not-found exception when absent.
   async findByIdOrThrow(
     id: string,
     workspaceId: string,
@@ -298,6 +311,8 @@ export class FrontComponentService {
     return frontComponent;
   }
 
+  // Returns either a presigned URL to the component's built JS bundle in
+  // storage, or a direct stream when presigning isn't available.
   async getBuiltComponentPresignedUrlOrStream({
     frontComponentId,
     workspaceId,

@@ -1,3 +1,4 @@
+// Exception type thrown for invalid or non-public feature flag keys.
 import { type MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { assertUnreachable } from 'twenty-shared/utils';

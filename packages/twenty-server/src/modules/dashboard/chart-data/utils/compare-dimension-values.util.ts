@@ -12,6 +12,7 @@ import {
 import { type RawDimensionValue } from 'src/modules/dashboard/chart-data/types/raw-dimension-value.type';
 import { isCyclicalDateGranularity } from 'src/modules/dashboard/chart-data/utils/is-cyclical-date-granularity.util';
 
+// Parses a raw dimension value as a calendar date for date comparisons.
 const parseDate = (
   rawValue: RawDimensionValue | undefined,
 ): Temporal.PlainDate | null => {
@@ -35,6 +36,10 @@ type CompareDimensionValuesParams = {
   dateGranularity?: ObjectRecordGroupByDateGranularity | null;
 };
 
+// Compares two chart dimension values for sorting: dates compare
+// chronologically (skipped for cyclical granularities like day-of-week),
+// numeric/currency fields compare numerically, everything else falls back
+// to a locale string comparison of the formatted value.
 export const compareDimensionValues = ({
   rawValueA,
   rawValueB,

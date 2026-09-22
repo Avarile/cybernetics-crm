@@ -1,3 +1,6 @@
+// Maps each NavigationMenuItemExceptionCode to the appropriate GraphQL error
+// type for the API layer.
+
 import { assertUnreachable } from 'twenty-shared/utils';
 
 import {
@@ -9,6 +12,8 @@ import {
   NavigationMenuItemExceptionCode,
 } from 'src/engine/metadata-modules/navigation-menu-item/navigation-menu-item.exception';
 
+// Maps NOT_FOUND to a not-found error and the remaining codes to user
+// input errors, rethrowing unrecognized errors unchanged.
 export const navigationMenuItemGraphqlApiExceptionHandler = (error: Error) => {
   if (error instanceof NavigationMenuItemException) {
     switch (error.code) {

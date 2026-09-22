@@ -10,6 +10,7 @@ import { PageLayoutEntity } from 'src/engine/metadata-modules/page-layout/entiti
 import { ViewEntity } from 'src/engine/metadata-modules/view/entities/view.entity';
 import { provideWorkspaceScopedRepository } from 'src/engine/twenty-orm/workspace-scoped-repository/provide-workspace-scoped-repository';
 
+// Provides the flat-navigation-menu-item map cache used to read navigation menu items in denormalized form.
 @Module({
   imports: [
     TypeOrmModule.forFeature([

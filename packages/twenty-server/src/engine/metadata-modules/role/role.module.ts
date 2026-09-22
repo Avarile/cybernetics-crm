@@ -33,6 +33,9 @@ import { WorkspaceCacheModule } from 'src/engine/workspace-cache/workspace-cache
 import { WorkspaceMigrationGraphqlApiExceptionInterceptor } from 'src/engine/workspace-manager/workspace-migration/interceptors/workspace-migration-graphql-api-exception.interceptor';
 import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace-migration/workspace-migration.module';
 
+// Wires up role CRUD, its GraphQL resolver, and the flat-role/role-
+// permissions cache services, along with the permission submodules
+// (object/field/row-level permissions, permission flags, role targets).
 @Module({
   imports: [
     TypeOrmModule.forFeature([

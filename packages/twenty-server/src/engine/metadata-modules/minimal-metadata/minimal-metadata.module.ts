@@ -5,6 +5,7 @@ import { MinimalMetadataResolver } from 'src/engine/metadata-modules/minimal-met
 import { MinimalMetadataService } from 'src/engine/metadata-modules/minimal-metadata/minimal-metadata.service';
 import { WorkspaceCacheModule } from 'src/engine/workspace-cache/workspace-cache.module';
 
+// Wires up the minimal-metadata resolver/service used for fast app-bootstrap fetches.
 @Module({
   imports: [WorkspaceManyOrAllFlatEntityMapsCacheModule, WorkspaceCacheModule],
   providers: [MinimalMetadataResolver, MinimalMetadataService],

@@ -6,6 +6,7 @@ import {
   ApplicationExceptionCode,
 } from 'src/engine/core-modules/application/application.exception';
 
+// Reads and parses a JSON file, returning null if it's missing or invalid.
 export const readJsonFile = async <T>(
   dir: string,
   filename: string,
@@ -21,6 +22,8 @@ export const readJsonFile = async <T>(
   }
 };
 
+// Same as readJsonFile, but throws an ApplicationException instead of
+// returning null.
 export const readJsonFileOrThrow = async <T>(
   dir: string,
   filename: string,

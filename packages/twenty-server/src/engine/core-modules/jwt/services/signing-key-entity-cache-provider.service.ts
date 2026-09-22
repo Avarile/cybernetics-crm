@@ -1,3 +1,5 @@
+// Core-entity-cache provider that resolves a signing key's public key PEM by
+// id, backing fast lookups during JWT verification.
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -18,6 +20,7 @@ export class SigningKeyEntityCacheProviderService extends CoreEntityCacheProvide
     super();
   }
 
+  // Looks up the non-revoked signing key's public key, or null if not found/revoked.
   async computeForCache(entityId: string): Promise<string | null> {
     const signingKey = await this.signingKeyRepository.findOne({
       where: { id: entityId, revokedAt: IsNull() },

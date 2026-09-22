@@ -9,6 +9,9 @@ import {
 import { type PersistSentMessageInput } from 'src/modules/messaging/message-outbound-manager/types/persist-sent-message-input.type';
 import { resolveOutboundThreadExternalId } from 'src/modules/messaging/message-outbound-manager/utils/resolve-outbound-thread-external-id.util';
 
+// Maps a just-sent message's provider result and compose input into the
+// pipeline's normalized message shape, ready to persist via the same
+// save-messages flow used for imported messages.
 export const formatSentMessage = (
   input: PersistSentMessageInput,
 ): MessageWithParticipants => {

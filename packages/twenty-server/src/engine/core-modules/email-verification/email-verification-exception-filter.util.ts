@@ -1,3 +1,5 @@
+// GraphQL exception filter mapping each EmailVerificationException code to
+// the appropriate user-facing GraphQL error type and message.
 import { Catch, type ExceptionFilter } from '@nestjs/common';
 
 import { assertUnreachable } from 'twenty-shared/utils';
@@ -14,6 +16,7 @@ import {
 
 @Catch(EmailVerificationException)
 export class EmailVerificationExceptionFilter implements ExceptionFilter {
+  // Maps each known exception code to a ForbiddenError or UserInputError.
   catch(exception: EmailVerificationException) {
     switch (exception.code) {
       case EmailVerificationExceptionCode.TOKEN_EXPIRED:

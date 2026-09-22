@@ -10,6 +10,7 @@ export enum FileStorageExceptionCode {
   INVALID_EXTENSION = 'INVALID_EXTENSION',
 }
 
+// Maps a file storage exception code to its user-facing message
 const getFileStorageExceptionUserFriendlyMessage = (
   code: FileStorageExceptionCode,
 ) => {
@@ -25,6 +26,7 @@ const getFileStorageExceptionUserFriendlyMessage = (
   }
 };
 
+// Exception thrown by storage drivers for missing files, denied access, or bad extensions
 export class FileStorageException extends CustomException<FileStorageExceptionCode> {
   constructor(
     message: string,

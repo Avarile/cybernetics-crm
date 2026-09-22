@@ -1,5 +1,6 @@
 /* @license Enterprise */
 
+// Discriminated union of OIDC/SAML SSO identity provider configurations.
 import {
   type IdentityProviderType,
   type SSOIdentityProviderStatus,

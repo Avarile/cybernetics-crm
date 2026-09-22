@@ -1,3 +1,5 @@
+// Resolves the effective AI provider config by merging the (only) catalog's
+// `{{VAR}}` template values with any custom providers from workspace config.
 import { Injectable } from '@nestjs/common';
 
 import { type ConfigVariables } from 'src/engine/core-modules/twenty-config/config-variables';
@@ -15,12 +17,15 @@ export class ProviderConfigService {
     private readonly defaultAiCatalogService: DefaultAiCatalogService,
   ) {}
 
+  // Returns the provider names known to the base catalog.
   getCatalogProviderNames(): Set<string> {
     return new Set(
       Object.keys(this.defaultAiCatalogService.getDefaultAiCatalog()),
     );
   }
 
+  // Merges the catalog (with its config-variable templates resolved) with
+  // custom providers from workspace config.
   getResolvedProviders(): AiProvidersConfig {
     const rawCatalog = this.defaultAiCatalogService.getDefaultAiCatalog();
     // Only resolve {{VAR}} templates in the committed catalog — never in
@@ -31,6 +36,7 @@ export class ProviderConfigService {
     return { ...catalog, ...custom };
   }
 
+  // Resolves templates across all providers in the catalog.
   private resolveTemplates(providers: AiProvidersConfig): AiProvidersConfig {
     const result: AiProvidersConfig = {};
 
@@ -41,6 +47,7 @@ export class ProviderConfigService {
     return result;
   }
 
+  // Resolves `{{VAR}}` templates in a single provider's credential fields.
   private resolveProviderTemplates(config: AiProviderConfig): AiProviderConfig {
     return {
       ...config,
@@ -51,6 +58,8 @@ export class ProviderConfigService {
     };
   }
 
+  // Resolves a `{{VAR}}` template value against registered config variables
+  // first, then falls back to process.env.
   private resolveTemplate(value?: string): string | undefined {
     if (!value) {
       return value;

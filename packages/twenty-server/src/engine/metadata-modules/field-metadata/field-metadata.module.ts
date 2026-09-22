@@ -1,3 +1,5 @@
+// NestJS module wiring field metadata's REST controller, GraphQL
+// resolver/CRUD (via nestjs-query), service, and agent tool factory.
 import { Module } from '@nestjs/common';
 
 import { SortDirection } from '@ptc-org/nestjs-query-core';

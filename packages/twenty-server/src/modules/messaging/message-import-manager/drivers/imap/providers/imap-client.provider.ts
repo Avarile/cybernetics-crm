@@ -1,3 +1,6 @@
+// Establishes and tears down authenticated ImapFlow client connections for
+// a connected account, decrypting stored credentials and validating the
+// host before connecting.
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -30,6 +33,8 @@ export class ImapClientProvider {
     private readonly connectedAccountRepository: Repository<ConnectedAccountEntity>,
   ) {}
 
+  // Loads the account's IMAP credentials and returns a connected client,
+  // parsing connection failures into a classified authentication error.
   async getClient(connectedAccountId: string): Promise<ImapFlow> {
     const connectedAccount =
       await this.loadConnectedAccount(connectedAccountId);
@@ -46,6 +51,7 @@ export class ImapClientProvider {
     }
   }
 
+  // Logs out the IMAP client, swallowing any error during cleanup.
   async closeClient(client: ImapFlow): Promise<void> {
     try {
       await client.logout();
@@ -55,6 +61,8 @@ export class ImapClientProvider {
     }
   }
 
+  // Fetches the connected account and validates it has IMAP credentials
+  // configured, throwing an INSUFFICIENT_PERMISSIONS error otherwise.
   private async loadConnectedAccount(
     connectedAccountId: string,
   ): Promise<ConnectedAccountEntity> {
@@ -76,6 +84,9 @@ export class ImapClientProvider {
     return connectedAccount;
   }
 
+  // Decrypts the stored IMAP password, validates the host to guard against
+  // SSRF, then opens and authenticates the ImapFlow connection, logging
+  // out and rethrowing if the connect handshake itself fails.
   private async createConnection(
     connectedAccount: ConnectedAccountEntity,
   ): Promise<ImapFlow> {

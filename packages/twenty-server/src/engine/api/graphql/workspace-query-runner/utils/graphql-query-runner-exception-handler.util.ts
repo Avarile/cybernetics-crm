@@ -1,3 +1,6 @@
+// Maps each GraphqlQueryRunnerException code to the appropriate
+// GraphQL-facing error class (UserInputError/NotFoundError) or
+// rethrows it as-is; exhaustiveness is enforced via assertUnreachable.
 import { assertUnreachable } from 'twenty-shared/utils';
 
 import {
@@ -9,6 +12,7 @@ import {
   UserInputError,
 } from 'src/engine/core-modules/graphql/utils/graphql-errors.util';
 
+// Converts a GraphqlQueryRunnerException into the matching public GraphQL error type.
 export const graphqlQueryRunnerExceptionHandler = (
   error: GraphqlQueryRunnerException,
 ) => {

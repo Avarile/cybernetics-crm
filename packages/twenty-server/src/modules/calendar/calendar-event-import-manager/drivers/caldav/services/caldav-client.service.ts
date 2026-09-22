@@ -11,6 +11,8 @@ type CalDavConnectionParams = {
   password: string;
 };
 
+// Creates and logs in a tsdav DAVClient using an SSRF-safe fetch and
+// Basic+Digest authentication.
 @Injectable()
 export class CalDavClientService {
   constructor(

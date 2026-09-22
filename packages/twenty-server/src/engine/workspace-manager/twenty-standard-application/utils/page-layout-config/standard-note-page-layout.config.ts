@@ -91,6 +91,8 @@ const NOTE_PAGE_TABS = {
   },
 } as const satisfies Record<string, StandardPageLayoutTabConfig>;
 
+// Fixed record page layout (tabs and widgets) for the standard "note" object, with device-specific
+// conditional display for mobile vs desktop widgets
 export const STANDARD_NOTE_PAGE_LAYOUT_CONFIG = {
   name: 'Default Note Layout',
   type: PageLayoutType.RECORD_PAGE,

@@ -1,3 +1,5 @@
+// Assertion helper guarding operations that require the Cloudflare client
+// (i.e. that CLOUDFLARE_API_KEY is configured).
 import { msg } from '@lingui/core/macro';
 
 import type Cloudflare from 'cloudflare';

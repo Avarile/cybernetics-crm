@@ -32,6 +32,7 @@ const BLOCK_KIND_TO_DTO: Record<
   signatureField: DpaDocumentBlockKind.SignatureField,
 };
 
+// Converts an internal resolved DPA into its GraphQL-exposed document DTO
 const toDocumentDto = (resolved: ResolvedDpa): DpaDocumentDTO => ({
   title: resolved.title,
   lastUpdatedLabel: resolved.lastUpdatedLabel,
@@ -48,6 +49,7 @@ const toDocumentDto = (resolved: ResolvedDpa): DpaDocumentDTO => ({
   })),
 });
 
+// Resolves, previews, signs, and stores workspace DPAs, and looks up prior agreements
 @Injectable()
 export class DpaService {
   constructor(
@@ -66,6 +68,7 @@ export class DpaService {
     return this.twentyConfigService.get('IS_MULTIWORKSPACE_ENABLED') !== true;
   }
 
+  // Resolves an unsigned preview of the DPA for the workspace's region
   getPreviewForWorkspace(
     workspace: Pick<WorkspaceEntity, 'id'>,
   ): DpaDocumentDTO {
@@ -80,6 +83,7 @@ export class DpaService {
     );
   }
 
+  // Lists a workspace's DPA agreements, most recent first
   async listAgreements(workspaceId: string): Promise<DpaAgreementEntity[]> {
     return this.dpaAgreementRepository.find({
       where: { workspaceId },
@@ -87,6 +91,7 @@ export class DpaService {
     });
   }
 
+  // Signs a download URL for the agreement's stored PDF, or null for click-through agreements
   async getDownloadUrl(
     agreement: Pick<DpaAgreementEntity, 'signedFileId'>,
     workspaceId: string,
@@ -102,6 +107,8 @@ export class DpaService {
     });
   }
 
+  // Resolves and renders a signed DPA PDF, stores it, and records the agreement;
+  // refuses to run for self-hosted deployments since Twenty isn't the Processor there
   async generateSignedDpa({
     workspace,
     userId,

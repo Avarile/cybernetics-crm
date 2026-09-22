@@ -1,3 +1,5 @@
+// GraphQL args for updating an installed application's configuration
+// variable.
 import { ArgsType, Field } from '@nestjs/graphql';
 
 import { type PlaintextString } from 'src/engine/core-modules/secret-encryption/branded-strings/plaintext-string.type';

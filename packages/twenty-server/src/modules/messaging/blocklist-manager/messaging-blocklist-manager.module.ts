@@ -1,3 +1,4 @@
+// Wires up the blocklist listener and its message deletion/reimport jobs.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

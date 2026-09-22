@@ -1,5 +1,8 @@
 /* @license Enterprise */
 
+// CLI command that registers the recurring event-log cleanup cron job
+// on the cron queue so it runs on the configured schedule.
+
 import { Command, CommandRunner } from 'nest-commander';
 
 import { InjectMessageQueue } from 'src/engine/core-modules/message-queue/decorators/message-queue.decorator';
@@ -21,6 +24,7 @@ export class EventLogCleanupCronCommand extends CommandRunner {
     super();
   }
 
+  // Schedules the cleanup cron job to repeat on EVENT_LOG_CLEANUP_CRON_PATTERN.
   async run(): Promise<void> {
     await this.messageQueueService.addCron<undefined>({
       jobName: EventLogCleanupCronJob.name,

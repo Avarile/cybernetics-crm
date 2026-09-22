@@ -46,6 +46,7 @@ const CALENDAR_EVENT_PARTICIPANT_PAGE_TABS = {
   },
 } as const satisfies Record<string, StandardPageLayoutTabConfig>;
 
+// Fixed record page layout (tabs and widgets) for the standard "calendarEventParticipant" object
 export const STANDARD_CALENDAR_EVENT_PARTICIPANT_PAGE_LAYOUT_CONFIG = {
   name: 'Default Calendar Event Participant Layout',
   type: PageLayoutType.RECORD_PAGE,

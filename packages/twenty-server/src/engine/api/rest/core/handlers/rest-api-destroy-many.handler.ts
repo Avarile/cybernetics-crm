@@ -10,6 +10,9 @@ import { parseFilterRestRequest } from 'src/engine/api/rest/input-request-parser
 import { AuthenticatedRequest } from 'src/engine/api/rest/types/authenticated-request';
 import { workspaceQueryRunnerRestApiExceptionHandler } from 'src/engine/api/rest/utils/workspace-query-runner-rest-api-exception-handler.util';
 
+// REST handler for DELETE /rest/{objects}/destroy with a filter:
+// permanently bulk-destroys records matching the filter, which is
+// mandatory to avoid accidental destroy-all.
 @Injectable()
 export class RestApiDestroyManyHandler extends RestApiBaseHandler {
   constructor(
@@ -18,6 +21,8 @@ export class RestApiDestroyManyHandler extends RestApiBaseHandler {
     super();
   }
 
+  // Requires a non-empty filter, runs the common destroyMany query
+  // runner, and formats the destroyed records as a REST response.
   async handle(request: AuthenticatedRequest): Promise<{
     data: {
       [x: string]: ObjectRecord[];

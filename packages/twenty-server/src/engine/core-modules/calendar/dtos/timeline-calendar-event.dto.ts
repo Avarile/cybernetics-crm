@@ -1,3 +1,6 @@
+// GraphQL DTOs for a calendar event as shown in a record's timeline, with
+// visibility-restricted fields (title/description) redacted for events the
+// current user doesn't have full access to.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 import { CalendarChannelVisibility } from 'twenty-shared/types';

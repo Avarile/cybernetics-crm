@@ -8,6 +8,9 @@ import { type RowLevelPermissionPredicateInput } from 'src/engine/metadata-modul
 import { type FlatRowLevelPermissionPredicateGroup } from 'src/engine/metadata-modules/row-level-permission-predicate/types/flat-row-level-permission-predicate-group.type';
 import { type FlatRowLevelPermissionPredicate } from 'src/engine/metadata-modules/row-level-permission-predicate/types/flat-row-level-permission-predicate.type';
 
+// Builds a new flat row-level permission predicate from an upsert input, resolving
+// field metadata, predicate group and workspace member field metadata references to
+// universal identifiers.
 export const fromCreateRowLevelPermissionPredicateInputToFlatRowLevelPermissionPredicate =
   ({
     input,

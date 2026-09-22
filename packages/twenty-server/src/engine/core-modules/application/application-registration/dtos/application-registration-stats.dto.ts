@@ -1,3 +1,5 @@
+// GraphQL DTOs for an application registration's install stats (active
+// installs and version distribution across workspaces).
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 
 @ObjectType('VersionDistributionEntry')

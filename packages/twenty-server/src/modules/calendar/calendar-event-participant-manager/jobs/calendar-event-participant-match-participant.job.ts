@@ -23,6 +23,8 @@ export type CalendarEventParticipantMatchParticipantJobData = {
   queueName: MessageQueue.calendarQueue,
   scope: Scope.REQUEST,
 })
+// Re-matches calendar event participants to people/workspace members
+// (triggered when a person/workspace member's email changes) for active workspaces.
 export class CalendarEventParticipantMatchParticipantJob {
   constructor(
     @InjectRepository(WorkspaceEntity)

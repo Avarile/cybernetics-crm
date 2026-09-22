@@ -16,6 +16,8 @@ import {
 } from 'src/engine/core-modules/dpa/pdf/fonts/liberation-sans.fonts';
 import { type ResolvedDpa } from 'src/engine/core-modules/dpa/types/dpa.types';
 
+// Builds the @react-pdf/renderer document element for a resolved DPA, rendering its
+// blocks (headings, paragraphs, signature fields) into a styled A4 PDF layout
 // createElement (not JSX) because the twenty-server swc builder has tsx disabled (syntax: 'typescript').
 // Liberation Sans is embedded because react-pdf's built-in fonts only encode ASCII; the legal text's curly
 // quotes, dashes and accented Latin otherwise throw an "unsupported number" glyph-metric error.
@@ -23,6 +25,7 @@ const FONT_FAMILY = 'Liberation Sans';
 
 let fontsRegistered = false;
 
+// Registers the embedded Liberation Sans font with react-pdf once per process
 const registerFontsOnce = (): void => {
   if (fontsRegistered) {
     return;
@@ -85,6 +88,7 @@ const styles = StyleSheet.create({
   },
 });
 
+// Renders a single resolved DPA block as the matching react-pdf element
 const renderBlock = (
   block: ResolvedDpa['blocks'][number],
   index: number,
@@ -123,6 +127,8 @@ const renderBlock = (
   );
 };
 
+// Assembles the full PDF document element: optional notice banner, title, all
+// resolved blocks, and a fixed footer with the document title and version
 export const buildDpaPdfDocumentElement = (
   resolved: ResolvedDpa,
 ): ReactElement<DocumentProps> => {

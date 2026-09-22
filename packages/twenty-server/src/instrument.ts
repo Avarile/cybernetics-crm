@@ -1,3 +1,6 @@
+// Process-level observability bootstrap, imported for side effects before the
+// rest of the app starts: initializes Sentry error/tracing capture and sets up
+// the OpenTelemetry global meter provider based on the configured meter drivers.
 import process from 'process';
 
 import { metrics as otelMetrics } from '@opentelemetry/api';

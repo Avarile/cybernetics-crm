@@ -1,3 +1,6 @@
+// Exception filter that re-throws DnsManagerException as-is for all known
+// codes, relying on assertUnreachable to catch unhandled new codes at
+// compile time.
 import { Catch, type ExceptionFilter } from '@nestjs/common';
 
 import { assertUnreachable } from 'twenty-shared/utils';
@@ -9,6 +12,7 @@ import {
 
 @Catch(DnsManagerException)
 export class DnsManagerExceptionFilter implements ExceptionFilter {
+  // Re-throws the exception for every known DnsManagerExceptionCode.
   catch(exception: DnsManagerException) {
     switch (exception.code) {
       case DnsManagerExceptionCode.INTERNAL_SERVER_ERROR:

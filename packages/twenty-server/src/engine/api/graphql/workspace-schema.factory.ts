@@ -1,3 +1,8 @@
+// Assembles the final, executable GraphQL schema for a single
+// workspace: fetches (or computes) the SDL for the workspace's object
+// metadata, generates the CRUD resolvers for each object type, and
+// stitches them together with the custom scalar resolvers via
+// makeExecutableSchema.
 import { Injectable } from '@nestjs/common';
 
 import { makeExecutableSchema } from '@graphql-tools/schema';
@@ -12,6 +17,9 @@ import { WorkspaceResolverFactory } from 'src/engine/api/graphql/workspace-resol
 import { FlatWorkspace } from 'src/engine/core-modules/workspace/types/flat-workspace.type';
 import { buildObjectIdByNameMaps } from 'src/engine/metadata-modules/flat-object-metadata/utils/build-object-id-by-name-maps.util';
 
+// Builds the final executable GraphQL schema for a workspace by combining
+// the generated SDL (types/queries/mutations for its object metadata) with
+// auto-generated CRUD resolvers and scalar resolvers.
 @Injectable()
 export class WorkspaceSchemaFactory {
   constructor(
@@ -20,6 +28,9 @@ export class WorkspaceSchemaFactory {
     private readonly workspaceGraphqlSchemaSDLService: WorkspaceGraphqlSchemaSDLService,
   ) {}
 
+  // Computes (or reuses cached) SDL for the workspace's object metadata,
+  // generates matching resolvers, and links them into an executable schema.
+  // Returns an empty schema if no SDL could be computed for the workspace.
   async createGraphQLSchema(
     workspace: FlatWorkspace,
     applicationId?: string,

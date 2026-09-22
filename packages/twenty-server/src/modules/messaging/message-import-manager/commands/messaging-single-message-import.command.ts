@@ -1,3 +1,5 @@
+// CLI command to enqueue the import of a single message by its external id,
+// bypassing the normal full-channel sync flow (useful for debugging).
 import { Command, CommandRunner, Option } from 'nest-commander';
 
 import { InjectMessageQueue } from 'src/engine/core-modules/message-queue/decorators/message-queue.decorator';
@@ -26,6 +28,8 @@ export class MessagingSingleMessageImportCommand extends CommandRunner {
     super();
   }
 
+  // Enqueues a job that caches the given message external id for import on
+  // the next import pass.
   async run(
     _passedParam: string[],
     options: MessagingSingleMessageImportCommandOptions,

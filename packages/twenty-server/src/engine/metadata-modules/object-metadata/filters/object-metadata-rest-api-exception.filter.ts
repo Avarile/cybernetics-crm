@@ -1,3 +1,6 @@
+// Maps object metadata and related exceptions raised in the REST metadata
+// API to the appropriate HTTP error responses.
+
 import {
   type ArgumentsHost,
   Catch,
@@ -41,6 +44,8 @@ export class ObjectMetadataRestApiExceptionFilter implements ExceptionFilter {
     private readonly i18nService: I18nService,
   ) {}
 
+  // Dispatches each caught exception type to its dedicated HTTP status
+  // mapping, falling back to a 500 for anything unrecognized.
   catch(exception: CaughtException, host: ArgumentsHost) {
     const response = host.switchToHttp().getResponse<Response>();
 

@@ -11,6 +11,8 @@ import {
 } from 'src/engine/metadata-modules/skill/skill.exception';
 import { mergeUpdateInExistingRecord } from 'src/utils/merge-update-in-existing-record.util';
 
+// Applies an update-skill input onto the matching existing flat skill, throwing if it
+// doesn't exist or is a non-custom (standard) skill that can't be updated.
 export const fromUpdateSkillInputToFlatSkillToUpdateOrThrow = ({
   flatSkillMaps,
   updateSkillInput,

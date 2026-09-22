@@ -1,3 +1,5 @@
+// Deletes all messages belonging to one message folder (e.g. when a
+// folder is unsynced/removed), paginated in batches to bound memory use.
 import { Injectable, Logger } from '@nestjs/common';
 
 import { isDefined } from 'twenty-shared/utils';
@@ -24,6 +26,11 @@ export class MessagingDeleteFolderMessagesService {
     private readonly globalWorkspaceOrmManager: GlobalWorkspaceOrmManager,
   ) {}
 
+  // Repeatedly pages through the folder's message-folder associations,
+  // resolves each batch's external message ids, deletes the corresponding
+  // channel message associations (and any resulting orphans), then
+  // removes the folder association rows themselves; returns the total
+  // count of messages deleted.
   async deleteFolderMessages(
     workspaceId: string,
     messageChannel: MessageChannelEntity,

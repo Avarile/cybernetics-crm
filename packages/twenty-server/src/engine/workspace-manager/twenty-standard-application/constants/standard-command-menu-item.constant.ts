@@ -3,6 +3,9 @@ import { STANDARD_OBJECTS } from 'twenty-shared/metadata';
 import { CommandMenuItemAvailabilityType } from 'src/engine/metadata-modules/command-menu-item/enums/command-menu-item-availability-type.enum';
 import { EngineComponentKey } from 'src/engine/metadata-modules/command-menu-item/enums/engine-component-key.enum';
 
+// Defines the built-in command menu (Cmd+K) items seeded into every workspace: their labels, icons,
+// availability conditions (as expressions evaluated against page/selection context), and the
+// engine component they trigger
 export const STANDARD_COMMAND_MENU_ITEMS = {
   navigateToNextRecord: {
     universalIdentifier: '3db2457d-8e96-4b8e-94c9-ed95d3f95738',

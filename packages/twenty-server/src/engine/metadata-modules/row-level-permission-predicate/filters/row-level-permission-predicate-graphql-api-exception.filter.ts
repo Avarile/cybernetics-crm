@@ -6,6 +6,8 @@ import { RowLevelPermissionPredicateException } from 'src/engine/metadata-module
 import { rowLevelPermissionPredicateGraphqlApiExceptionHandler } from 'src/engine/metadata-modules/row-level-permission-predicate/utils/row-level-permission-predicate-graphql-api-exception-handler.util';
 
 @Catch(RowLevelPermissionPredicateException)
+// Catches RowLevelPermissionPredicateException and converts it into the
+// appropriate GraphQL API error type.
 export class RowLevelPermissionPredicateGraphqlApiExceptionFilter implements ExceptionFilter {
   catch(exception: RowLevelPermissionPredicateException) {
     return rowLevelPermissionPredicateGraphqlApiExceptionHandler(exception);

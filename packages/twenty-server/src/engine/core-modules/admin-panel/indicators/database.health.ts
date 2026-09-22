@@ -1,3 +1,6 @@
+// Terminus health indicator running raw Postgres diagnostic queries
+// (connections, size, cache hit ratio, deadlocks, slow queries, top tables)
+// to report database health, with state history kept for outage details.
 import { Injectable } from '@nestjs/common';
 import {
   type HealthIndicatorResult,
@@ -22,6 +25,8 @@ export class DatabaseHealthIndicator {
     private readonly healthIndicatorService: HealthIndicatorService,
   ) {}
 
+  // Queries Postgres system views for connection/size/performance stats and
+  // reports database health; falls back to state history on failure.
   async isHealthy(): Promise<HealthIndicatorResult> {
     const indicator = this.healthIndicatorService.check('database');
 

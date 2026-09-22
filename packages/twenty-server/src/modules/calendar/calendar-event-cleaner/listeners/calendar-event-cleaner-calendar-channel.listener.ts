@@ -15,6 +15,7 @@ import {
 } from 'src/modules/calendar/calendar-event-cleaner/jobs/calendar-channel-deletion-cleanup.job';
 
 @Injectable()
+// Queues cleanup jobs whenever calendar channels are deleted.
 export class CalendarEventCleanerCalendarChannelListener {
   constructor(
     @InjectMessageQueue(MessageQueue.calendarQueue)

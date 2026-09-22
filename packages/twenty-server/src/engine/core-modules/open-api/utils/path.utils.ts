@@ -1,3 +1,6 @@
+// Builders for each generated OpenAPI path item (find/create/update/delete
+// many/one, batch, duplicates, restore, merge, group-by) for a given
+// workspace object.
 import { type OpenAPIV3_1 } from 'openapi-types';
 import { capitalize } from 'twenty-shared/utils';
 
@@ -27,6 +30,7 @@ import {
 import { type AllFlatEntityMaps } from 'src/engine/metadata-modules/flat-entity/types/all-flat-entity-maps.type';
 import { type FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object-metadata/types/flat-object-metadata.type';
 
+// Documents the `POST /batch/{namePlural}` (createMany) path.
 export const computeBatchPath = (
   item: Pick<FlatObjectMetadata, 'nameSingular' | 'namePlural'>,
   _flatObjectMetadataMaps: Pick<
@@ -57,6 +61,8 @@ export const computeBatchPath = (
   } as OpenAPIV3_1.PathItemObject;
 };
 
+// Documents the `/{namePlural}` collection path: GET (find many), POST
+// (create one), DELETE (delete many), PATCH (update many).
 export const computeManyResultPath = (
   item: Pick<FlatObjectMetadata, 'nameSingular' | 'namePlural'>,
   _flatObjectMetadataMaps: Pick<
@@ -135,6 +141,7 @@ export const computeManyResultPath = (
   } as OpenAPIV3_1.PathItemObject;
 };
 
+// Documents the `/{namePlural}/{id}` single-record path: GET, DELETE, PATCH.
 export const computeSingleResultPath = (
   item: Pick<FlatObjectMetadata, 'nameSingular' | 'namePlural'>,
   _flatObjectMetadataMaps: Pick<
@@ -194,6 +201,7 @@ export const computeSingleResultPath = (
   } as OpenAPIV3_1.PathItemObject;
 };
 
+// Documents the path that serves the OpenAPI schema document itself.
 export const computeOpenApiPath = (
   serverUrl: string,
 ): OpenAPIV3_1.PathItemObject => {
@@ -214,6 +222,7 @@ export const computeOpenApiPath = (
   } as OpenAPIV3_1.PathItemObject;
 };
 
+// Documents the `POST /{namePlural}/duplicates` (find duplicates) path.
 export const computeDuplicatesResultPath = (
   item: Pick<FlatObjectMetadata, 'nameSingular' | 'namePlural'>,
   _flatObjectMetadataMaps: Pick<
@@ -242,6 +251,7 @@ export const computeDuplicatesResultPath = (
   } as OpenAPIV3_1.PathItemObject;
 };
 
+// Documents the `PATCH /restore/{namePlural}/{id}` (restore one) path.
 export const computeRestoreOneResultPath = (
   item: Pick<FlatObjectMetadata, 'nameSingular' | 'namePlural'>,
   _flatObjectMetadataMaps: Pick<
@@ -271,6 +281,7 @@ export const computeRestoreOneResultPath = (
   } as OpenAPIV3_1.PathItemObject;
 };
 
+// Documents the `PATCH /restore/{namePlural}` (restore many) path.
 export const computeRestoreManyResultPath = (
   item: Pick<FlatObjectMetadata, 'nameSingular' | 'namePlural'>,
   _flatObjectMetadataMaps: Pick<
@@ -300,6 +311,7 @@ export const computeRestoreManyResultPath = (
   } as OpenAPIV3_1.PathItemObject;
 };
 
+// Documents the `PATCH /{namePlural}/merge` (merge many) path.
 export const computeMergeManyResultPath = (
   item: Pick<FlatObjectMetadata, 'nameSingular' | 'namePlural'>,
   _flatObjectMetadataMaps: Pick<
@@ -327,6 +339,7 @@ export const computeMergeManyResultPath = (
   } as OpenAPIV3_1.PathItemObject;
 };
 
+// Documents the `GET /{namePlural}/groupBy` (group-by) path.
 export const computeGroupByResultPath = (
   item: Pick<FlatObjectMetadata, 'nameSingular' | 'namePlural'>,
   _flatObjectMetadataMaps: Pick<

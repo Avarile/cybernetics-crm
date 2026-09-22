@@ -11,6 +11,8 @@ import {
 import { type UpdatePermissionFlagInput } from 'src/engine/metadata-modules/permission-flag/dtos/update-permission-flag.input';
 import { mergeUpdateInExistingRecord } from 'src/utils/merge-update-in-existing-record.util';
 
+// Applies an update-permission-flag input onto the matching existing flat permission
+// flag, throwing if it doesn't exist.
 export const fromUpdatePermissionFlagInputToFlatPermissionFlagToUpdateOrThrow =
   ({
     flatPermissionFlagMaps,

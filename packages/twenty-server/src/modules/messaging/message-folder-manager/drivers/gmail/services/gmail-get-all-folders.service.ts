@@ -1,3 +1,7 @@
+// Gmail implementation of MessageFolderDriver: lists the account's Gmail
+// labels and maps them to discovered message folders, excluding
+// system-excluded labels and resolving parent/child relationships from the
+// label naming hierarchy (e.g. "Parent/Child").
 import { Injectable, Logger } from '@nestjs/common';
 
 import { google } from 'googleapis';
@@ -25,6 +29,9 @@ export class GmailGetAllFoldersService implements MessageFolderDriver {
     private readonly gmailFoldersErrorHandlerService: GmailFoldersErrorHandlerService,
   ) {}
 
+  // Fetches all Gmail labels for the account and converts each non-excluded
+  // label into a DiscoveredMessageFolder, marking the SENT label and
+  // resolving each folder's parent from its "/"-delimited label name.
   async getAllMessageFolders(
     connectedAccount: Pick<
       ConnectedAccountEntity,

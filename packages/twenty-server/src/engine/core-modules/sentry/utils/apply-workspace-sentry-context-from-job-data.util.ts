@@ -1,5 +1,7 @@
 import { applyWorkspaceSentryFields } from 'src/engine/core-modules/sentry/utils/apply-workspace-sentry-fields.util';
 
+// Extracts workspaceId/userWorkspaceId from an arbitrary background job's
+// data payload and applies them as Sentry context, if present.
 export const applyWorkspaceSentryContextFromJobData = (
   jobData: unknown,
 ): void => {

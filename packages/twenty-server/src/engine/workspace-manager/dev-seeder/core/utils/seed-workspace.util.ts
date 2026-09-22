@@ -13,6 +13,7 @@ export type SeedWorkspaceArgs = {
   createWorkspaceInput: CreateWorkspaceInput;
 };
 
+// Inserts the given seed workspace row, ignoring conflicts.
 export const createWorkspace = async ({
   schemaName,
   queryRunner,
@@ -33,6 +34,7 @@ type DeleteWorkspacesArgs = {
   workspaceId: string;
 };
 
+// Deletes the workspace row with the given id.
 export const deleteWorkspaces = async ({
   queryRunner,
   schemaName,

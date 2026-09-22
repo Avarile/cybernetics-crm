@@ -6,6 +6,8 @@ import {
 
 import { isSafeRelativePath } from 'src/engine/core-modules/file-storage/utils/is-safe-relative-path.util';
 
+// class-validator decorator that rejects strings failing isSafeRelativePath,
+// for use on DTO fields carrying a storage-relative path
 export function IsSafeRelativePath(validationOptions?: ValidationOptions) {
   return function (object: object, propertyName: string) {
     registerDecorator({

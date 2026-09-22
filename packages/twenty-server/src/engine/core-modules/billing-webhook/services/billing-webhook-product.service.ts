@@ -10,6 +10,7 @@ import type Stripe from 'stripe';
 import { transformStripeProductEventToDatabaseProduct } from 'src/engine/core-modules/billing-webhook/utils/transform-stripe-product-event-to-database-product.util';
 import { BillingProductEntity } from 'src/engine/core-modules/billing/entities/billing-product.entity';
 import { isStripeValidProductMetadata } from 'src/engine/core-modules/billing/utils/is-stripe-valid-product-metadata.util';
+// Syncs Stripe product.created/updated events to BillingProduct
 @Injectable()
 export class BillingWebhookProductService {
   protected readonly logger = new Logger(BillingWebhookProductService.name);
@@ -18,6 +19,7 @@ export class BillingWebhookProductService {
     private readonly billingProductRepository: Repository<BillingProductEntity>,
   ) {}
 
+  // Upserts the product, preserving metadata only when it passes validation
   async processStripeEvent(
     data: Stripe.ProductCreatedEvent.Data | Stripe.ProductUpdatedEvent.Data,
   ) {

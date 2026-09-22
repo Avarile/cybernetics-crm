@@ -10,6 +10,8 @@ import { type Observable, catchError } from 'rxjs';
 import { messageChannelGraphqlApiExceptionHandler } from 'src/engine/metadata-modules/message-channel/utils/message-channel-graphql-api-exception-handler.util';
 
 @Injectable()
+// Catches errors thrown by the message channel resolver and converts
+// them into the appropriate GraphQL API error type.
 export class MessageChannelGraphqlApiExceptionInterceptor implements NestInterceptor {
   intercept(
     _context: ExecutionContext,

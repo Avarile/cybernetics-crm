@@ -1,5 +1,7 @@
 import { type QueryRunner } from 'typeorm';
 
+// SQL for a legacy TypeORM migration: makes objectMetadata.universalIdentifier and
+// applicationId required and rebuilds the dependent unique index / FK around them.
 export const makeObjectMetadataUniversalIdentifierAndApplicationIdNotNullableQueries =
   async (queryRunner: QueryRunner): Promise<void> => {
     await queryRunner.query(

@@ -1,3 +1,4 @@
+// Reads and deletes raw inbound email objects stored in S3.
 import { Injectable } from '@nestjs/common';
 
 import { DeleteObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
@@ -12,6 +13,7 @@ export class InboundEmailStorageService {
     private readonly inboundEmailS3ClientProvider: InboundEmailS3ClientProvider,
   ) {}
 
+  // Fetches an S3 object and buffers its full body into memory.
   async getRawMessage(s3Key: string): Promise<Buffer> {
     const client = this.inboundEmailS3ClientProvider.getClient();
     const bucket = this.inboundEmailS3ClientProvider.getBucket();
@@ -34,6 +36,7 @@ export class InboundEmailStorageService {
     return Buffer.concat(chunks);
   }
 
+  // Deletes an S3 object after it's been imported.
   async deleteRawMessage(s3Key: string): Promise<void> {
     const client = this.inboundEmailS3ClientProvider.getClient();
     const bucket = this.inboundEmailS3ClientProvider.getBucket();

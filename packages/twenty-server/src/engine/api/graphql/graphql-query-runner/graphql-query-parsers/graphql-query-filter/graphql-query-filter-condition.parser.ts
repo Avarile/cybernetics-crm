@@ -1,3 +1,6 @@
+// Recursively turns a GraphQL `filter` input (with and/or/not combinators
+// plus per-field conditions) into TypeORM WHERE brackets, delegating the
+// actual per-field SQL generation to GraphqlQueryFilterFieldParser.
 import {
   Brackets,
   NotBrackets,
@@ -33,6 +36,8 @@ export class GraphqlQueryFilterConditionParser {
     );
   }
 
+  // Entry point: wraps the filter's conditions in a single bracketed WHERE
+  // clause added to the query builder. No-op if the filter is empty.
   public parse(
     queryBuilder: WorkspaceSelectQueryBuilder<ObjectLiteral>,
     objectNameSingular: string,
@@ -54,6 +59,10 @@ export class GraphqlQueryFilterConditionParser {
     );
   }
 
+  // Applies each top-level filter key/value pair as a WHERE condition,
+  // ANDing them together; exposed publicly so relation sub-filters can
+  // reuse it on their own nested bracket. First entry uses .where, the
+  // rest .andWhere.
   public applyFilterEntriesToWhereBrackets(
     innerQueryBuilder: WhereExpressionBuilder,
     outerQueryBuilder: WorkspaceSelectQueryBuilder<ObjectLiteral>,
@@ -72,6 +81,9 @@ export class GraphqlQueryFilterConditionParser {
     });
   }
 
+  // Dispatches a single filter key: 'and'/'or' recursively combine
+  // sub-filters with brackets, 'not' negates a sub-filter, and any other
+  // key is treated as a field condition delegated to the field parser.
   private parseKeyFilter(
     queryBuilder: WhereExpressionBuilder,
     outerQueryBuilder: WorkspaceSelectQueryBuilder<ObjectLiteral>,

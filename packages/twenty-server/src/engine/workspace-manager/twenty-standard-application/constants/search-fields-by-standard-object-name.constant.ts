@@ -3,6 +3,7 @@ import { FieldMetadataType } from 'twenty-shared/types';
 import { type AllStandardObjectFieldName } from 'src/engine/workspace-manager/twenty-standard-application/types/all-standard-object-field-name.type';
 import { type AllStandardObjectName } from 'src/engine/workspace-manager/twenty-standard-application/types/all-standard-object-name.type';
 
+// Maps each standard object to the fields used to build its full-text search vector when seeded into a new workspace
 export const SEARCH_FIELDS_BY_STANDARD_OBJECT_NAME = {
   attachment: [{ name: 'name', type: FieldMetadataType.TEXT }],
   blocklist: [{ name: 'handle', type: FieldMetadataType.TEXT }],

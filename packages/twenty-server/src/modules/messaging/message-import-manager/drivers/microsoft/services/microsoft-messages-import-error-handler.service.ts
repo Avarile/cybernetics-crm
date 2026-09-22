@@ -1,3 +1,5 @@
+// Normalizes Microsoft Graph message import errors into a classified
+// exception, checking for a temporary network error first.
 import { Injectable, Logger } from '@nestjs/common';
 
 import { MicrosoftNetworkErrorHandler } from 'src/modules/messaging/message-import-manager/drivers/microsoft/services/microsoft-network-error-handler.service';
@@ -14,6 +16,8 @@ export class MicrosoftMessagesImportErrorHandler {
   ) {}
 
   // oxlint-disable-next-line typescript/no-explicit-any
+  // Logs the error, then throws a temporary-network error if recognized,
+  // otherwise a parsed classified exception.
   public handleError(error: any): void {
     this.logger.error(`Error fetching messages: ${JSON.stringify(error)}`);
 

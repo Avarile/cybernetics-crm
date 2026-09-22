@@ -1,3 +1,4 @@
+// Error codes for invalid index metadata operations (creation, field references, uniqueness).
 export enum IndexExceptionCode {
   INDEX_EMPTY_FIELDS = 'INDEX_EMPTY_FIELDS',
   INDEX_FIELD_NOT_FOUND = 'INDEX_FIELD_NOT_FOUND',

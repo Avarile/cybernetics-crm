@@ -2,6 +2,8 @@ import { type MessageDescriptor } from '@lingui/core';
 
 import { CustomException } from 'src/utils/custom-exception';
 
+// Error codes raised by the common (GraphQL/REST/MCP) query runners;
+// mapped to GraphQL/REST error types by the *-exception-handler utils.
 export enum CommonQueryRunnerExceptionCode {
   MISSING_FLAT_INDEX_MAPS = 'MISSING_FLAT_INDEX_MAPS',
   RECORD_NOT_FOUND = 'RECORD_NOT_FOUND',
@@ -23,6 +25,8 @@ export enum CommonQueryRunnerExceptionCode {
   INVALID_TIMEZONE = 'INVALID_TIMEZONE',
 }
 
+// Exception type thrown throughout the common query-runner/arg-processor
+// code, carrying both a developer message and a user-facing translated one.
 export class CommonQueryRunnerException extends CustomException<CommonQueryRunnerExceptionCode> {
   constructor(
     message: string,

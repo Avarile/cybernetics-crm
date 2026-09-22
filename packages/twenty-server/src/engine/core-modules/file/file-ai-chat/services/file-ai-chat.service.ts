@@ -18,6 +18,8 @@ export class FileAiChatService {
     private readonly fileUrlService: FileUrlService,
   ) {}
 
+  // Writes an AI chat attachment to storage under the workspace's custom
+  // application and returns it with a signed URL.
   async uploadFile({
     file,
     filename,

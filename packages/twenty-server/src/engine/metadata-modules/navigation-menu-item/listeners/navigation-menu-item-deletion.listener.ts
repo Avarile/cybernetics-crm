@@ -1,3 +1,6 @@
+// Listens for batched record deletion events and enqueues a job to cascade
+// navigation menu item cleanup for the deleted records.
+
 import { Injectable } from '@nestjs/common';
 
 import { type ObjectRecordDeleteEvent } from 'twenty-shared/database-events';
@@ -20,6 +23,8 @@ export class NavigationMenuItemDeletionListener {
     private readonly messageQueueService: MessageQueueService,
   ) {}
 
+  // For any object's batched delete event, enqueues the navigation menu item
+  // deletion job with the deleted record ids, skipping if none were deleted.
   @OnDatabaseBatchEvent('*', DatabaseEventAction.DELETED)
   async handleDeletedEvent(
     payload: WorkspaceEventBatch<ObjectRecordDeleteEvent>,

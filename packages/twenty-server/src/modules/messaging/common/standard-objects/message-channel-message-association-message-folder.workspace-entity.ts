@@ -1,3 +1,6 @@
+// Join entity linking a message-channel/message association to the message
+// folder(s) it was found in (a message can live in multiple folders, e.g.
+// Gmail labels).
 import { MessageFolderEntity } from 'src/engine/metadata-modules/message-folder/entities/message-folder.entity';
 import { BaseWorkspaceEntity } from 'src/engine/twenty-orm/base.workspace-entity';
 import { type EntityRelation } from 'src/engine/workspace-manager/workspace-migration/types/entity-relation.interface';

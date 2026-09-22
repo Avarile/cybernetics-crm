@@ -29,6 +29,8 @@ import { InjectWorkspaceScopedRepository } from 'src/engine/twenty-orm/workspace
 import { WorkspaceScopedRepository } from 'src/engine/twenty-orm/workspace-scoped-repository/workspace-scoped-repository';
 import { WorkspaceCacheService } from 'src/engine/workspace-cache/services/workspace-cache.service';
 
+// Central service for resolving and checking a user's/API key's/application's effective
+// permissions: settings/tool permission flags and per-object record permissions.
 @Injectable()
 export class PermissionsService {
   constructor(
@@ -41,10 +43,14 @@ export class PermissionsService {
     private readonly applicationRepository: Repository<ApplicationEntity>,
   ) {}
 
+  // Returns true if the given permission flag gates a tool (vs. a settings area).
   private isToolPermission(feature: string) {
     return TOOL_PERMISSION_FLAGS.includes(feature);
   }
 
+  // Resolves a user's full permission set for the workspace: every permission flag
+  // (true if granted by the role's base permission or an explicit flag) plus the role's
+  // per-object record permissions.
   public async getUserWorkspacePermissions({
     userWorkspaceId,
     workspaceId,
@@ -100,6 +106,7 @@ export class PermissionsService {
     };
   }
 
+  // Returns an all-false permissions baseline used before a role's actual flags are applied.
   public getDefaultUserWorkspacePermissions = () =>
     ({
       permissionFlags: {
@@ -133,6 +140,10 @@ export class PermissionsService {
       objectsPermissions: {},
     }) as const satisfies UserWorkspacePermissions;
 
+  // Checks whether the given setting/tool permission flag is granted, resolving the
+  // relevant role from an API key, a user workspace, or an application's default role
+  // (checked in that order); throws if none of the three identifiers is provided or if
+  // the resolved role can't be found.
   public async userHasWorkspaceSettingPermission({
     userWorkspaceId,
     workspaceId,
@@ -238,6 +249,8 @@ export class PermissionsService {
     );
   }
 
+  // Checks whether a role grants the given setting/tool permission flag, either via
+  // its base "all settings"/"all tools" permission or an explicit permission flag.
   public checkRolePermissions(
     role: RoleEntity,
     setting: PermissionFlagType,
@@ -253,6 +266,7 @@ export class PermissionsService {
     return this.roleHasPermissionFlag(role, setting);
   }
 
+  // Checks whether a role has been explicitly granted a specific permission flag.
   private roleHasPermissionFlag(
     role: RoleEntity,
     flag: PermissionFlagType,
@@ -268,6 +282,9 @@ export class PermissionsService {
     );
   }
 
+  // Resolves the roles referenced by a permission config (a union or intersection of role
+  // ids), returning null when the config says to bypass permission checks entirely; throws
+  // if any referenced role id can't be found.
   private async getRolesFromPermissionConfig(
     rolePermissionConfig: RolePermissionConfig,
     workspaceId: string,
@@ -304,6 +321,8 @@ export class PermissionsService {
     return { roles, useIntersection };
   }
 
+  // Checks a setting/tool permission flag against a role-permission config (union or
+  // intersection of roles), returning false on any resolution error rather than throwing.
   public async checkRolesPermissions(
     rolePermissionConfig: RolePermissionConfig,
     workspaceId: string,
@@ -330,6 +349,9 @@ export class PermissionsService {
     }
   }
 
+  // Checks a tool permission flag against a role-permission config (union or intersection
+  // of roles), treating a role's "all tools" base permission as an automatic grant;
+  // returns false on any resolution error rather than throwing.
   public async hasToolPermission(
     rolePermissionConfig: RolePermissionConfig,
     workspaceId: string,

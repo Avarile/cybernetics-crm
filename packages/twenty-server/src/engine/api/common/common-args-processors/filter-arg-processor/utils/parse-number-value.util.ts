@@ -1,6 +1,8 @@
 import { FieldMetadataType } from 'twenty-shared/types';
 import { assertUnreachable } from 'twenty-shared/utils';
 
+// Coerces a stringified numeric filter value (e.g. from REST) to a float
+// for NUMBER/NUMERIC/POSITION fields; non-string values pass through.
 export const parseNumberValue = (
   value: unknown,
   fieldType:

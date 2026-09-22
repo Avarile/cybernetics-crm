@@ -8,6 +8,7 @@ import { type AllStandardObjectViewFieldGroupName } from 'src/engine/workspace-m
 import { type AllStandardObjectViewName } from 'src/engine/workspace-manager/twenty-standard-application/types/all-standard-object-view-name.type';
 import { type StandardBuilderArgs } from 'src/engine/workspace-manager/twenty-standard-application/types/metadata-standard-buillder-args.type';
 
+// Per-view-field-group content (name, position, visibility) supplied by each standard view field group's builder
 type CreateStandardViewFieldGroupOptions<
   O extends AllStandardObjectName,
   V extends AllStandardObjectViewName<O>,
@@ -19,6 +20,7 @@ type CreateStandardViewFieldGroupOptions<
   isVisible: boolean;
 };
 
+// Arguments accepted by createStandardViewFieldGroupFlatMetadata
 export type CreateStandardViewFieldGroupArgs<
   O extends AllStandardObjectName = AllStandardObjectName,
   V extends AllStandardObjectViewName<O> = AllStandardObjectViewName<O>,
@@ -27,6 +29,8 @@ export type CreateStandardViewFieldGroupArgs<
   context: CreateStandardViewFieldGroupOptions<O, V>;
 };
 
+// Builds a single standard view field group's FlatViewFieldGroup, resolving its id/universal
+// identifier and parent view from the standard object's fixed definitions
 export const createStandardViewFieldGroupFlatMetadata = <
   O extends AllStandardObjectName,
   V extends AllStandardObjectViewName<O>,

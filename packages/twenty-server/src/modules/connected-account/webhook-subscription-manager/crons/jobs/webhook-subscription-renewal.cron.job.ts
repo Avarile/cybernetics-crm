@@ -16,6 +16,8 @@ import { CalendarWebhookSubscriptionService } from 'src/modules/connected-accoun
 import { MessagingWebhookSubscriptionService } from 'src/modules/connected-account/webhook-subscription-manager/services/messaging-webhook-subscription.service';
 
 @Processor(MessageQueue.cronQueue)
+// Hourly, finds message/calendar channels whose webhook subscription expires
+// within the renewal buffer and renews each one, logging (not failing) individual errors.
 export class WebhookSubscriptionRenewalCronJob {
   private readonly logger = new Logger(WebhookSubscriptionRenewalCronJob.name);
 

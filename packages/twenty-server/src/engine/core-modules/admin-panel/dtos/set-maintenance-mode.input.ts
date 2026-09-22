@@ -1,3 +1,4 @@
+// GraphQL args for scheduling a maintenance-mode window.
 import { ArgsType, Field, GraphQLISODateTime } from '@nestjs/graphql';
 
 import { IsDate, IsNotEmpty, IsOptional, IsUrl } from 'class-validator';

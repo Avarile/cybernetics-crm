@@ -26,6 +26,8 @@ type CalendarTriggerEventListFetchCommandOptions = {
   description:
     'Trigger calendar event list fetch immediately without waiting for cron',
 })
+// CLI command to immediately trigger a calendar event list fetch for pending
+// channels in a workspace, bypassing the cron schedule (useful for debugging/backfills).
 export class CalendarTriggerEventListFetchCommand extends CommandRunner {
   private readonly logger = new Logger(
     CalendarTriggerEventListFetchCommand.name,

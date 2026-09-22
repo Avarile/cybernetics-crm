@@ -1,3 +1,6 @@
+// Short-TTL in-memory cache of an application's translated message
+// catalogs by locale, avoiding a DB round trip on every translated string
+// lookup.
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -28,6 +31,8 @@ export class ApplicationTranslationCacheService {
     private readonly applicationTranslationRepository: Repository<ApplicationTranslationEntity>,
   ) {}
 
+  // Returns the cached (or freshly loaded) message catalog for an
+  // application's locale, or an empty catalog if none exists.
   async getCatalog({
     applicationRegistrationId,
     locale,
@@ -44,16 +49,19 @@ export class ApplicationTranslationCacheService {
     return catalogsByLocale?.[locale] ?? EMPTY_CATALOG;
   }
 
+  // Clears the cached catalogs for an application registration.
   async invalidate(applicationRegistrationId: string): Promise<void> {
     await this.catalogsMemoizer.clearKeys(
       this.getCacheKey(applicationRegistrationId),
     );
   }
 
+  // Builds the memoizer cache key for an application registration.
   private getCacheKey(applicationRegistrationId: string): CacheKey {
     return `applicationTranslation-${applicationRegistrationId}`;
   }
 
+  // Loads and indexes an application's translation rows by locale.
   private async loadCatalogsByLocale(
     applicationRegistrationId: string,
   ): Promise<ApplicationCatalogsByLocale> {

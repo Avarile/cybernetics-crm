@@ -1,3 +1,6 @@
+// Wires up the page layout widget cache and type-validation services with
+// their required workspace-scoped and core entity repositories.
+
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
@@ -36,4 +39,6 @@ import { provideWorkspaceScopedRepository } from 'src/engine/twenty-orm/workspac
     FlatPageLayoutWidgetTypeValidatorService,
   ],
 })
+// Provides page layout widget caching and per-widget-type validation to
+// other metadata modules.
 export class FlatPageLayoutWidgetModule {}

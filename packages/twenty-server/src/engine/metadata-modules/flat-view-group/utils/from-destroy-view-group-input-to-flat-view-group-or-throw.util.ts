@@ -13,6 +13,7 @@ import {
 } from 'src/engine/metadata-modules/view-group/exceptions/view-group.exception';
 import { type UniversalFlatViewGroup } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-view-group.type';
 
+// Looks up the flat view group targeted for permanent destruction, throwing if it doesn't exist.
 export const fromDestroyViewGroupInputToFlatViewGroupOrThrow = ({
   destroyViewGroupInput,
   flatViewGroupMaps,

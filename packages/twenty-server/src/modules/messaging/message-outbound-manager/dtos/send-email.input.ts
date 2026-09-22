@@ -1,3 +1,4 @@
+// GraphQL input for the sendEmail mutation.
 import { Field, InputType } from '@nestjs/graphql';
 
 @InputType()

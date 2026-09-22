@@ -3,6 +3,7 @@ import { IsUUID } from 'class-validator';
 
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';
 
+// GraphQL input for soft-deleting a view sort by id.
 @InputType()
 export class DeleteViewSortInput {
   @Field(() => UUIDScalarType, {

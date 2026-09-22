@@ -1,3 +1,8 @@
+// Builds the GraphQL Yoga driver config for the metadata API:
+// enables response caching for expensive metadata queries
+// (ObjectMetadataItems, FindAllViews), plus the same error handling,
+// introspection guarding, and query complexity plugins as the other
+// GraphQL APIs.
 import { type YogaDriverConfig } from '@graphql-yoga/nestjs';
 import * as Sentry from '@sentry/node';
 import GraphQLJSON from 'graphql-type-json';
@@ -20,6 +25,10 @@ import { type TwentyConfigService } from 'src/engine/core-modules/twenty-config/
 import { type DataloaderService } from 'src/engine/dataloaders/dataloader.service';
 import { renderApolloPlayground } from 'src/engine/utils/render-apollo-playground.util';
 
+// Builds the Yoga driver config for the metadata GraphQL endpoint: error
+// handling, Sentry tracing, response caching for a couple of expensive
+// read-only operations, introspection lockdown outside dev, query
+// complexity limits, and the GraphiQL playground.
 export const metadataModuleFactory = async (
   twentyConfigService: TwentyConfigService,
   exceptionHandlerService: ExceptionHandlerService,

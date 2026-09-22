@@ -48,6 +48,7 @@ export type LogicFunctionDeleteApplicationResourcesParams = {
   applicationUniversalIdentifier: string;
 };
 
+// Contract implemented by each execution backend (disabled/local/lambda) for running and managing logic functions
 export interface LogicFunctionDriver {
   delete(flatLogicFunction: FlatLogicFunction): Promise<void>;
   deleteApplicationResources(

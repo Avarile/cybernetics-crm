@@ -1,3 +1,4 @@
+// Registry of standard agent skills seeded into every workspace, keyed by name with their fixed universal identifier
 export const STANDARD_SKILL = {
   'workflow-building': {
     universalIdentifier: '20202020-297a-4721-a1f3-c79a30b5420e',

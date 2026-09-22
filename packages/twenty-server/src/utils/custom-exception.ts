@@ -5,6 +5,7 @@ const CommonExceptionCode = {
   INTERNAL_SERVER_ERROR: 'INTERNAL_SERVER_ERROR',
 } as const;
 
+// Merges a domain-specific exception code enum with the codes shared by all exceptions.
 export const appendCommonExceptionCode = <
   SpecificExceptionCode = Record<string, string>,
 >(
@@ -16,6 +17,8 @@ export const appendCommonExceptionCode = <
   } as const;
 };
 
+// Base class for domain exceptions, carrying both a machine-readable code and a
+// user-facing translated message alongside the standard Error message.
 export abstract class CustomException<
   ExceptionCode extends string = string,
   ExceptionMessage extends string = string,

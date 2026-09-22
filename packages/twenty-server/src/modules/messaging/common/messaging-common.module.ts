@@ -1,3 +1,5 @@
+// Shared messaging providers (currently message channel sync status
+// tracking) used across the messaging sub-modules.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

@@ -16,6 +16,8 @@ import { ViewFieldEntity } from 'src/engine/metadata-modules/view-field/entities
 import { ViewEntity } from 'src/engine/metadata-modules/view/entities/view.entity';
 import { OverridableEntity } from 'src/engine/workspace-manager/types/overridable-entity';
 
+// Workspace-level fields that can override a standard-app view field
+// group's defaults without mutating the original definition.
 export type ViewFieldGroupOverrides = {
   name?: string;
   position?: number;
@@ -25,6 +27,8 @@ export type ViewFieldGroupOverrides = {
 @Entity({ name: 'viewFieldGroup', schema: 'core' })
 @Index('IDX_VIEW_FIELD_GROUP_WORKSPACE_ID_VIEW_ID', ['workspaceId', 'viewId'])
 @Index('IDX_VIEW_FIELD_GROUP_VIEW_ID', ['viewId'])
+// TypeORM entity for a view field group: a named section that groups a
+// subset of a view's fields, with visibility and display position.
 export class ViewFieldGroupEntity
   extends OverridableEntity<ViewFieldGroupOverrides>
   implements Required<ViewFieldGroupEntity>

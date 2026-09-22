@@ -1,3 +1,7 @@
+// MessageOutboundDriver for Microsoft Graph: Graph has no raw-MIME send,
+// so every send first creates (or replies into) a draft message via the
+// API, then sends that draft — replies are threaded by first resolving
+// the parent message's Graph id from its Internet Message-ID.
 import { Injectable, Logger } from '@nestjs/common';
 
 import { type MessageOutboundDriver } from 'src/modules/messaging/message-outbound-manager/interfaces/message-outbound-driver.interface';
@@ -18,6 +22,8 @@ export class MicrosoftMessageOutboundService implements MessageOutboundDriver {
     private readonly microsoftOAuth2ClientProvider: MicrosoftOAuth2ClientProvider,
   ) {}
 
+  // Creates the message as a draft (or reply-draft), then sends it via
+  // Graph's /send endpoint.
   async sendMessage(
     sendMessageInput: SendMessageInput,
     connectedAccount: ConnectedAccountEntity,
@@ -41,6 +47,7 @@ export class MicrosoftMessageOutboundService implements MessageOutboundDriver {
     };
   }
 
+  // Creates the message as a Graph draft without sending it.
   async createDraft(
     sendMessageInput: SendMessageInput,
     connectedAccount: ConnectedAccountEntity,
@@ -52,6 +59,8 @@ export class MicrosoftMessageOutboundService implements MessageOutboundDriver {
     await this.createDraftMessage(microsoftClient, sendMessageInput);
   }
 
+  // Sends the message, then best-effort deletes the source draft
+  // (logging rather than failing the send if cleanup fails).
   async sendDraft(
     draftExternalId: string,
     sendMessageInput: SendMessageInput,
@@ -78,6 +87,9 @@ export class MicrosoftMessageOutboundService implements MessageOutboundDriver {
     return sendResult;
   }
 
+  // For a reply, resolves the parent message and creates+patches a reply
+  // draft (so Graph threads it correctly); otherwise creates a plain
+  // draft message.
   private async createDraftMessage(
     microsoftClient: MicrosoftGraphClient,
     sendMessageInput: SendMessageInput,
@@ -121,6 +133,7 @@ export class MicrosoftMessageOutboundService implements MessageOutboundDriver {
     };
   }
 
+  // Looks up a message's Graph id by its Internet Message-ID header.
   private async findMessageByInternetMessageId(
     microsoftClient: MicrosoftGraphClient,
     internetMessageId: string,
@@ -137,6 +150,7 @@ export class MicrosoftMessageOutboundService implements MessageOutboundDriver {
     return response?.value?.[0]?.id;
   }
 
+  // Builds the Graph message payload (recipients, HTML body, attachments).
   private composeMicrosoftMessage(
     sendMessageInput: SendMessageInput,
   ): Record<string, unknown> {

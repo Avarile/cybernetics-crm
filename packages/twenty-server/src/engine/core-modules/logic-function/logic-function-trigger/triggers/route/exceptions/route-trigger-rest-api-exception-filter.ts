@@ -1,3 +1,4 @@
+// Maps RouteTriggerException codes to HTTP status codes for the REST route-trigger endpoint.
 import {
   type ArgumentsHost,
   Catch,
@@ -19,6 +20,7 @@ export class RouteTriggerRestApiExceptionFilter implements ExceptionFilter {
     private readonly httpExceptionHandlerService: HttpExceptionHandlerService,
   ) {}
 
+  // Translates the exception code into the matching HTTP response status.
   catch(exception: RouteTriggerException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();

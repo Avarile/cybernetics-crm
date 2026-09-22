@@ -11,6 +11,7 @@ import { type AllStandardObjectViewFilterName } from 'src/engine/workspace-manag
 import { type AllStandardObjectViewName } from 'src/engine/workspace-manager/twenty-standard-application/types/all-standard-object-view-name.type';
 import { type StandardBuilderArgs } from 'src/engine/workspace-manager/twenty-standard-application/types/metadata-standard-buillder-args.type';
 
+// Per-view-filter content (target field, operand, value) supplied by each standard view filter's builder
 export type CreateStandardViewFilterOptions<
   O extends AllStandardObjectName,
   V extends AllStandardObjectViewName<O>,
@@ -25,6 +26,7 @@ export type CreateStandardViewFilterOptions<
   positionInViewFilterGroup?: number | null;
 };
 
+// Arguments accepted by createStandardViewFilterFlatMetadata
 export type CreateStandardViewFilterArgs<
   O extends AllStandardObjectName = AllStandardObjectName,
   V extends AllStandardObjectViewName<O> = AllStandardObjectViewName<O>,
@@ -33,6 +35,8 @@ export type CreateStandardViewFilterArgs<
   context: CreateStandardViewFilterOptions<O, V>;
 };
 
+// Builds a single standard view filter's FlatViewFilter, resolving its id/universal identifier,
+// parent view, and target field from the standard object's fixed definitions
 export const createStandardViewFilterFlatMetadata = <
   O extends AllStandardObjectName,
   V extends AllStandardObjectViewName<O>,

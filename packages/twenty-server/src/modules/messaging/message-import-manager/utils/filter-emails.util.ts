@@ -9,6 +9,11 @@ import { isGroupEmail } from 'src/modules/messaging/message-import-manager/utils
 import { isMessageSenderMatchingHandles } from 'src/modules/messaging/message-import-manager/utils/is-message-sender-matching-handles.util';
 import { isWorkEmail } from 'src/utils/is-work-email';
 
+// Applies the full set of import filters in order: drops .ics calendar
+// attachments' messages, blocklisted senders/recipients, internal
+// same-domain messages (unless explicitly enabled), and finally — unless
+// the channel opted out — messages from group/no-reply-style senders
+// (messages the user themselves sent are always kept).
 export const filterEmails = (
   primaryHandle: string,
   handleAliases: string[],

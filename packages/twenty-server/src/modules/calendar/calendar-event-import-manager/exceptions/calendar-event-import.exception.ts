@@ -22,6 +22,8 @@ const getCalendarEventImportExceptionUserFriendlyMessage = (
   }
 };
 
+// Thrown by the calendar events import pipeline for unsupported providers or
+// unclassified failures (distinct from per-driver exceptions).
 export class CalendarEventImportException extends CustomException<CalendarEventImportExceptionCode> {
   constructor(
     message: string,

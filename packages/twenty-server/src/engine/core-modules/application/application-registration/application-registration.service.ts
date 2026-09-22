@@ -117,6 +117,8 @@ export class ApplicationRegistrationService {
     private readonly metricsService: MetricsService,
   ) {}
 
+  // Invalidates the cached marketplace catalog after a registration write,
+  // logging (not throwing) on failure so cache issues never block a save.
   private async invalidateMarketplaceAppsCache(): Promise<void> {
     try {
       await this.coreEntityCacheService.invalidate(
@@ -128,6 +130,8 @@ export class ApplicationRegistrationService {
     }
   }
 
+  // Records a metric for a new registration or a new version being
+  // published to it.
   emitRegistrationPublishMetric({
     isNewRegistration,
     universalIdentifier,
@@ -155,6 +159,8 @@ export class ApplicationRegistrationService {
     });
   }
 
+  // Atomically updates latestAvailableVersion only if it actually changed,
+  // returning whether a row was affected.
   async setLatestAvailableVersionIfChanged(
     applicationRegistrationId: string,
     newVersion: string | null,
@@ -172,6 +178,7 @@ export class ApplicationRegistrationService {
     return (result.affected ?? 0) > 0;
   }
 
+  // Returns all registrations owned by a workspace, without their manifest.
   async findMany(
     ownerWorkspaceId: string,
   ): Promise<ApplicationRegistrationEntity[]> {
@@ -182,6 +189,8 @@ export class ApplicationRegistrationService {
     });
   }
 
+  // Admin panel listing: paginated, optionally search-filtered and
+  // pre-installed-only, across all registrations.
   async findAll({
     limit,
     offset,
@@ -235,6 +244,8 @@ export class ApplicationRegistrationService {
     };
   }
 
+  // Looks up a registration by id, scoped to its owning workspace,
+  // throwing if not found or not owned by that workspace.
   async findOneById(
     id: string,
     ownerWorkspaceId: string,
@@ -254,6 +265,8 @@ export class ApplicationRegistrationService {
     return registration;
   }
 
+  // Looks up a registration by id with no workspace scoping (admin/global
+  // use), throwing if not found.
   async findOneByIdGlobal(id: string): Promise<ApplicationRegistrationEntity> {
     const registration = await this.applicationRegistrationRepository.findOne({
       select: APPLICATION_REGISTRATION_WITHOUT_MANIFEST_SELECT,
@@ -312,6 +325,7 @@ export class ApplicationRegistrationService {
     };
   }
 
+  // Looks up a registration by universal identifier, or null.
   async findOneByUniversalIdentifier(
     universalIdentifier: string,
   ): Promise<ApplicationRegistrationEntity | null> {
@@ -320,6 +334,10 @@ export class ApplicationRegistrationService {
     });
   }
 
+  // Creates a new registration owned by a workspace: validates the
+  // universal identifier is unclaimed and the redirect URIs/scopes are
+  // valid, then generates a fresh OAuth client id/secret pair (the
+  // secret is returned once, only the hash is persisted).
   async create(
     input: CreateApplicationRegistrationInput,
     ownerWorkspaceId: string,
@@ -373,6 +391,8 @@ export class ApplicationRegistrationService {
     return { applicationRegistration: saved, clientSecret };
   }
 
+  // Updates a registration's editable fields, scoped to its owning
+  // workspace.
   async update(
     input: UpdateApplicationRegistrationInput,
     ownerWorkspaceId: string,
@@ -385,6 +405,7 @@ export class ApplicationRegistrationService {
     return this.findOneById(id, ownerWorkspaceId);
   }
 
+  // Same as update, but without workspace ownership scoping (admin use).
   async updateGlobal(
     input: UpdateApplicationRegistrationInput,
   ): Promise<ApplicationRegistrationEntity> {
@@ -396,6 +417,9 @@ export class ApplicationRegistrationService {
     return this.findOneByIdGlobal(id);
   }
 
+  // Validates redirect URIs/scopes and persists only the fields present in
+  // the update payload, invalidating the marketplace cache if anything
+  // changed.
   private async applyUpdate(
     id: string,
     update: UpdateApplicationRegistrationPayload,
@@ -426,6 +450,13 @@ export class ApplicationRegistrationService {
     }
   }
 
+  // Updates a registration's stored manifest, display fields, and
+  // optionally its source type/latest version, under a distributed lock
+  // to avoid a concurrent sync interleaving. When preventVersionDowngrade
+  // is set, skips the update if the incoming version is not newer than
+  // what's already recorded. Runs the registration save and variable
+  // schema sync in one transaction, and preserves existing gallery image
+  // fileIds for paths that didn't change.
   async updateFromManifest({
     applicationRegistrationId,
     manifest,
@@ -516,6 +547,8 @@ export class ApplicationRegistrationService {
     );
   }
 
+  // Deletes a registration owned by the workspace, best-effort cleaning up
+  // its stored assets first since the FK cascade can't remove file bytes.
   async delete(id: string, ownerWorkspaceId: string): Promise<boolean> {
     await this.findOneById(id, ownerWorkspaceId);
 
@@ -537,6 +570,8 @@ export class ApplicationRegistrationService {
     return true;
   }
 
+  // Generates and stores a new client secret hash for the registration,
+  // returning the plaintext secret once.
   async rotateClientSecret(
     id: string,
     ownerWorkspaceId: string,
@@ -555,6 +590,8 @@ export class ApplicationRegistrationService {
     return clientSecret;
   }
 
+  // Verifies a client secret against the registration's stored bcrypt
+  // hash; false for confidential clients with no hash set.
   async verifyClientSecret(
     registration: ApplicationRegistrationEntity,
     clientSecret: string,
@@ -566,6 +603,10 @@ export class ApplicationRegistrationService {
     return bcrypt.compare(clientSecret, registration.oAuthClientSecretHash);
   }
 
+  // Creates or updates a catalog-synced (NPM) registration from marketplace
+  // sync data: marks it vetted if listed, tracks whether the version
+  // changed to emit a publish metric, preserves gallery image fileIds for
+  // unchanged paths, and syncs its server variable schemas.
   async upsertFromCatalog(
     params: Pick<
       ApplicationRegistrationEntity,
@@ -676,6 +717,8 @@ export class ApplicationRegistrationService {
     );
   }
 
+  // Creates the built-in Twenty CLI OAuth-only registration on first boot,
+  // a no-op if it already exists.
   async createCliRegistrationIfNotExists(): Promise<ApplicationRegistrationEntity | null> {
     const existing = await this.findOneByUniversalIdentifier(
       TWENTY_CLI_APPLICATION_REGISTRATION.universalIdentifier,
@@ -706,6 +749,7 @@ export class ApplicationRegistrationService {
     return saved;
   }
 
+  // Returns listed NPM-sourced registrations as marketplace catalog cards.
   async findManyListedCatalogCards(): Promise<
     ApplicationRegistrationCatalogCard[]
   > {
@@ -744,6 +788,8 @@ export class ApplicationRegistrationService {
     }));
   }
 
+  // Returns install stats for a registration, scoped to its owning
+  // workspace.
   async getStats(
     applicationRegistrationId: string,
     ownerWorkspaceId: string,
@@ -762,6 +808,8 @@ export class ApplicationRegistrationService {
     return this.computeStats(applicationRegistrationId);
   }
 
+  // Computes active install count and version distribution across
+  // non-deleted applications for a registration.
   private async computeStats(
     applicationRegistrationId: string,
   ): Promise<ApplicationRegistrationStatsDTO> {
@@ -811,6 +859,8 @@ export class ApplicationRegistrationService {
     );
   }
 
+  // Returns a paginated, optionally search-filtered list of workspaces
+  // that have this registration's application installed.
   private async computeInstalledWorkspaces(
     applicationRegistrationId: string,
     limit: number,
@@ -857,6 +907,9 @@ export class ApplicationRegistrationService {
     };
   }
 
+  // Claims an unowned registration for a workspace, using a
+  // still-unowned conditional update so concurrent claim attempts don't
+  // overwrite each other (first claimant wins).
   async claimOwnership(params: {
     applicationRegistrationId: string;
     claimingWorkspaceId: string;
@@ -894,6 +947,8 @@ export class ApplicationRegistrationService {
     });
   }
 
+  // Transfers a registration's ownership from the current workspace to a
+  // different workspace identified by subdomain.
   async transferOwnership(params: {
     applicationRegistrationId: string;
     targetWorkspaceSubdomain: string;
@@ -933,6 +988,7 @@ export class ApplicationRegistrationService {
     });
   }
 
+  // Generates a random client secret and its bcrypt hash for storage.
   private async generateClientSecret(): Promise<{
     clientSecret: string;
     clientSecretHash: string;
@@ -946,6 +1002,7 @@ export class ApplicationRegistrationService {
     return { clientSecret, clientSecretHash };
   }
 
+  // Throws if any redirect URI is invalid.
   private validateRedirectUris(uris: string[]): void {
     for (const uri of uris) {
       const result = validateRedirectUri(uri);
@@ -959,6 +1016,7 @@ export class ApplicationRegistrationService {
     }
   }
 
+  // Throws if any requested OAuth scope is not in the allowed set.
   private validateScopes(scopes: string[]): void {
     const validScopes: readonly string[] = ALL_OAUTH_SCOPES;
     const invalidScopes = scopes.filter(

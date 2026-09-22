@@ -29,6 +29,8 @@ type ProcessOneDimensionalResultsParams = {
   firstDayOfTheWeek: FirstDayOfTheWeek;
 };
 
+// Formats raw single-dimension group-by results into display-ready data
+// points, also building a formatted-label -> raw-value lookup for later sorting/filtering.
 export const processOneDimensionalResults = ({
   rawResults,
   primaryAxisGroupByField,

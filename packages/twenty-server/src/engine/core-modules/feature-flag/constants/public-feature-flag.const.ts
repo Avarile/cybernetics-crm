@@ -1,3 +1,5 @@
+// Feature flags that are safe to expose/toggle publicly (e.g. from the
+// client config or a public settings UI), with display metadata.
 import { FeatureFlagKey } from 'twenty-shared/types';
 
 type FeatureFlagMetadata = {

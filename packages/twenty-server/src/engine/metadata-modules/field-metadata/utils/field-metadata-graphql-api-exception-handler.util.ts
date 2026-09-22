@@ -14,6 +14,8 @@ import { InvalidMetadataException } from 'src/engine/metadata-modules/utils/exce
 import { WorkspaceMigrationBuilderException } from 'src/engine/workspace-manager/workspace-migration/exceptions/workspace-migration-builder-exception';
 import { workspaceMigrationBuilderGraphqlApiExceptionHandler } from 'src/engine/workspace-manager/workspace-migration/interceptors/utils/workspace-migration-builder-graphql-api-exception-handler.util';
 
+// Maps field-metadata-related exceptions (and nested workspace-migration
+// errors) to their corresponding GraphQL error types.
 export const fieldMetadataGraphqlApiExceptionHandler = (error: Error) => {
   if (error instanceof WorkspaceMigrationBuilderException) {
     return workspaceMigrationBuilderGraphqlApiExceptionHandler(error);

@@ -1,3 +1,5 @@
+// Default icon per standard/system object name, used when generating metadata for objects that don't
+// otherwise specify one
 export const STANDARD_OBJECT_ICONS = {
   activityTarget: 'IconCheckbox',
   activity: 'IconCheckbox',

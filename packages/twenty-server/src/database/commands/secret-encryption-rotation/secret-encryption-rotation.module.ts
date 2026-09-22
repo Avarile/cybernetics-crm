@@ -13,6 +13,9 @@ import { KeyValuePairEntity } from 'src/engine/core-modules/key-value-pair/key-v
 import { SecretEncryptionModule } from 'src/engine/core-modules/secret-encryption/secret-encryption.module';
 import { TwentyConfigModule } from 'src/engine/core-modules/twenty-config/twenty-config.module';
 
+// Wires up the `secret-encryption:rotate` CLI command: registers every entity that
+// holds an encrypted column, plus each site's dedicated rotation handler, so the
+// runner service can rotate them all onto the current ENCRYPTION_KEY.
 const ROTATION_ENTITIES = [
   ...Object.values(SECRET_ENCRYPTION_ROTATION_SITE_ENTRIES).map(
     (entry) => entry.entity,

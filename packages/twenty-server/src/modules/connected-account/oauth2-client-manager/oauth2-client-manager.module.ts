@@ -7,6 +7,8 @@ import { GoogleOAuth2ClientProvider } from 'src/modules/connected-account/oauth2
 import { MicrosoftOAuth2ClientProvider } from 'src/modules/connected-account/oauth2-client-manager/drivers/microsoft/microsoft-oauth2-client.provider';
 import { RefreshTokensManagerModule } from 'src/modules/connected-account/refresh-tokens-manager/connected-account-refresh-tokens-manager.module';
 
+// Wires up the Google/Microsoft OAuth2 client providers used throughout
+// calendar/messaging drivers.
 @Module({
   imports: [
     ConnectedAccountTokenEncryptionModule,

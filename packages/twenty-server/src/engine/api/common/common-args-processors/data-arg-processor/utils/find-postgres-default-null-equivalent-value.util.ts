@@ -7,6 +7,9 @@ import {
 import { isNullEquivalentArrayFieldValue } from 'src/engine/api/common/common-args-processors/data-arg-processor/utils/is-null-equivalent-array-field-value.util';
 import { isNullEquivalentTextFieldValue } from 'src/engine/api/common/common-args-processors/data-arg-processor/utils/is-null-equivalent-text-field-value.util';
 
+// For a given field (and, for composite fields, subfield key), returns the
+// Postgres-level sentinel value to write when the input is null-equivalent
+// or the literal string 'NULL', or undefined if no substitution applies.
 export const findPostgresDefaultNullEquivalentValue = (
   value: unknown,
   fieldMetadataType: FieldMetadataType,

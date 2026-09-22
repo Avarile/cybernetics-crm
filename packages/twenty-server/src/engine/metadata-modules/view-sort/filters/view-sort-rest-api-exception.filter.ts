@@ -24,6 +24,8 @@ import {
 
 @Injectable()
 @Catch(ViewSortException, WorkspaceMigrationBuilderException)
+// Maps ViewSortException and WorkspaceMigrationBuilderException to the
+// appropriate HTTP status/response for the REST API.
 export class ViewSortRestApiExceptionFilter implements ExceptionFilter {
   constructor(
     private readonly httpExceptionHandlerService: HttpExceptionHandlerService,

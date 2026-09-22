@@ -1,3 +1,5 @@
+// Top-level messaging module: wires up email import, cleanup, participant
+// matching, blocklist handling, and sync monitoring.
 import { Module } from '@nestjs/common';
 
 import { MessagingBlocklistManagerModule } from 'src/modules/messaging/blocklist-manager/messaging-blocklist-manager.module';

@@ -5,6 +5,8 @@ import {
   MessageImportDriverExceptionCode,
 } from 'src/modules/messaging/message-import-manager/drivers/exceptions/message-import-driver.exception';
 
+// Wraps a Gmail network error as a retryable (TEMPORARY_ERROR)
+// MessageImportDriverException, preserving the original as `cause`.
 export const parseGmailNetworkError = (
   error: GaxiosError,
 ): MessageImportDriverException | null => {

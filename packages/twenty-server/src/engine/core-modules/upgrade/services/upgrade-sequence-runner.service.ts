@@ -27,6 +27,10 @@ export type UpgradeSequenceRunnerReport = {
   totalFailures: number;
 };
 
+// Walks the upgrade sequence from the last recorded cursor, running instance
+// steps only once every workspace is aligned, and workspace steps per-workspace
+// (respecting filters like start-from/workspace-count-limit), aborting the whole
+// run on the first workspace-step failure
 @Injectable()
 export class UpgradeSequenceRunnerService {
   private readonly logger = new Logger(UpgradeSequenceRunnerService.name);
@@ -41,6 +45,8 @@ export class UpgradeSequenceRunnerService {
     private readonly workspaceVersionService: WorkspaceVersionService,
   ) {}
 
+  // Refreshes upgrade-aware entity metadata before and after the run, so schema
+  // changes made mid-run are picked up by subsequent steps
   async run({
     sequence,
     options,
@@ -70,6 +76,9 @@ export class UpgradeSequenceRunnerService {
     }
   }
 
+  // Advances the cursor through the sequence: instance steps require no active
+  // workspace filter and a fully-completed preceding workspace segment; workspace
+  // steps run their whole contiguous segment per workspace and abort on failure
   private async runInner({
     sequence,
     options,
@@ -183,6 +192,9 @@ export class UpgradeSequenceRunnerService {
     return { totalSuccesses, totalFailures };
   }
 
+  // Resolves where to resume the run from, based on the last recorded attempt:
+  // right after a completed instance step, at a failed one to retry it, or at
+  // the start of the workspace segment containing the last workspace cursor
   private async resolveStartCursor({
     sequence,
     allProvisionedWorkspaceIds,
@@ -230,6 +242,8 @@ export class UpgradeSequenceRunnerService {
     }
   }
 
+  // Throws unless every provisioned workspace's cursor falls within the resolved
+  // workspace segment (or is exactly at its completed preceding instance step)
   private async validateWorkspaceCursorsAreInWorkspaceSegment({
     allProvisionedWorkspaceIds,
     sequence,
@@ -292,6 +306,7 @@ export class UpgradeSequenceRunnerService {
     }
   }
 
+  // Fetches each provisioned workspace's most recent command attempt
   private async fetchWorkspaceCursors(
     allProvisionedWorkspaceIds: string[],
   ): Promise<Map<string, WorkspaceLastAttemptedCommand>> {
@@ -300,6 +315,8 @@ export class UpgradeSequenceRunnerService {
     );
   }
 
+  // Runs a fast or slow instance step, rethrowing its error on failure so the
+  // caller's try/catch (or lack thereof) stops the sequence
   private async runInstanceStep({
     instanceStep,
     skipDataMigration,
@@ -340,6 +357,8 @@ export class UpgradeSequenceRunnerService {
     }
   }
 
+  // Iterates the target workspaces, running each one's pending commands in the
+  // segment starting from its own cursor position
   private async resumeWorkspaceCommandsFromCursors({
     workspaceCommandsSegment,
     workspaceCursors,
@@ -383,6 +402,8 @@ export class UpgradeSequenceRunnerService {
     });
   }
 
+  // Applies the CLI's workspace filters (explicit ids, start-from, count limit)
+  // to the full list of provisioned workspaces
   private deriveWorkspaceIdsToProcess({
     allProvisionedWorkspaceIds,
     options,
@@ -409,6 +430,8 @@ export class UpgradeSequenceRunnerService {
     return workspaceIds;
   }
 
+  // Throws unless every workspace has completed the preceding workspace segment,
+  // since an instance step assumes all workspaces are aligned at that barrier
   private enforceWorkspacesCompletedPreviousWorkspaceSegment({
     sequence,
     previousWorkspaceStep,

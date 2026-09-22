@@ -1,3 +1,5 @@
+// Converts a manifest-declared application variable into the universal flat
+// entity shape used to build workspace migrations.
 import { FieldMetadataType } from 'twenty-shared/types';
 import {
   type ApplicationVariableOption,

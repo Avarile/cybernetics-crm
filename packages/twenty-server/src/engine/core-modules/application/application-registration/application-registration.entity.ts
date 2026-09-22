@@ -1,3 +1,7 @@
+// TypeORM entity for a registered application (an installable/catalog
+// entry, distinct from a per-workspace ApplicationEntity install): tracks
+// its OAuth client credentials, source (local/tarball/npm/oauth-only),
+// marketplace listing/vetting status, and display metadata.
 import { Field, ObjectType } from '@nestjs/graphql';
 import {
   Check,

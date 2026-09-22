@@ -1,3 +1,4 @@
+// GraphQL resolver exposing the cross-object full-text `search` query.
 import { UseFilters, UseGuards, UsePipes } from '@nestjs/common';
 import { Args, Query } from '@nestjs/graphql';
 
@@ -32,6 +33,8 @@ export class SearchResolver {
   ) {}
 
   @Query(() => SearchResultConnectionDTO)
+  // Searches across all included/searchable objects for the given input,
+  // merging and paginating results by relevance rank.
   async search(
     @AuthWorkspace() workspace: WorkspaceEntity,
     @Args()

@@ -1,3 +1,5 @@
+// Seed data for the sample custom "Survey Result" objects used to demo
+// custom objects with custom fields.
 type SurveyResultDataSeed = {
   id: string;
   name: string;

@@ -1,3 +1,5 @@
+// Listens for message channel deletion events and enqueues cleanup jobs to
+// remove the channel's message associations and any resulting orphans.
 import { Injectable } from '@nestjs/common';
 
 import { isDefined } from 'twenty-shared/utils';
@@ -21,6 +23,7 @@ export class MessagingMessageCleanerMessageChannelListener {
     private readonly messageQueueService: MessageQueueService,
   ) {}
 
+  // Enqueues a cleanup job per deleted message channel in the batch.
   @OnCustomBatchEvent(MESSAGE_CHANNEL_DELETED_EVENT)
   async handleDeletedEvent(
     batchEvent: CustomWorkspaceEventBatch<MessageChannelDeletedEvent>,

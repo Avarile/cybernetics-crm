@@ -6,6 +6,8 @@ import { resolveEntityRelationUniversalIdentifiers } from 'src/engine/metadata-m
 import { type CreateObjectPermissionInput } from 'src/engine/metadata-modules/object-permission/dtos/create-object-permission.input';
 import { type UniversalFlatObjectPermission } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-object-permission.type';
 
+// Builds a new universal flat object permission from a create-object-permission input,
+// generating a fresh id and resolving role/object metadata references to universal identifiers.
 export const fromCreateObjectPermissionInputToUniversalFlatObjectPermission = ({
   createObjectPermissionInput,
   flatApplication,

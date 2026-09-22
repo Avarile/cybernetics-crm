@@ -11,6 +11,7 @@ import { ConnectedAccountSyncWebhookException } from 'src/modules/connected-acco
 import { getConnectedAccountSyncWebhookExceptionStatusCode } from 'src/modules/connected-account-sync-webhooks/utils/get-connected-account-sync-webhook-exception-status-code.util';
 
 @Catch(ConnectedAccountSyncWebhookException)
+// Maps ConnectedAccountSyncWebhookException instances to the appropriate HTTP response.
 export class ConnectedAccountSyncWebhookApiExceptionFilter implements ExceptionFilter {
   constructor(
     private readonly httpExceptionHandlerService: HttpExceptionHandlerService,

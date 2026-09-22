@@ -1,3 +1,6 @@
+// Reads and updates an installed application's runtime configuration
+// variables, encrypting values at rest and masking secret values for
+// display.
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -23,6 +26,7 @@ export class ApplicationVariableEntityService {
     private readonly secretEncryptionService: SecretEncryptionService,
   ) {}
 
+  // Returns a variable's decrypted value, masked when flagged secret.
   getDisplayValue(applicationVariable: ApplicationVariableEntity): string {
     if (applicationVariable.value === '') {
       return '';
@@ -42,6 +46,8 @@ export class ApplicationVariableEntityService {
     );
   }
 
+  // Encrypts and stores a new value for an existing variable, then
+  // refreshes the workspace's application variable cache.
   async update({
     key,
     plainTextValue,

@@ -1,3 +1,5 @@
+// Wires up the per-provider folder discovery services and the service that
+// reconciles discovered folders against stored MessageFolder records.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

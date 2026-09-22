@@ -9,10 +9,13 @@ import {
 } from 'src/engine/core-modules/domain/domain-server-config/utils/public-function-domain.util';
 import { TwentyConfigService } from 'src/engine/core-modules/twenty-config/twenty-config.service';
 
+// Derives front-end, base, and public-domain URLs from server config, and resolves
+// which subdomain/domain a given request origin belongs to
 @Injectable()
 export class DomainServerConfigService {
   constructor(private readonly twentyConfigService: TwentyConfigService) {}
 
+  // Returns the configured frontend URL, falling back to the server URL
   getFrontUrl() {
     return new URL(
       this.twentyConfigService.get('FRONTEND_URL') ??
@@ -20,6 +23,7 @@ export class DomainServerConfigService {
     );
   }
 
+  // Returns the front URL, prefixed with the default subdomain when multi-workspace is enabled
   getBaseUrl(): URL {
     const baseUrl = this.getFrontUrl();
 
@@ -37,12 +41,14 @@ export class DomainServerConfigService {
     return new URL(this.twentyConfigService.get('PUBLIC_DOMAIN_URL'));
   }
 
+  // Returns the public domain's hostname, or undefined if not configured/parseable
   getPublicBaseHostnameOrUndefined(): string | undefined {
     return getHostnameFromUrlOrUndefined(
       this.twentyConfigService.get('PUBLIC_DOMAIN_URL'),
     );
   }
 
+  // Builds a URL under the base URL with the given pathname and query params
   buildBaseUrl({
     pathname,
     searchParams,
@@ -57,6 +63,8 @@ export class DomainServerConfigService {
     });
   }
 
+  // Classifies a request origin as belonging to the front domain, the public
+  // function domain, or a fully custom domain, extracting the subdomain accordingly
   getSubdomainAndDomainFromUrl = (url: string) => {
     const { hostname: originHostname } = new URL(url);
 
@@ -99,6 +107,7 @@ export class DomainServerConfigService {
     };
   };
 
+  // Whether the given subdomain matches the configured default subdomain
   isDefaultSubdomain(subdomain: string) {
     return subdomain === this.twentyConfigService.get('DEFAULT_SUBDOMAIN');
   }

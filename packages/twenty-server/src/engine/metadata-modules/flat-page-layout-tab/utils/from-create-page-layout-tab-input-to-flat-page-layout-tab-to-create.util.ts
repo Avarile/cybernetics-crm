@@ -14,6 +14,8 @@ export type FromCreatePageLayoutTabInputToFlatPageLayoutTabToCreateArgs = {
   flatApplication: FlatApplication;
 } & Pick<AllFlatEntityMaps, 'flatPageLayoutMaps'>;
 
+// Builds a new flat page layout tab from a create-page-layout-tab input, defaulting
+// its layout mode to GRID and resolving the parent page layout to a universal identifier.
 export const fromCreatePageLayoutTabInputToFlatPageLayoutTabToCreate = ({
   createPageLayoutTabInput: rawCreatePageLayoutTabInput,
   workspaceId,

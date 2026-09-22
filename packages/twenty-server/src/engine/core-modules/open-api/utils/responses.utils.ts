@@ -1,7 +1,11 @@
+// Builders for the OpenAPI 200/201 success response schemas for every
+// generated REST endpoint (find/create/update/delete many/one, restore,
+// merge, group-by, duplicates, and the schema-document response itself).
 import { capitalize } from 'twenty-shared/utils';
 
 import { type FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object-metadata/types/flat-object-metadata.type';
 
+// Response for find-many: a page of records plus pageInfo/totalCount.
 export const getFindManyResponse200 = (
   item: Pick<FlatObjectMetadata, 'nameSingular' | 'namePlural'>,
 ) => {
@@ -49,6 +53,7 @@ export const getFindManyResponse200 = (
   };
 };
 
+// Response for find-one: a single record under its singular name.
 export const getFindOneResponse200 = (
   item: Pick<FlatObjectMetadata, 'nameSingular'>,
 ) => {
@@ -76,6 +81,7 @@ export const getFindOneResponse200 = (
   };
 };
 
+// Response for restore-one: the restored record under `restore<Name>`.
 export const getRestoreOneResponse200 = (
   item: Pick<FlatObjectMetadata, 'nameSingular'>,
 ) => {
@@ -103,6 +109,7 @@ export const getRestoreOneResponse200 = (
   };
 };
 
+// Response for restore-many: the restored records under `restore<Names>`.
 export const getRestoreManyResponse200 = (
   item: Pick<FlatObjectMetadata, 'nameSingular' | 'namePlural'>,
 ) => {
@@ -135,6 +142,8 @@ export const getRestoreManyResponse200 = (
   };
 };
 
+// Response for create-one: the created record, key varies (`create<Name>`
+// vs `createOne<Name>`) between the core and metadata APIs.
 export const getCreateOneResponse201 = (
   item: Pick<FlatObjectMetadata, 'nameSingular'>,
   fromMetadata = false,
@@ -167,6 +176,7 @@ export const getCreateOneResponse201 = (
   };
 };
 
+// Response for create-many: the created records under `create<Names>`.
 export const getCreateManyResponse201 = (
   item: Pick<FlatObjectMetadata, 'nameSingular' | 'namePlural'>,
 ) => {
@@ -199,6 +209,8 @@ export const getCreateManyResponse201 = (
   };
 };
 
+// Response for update-one: the updated record, key varies (`update<Name>`
+// vs `updateOne<Name>`) between the core and metadata APIs.
 export const getUpdateOneResponse200 = (
   item: Pick<FlatObjectMetadata, 'nameSingular'>,
   fromMetadata = false,
@@ -228,6 +240,7 @@ export const getUpdateOneResponse200 = (
   };
 };
 
+// Response for delete-many: the deleted records' ids under `delete<Names>`.
 export const getDeleteManyResponse200 = (
   item: Pick<FlatObjectMetadata, 'namePlural'>,
 ) => {
@@ -262,6 +275,7 @@ export const getDeleteManyResponse200 = (
   };
 };
 
+// Response for update-many: the updated records under `update<Names>`.
 export const getUpdateManyResponse200 = (
   item: Pick<FlatObjectMetadata, 'namePlural' | 'nameSingular'>,
 ) => {
@@ -292,6 +306,8 @@ export const getUpdateManyResponse200 = (
   };
 };
 
+// Response for delete-one: the deleted record's id, key varies
+// (`delete<Name>` vs `deleteOne<Name>`) between the core and metadata APIs.
 export const getDeleteResponse200 = (
   item: Pick<FlatObjectMetadata, 'nameSingular'>,
   fromMetadata = false,
@@ -326,6 +342,7 @@ export const getDeleteResponse200 = (
   };
 };
 
+// Response shape for the endpoint that serves the OpenAPI document itself.
 export const getJsonResponse = () => {
   return {
     description: 'Successful operation',
@@ -385,6 +402,7 @@ export const getJsonResponse = () => {
   };
 };
 
+// Response for find-duplicates: per-input duplicate groups with pagination.
 export const getFindDuplicatesResponse200 = (
   item: Pick<FlatObjectMetadata, 'nameSingular'>,
 ) => {
@@ -435,6 +453,7 @@ export const getFindDuplicatesResponse200 = (
   };
 };
 
+// Response for merge-many: the resulting merged record under `merge<Names>`.
 export const getMergeManyResponse200 = (
   item: Pick<FlatObjectMetadata, 'nameSingular' | 'namePlural'>,
 ) => {
@@ -464,6 +483,8 @@ export const getMergeManyResponse200 = (
   };
 };
 
+// Response for group-by: one entry per group with dimension values, sampled
+// records (optional), and aggregate values.
 export const getGroupByResponse200 = (
   item: Pick<FlatObjectMetadata, 'nameSingular' | 'namePlural'>,
 ) => {

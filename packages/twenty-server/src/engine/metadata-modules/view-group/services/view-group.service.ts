@@ -30,6 +30,8 @@ import { WorkspaceMigrationBuilderException } from 'src/engine/workspace-manager
 import { WorkspaceMigrationValidateBuildAndRunService } from 'src/engine/workspace-manager/workspace-migration/services/workspace-migration-validate-build-and-run-service';
 
 @Injectable()
+// CRUD (including batch create/update) for view groups, backed by the
+// flat entity maps and applied through validated workspace migrations.
 export class ViewGroupService {
   constructor(
     @InjectWorkspaceScopedRepository(ViewGroupEntity)
@@ -39,6 +41,7 @@ export class ViewGroupService {
     private readonly applicationService: ApplicationService,
   ) {}
 
+  // Creates a single view group (thin wrapper over createMany).
   async createOne({
     createViewGroupInput,
     workspaceId,
@@ -61,6 +64,9 @@ export class ViewGroupService {
     return createdViewGroup;
   }
 
+  // Builds flat view groups for each input, rejecting any whose target
+  // view isn't configured for grouping (missing mainGroupByFieldMetadataId),
+  // then applies them all in one validated workspace migration.
   async createMany({
     createViewGroupInputs,
     workspaceId,
@@ -147,6 +153,7 @@ export class ViewGroupService {
     }).map(fromFlatViewGroupToViewGroupDto);
   }
 
+  // Updates a single view group (thin wrapper over updateMany).
   async updateOne({
     updateViewGroupInput,
     workspaceId,
@@ -169,6 +176,8 @@ export class ViewGroupService {
     return updatedViewGroup;
   }
 
+  // Applies partial updates to multiple view groups in one validated
+  // workspace migration.
   async updateMany({
     updateViewGroupInputs,
     workspaceId,
@@ -245,6 +254,8 @@ export class ViewGroupService {
     );
   }
 
+  // Soft-deletes a view group (sets deletedAt) via a validated workspace
+  // migration.
   async deleteOne({
     deleteViewGroupInput,
     workspaceId,
@@ -316,6 +327,7 @@ export class ViewGroupService {
     );
   }
 
+  // Permanently removes a view group via a validated workspace migration.
   async destroyOne({
     destroyViewGroupInput,
     workspaceId,
@@ -379,6 +391,7 @@ export class ViewGroupService {
     });
   }
 
+  // Returns all active view groups in the workspace, ordered by position.
   async findByWorkspaceId(workspaceId: string): Promise<ViewGroupEntity[]> {
     return this.viewGroupRepository.find(workspaceId, {
       where: {
@@ -389,6 +402,7 @@ export class ViewGroupService {
     });
   }
 
+  // Returns all active view groups belonging to a specific view.
   async findByViewId(
     workspaceId: string,
     viewId: string,
@@ -403,6 +417,7 @@ export class ViewGroupService {
     });
   }
 
+  // Finds a single active view group by id.
   async findById(
     id: string,
     workspaceId: string,

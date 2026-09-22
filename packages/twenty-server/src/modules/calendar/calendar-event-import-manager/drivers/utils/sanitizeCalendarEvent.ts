@@ -1,5 +1,7 @@
 import { isDefined } from 'twenty-shared/utils';
 
+// Strips null bytes and other control characters that providers sometimes
+// embed in text fields but Postgres rejects, from the given string properties.
 // oxlint-disable-next-line typescript/no-explicit-any
 export const sanitizeCalendarEvent = <T extends Record<string, any>>(
   event: T,

@@ -1,3 +1,6 @@
+// Shared shapes for the GraphQL query arguments (filter, groupBy,
+// orderBy, cursor) that resolvers and query parsers pass around,
+// keyed generically over any object record's fields.
 import {
   type ObjectRecord,
   type ObjectRecordGroupByDateGranularity,

@@ -1,5 +1,9 @@
 import { type Email as ParsedEmail } from 'postal-mime';
 
+// Derives a stable thread id for a parsed email: prefers the first
+// References header entry (the thread's root message), then In-Reply-To,
+// then the message's own Message-ID, and finally a random id as a last
+// resort so every message still gets grouped into some thread.
 export const extractThreadIdFromParsedEmail = (parsed: ParsedEmail): string => {
   const references = parsed.references;
 

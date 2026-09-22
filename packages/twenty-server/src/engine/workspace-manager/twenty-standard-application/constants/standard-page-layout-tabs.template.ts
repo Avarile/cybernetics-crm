@@ -9,6 +9,8 @@ import {
 
 import { WidgetType } from 'src/engine/metadata-modules/page-layout-widget/enums/widget-type.enum';
 
+// Reusable building blocks (conditional display rules, grid/list/canvas positions, tab and widget
+// presets) used to compose the standard page layouts for each standard object
 export const CONDITIONAL_DISPLAY_DEVICE_MOBILE = {
   and: [{ '===': [{ var: 'device' }, 'MOBILE'] }],
 } as const satisfies PageLayoutWidgetConditionalDisplay;

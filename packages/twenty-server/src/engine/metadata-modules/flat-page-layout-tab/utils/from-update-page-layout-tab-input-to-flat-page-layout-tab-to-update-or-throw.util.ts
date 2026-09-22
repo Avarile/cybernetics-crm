@@ -22,6 +22,9 @@ export type UpdatePageLayoutTabInputWithId = {
   update: UpdatePageLayoutTabInput;
 };
 
+// Applies an update-page-layout-tab input onto the matching existing flat tab, throwing if
+// it doesn't exist, and tracking per-property overrides when the caller application differs
+// from the tab's owning (or workspace custom) application.
 export const fromUpdatePageLayoutTabInputToFlatPageLayoutTabToUpdateOrThrow = ({
   updatePageLayoutTabInput: rawUpdatePageLayoutTabInput,
   flatPageLayoutTabMaps,

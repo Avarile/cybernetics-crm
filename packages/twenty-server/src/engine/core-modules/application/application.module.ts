@@ -1,3 +1,6 @@
+// Core application module: wires the Application entity, its resolver and
+// service, install-count gauge, and the per-workspace flat application
+// cache used throughout the metadata/workspace-migration layers.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

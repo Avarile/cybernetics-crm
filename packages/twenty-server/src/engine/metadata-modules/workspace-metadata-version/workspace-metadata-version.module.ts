@@ -7,6 +7,7 @@ import { WorkspaceManyOrAllFlatEntityMapsCacheModule } from 'src/engine/metadata
 import { WorkspaceMetadataVersionService } from 'src/engine/metadata-modules/workspace-metadata-version/services/workspace-metadata-version.service';
 import { WorkspaceCacheStorageModule } from 'src/engine/workspace-cache-storage/workspace-cache-storage.module';
 
+// Wires up the workspace-metadata-version bump service and its required dependencies.
 @Module({
   imports: [
     TypeOrmModule.forFeature([WorkspaceEntity]),

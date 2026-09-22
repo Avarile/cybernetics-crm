@@ -1,3 +1,5 @@
+// Admin-panel service exposing instance signing keys and their verify-usage
+// counts, and allowing revocation.
 import { Injectable } from '@nestjs/common';
 
 import { SigningKeyDTO } from 'src/engine/core-modules/admin-panel/dtos/signing-key.dto';
@@ -13,6 +15,7 @@ export class AdminPanelSigningKeyService {
     private readonly signingKeyVerifyCounterService: SigningKeyVerifyCounterService,
   ) {}
 
+  // Lists signing keys along with their verify-usage counts in the current window.
   async getSigningKeys(): Promise<SigningKeysAdminPanelDTO> {
     const signingKeys = await this.jwtKeyManagerService.listSigningKeys();
     const usage = await this.signingKeyVerifyCounterService.getUsageInWindow(
@@ -28,6 +31,7 @@ export class AdminPanelSigningKeyService {
     };
   }
 
+  // Revokes a signing key by id and returns its updated state.
   async revokeSigningKey(id: string): Promise<SigningKeyDTO> {
     const revoked = await this.jwtKeyManagerService.revokeSigningKey(id);
     const usage = await this.signingKeyVerifyCounterService.getUsageInWindow([

@@ -7,6 +7,8 @@ import { ApplicationModule } from 'src/engine/core-modules/application/applicati
 import { WorkspaceCacheModule } from 'src/engine/workspace-cache/workspace-cache.module';
 import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace-migration/workspace-migration.module';
 
+// Registers the 2.13 workspace commands (sync standard UI capability flags, sync
+// create-record command availability expression) as providers for the upgrade runner.
 @Module({
   imports: [
     ApplicationModule,

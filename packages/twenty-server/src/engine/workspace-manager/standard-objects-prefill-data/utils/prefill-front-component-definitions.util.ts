@@ -3,6 +3,8 @@ import { v5 as uuidv5 } from 'uuid';
 import { PAGE_LAYOUT_SEEDS } from 'src/engine/workspace-manager/dev-seeder/core/constants/page-layout-seeds.constant';
 import { generateSeedId } from 'src/engine/workspace-manager/dev-seeder/core/utils/generate-seed-id.util';
 
+// Definitions and deterministic id generators for the sample front
+// components (and their command menu items) seeded into every workspace.
 const SEED_FRONT_COMPONENT_ID_NAMESPACE =
   'e7a3b1c4-f5d6-4e8a-9b2c-3d4e5f6a7b8c';
 
@@ -27,6 +29,8 @@ export type SeedFrontComponentCommandMenuItemDefinition = {
   pageLayoutId?: string | null;
 };
 
+// Deterministically derives (workspace-scoped) ids for each seeded front
+// component from the workspace id, so seeding is idempotent.
 export const getSeedFrontComponentIds = (workspaceId: string) => ({
   helloWorldId: uuidv5(
     `${workspaceId}:seed-front-component:hello-world`,
@@ -42,6 +46,7 @@ export const getSeedFrontComponentIds = (workspaceId: string) => ({
   ),
 });
 
+// Returns the metadata definitions for the sample front components to seed.
 export const getSeedFrontComponentDefinitions = (
   workspaceId: string,
 ): SeedFrontComponentDefinition[] => {
@@ -94,6 +99,8 @@ export const getSeedFrontComponentDefinitions = (
   ];
 };
 
+// Returns the command menu item definitions that surface the seeded front
+// components in the command menu.
 export const getSeedFrontComponentCommandMenuItemDefinitions = (
   workspaceId: string,
 ): SeedFrontComponentCommandMenuItemDefinition[] => {

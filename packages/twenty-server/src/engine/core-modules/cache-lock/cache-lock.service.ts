@@ -1,3 +1,6 @@
+// Service implementing a simple retry-based distributed lock on top of the
+// Redis-backed cache storage, used to serialize concurrent operations on the
+// same key across processes.
 import { Injectable, Logger } from '@nestjs/common';
 
 import {
@@ -27,6 +30,8 @@ export class CacheLockService {
     return new Promise((res) => setTimeout(res, ms));
   }
 
+  // Repeatedly attempts to acquire the lock for `key`, running `fn` once
+  // acquired and releasing it afterwards. Throws if all retries are exhausted.
   async withLock<T>(
     fn: () => Promise<T>,
     key: string,

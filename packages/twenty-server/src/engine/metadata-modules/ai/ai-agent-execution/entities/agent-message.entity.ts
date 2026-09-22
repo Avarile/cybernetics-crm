@@ -1,3 +1,5 @@
+// Core-schema entity for a single message within an agent chat turn (system,
+// user, or assistant), composed of ordered AgentMessagePartEntity rows.
 import {
   Column,
   CreateDateColumn,

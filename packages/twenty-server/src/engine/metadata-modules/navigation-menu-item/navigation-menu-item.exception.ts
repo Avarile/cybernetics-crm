@@ -1,3 +1,5 @@
+// Exception type and error codes for navigation menu item operations.
+
 import { type MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { assertUnreachable } from 'twenty-shared/utils';
@@ -11,6 +13,7 @@ export enum NavigationMenuItemExceptionCode {
   MAX_DEPTH_EXCEEDED = 'MAX_DEPTH_EXCEEDED',
 }
 
+// Maps each exception code to its default user-facing message.
 const getNavigationMenuItemExceptionUserFriendlyMessage = (
   code: NavigationMenuItemExceptionCode,
 ) => {

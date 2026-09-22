@@ -1,3 +1,5 @@
+// GraphQL object type mirroring AppConnection, returned by the
+// appConnections/appConnection metadata queries.
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 
 import { type AppConnection } from 'twenty-shared/application';

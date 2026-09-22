@@ -13,6 +13,8 @@ import { CalendarSaveEventsService } from 'src/modules/calendar/calendar-event-i
 import { type ComposedCalendarEvent } from 'src/modules/calendar/calendar-event-creation-manager/types/composed-calendar-event.type';
 import { type FetchedCalendarEvent } from 'src/modules/calendar/common/types/fetched-calendar-event';
 
+// Dispatches calendar event creation to the right provider driver and
+// persists the resulting event locally.
 @Injectable()
 export class CreateCalendarEventService {
   private readonly logger = new Logger(CreateCalendarEventService.name);
@@ -24,6 +26,7 @@ export class CreateCalendarEventService {
     private readonly calendarSaveEventsService: CalendarSaveEventsService,
   ) {}
 
+  // Creates the event with the provider matching the connected account.
   async createComposedCalendarEvent(
     data: ComposedCalendarEvent,
   ): Promise<FetchedCalendarEvent> {

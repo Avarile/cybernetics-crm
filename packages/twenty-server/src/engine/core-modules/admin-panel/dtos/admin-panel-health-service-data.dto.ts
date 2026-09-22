@@ -4,6 +4,7 @@ import { AdminPanelWorkerQueueHealthDTO } from 'src/engine/core-modules/admin-pa
 import { AdminPanelHealthServiceStatus } from 'src/engine/core-modules/admin-panel/enums/admin-panel-health-service-status.enum';
 import { HealthIndicatorId } from 'src/engine/core-modules/admin-panel/enums/health-indicator-id.enum';
 
+// Result of a single health indicator check, shown on the admin panel health dashboard
 @ObjectType('AdminPanelHealthServiceData')
 export class AdminPanelHealthServiceDataDTO {
   @Field(() => HealthIndicatorId)

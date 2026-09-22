@@ -19,6 +19,8 @@ import { ImapSmtpCalDavAPIService } from 'src/modules/connected-account/services
 import { MessagingCommonModule } from 'src/modules/messaging/common/messaging-common.module';
 import { MessagingFolderSyncManagerModule } from 'src/modules/messaging/message-folder-manager/messaging-folder-sync-manager.module';
 
+// Wires up ImapSmtpCalDavAPIService and its dependencies for generic
+// IMAP/SMTP/CalDAV connected accounts.
 @Module({
   imports: [
     TypeOrmModule.forFeature([

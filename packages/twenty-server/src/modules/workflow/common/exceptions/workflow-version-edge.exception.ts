@@ -1,3 +1,5 @@
+// Exception for errors operating on a workflow version's edges (the
+// connections between steps).
 import { type MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { assertUnreachable } from 'twenty-shared/utils';

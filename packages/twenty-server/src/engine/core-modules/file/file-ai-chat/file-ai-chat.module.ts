@@ -6,6 +6,7 @@ import { FileAiChatService } from 'src/engine/core-modules/file/file-ai-chat/ser
 import { FileUrlModule } from 'src/engine/core-modules/file/file-url/file-url.module';
 import { PermissionsModule } from 'src/engine/metadata-modules/permissions/permissions.module';
 
+// Wires up file uploads used by AI chat (agent) attachments.
 @Module({
   imports: [FileUrlModule, ApplicationModule, PermissionsModule],
   providers: [FileAiChatService, FileAiChatResolver],

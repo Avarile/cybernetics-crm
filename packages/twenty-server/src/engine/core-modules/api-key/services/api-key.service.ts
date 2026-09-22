@@ -17,6 +17,7 @@ import { InjectWorkspaceScopedRepository } from 'src/engine/twenty-orm/workspace
 import { WorkspaceScopedRepository } from 'src/engine/twenty-orm/workspace-scoped-repository/workspace-scoped-repository';
 import { WorkspaceCacheService } from 'src/engine/workspace-cache/services/workspace-cache.service';
 
+// Manages the lifecycle of workspace API keys: creation, lookup, revocation, and token issuance
 @Injectable()
 export class ApiKeyService {
   constructor(
@@ -27,6 +28,7 @@ export class ApiKeyService {
     private readonly workspaceCacheService: WorkspaceCacheService,
   ) {}
 
+  // Creates an API key and assigns it the given role, rolling back the key if role assignment fails
   async create(
     apiKeyData: Partial<ApiKeyEntity> & { roleId: string; workspaceId: string },
   ): Promise<ApiKeyEntity> {
@@ -68,6 +70,7 @@ export class ApiKeyService {
     return this.apiKeyRepository.find(workspaceId);
   }
 
+  // Returns API keys that have not been revoked, regardless of expiration
   async findActiveByWorkspaceId(workspaceId: string): Promise<ApiKeyEntity[]> {
     return this.apiKeyRepository.find(workspaceId, {
       where: { revokedAt: IsNull() },
@@ -95,6 +98,7 @@ export class ApiKeyService {
     return this.update(id, workspaceId, { revokedAt: new Date() });
   }
 
+  // Throws if the API key doesn't exist, is revoked, or has expired; otherwise returns it
   async validateApiKey(id: string, workspaceId: string): Promise<ApiKeyEntity> {
     const apiKey = await this.findById(id, workspaceId);
 
@@ -128,6 +132,7 @@ export class ApiKeyService {
     return apiKey;
   }
 
+  // Signs a JWT for the API key, expiring with it if no explicit expiresAt is given
   async generateApiKeyToken(
     workspaceId: string,
     apiKeyId?: string,
@@ -176,6 +181,7 @@ export class ApiKeyService {
     return !this.isRevoked(apiKey) && !this.isExpired(apiKey);
   }
 
+  // Invalidates and recomputes the workspace-level API key cache after a mutation
   private async invalidateApiKeyCache(workspaceId: string): Promise<void> {
     await this.workspaceCacheService.invalidateAndRecompute(workspaceId, [
       'apiKeyMap',

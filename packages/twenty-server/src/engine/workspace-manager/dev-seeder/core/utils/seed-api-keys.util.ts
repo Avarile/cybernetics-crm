@@ -10,6 +10,7 @@ type SeedApiKeysArgs = {
   workspaceId: string;
 };
 
+// Inserts a sample, long-lived API key for the dev-seeded workspace.
 export const seedApiKeys = async ({
   queryRunner,
   schemaName,

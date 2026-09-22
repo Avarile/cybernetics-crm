@@ -1,5 +1,6 @@
 import { isDefined } from 'twenty-shared/utils';
 
+// Escapes backslash/tab/newline/carriage-return per the Postgres COPY text format.
 const escapeCopyText = (text: string): string => {
   return text
     .replace(/\\/g, '\\\\')
@@ -8,6 +9,9 @@ const escapeCopyText = (text: string): string => {
     .replace(/\r/g, '\\r');
 };
 
+// Formats a single field's value for a Postgres COPY (text format) line: null as
+// \N, booleans as t/f, arrays as Postgres array literals (or JSON if array of
+// objects), objects/JSON columns as escaped JSON text, everything else stringified.
 export const formatPgCopyField = (
   value: unknown,
   isJsonColumn = false,

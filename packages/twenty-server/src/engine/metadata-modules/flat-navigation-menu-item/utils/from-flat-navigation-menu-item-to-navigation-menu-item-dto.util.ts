@@ -1,6 +1,7 @@
 import { type FlatNavigationMenuItem } from 'src/engine/metadata-modules/flat-navigation-menu-item/types/flat-navigation-menu-item.type';
 import { type NavigationMenuItemDTO } from 'src/engine/metadata-modules/navigation-menu-item/dtos/navigation-menu-item.dto';
 
+// Maps a flat navigation menu item to the GraphQL NavigationMenuItemDTO shape.
 export const fromFlatNavigationMenuItemToNavigationMenuItemDto = (
   flatNavigationMenuItem: FlatNavigationMenuItem,
 ): NavigationMenuItemDTO => ({

@@ -3,6 +3,9 @@ import { PermissionFlagType } from 'twenty-shared/constants';
 import { type RoleDTO } from 'src/engine/metadata-modules/role/dtos/role.dto';
 import { type RoleEntity } from 'src/engine/metadata-modules/role/role.entity';
 
+// Converts a role TypeORM entity (with its loaded relations) into a
+// RoleDTO, including its role targets, permission flags, and object/field
+// permissions.
 export const fromRoleEntityToRoleDto = (role: RoleEntity): RoleDTO => {
   return {
     id: role.id,
@@ -31,5 +34,6 @@ export const fromRoleEntityToRoleDto = (role: RoleEntity): RoleDTO => {
   };
 };
 
+// Maps fromRoleEntityToRoleDto over a list of role entities.
 export const fromRoleEntitiesToRoleDtos = (roleEntities: RoleEntity[]) =>
   roleEntities.map(fromRoleEntityToRoleDto);

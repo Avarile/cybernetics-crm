@@ -14,6 +14,8 @@ import {
 } from 'src/modules/calendar/calendar-event-import-manager/drivers/exceptions/calendar-event-import-driver.exception';
 import { CalDavClientService } from 'src/modules/calendar/calendar-event-import-manager/drivers/caldav/services/caldav-client.service';
 
+// Builds an authenticated DAVClient for a connected account by decrypting
+// its stored CalDAV credentials.
 @Injectable()
 export class CalDavClientProvider {
   constructor(

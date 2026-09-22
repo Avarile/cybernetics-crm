@@ -19,6 +19,8 @@ import { StripeBillingMeterService } from 'src/engine/core-modules/billing/strip
 import { transformStripeMeterToDatabaseMeter } from 'src/engine/core-modules/billing/utils/transform-stripe-meter-to-database-meter.util';
 import { StripePriceService } from 'src/engine/core-modules/billing/stripe/services/stripe-price.service';
 
+// Syncs Stripe price.created/updated events to BillingPrice, pulling in the
+// associated billing meter when the price is metered
 @Injectable()
 export class BillingWebhookPriceService {
   protected readonly logger = new Logger(BillingWebhookPriceService.name);
@@ -33,6 +35,7 @@ export class BillingWebhookPriceService {
     private readonly billingProductRepository: Repository<BillingProductEntity>,
   ) {}
 
+  // Upserts the price (and its metering meter, if any) for a known billing product
   async processStripeEvent(
     data: Stripe.PriceCreatedEvent.Data | Stripe.PriceUpdatedEvent.Data,
   ) {

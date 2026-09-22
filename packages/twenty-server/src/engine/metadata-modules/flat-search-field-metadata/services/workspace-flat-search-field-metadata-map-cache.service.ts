@@ -21,6 +21,9 @@ import { WorkspaceCache } from 'src/engine/workspace-cache/decorators/workspace-
 import { createIdToUniversalIdentifierMap } from 'src/engine/workspace-cache/utils/create-id-to-universal-identifier-map.util';
 import { addFlatEntityToFlatEntityMapsThroughMutationOrThrow } from 'src/engine/workspace-manager/workspace-migration/utils/add-flat-entity-to-flat-entity-maps-through-mutation-or-throw.util';
 
+// Builds and caches the workspace's flat-search-field-metadata maps by loading search field
+// metadata entities and resolving their application, object metadata and field metadata ids
+// to universal identifiers, backfilling the TS_VECTOR field reference for legacy rows.
 @Injectable()
 @WorkspaceCache('flatSearchFieldMetadataMaps')
 export class WorkspaceFlatSearchFieldMetadataMapCacheService extends WorkspaceCacheProvider<FlatSearchFieldMetadataMaps> {
@@ -37,6 +40,9 @@ export class WorkspaceFlatSearchFieldMetadataMapCacheService extends WorkspaceCa
     super();
   }
 
+  // Loads search field metadata plus related applications, object metadata and field
+  // metadata for the workspace, backfills missing tsVectorFieldMetadataId references
+  // from each object's system TS_VECTOR field, then assembles flat-search-field-metadata maps.
   async computeForCache(
     workspaceId: string,
   ): Promise<FlatSearchFieldMetadataMaps> {

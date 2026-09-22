@@ -1,3 +1,5 @@
+// Listens for connected account deletion events and enqueues cleanup jobs
+// to remove any resulting orphan messages/threads.
 import { Injectable } from '@nestjs/common';
 
 import { isDefined } from 'twenty-shared/utils';
@@ -21,6 +23,7 @@ export class MessagingMessageCleanerConnectedAccountListener {
     private readonly messageQueueService: MessageQueueService,
   ) {}
 
+  // Enqueues a cleanup job per deleted connected account in the batch.
   @OnCustomBatchEvent(CONNECTED_ACCOUNT_DELETED_EVENT)
   async handleDeletedEvent(
     batchEvent: CustomWorkspaceEventBatch<ConnectedAccountDeletedEvent>,

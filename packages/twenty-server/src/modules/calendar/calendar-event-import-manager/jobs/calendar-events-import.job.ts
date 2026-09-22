@@ -21,6 +21,8 @@ export type CalendarEventsImportJobData = {
   queueName: MessageQueue.calendarQueue,
   scope: Scope.REQUEST,
 })
+// Imports the actual event data for a scheduled calendar channel's pending
+// event ids, delegating to the events-import service.
 export class CalendarEventsImportJob {
   constructor(
     private readonly calendarEventsImportService: CalendarEventsImportService,

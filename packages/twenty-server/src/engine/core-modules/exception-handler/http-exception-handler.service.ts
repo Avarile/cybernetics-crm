@@ -29,6 +29,8 @@ interface RequestAndParams {
   params: Record<string, string | undefined>;
 }
 
+// Maps an HTTP status code to its conventional NestJS exception class name,
+// used as a fallback when the exception itself has no name
 const getErrorNameFromStatusCode = (statusCode: number) => {
   switch (statusCode) {
     case 400:
@@ -59,6 +61,7 @@ const getErrorNameFromStatusCode = (statusCode: number) => {
   }
 };
 
+// Normalizes and reports REST exceptions, then writes the standardized error response
 @Injectable({ scope: Scope.REQUEST })
 export class HttpExceptionHandlerService {
   constructor(
@@ -67,6 +70,8 @@ export class HttpExceptionHandlerService {
     private readonly request: RequestAndParams | null,
   ) {}
 
+  // Remaps known internal exceptions (query failures, TwentyORM, Postgres) to the
+  // appropriate HTTP exception, reports it, and sends the JSON error response
   handleError = (
     exception: Error | HttpException,
     response: Response,

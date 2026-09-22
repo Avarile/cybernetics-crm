@@ -1,3 +1,5 @@
+// Test fixture: per field-metadata-type filter inputs that the
+// filter-arg-processor should reject, used by the filter-validation test suite.
 import { joinColumnNameForManyToOneMorphRelationField1 } from 'test/integration/graphql/suites/inputs-validation/utils/setup-test-objects-with-all-field-types.util';
 import { FieldMetadataType } from 'twenty-shared/types';
 

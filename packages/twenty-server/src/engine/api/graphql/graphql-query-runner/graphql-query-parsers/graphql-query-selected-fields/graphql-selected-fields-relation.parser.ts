@@ -1,3 +1,7 @@
+// Recursively parses the selection set nested under a relation field by
+// re-running the selected-fields parser against the related object's
+// metadata, merging the nested result (select/relations/aggregate) back
+// into the parent accumulator and tracking one-to-many nesting depth.
 import { RelationType, type FieldMetadataType } from 'twenty-shared/types';
 import { isDefined } from 'twenty-shared/utils';
 
@@ -22,6 +26,10 @@ export class GraphqlQuerySelectedFieldsRelationParser {
     this.flatFieldMetadataMaps = flatFieldMetadataMaps;
   }
 
+  // Parses the nested selection under a relation/morph-relation field,
+  // recursing into the target object's own field parser and merging the
+  // result into the parent accumulator; flags when two nested one-to-many
+  // relations are chained (a cartesian-product risk for the query runner).
   parseRelationField(
     fieldMetadata:
       | FlatFieldMetadata<FieldMetadataType.RELATION>

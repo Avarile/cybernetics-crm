@@ -1,3 +1,6 @@
+// CLI command to force a full resync of one or all of a workspace's
+// message channels: resets sync cursors/state and clears out orphan
+// messages/threads left behind.
 import { Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -34,6 +37,9 @@ export class MessagingResetChannelCommand extends CommandRunner {
     super();
   }
 
+  // Resets sync status (to trigger a fresh message list fetch) for the
+  // given message channel, or all channels in the workspace when no
+  // channel id is given, then cleans up orphaned messages/threads.
   async run(
     _passedParam: string[],
     options: MessagingResetChannelCommandOptions,

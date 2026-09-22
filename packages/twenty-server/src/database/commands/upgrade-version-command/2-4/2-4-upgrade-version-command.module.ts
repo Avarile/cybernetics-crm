@@ -8,6 +8,8 @@ import { BillingPriceEntity } from 'src/engine/core-modules/billing/entities/bil
 import { StripeModule } from 'src/engine/core-modules/billing/stripe/stripe.module';
 import { FeatureFlagModule } from 'src/engine/core-modules/feature-flag/feature-flag.module';
 
+// Registers the 2.4 workspace command (billing v2 migration) as a provider for
+// the upgrade runner.
 @Module({
   imports: [
     BillingModule,

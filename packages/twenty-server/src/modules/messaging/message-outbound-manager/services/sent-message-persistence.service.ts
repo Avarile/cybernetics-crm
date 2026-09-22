@@ -1,3 +1,5 @@
+// Saves a just-sent message locally right away (rather than waiting for
+// the next sync pass) so the UI shows it immediately.
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -18,6 +20,8 @@ export class SentMessagePersistenceService {
     private readonly saveMessagesAndEnqueueContactCreationService: MessagingSaveMessagesAndEnqueueContactCreationService,
   ) {}
 
+  // Formats the sent message and saves it via the shared save-messages
+  // pipeline, returning its resulting id/thread id if resolvable.
   async persistSentMessage(
     input: PersistSentMessageInput,
   ): Promise<PersistedSentMessage | undefined> {

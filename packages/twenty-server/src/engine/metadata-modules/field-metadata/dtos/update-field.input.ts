@@ -1,3 +1,5 @@
+// GraphQL input for partially updating a field, derived from FieldMetadataDTO
+// with immutable fields omitted.
 import {
   Field,
   HideField,

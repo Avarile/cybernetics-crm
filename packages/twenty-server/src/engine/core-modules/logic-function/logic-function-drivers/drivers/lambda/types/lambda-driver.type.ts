@@ -1,3 +1,4 @@
+// Shared types for the Lambda driver: executor payloads, builder/yarn-install helper Lambda I/O, and driver construction options
 import { type LambdaClientConfig } from '@aws-sdk/client-lambda';
 
 import { type CacheLockService } from 'src/engine/core-modules/cache-lock/cache-lock.service';

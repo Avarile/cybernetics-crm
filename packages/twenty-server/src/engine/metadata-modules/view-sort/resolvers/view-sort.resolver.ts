@@ -23,9 +23,11 @@ import { DestroyViewSortInput } from 'src/engine/metadata-modules/view-sort/dtos
 @MetadataResolver(() => ViewSortDTO)
 @UseFilters(ViewGraphqlApiExceptionFilter)
 @UseGuards(WorkspaceAuthGuard)
+// GraphQL resolver exposing CRUD operations for view sorts.
 export class ViewSortResolver {
   constructor(private readonly viewSortService: ViewSortService) {}
 
+  // Lists view sorts in the workspace, optionally filtered to one view.
   @Query(() => [ViewSortDTO])
   @UseGuards(NoPermissionGuard)
   async getViewSorts(
@@ -40,6 +42,7 @@ export class ViewSortResolver {
     return this.viewSortService.findByWorkspaceId(workspace.id);
   }
 
+  // Fetches a single view sort by id.
   @Query(() => ViewSortDTO, { nullable: true })
   @UseGuards(NoPermissionGuard)
   async getViewSort(
@@ -49,6 +52,7 @@ export class ViewSortResolver {
     return this.viewSortService.findById(id, workspaceId);
   }
 
+  // Creates a new view sort.
   @Mutation(() => ViewSortDTO)
   @UseGuards(CreateViewSortPermissionGuard)
   async createViewSort(
@@ -61,6 +65,7 @@ export class ViewSortResolver {
     });
   }
 
+  // Updates a view sort's direction/sub-field.
   @Mutation(() => ViewSortDTO)
   @UseGuards(UpdateViewSortPermissionGuard)
   async updateViewSort(
@@ -73,6 +78,7 @@ export class ViewSortResolver {
     });
   }
 
+  // Soft-deletes a view sort.
   @Mutation(() => Boolean)
   @UseGuards(DeleteViewSortPermissionGuard)
   async deleteViewSort(
@@ -87,6 +93,7 @@ export class ViewSortResolver {
     return isDefined(deletedViewSort);
   }
 
+  // Permanently destroys a view sort.
   @Mutation(() => Boolean)
   @UseGuards(DestroyViewSortPermissionGuard)
   async destroyViewSort(

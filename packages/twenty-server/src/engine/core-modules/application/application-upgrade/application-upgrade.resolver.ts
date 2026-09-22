@@ -1,3 +1,5 @@
+// GraphQL resolver for upgrading an installed application to a target
+// version.
 import { UseFilters, UseGuards } from '@nestjs/common';
 import { Args, Mutation } from '@nestjs/graphql';
 
@@ -20,6 +22,8 @@ export class ApplicationUpgradeResolver {
     private readonly applicationUpgradeService: ApplicationUpgradeService,
   ) {}
 
+  // Upgrades an application registration's install to the given target
+  // version in the workspace.
   @Mutation(() => Boolean)
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.APPLICATIONS))
   async upgradeApplication(

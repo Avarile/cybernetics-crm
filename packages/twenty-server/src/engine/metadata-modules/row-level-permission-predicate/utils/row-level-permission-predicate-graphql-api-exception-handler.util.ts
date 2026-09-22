@@ -13,6 +13,8 @@ import {
   RowLevelPermissionPredicateExceptionCode,
 } from 'src/engine/metadata-modules/row-level-permission-predicate/exceptions/row-level-permission-predicate.exception';
 
+// Maps a RowLevelPermissionPredicateException code to the matching
+// GraphQL error type (forbidden, user-input, not-found, or internal).
 export const rowLevelPermissionPredicateGraphqlApiExceptionHandler = (
   error: RowLevelPermissionPredicateException,
 ) => {

@@ -9,6 +9,9 @@ import {
   CommonQueryRunnerExceptionCode,
 } from 'src/engine/api/common/common-query-runners/errors/common-query-runner.exception';
 
+// Validates an emails composite field input, checking primaryEmail and
+// additionalEmails subfields and rejecting unknown subfields; throws a
+// CommonQueryRunnerException on any violation.
 export const validateEmailsFieldOrThrow = (
   value: unknown,
   fieldName: string,

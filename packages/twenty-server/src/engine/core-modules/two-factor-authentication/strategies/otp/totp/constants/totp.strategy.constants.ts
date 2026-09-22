@@ -17,6 +17,7 @@ export enum TOTPKeyEncodings {
   UTF8 = 'utf8',
 }
 
+// Default otplib TOTP parameters used when a workspace doesn't override them
 export const TOTP_DEFAULT_CONFIGURATION = {
   algorithm: TOTPHashAlgorithms.SHA1,
   digits: 6,
@@ -32,6 +33,7 @@ export type TotpContext = {
 
 export type TOTPStrategyConfig = z.infer<typeof TOTP_STRATEGY_CONFIG_SCHEMA>;
 
+// Validates an optional per-strategy TOTP config override
 export const TOTP_STRATEGY_CONFIG_SCHEMA = z.object({
   algorithm: z
     .enum(TOTPHashAlgorithms, {

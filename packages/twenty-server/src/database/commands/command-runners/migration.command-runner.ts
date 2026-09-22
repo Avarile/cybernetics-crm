@@ -10,6 +10,8 @@ export type MigrationCommandOptions = {
   verbose?: boolean;
 };
 
+// Base class for one-off data-migration CLI commands: adds shared --dry-run/--verbose
+// options and wraps the subclass's `runMigrationCommand` with consistent logging.
 export abstract class MigrationCommandRunner extends CommandRunner {
   protected logger: CommandLogger | Logger;
 
@@ -39,6 +41,8 @@ export abstract class MigrationCommandRunner extends CommandRunner {
     return true;
   }
 
+  // Switches to a verbose logger if requested, then delegates to the subclass's
+  // implementation, logging success/failure.
   override async run(
     passedParams: string[],
     options: MigrationCommandOptions,

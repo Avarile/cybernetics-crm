@@ -1,3 +1,5 @@
+// Service managing agent metadata CRUD, backed by workspace migrations for
+// schema-level changes and the workspace cache for flat entity reads.
 import { Injectable } from '@nestjs/common';
 
 import { isDefined } from 'twenty-shared/utils';
@@ -34,6 +36,7 @@ export class AgentService {
     private readonly workspaceCacheService: WorkspaceCacheService,
   ) {}
 
+  // Returns all agents in the workspace with their assigned role, if any.
   async findManyAgents(workspaceId: string): Promise<FlatAgentWithRoleId[]> {
     const { flatAgentMaps, flatRoleTargetByAgentIdMaps } =
       await this.workspaceCacheService.getOrRecompute(workspaceId, [
@@ -53,6 +56,7 @@ export class AgentService {
       });
   }
 
+  // Looks up an agent by its unique name within the workspace, throwing if not found.
   async findOneAgentByName({
     name,
     workspaceId,
@@ -76,6 +80,7 @@ export class AgentService {
     return agent;
   }
 
+  // Looks up an agent by id in the flat agent maps, throwing if not found.
   async findOneAgentById({
     id,
     workspaceId,
@@ -103,6 +108,8 @@ export class AgentService {
     return { ...flatAgent, roleId: roleId ?? null };
   }
 
+  // Creates an agent (and its role target, if a role is given) by running a
+  // workspace migration, then re-reads the recomputed flat agent maps.
   async createOneAgent(
     input: CreateAgentInput & { isCustom: boolean },
     workspaceId: string,
@@ -182,6 +189,8 @@ export class AgentService {
     };
   }
 
+  // Updates an agent (and reconciles its role target create/update/delete) via
+  // a workspace migration, then re-reads the recomputed flat agent maps.
   async updateOneAgent({
     input,
     workspaceId,
@@ -272,6 +281,7 @@ export class AgentService {
     };
   }
 
+  // Deletes a single agent and returns its pre-deletion state.
   async deleteOneAgent(
     id: string,
     workspaceId: string,
@@ -293,6 +303,8 @@ export class AgentService {
     return deletedAgent;
   }
 
+  // Deletes multiple agents and their role targets (if any) via a single
+  // workspace migration.
   async deleteManyAgents({
     ids,
     workspaceId,
@@ -371,6 +383,7 @@ export class AgentService {
     }));
   }
 
+  // Case-insensitive search over active agents by name, description, or label.
   async searchAgents(
     query: string,
     workspaceId: string,

@@ -1,3 +1,6 @@
+// Wires up the metadata GraphQL endpoint, which exposes CRUD over
+// object/field metadata (schema-of-the-schema) as its own GraphQL
+// Yoga driver instance, scoped by 'metadata' via metadataModuleFactory.
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 
@@ -17,6 +20,9 @@ import { DataloaderModule } from 'src/engine/dataloaders/dataloader.module';
 import { DataloaderService } from 'src/engine/dataloaders/dataloader.service';
 import { MetadataEngineModule } from 'src/engine/metadata-modules/metadata-engine.module';
 
+// Registers the GraphQL Yoga driver for the metadata API (scoped resolvers
+// under `resolverSchemaScope: 'metadata'`), configured via
+// metadataModuleFactory.
 @Module({
   imports: [
     GraphQLModule.forRootAsync<YogaDriverConfig>({

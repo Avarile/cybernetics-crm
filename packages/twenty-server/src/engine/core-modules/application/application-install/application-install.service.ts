@@ -1,3 +1,8 @@
+// Orchestrates the full application install/upgrade flow: resolving the
+// package, validating server/workspace version compatibility, writing
+// package files to storage, applying the manifest, and running pre/post
+// install logic function hooks. Rolls back (uninstalls) on failure for
+// fresh installs, but never for upgrades.
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -62,6 +67,10 @@ export class ApplicationInstallService {
     private readonly metricsService: MetricsService,
   ) {}
 
+  // Entry point for installing an app registration into a workspace.
+  // Skips LOCAL (dev CLI-synced) and OAUTH_ONLY apps, and serializes actual
+  // install work per workspace/app with a cache lock to avoid concurrent
+  // installs racing each other.
   async installApplication(params: {
     appRegistrationId: string;
     version?: string;
@@ -112,6 +121,8 @@ export class ApplicationInstallService {
     );
   }
 
+  // Resolves the application package and runs the install, always cleaning
+  // up the extracted temp directory afterward.
   private async doInstallApplication(
     appRegistration: ApplicationRegistrationEntity,
     params: { version?: string; workspaceId: string },
@@ -146,6 +157,7 @@ export class ApplicationInstallService {
     }
   }
 
+  // Wraps runInstall to record install/upgrade success or failure counters.
   private async runInstallWithMetrics({
     appRegistration,
     params,
@@ -200,6 +212,11 @@ export class ApplicationInstallService {
     }
   }
 
+  // Core install/upgrade logic: validates version compatibility, creates
+  // or reuses the application row, enforces upgrade-only version ordering,
+  // writes package files and the logo, applies the manifest to the
+  // workspace, and runs the pre/post install hooks. On failure, uninstalls
+  // a fresh install (but leaves an in-place upgrade attempt as-is).
   private async runInstall({
     appRegistration,
     params,
@@ -366,6 +383,8 @@ export class ApplicationInstallService {
     }
   }
 
+  // Runs the app's pre-install logic function synchronously before the
+  // manifest is applied, unless this is a version upgrade that opted out.
   private async runPreInstallHook(params: {
     manifest: Manifest;
     workspaceId: string;
@@ -453,6 +472,9 @@ export class ApplicationInstallService {
     }
   }
 
+  // Runs the app's post-install logic function after the manifest is
+  // applied, either synchronously or enqueued as a background job,
+  // depending on the manifest's shouldRunSynchronously flag.
   private async runPostInstallHook(params: {
     manifest: Manifest;
     workspaceId: string;
@@ -545,6 +567,9 @@ export class ApplicationInstallService {
     }
   }
 
+  // Resolves a manifest-declared relative path against the extracted
+  // package directory, throwing if it escapes the directory (path
+  // traversal protection).
   private resolveWithinDirOrThrow(
     extractedDir: string,
     relativePath: string,
@@ -562,6 +587,9 @@ export class ApplicationInstallService {
     return absolutePath;
   }
 
+  // Copies every file declared in the manifest (package.json, manifest.json,
+  // logic function handlers, front components, public assets) from the
+  // extracted package into the app's file storage.
   private async writeFilesToStorage(
     extractedDir: string,
     manifest: Manifest,
@@ -598,6 +626,8 @@ export class ApplicationInstallService {
     }
   }
 
+  // Imports the app's local logo image file into storage, skipping remote
+  // (http/https) logos and unsupported file types.
   private async importLogoFile({
     extractedDir,
     manifest,
@@ -653,6 +683,9 @@ export class ApplicationInstallService {
     return file.id;
   }
 
+  // Builds the list of files (with their storage folder) that must be
+  // copied out of the extracted package based on the manifest's declared
+  // logic functions, front components, and public assets.
   private buildFileList(
     manifest: Manifest,
   ): Array<{ relativePath: string; fileFolder: FileFolder }> {
@@ -687,6 +720,8 @@ export class ApplicationInstallService {
     return files;
   }
 
+  // Returns the existing application row for this workspace, or creates a
+  // new one when this is a first-time install.
   private async ensureApplicationExists(params: {
     existingApplication: ApplicationEntity | null;
     universalIdentifier: string;

@@ -1,3 +1,5 @@
+// CLI script: bootstraps a fresh database with the required schemas, extensions,
+// and (when IS_FDW_ENABLED) the foreign data wrappers used by Supabase-style connectors.
 import { rawDataSource } from 'src/database/typeorm/raw/raw.datasource';
 
 import { camelToSnakeCase, performQuery } from './setup-db-utils';
@@ -86,6 +88,7 @@ $$;`,
     console.error('Error during Data Source initialization:', err);
   });
 
+// Checks pg_foreign_data_wrapper to avoid recreating an already-installed wrapper.
 async function checkForeignDataWrapperExists(
   wrapperName: string,
 ): Promise<boolean> {

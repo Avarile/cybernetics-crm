@@ -1,3 +1,4 @@
+// NestJS module wiring the workspace invitation resolver/service.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

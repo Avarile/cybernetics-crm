@@ -6,6 +6,7 @@ import { type AllStandardObjectFieldName } from 'src/engine/workspace-manager/tw
 import { type AllStandardObjectName } from 'src/engine/workspace-manager/twenty-standard-application/types/all-standard-object-name.type';
 import { type StandardBuilderArgs } from 'src/engine/workspace-manager/twenty-standard-application/types/metadata-standard-buillder-args.type';
 
+// Per-object content (labels, icon, identifier fields, duplicate criteria) supplied by each standard object's builder
 export type CreateStandardObjectContext<O extends AllStandardObjectName> = {
   universalIdentifier: string;
   nameSingular: O;
@@ -25,6 +26,7 @@ export type CreateStandardObjectContext<O extends AllStandardObjectName> = {
   imageIdentifierFieldMetadataName?: AllStandardObjectFieldName<O>;
 };
 
+// Arguments accepted by createStandardObjectFlatMetadata
 export type CreateStandardObjectArgs<
   O extends AllStandardObjectName = AllStandardObjectName,
 > = StandardBuilderArgs<'objectMetadata'> & {
@@ -32,6 +34,8 @@ export type CreateStandardObjectArgs<
   context: CreateStandardObjectContext<O>;
 };
 
+// Builds a single standard object's FlatObjectMetadata, resolving its id and its label/image
+// identifier fields' ids and universal identifiers from the standard object's fixed definitions
 export const createStandardObjectFlatMetadata = <
   O extends AllStandardObjectName,
 >({

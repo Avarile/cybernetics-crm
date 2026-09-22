@@ -1,5 +1,8 @@
 /* @license Enterprise */
 
+// Guard protecting the Cloudflare webhook endpoint by comparing the
+// `cf-webhook-auth` header against a shared secret using a timing-safe
+// comparison to avoid leaking the secret via timing attacks.
 import {
   type CanActivate,
   type ExecutionContext,
@@ -15,6 +18,8 @@ import { TwentyConfigService } from 'src/engine/core-modules/twenty-config/twent
 export class CloudflareSecretMatchGuard implements CanActivate {
   constructor(private readonly twentyConfigService: TwentyConfigService) {}
 
+  // Validates the request's webhook auth header against the configured
+  // secret using a constant-time comparison.
   canActivate(context: ExecutionContext): boolean {
     const cloudflareWebhookSecret = this.twentyConfigService.get(
       'CLOUDFLARE_WEBHOOK_SECRET',

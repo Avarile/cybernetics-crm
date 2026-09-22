@@ -1,3 +1,8 @@
+// Property definitions for each of an object's reserved system fields (id,
+// createdAt, updatedAt, deletedAt, createdBy, updatedBy, position,
+// searchVector), used to generate the actual flat field metadata on object
+// creation.
+
 import { FieldMetadataType } from 'twenty-shared/types';
 
 import { type UniversalFlatFieldMetadata } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-field-metadata.type';
@@ -263,6 +268,7 @@ const PARTIAL_SEARCH_VECTOR_FIELD = {
   searchFieldMetadataUniversalIdentifiers: [],
 } as const satisfies PartialSystemFlatFieldMetadata<FieldMetadataType.TS_VECTOR>;
 
+// Map of reserved system field name to its partial flat field metadata.
 export const PARTIAL_SYSTEM_FLAT_FIELD_METADATAS = {
   id: PARTIAL_ID_FIELD,
   createdAt: PARTIAL_CREATED_AT_FIELD,

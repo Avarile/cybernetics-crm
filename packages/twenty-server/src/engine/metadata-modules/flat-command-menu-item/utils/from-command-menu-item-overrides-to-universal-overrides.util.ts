@@ -7,9 +7,13 @@ import {
   FlatEntityMapsExceptionCode,
 } from 'src/engine/metadata-modules/flat-entity/exceptions/flat-entity-maps.exception';
 
+// Overrides shape with foreign-key relation properties replaced by their
+// universal-identifier equivalents, portable across workspace migrations.
 type UniversalCommandMenuItemOverrides =
   FormatRecordSerializedRelationProperties<CommandMenuItemOverrides>;
 
+// Foreign-key override properties that need translation to universal
+// identifiers, and which lookup map to use for each.
 const COMMAND_MENU_ITEM_OVERRIDES_FOREIGN_KEYS = [
   {
     foreignKey: 'availabilityObjectMetadataId',
@@ -23,6 +27,9 @@ const COMMAND_MENU_ITEM_OVERRIDES_FOREIGN_KEYS = [
   },
 ] as const;
 
+// Converts a command menu item's overrides blob to its universal form by
+// replacing each foreign-key override with the matching entity's
+// universal identifier (or null if missing, unless configured to throw).
 export const fromCommandMenuItemOverridesToUniversalOverrides = ({
   overrides,
   objectMetadataUniversalIdentifierById,

@@ -8,6 +8,9 @@ import { validateIsEmptyArrayOperatorValueOrThrow } from './validate-is-empty-ar
 import { validateIsOperatorFilterValueOrThrow } from './validate-is-operator-filter-value-or-throw.util';
 import { validateStringOperatorValueOrThrow } from './validate-string-operator-value-or-throw.util';
 
+// Dispatches filter-value validation/transformation based on the operator:
+// is/isEmptyArray/in/containsAny/string operators each enforce their own
+// value shape, comparison operators delegate to field-type validation.
 export const validateAndTransformValueOrThrow = (
   operator: FilterOperator,
   value: unknown,

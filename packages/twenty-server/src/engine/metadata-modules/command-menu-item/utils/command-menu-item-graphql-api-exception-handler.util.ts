@@ -9,6 +9,8 @@ import {
   CommandMenuItemExceptionCode,
 } from 'src/engine/metadata-modules/command-menu-item/command-menu-item.exception';
 
+// Maps a CommandMenuItemException to the matching GraphQL error type
+// (not-found vs. user-input), rethrowing anything else unchanged.
 export const commandMenuItemGraphqlApiExceptionHandler = (error: Error) => {
   if (error instanceof CommandMenuItemException) {
     switch (error.code) {

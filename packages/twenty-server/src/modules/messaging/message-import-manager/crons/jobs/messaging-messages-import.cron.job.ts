@@ -1,3 +1,6 @@
+// Cron job (runs every minute) that scans all active workspaces for
+// message channels pending a messages import, skips throttled channels,
+// and enqueues an import job for the rest.
 import { Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -46,6 +49,11 @@ export class MessagingMessagesImportCronJob {
     MessagingMessagesImportCronJob.name,
     MESSAGING_MESSAGES_IMPORT_CRON_PATTERN,
   )
+  // For each active workspace, finds non-email-group channels pending a
+  // messages import that aren't throttled, atomically flips them to
+  // scheduled, and enqueues an import job for each. Tolerates a workspace
+  // whose schema was concurrently dropped (deactivated mid-loop) without
+  // erroring the whole run.
   async handle(): Promise<void> {
     const activeWorkspaces = await this.workspaceRepository.find({
       where: {

@@ -9,6 +9,7 @@ import { parseDepthRestRequest } from 'src/engine/api/rest/input-request-parsers
 import { parseUpsertRestRequest } from 'src/engine/api/rest/input-request-parsers/upsert-parser-utils/parse-upsert-rest-request.util';
 import { AuthenticatedRequest } from 'src/engine/api/rest/types/authenticated-request';
 import { workspaceQueryRunnerRestApiExceptionHandler } from 'src/engine/api/rest/utils/workspace-query-runner-rest-api-exception-handler.util';
+// REST handler for POST /rest/batch/{objects}: creates many records.
 @Injectable()
 export class RestApiCreateManyHandler extends RestApiBaseHandler {
   constructor(
@@ -17,6 +18,8 @@ export class RestApiCreateManyHandler extends RestApiBaseHandler {
     super();
   }
 
+  // Parses the request body/query, runs the common createMany query
+  // runner, and formats the created records as a REST response.
   async handle(request: AuthenticatedRequest) {
     try {
       const { data, depth, upsert } = this.parseRequestArgs(request);

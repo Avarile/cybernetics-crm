@@ -1,3 +1,6 @@
+// Side effect: generates an object's 7 reserved system fields on creation
+// (id, createdAt, updatedAt, deletedAt, createdBy, updatedBy, position).
+
 import { Injectable } from '@nestjs/common';
 
 import { type MetadataUniversalFlatEntity } from 'src/engine/metadata-modules/flat-entity/types/metadata-universal-flat-entity.type';
@@ -18,6 +21,8 @@ export class ObjectSystemFieldsOnCreateSideEffectHandlerService extends Metadata
       'When an object is created, generate its 7 reserved system fields (id, createdAt, updatedAt, deletedAt, createdBy, updatedBy, position). The searchVector field is provisioned by the self-contained objectSearchVectorOnCreate handler alongside its GIN index and searchFieldMetadata. The default name field is NOT synthesized here: it is a caller-provided default field (SDK auto-complete on the manifest path, input transpiler on the API path).',
   },
 ) {
+  // Generates the reserved system fields for the created object and returns
+  // them as a create operation.
   buildSideEffects({
     flatEntity: flatObjectMetadata,
   }: BuildSideEffectsArgs<'objectMetadata'>): MetadataSideEffectResult {

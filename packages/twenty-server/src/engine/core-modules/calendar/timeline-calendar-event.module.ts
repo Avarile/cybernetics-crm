@@ -1,3 +1,5 @@
+// NestJS module wiring the resolver/service that surface a record's related
+// calendar events in the CRM timeline.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

@@ -1,3 +1,6 @@
+// Validates the fields common to every graph widget type (aggregate field
+// and aggregate operation).
+
 import { msg, t } from '@lingui/core/macro';
 import { isDefined } from 'twenty-shared/utils';
 
@@ -6,6 +9,8 @@ import { type AllGraphWidgetConfigurationType } from 'src/engine/metadata-module
 import { PageLayoutWidgetExceptionCode } from 'src/engine/metadata-modules/page-layout-widget/exceptions/page-layout-widget.exception';
 import { type UniversalFlatPageLayoutWidget } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-page-layout-widget.type';
 
+// Requires an aggregate field and aggregate operation to be set, shared by
+// all graph widget configuration validators.
 export const validateBaseGraphFields = ({
   graphUniversalConfiguration,
   widgetTitle,

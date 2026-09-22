@@ -19,6 +19,9 @@ const DAYS_OF_WEEK = [
   'Sunday',
 ] as const;
 
+// Builds a CASE expression mapping day-of-week names to their sort order
+// starting from the given week-start day, since day names don't sort
+// alphabetically in calendar order.
 const getDayOfWeekOrderExpression = (
   groupByExpression: string,
   weekStartDay?: FirstDayOfTheWeek,
@@ -44,6 +47,10 @@ const getDayOfWeekOrderExpression = (
   return `CASE ${groupByExpression} ${caseConditions} END`;
 };
 
+// Builds the SQL expression to order by a groupBy dimension: for
+// DAY_OF_THE_WEEK / MONTH_OF_THE_YEAR granularities (which group by name
+// strings) this maps names back to a calendar-order CASE expression;
+// otherwise it reuses the group-by expression directly.
 export const getGroupByOrderExpression = ({
   groupByField,
   columnNameWithQuotes,

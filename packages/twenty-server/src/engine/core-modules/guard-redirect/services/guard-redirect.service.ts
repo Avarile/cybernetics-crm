@@ -1,3 +1,6 @@
+// Service used by REST/HTTP auth guards to redirect a failed request to the
+// workspace's error page (rather than returning a raw error), capturing
+// unexpected exceptions along the way. GraphQL requests re-throw instead.
 import { ExecutionContext, Injectable } from '@nestjs/common';
 
 import { type Request } from 'express';
@@ -22,6 +25,8 @@ export class GuardRedirectService {
     private readonly workspaceDomainsService: WorkspaceDomainsService,
   ) {}
 
+  // Re-throws the error for GraphQL requests, or redirects HTTP requests to
+  // the workspace's error page with the error encoded in the URL.
   dispatchErrorFromGuard(
     context: ExecutionContext,
     error: Error | CustomException,
@@ -46,6 +51,8 @@ export class GuardRedirectService {
     );
   }
 
+  // Derives the subdomain/custom domain from the request's Referer header,
+  // falling back to the default subdomain if it can't be determined.
   getSubdomainAndCustomDomainFromContext(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest<Request>();
 
@@ -67,6 +74,8 @@ export class GuardRedirectService {
         };
   }
 
+  // Reports the error to the exception handler, skipping expected
+  // (non-internal) auth exceptions to avoid noisy monitoring alerts.
   private captureException(err: Error | CustomException, workspaceId?: string) {
     if (
       err instanceof AuthException &&
@@ -81,6 +90,8 @@ export class GuardRedirectService {
     });
   }
 
+  // Captures the exception (if unexpected) and builds the workspace-scoped
+  // redirect URL encoding the error message.
   getRedirectErrorUrlAndCaptureExceptions({
     error,
     workspace,

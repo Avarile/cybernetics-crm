@@ -1,3 +1,6 @@
+// Fetches raw message sources for a set of UIDs from one IMAP folder and
+// parses each with postal-mime, returning per-message results (including
+// UIDs that failed to fetch or parse) rather than failing the whole batch.
 import { Injectable, Logger } from '@nestjs/common';
 
 import { type FetchMessageObject, type ImapFlow } from 'imapflow';
@@ -19,6 +22,10 @@ export type FolderParseResult = {
 export class ImapMessageParserService {
   private readonly logger = new Logger(ImapMessageParserService.name);
 
+  // Locks the mailbox, fetches all given UIDs in one batch, and parses
+  // each; UIDs the server didn't return (likely deleted) come back as a
+  // null-parsed result rather than being dropped silently. On a fetch-level
+  // failure, returns an error result for every requested UID.
   async parseMessagesFromFolder(
     messageUids: number[],
     folderPath: string,
@@ -78,6 +85,7 @@ export class ImapMessageParserService {
     }
   }
 
+  // Parses one fetched message's raw source with postal-mime.
   private async parseMessage(
     message: FetchMessageObject,
   ): Promise<MessageParseResult> {
@@ -100,6 +108,7 @@ export class ImapMessageParserService {
     }
   }
 
+  // Builds a null-parsed, errored result for every given UID.
   createErrorResults(
     messageUids: number[],
     error: Error,

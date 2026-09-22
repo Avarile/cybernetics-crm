@@ -1,3 +1,6 @@
+// OAuth 2.0 token, revocation, and introspection endpoints (RFC 6749,
+// RFC 7009, RFC 7662) for exchanging, revoking, and inspecting application
+// access/refresh tokens.
 import {
   Body,
   Controller,
@@ -36,6 +39,8 @@ export class OAuthTokenController {
     private readonly throttlerService: ThrottlerService,
   ) {}
 
+  // Rate-limited token endpoint dispatching to the authorization_code,
+  // client_credentials, or refresh_token grant handler.
   @Post('token')
   @HttpCode(200)
   @UseGuards(PublicEndpointGuard, NoPermissionGuard)
@@ -95,6 +100,8 @@ export class OAuthTokenController {
     return result;
   }
 
+  // Revokes a token, always returning 200 per RFC 7009 §2.2 regardless of
+  // whether the token was valid.
   @Post('revoke')
   @HttpCode(200)
   @UseGuards(PublicEndpointGuard, NoPermissionGuard)
@@ -117,6 +124,8 @@ export class OAuthTokenController {
     return {};
   }
 
+  // Introspects a token's validity/claims for the requesting client,
+  // requiring a client_id per RFC 7662.
   @Post('introspect')
   @HttpCode(200)
   @UseGuards(PublicEndpointGuard, NoPermissionGuard)
@@ -145,6 +154,8 @@ export class OAuthTokenController {
     });
   }
 
+  // Throttles requests per IP, writing a 429 response directly and
+  // returning true when the limit is exceeded.
   private async applyRateLimit(req: Request, res: Response): Promise<boolean> {
     const rateLimitKey = `oauth:${req.ip}`;
 
@@ -171,6 +182,7 @@ export class OAuthTokenController {
     }
   }
 
+  // Sets Cache-Control/Pragma headers so token responses are never cached.
   private setSecurityHeaders(res: Response): void {
     res.set('Cache-Control', 'no-store');
     res.set('Pragma', 'no-cache');

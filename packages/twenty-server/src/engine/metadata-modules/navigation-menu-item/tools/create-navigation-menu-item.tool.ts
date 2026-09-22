@@ -1,3 +1,6 @@
+// Agent tool for creating a navigation menu item, validating type-specific
+// input via a discriminated schema before delegating to the service.
+
 import { z } from 'zod';
 
 import { NavigationMenuItemType } from 'twenty-shared/types';
@@ -93,6 +96,8 @@ type CreateNavigationMenuItemParams = z.infer<
   typeof createNavigationMenuItemSchema
 >;
 
+// Maps the tool's discriminated params to the service's CreateNavigationMenuItemInput
+// shape, resolving scope to a userWorkspaceId when scope is 'user'.
 const toServiceInput = (
   params: CreateNavigationMenuItemParams,
   userWorkspaceId: string | undefined,
@@ -137,6 +142,7 @@ const toServiceInput = (
   }
 };
 
+// Builds the create_navigation_menu_item agent tool definition.
 export const createCreateNavigationMenuItemTool = (
   deps: Pick<NavigationMenuItemToolDependencies, 'navigationMenuItemService'>,
   context: NavigationMenuItemToolContext,

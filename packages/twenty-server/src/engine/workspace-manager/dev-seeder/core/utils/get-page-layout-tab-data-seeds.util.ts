@@ -6,6 +6,7 @@ import { PAGE_LAYOUT_SEEDS } from 'src/engine/workspace-manager/dev-seeder/core/
 import { PAGE_LAYOUT_TAB_SEEDS } from 'src/engine/workspace-manager/dev-seeder/core/constants/page-layout-tab-seeds.constant';
 import { generateSeedId } from 'src/engine/workspace-manager/dev-seeder/core/utils/generate-seed-id.util';
 
+// Returns the seed tabs for each seeded dashboard/standalone page layout.
 export const getPageLayoutTabFlatEntitySeeds = ({
   workspaceId,
   flatApplication,

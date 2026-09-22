@@ -8,6 +8,7 @@ import { PageLayoutTabEntity } from 'src/engine/metadata-modules/page-layout-tab
 import { PageLayoutEntity } from 'src/engine/metadata-modules/page-layout/entities/page-layout.entity';
 import { provideWorkspaceScopedRepository } from 'src/engine/twenty-orm/workspace-scoped-repository/provide-workspace-scoped-repository';
 
+// Provides the flat-page-layout map cache used to read page layouts in denormalized form.
 @Module({
   imports: [
     TypeOrmModule.forFeature([

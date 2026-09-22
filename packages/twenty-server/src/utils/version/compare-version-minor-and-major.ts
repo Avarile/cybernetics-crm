@@ -4,6 +4,7 @@ export type CompareVersionMajorAndMinorReturnType =
   | 'lower'
   | 'equal'
   | 'higher';
+// Compares two semver strings by major.minor only, ignoring patch differences.
 export function compareVersionMajorAndMinor(
   rawVersion1: string,
   rawVersion2: string,

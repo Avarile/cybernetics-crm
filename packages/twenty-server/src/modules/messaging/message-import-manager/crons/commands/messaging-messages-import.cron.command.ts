@@ -1,3 +1,4 @@
+// CLI command to register the recurring messages-import cron job.
 import { Command, CommandRunner } from 'nest-commander';
 
 import { InjectMessageQueue } from 'src/engine/core-modules/message-queue/decorators/message-queue.decorator';
@@ -20,6 +21,7 @@ export class MessagingMessagesImportCronCommand extends CommandRunner {
     super();
   }
 
+  // Schedules the recurring messages import cron job on the cron queue.
   async run(): Promise<void> {
     await this.messageQueueService.addCron<undefined>({
       jobName: MessagingMessagesImportCronJob.name,

@@ -1,3 +1,6 @@
+// Resolves an incoming HTTP request to a matching logic function HTTP-route
+// trigger, enforces auth/legacy-route deprecation rules, and runs it,
+// mapping execution errors to appropriate RouteTriggerExceptions.
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -43,6 +46,8 @@ export class RouteTriggerService {
     private readonly logicFunctionRepository: Repository<LogicFunctionEntity>,
   ) {}
 
+  // Resolves the workspace from the request host, then finds the logic
+  // function whose HTTP route/method matches the request path.
   private async getLogicFunctionWithPathParamsOrFail({
     request,
     httpMethod,
@@ -117,6 +122,8 @@ export class RouteTriggerService {
     );
   }
 
+  // Throws if a function created after the legacy-route cutoff date is
+  // called via the deprecated /s/ path instead of its dedicated public domain.
   private assertLegacyRouteIsServableOrThrow({
     logicFunction,
     workspace,
@@ -169,6 +176,7 @@ export class RouteTriggerService {
     }
   }
 
+  // Validates the request's access token belongs to the trigger's workspace.
   private async validateWorkspaceFromRequest({
     request,
     workspaceId,
@@ -196,6 +204,7 @@ export class RouteTriggerService {
     return authContext;
   }
 
+  // Maps an execution-layer error to the matching RouteTriggerExceptionCode.
   private mapErrorToRouteTriggerCode(
     error: unknown,
   ): RouteTriggerExceptionCode {
@@ -220,6 +229,8 @@ export class RouteTriggerService {
     return RouteTriggerExceptionCode.ROUTE_TRIGGER_PLATFORM_ERROR;
   }
 
+  // Resolves and runs the matching route-triggered logic function for a
+  // request, enforcing auth when required and converting failures into RouteTriggerExceptions.
   async handle({
     request,
     httpMethod,

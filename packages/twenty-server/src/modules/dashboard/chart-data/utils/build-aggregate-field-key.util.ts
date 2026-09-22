@@ -8,6 +8,9 @@ type BuildAggregateFieldKeyParams = {
   aggregateFieldMetadata: FlatFieldMetadata;
 };
 
+// Builds the selected-field key the group-by query runner expects for a
+// given aggregate operation/field (e.g. currency fields aggregate on their
+// amountMicros sub-field).
 export const buildAggregateFieldKey = ({
   aggregateOperation,
   aggregateFieldMetadata,

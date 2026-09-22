@@ -1,3 +1,6 @@
+// GraphQL object type exposing an object's metadata (names, labels,
+// identifiers, flags) and its cursor-connected fields/indexes to the API.
+
 import { Field, HideField, ObjectType } from '@nestjs/graphql';
 
 import {

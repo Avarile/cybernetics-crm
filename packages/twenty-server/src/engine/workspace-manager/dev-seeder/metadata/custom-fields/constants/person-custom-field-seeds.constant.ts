@@ -2,6 +2,8 @@ import { FieldMetadataType } from 'twenty-shared/types';
 
 import { type FieldMetadataSeed } from 'src/engine/workspace-manager/dev-seeder/metadata/types/field-metadata-seed.type';
 
+// Sample custom fields added to the standard Person object in dev-seeded
+// workspaces, to demo custom fields of various types.
 export const PERSON_CUSTOM_FIELD_SEEDS: FieldMetadataSeed[] = [
   {
     type: FieldMetadataType.TEXT,

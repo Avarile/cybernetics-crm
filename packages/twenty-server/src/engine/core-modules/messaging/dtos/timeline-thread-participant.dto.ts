@@ -1,3 +1,4 @@
+// GraphQL DTO for a participant on a timeline message thread.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';

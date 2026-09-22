@@ -1,3 +1,5 @@
+// Test fixtures: a fake "person" object/field metadata shape used by
+// graphql-query-runner unit tests that need realistic flat metadata maps.
 import { FieldMetadataType } from 'twenty-shared/types';
 
 import { type WorkspaceEntityDuplicateCriteria } from 'src/engine/api/graphql/workspace-query-builder/types/workspace-entity-duplicate-criteria.type';

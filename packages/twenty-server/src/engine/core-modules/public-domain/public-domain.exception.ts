@@ -1,3 +1,4 @@
+// Exception type and user-facing messages for public domain errors.
 import { type MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { assertUnreachable } from 'twenty-shared/utils';

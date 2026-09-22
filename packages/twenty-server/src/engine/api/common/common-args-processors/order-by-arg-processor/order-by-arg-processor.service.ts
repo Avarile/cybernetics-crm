@@ -8,6 +8,7 @@ import { isDefined } from 'twenty-shared/utils';
 
 @Injectable()
 export class OrderByArgProcessorService {
+  // Normalizes an orderBy arg (single entry or array) into an array.
   process({
     orderBy,
   }: {

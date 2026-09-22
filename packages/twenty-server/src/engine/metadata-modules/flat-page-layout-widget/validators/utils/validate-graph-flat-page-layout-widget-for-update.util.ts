@@ -1,3 +1,6 @@
+// Validates a graph-type page layout widget's configuration on update,
+// skipping validation if no configuration was provided.
+
 import { isDefined } from 'twenty-shared/utils';
 
 import { type ValidateFlatPageLayoutWidgetTypeSpecificitiesForUpdateArgs } from 'src/engine/metadata-modules/flat-page-layout-widget/services/flat-page-layout-widget-type-validator.service';
@@ -6,6 +9,8 @@ import { validateBaseGraphFields } from 'src/engine/metadata-modules/flat-page-l
 import { validateGraphConfigurationByType } from 'src/engine/metadata-modules/flat-page-layout-widget/validators/utils/validate-graph-configuration-by-type.util';
 import { validateGraphConfigurationType } from 'src/engine/metadata-modules/flat-page-layout-widget/validators/utils/validate-graph-configuration-type.util';
 
+// Validates the graph type, then runs the base graph field checks plus the
+// chart-type-specific checks on the updated configuration.
 export const validateGraphFlatPageLayoutWidgetForUpdate = (
   args: ValidateFlatPageLayoutWidgetTypeSpecificitiesForUpdateArgs,
 ): FlatPageLayoutWidgetValidationError[] => {

@@ -6,6 +6,7 @@ import {
 } from 'src/modules/calendar/calendar-event-import-manager/drivers/exceptions/calendar-event-import-driver.exception';
 import { isDefined } from 'twenty-shared/utils';
 
+// Maps a Microsoft Graph API error status code to a typed import-driver exception.
 export const parseMicrosoftCalendarError = (
   error: GraphError,
 ): CalendarEventImportDriverException => {

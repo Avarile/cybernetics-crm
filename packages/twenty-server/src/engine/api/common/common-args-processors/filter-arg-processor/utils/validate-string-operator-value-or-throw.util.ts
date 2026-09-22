@@ -7,6 +7,8 @@ import {
   CommonQueryRunnerExceptionCode,
 } from 'src/engine/api/common/common-query-runners/errors/common-query-runner.exception';
 
+// Throws unless the value is a string, as required by string-matching
+// operators like like/ilike/startsWith/endsWith/containsIlike.
 export const validateStringOperatorValueOrThrow = (
   value: unknown,
   operator: FilterOperator,

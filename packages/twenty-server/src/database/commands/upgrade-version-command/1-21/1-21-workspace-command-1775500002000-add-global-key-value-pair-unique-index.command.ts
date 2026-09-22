@@ -9,6 +9,10 @@ import { type RunOnWorkspaceArgs } from 'src/database/commands/command-runners/w
 import { RegisteredWorkspaceCommand } from 'src/engine/core-modules/upgrade/decorators/registered-workspace-command.decorator';
 import { addGlobalKeyValuePairUniqueIndexQueries } from 'src/database/typeorm/core/migrations/utils/1774700000000-add-global-key-value-pair-unique-index.util';
 
+// Workspace command (1.21.0): registered per-workspace but only needs to run once
+// against the shared core schema — deletes duplicate global (null userId/workspaceId)
+// keyValuePair rows (keeping the most recently updated per key), then rebuilds the
+// unique index on key for those rows, all in one transaction.
 @RegisteredWorkspaceCommand('1.21.0', 1775500002000)
 @Command({
   name: 'upgrade:1-21:add-global-key-value-pair-unique-index',
@@ -18,6 +22,8 @@ import { addGlobalKeyValuePairUniqueIndexQueries } from 'src/database/typeorm/co
 export class AddGlobalKeyValuePairUniqueIndexCommand extends ProvisionedWorkspaceCommandRunner {
   private hasRunOnce = false;
 
+  // Removes duplicate global keyValuePair rows for the same key, keeping the most
+  // recently updated/created one.
   private async deduplicateGlobalKeyValuePairs(
     queryRunner: DataSource['createQueryRunner'] extends () => infer T
       ? T
@@ -51,6 +57,8 @@ export class AddGlobalKeyValuePairUniqueIndexCommand extends ProvisionedWorkspac
     super(workspaceIteratorService);
   }
 
+  // Runs the dedup + index rebuild exactly once per process (guarded by
+  // hasRunOnce), since the target rows are global, not per-workspace.
   override async runOnWorkspace({
     options,
   }: RunOnWorkspaceArgs): Promise<void> {

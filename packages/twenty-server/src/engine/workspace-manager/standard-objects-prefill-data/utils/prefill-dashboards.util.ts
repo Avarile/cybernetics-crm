@@ -9,6 +9,8 @@ import { STANDARD_PAGE_LAYOUTS } from 'src/engine/workspace-manager/twenty-stand
 
 export const MY_FIRST_DASHBOARD_ID = 'f31ecf3b-87d3-4e8a-a84b-b6f0f3f8c7e2';
 
+// Inserts a sample "My First Dashboard" record pointing at the standard
+// prebuilt page layout, into a newly provisioned workspace schema.
 export const prefillDashboards = async (
   entityManager: EntityManager,
   schemaName: string,

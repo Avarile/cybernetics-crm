@@ -5,6 +5,8 @@ import { NAVIGATION_MENU_ITEM_SEEDS } from 'src/engine/workspace-manager/dev-see
 import { PAGE_LAYOUT_SEEDS } from 'src/engine/workspace-manager/dev-seeder/core/constants/page-layout-seeds.constant';
 import { generateSeedId } from 'src/engine/workspace-manager/dev-seeder/core/utils/generate-seed-id.util';
 
+// Returns the seed navigation menu item(s) pointing at the seeded
+// documentation standalone page.
 export const getNavigationMenuItemFlatEntitySeeds = ({
   workspaceId,
   flatApplication,

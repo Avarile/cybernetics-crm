@@ -12,6 +12,7 @@ import {
   UserInputError,
 } from 'src/engine/core-modules/graphql/utils/graphql-errors.util';
 
+// Maps FileStorageException codes to the matching GraphQL error type
 @Catch(FileStorageException)
 export class FileStorageExceptionFilter implements ExceptionFilter {
   catch(exception: FileStorageException) {

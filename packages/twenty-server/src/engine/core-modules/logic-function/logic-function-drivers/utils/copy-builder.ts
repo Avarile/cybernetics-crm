@@ -11,6 +11,7 @@ const BUILDER_FILE_PATH = resolve(
   ),
 );
 
+// Copies the prebuilt transpiler-Lambda handler assets into a build directory.
 export const copyBuilder = async (buildDirectory: string) => {
   await fs.mkdir(buildDirectory, { recursive: true });
   await fs.cp(BUILDER_FILE_PATH, buildDirectory, { recursive: true });

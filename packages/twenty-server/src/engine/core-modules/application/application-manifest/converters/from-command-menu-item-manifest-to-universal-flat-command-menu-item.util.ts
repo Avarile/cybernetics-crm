@@ -1,3 +1,5 @@
+// Converts a manifest-declared command menu item into the universal flat
+// entity shape used to build workspace migrations.
 import { type CommandMenuItemManifest } from 'twenty-shared/application';
 
 import { CommandMenuItemAvailabilityType } from 'src/engine/metadata-modules/command-menu-item/enums/command-menu-item-availability-type.enum';

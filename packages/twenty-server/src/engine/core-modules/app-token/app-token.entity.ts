@@ -1,3 +1,6 @@
+// TypeORM entity for short-lived tokens (refresh tokens, invitations,
+// password resets, email verification, OAuth code challenges, etc.) issued
+// to a user or workspace.
 import { isDefined } from 'twenty-shared/utils';
 import {
   BeforeInsert,
@@ -70,6 +73,7 @@ export class AppTokenEntity {
   @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt: Date;
 
+  // Normalizes the stored context email to lowercase before it is persisted.
   @BeforeInsert()
   @BeforeUpdate()
   formatEmail?() {

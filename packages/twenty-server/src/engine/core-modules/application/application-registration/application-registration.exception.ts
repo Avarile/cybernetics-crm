@@ -1,3 +1,6 @@
+// Custom exception type and error codes for application registration
+// lifecycle failures (registering, claiming, deploying), with
+// user-friendly translated messages per code.
 import { type MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { assertUnreachable } from 'twenty-shared/utils';
@@ -18,6 +21,7 @@ export enum ApplicationRegistrationExceptionCode {
   INVALID_SERVER_VERSION = 'INVALID_SERVER_VERSION',
 }
 
+// Returns the localized, user-facing message for a given exception code.
 const getExceptionUserFriendlyMessage = (
   code: ApplicationRegistrationExceptionCode,
 ) => {
@@ -49,6 +53,8 @@ const getExceptionUserFriendlyMessage = (
   }
 };
 
+// Exception thrown for application registration failures (registering,
+// claiming, version validation, etc.).
 export class ApplicationRegistrationException extends CustomException<ApplicationRegistrationExceptionCode> {
   constructor(
     message: string,

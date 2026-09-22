@@ -26,6 +26,14 @@ import { type UniversalFlatViewGroup } from 'src/engine/workspace-manager/worksp
 import { type UniversalFlatView } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-view.type';
 import { mergeUpdateInExistingRecord } from 'src/utils/merge-update-in-existing-record.util';
 
+// Merges an update input into the existing flat view, throwing if it
+// doesn't exist. Overridable properties are recorded as overrides instead
+// of applied directly when the caller doesn't own the view; relation
+// foreign keys are re-resolved to universal identifiers when changed, and
+// changing the mainGroupByFieldMetadataId or visibility triggers side
+// effects (recomputing view groups, or reassigning ownership to the
+// acting user when a WORKSPACE view becomes UNLISTED so it doesn't
+// disappear for them).
 export const fromUpdateViewInputToFlatViewToUpdateOrThrow = ({
   updateViewInput: rawUpdateViewInput,
   flatViewMaps,

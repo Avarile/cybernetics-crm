@@ -4,6 +4,8 @@ import { assertUnreachable } from 'twenty-shared/utils';
 
 import { CustomException } from 'src/utils/custom-exception';
 
+// Exception thrown by the command menu item module for invalid input,
+// missing records, or disallowed operations (e.g. resetting custom items).
 export enum CommandMenuItemExceptionCode {
   COMMAND_MENU_ITEM_NOT_FOUND = 'COMMAND_MENU_ITEM_NOT_FOUND',
   INVALID_COMMAND_MENU_ITEM_INPUT = 'INVALID_COMMAND_MENU_ITEM_INPUT',
@@ -11,6 +13,7 @@ export enum CommandMenuItemExceptionCode {
   COMMAND_MENU_ITEM_CANNOT_BE_RESET = 'COMMAND_MENU_ITEM_CANNOT_BE_RESET',
 }
 
+// Maps an exception code to the localized message shown to end users.
 const getCommandMenuItemExceptionUserFriendlyMessage = (
   code: CommandMenuItemExceptionCode,
 ) => {

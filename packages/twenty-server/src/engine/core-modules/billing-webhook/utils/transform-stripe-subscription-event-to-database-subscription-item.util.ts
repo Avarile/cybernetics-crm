@@ -2,6 +2,7 @@
 
 import type Stripe from 'stripe';
 
+// Maps each Stripe subscription item on the event to a BillingSubscriptionItem row
 export const transformStripeSubscriptionEventToDatabaseSubscriptionItem = (
   billingSubscriptionId: string,
   data:

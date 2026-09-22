@@ -1,3 +1,6 @@
+// TypeORM entity linking a user to a workspace they're a member of, holding
+// per-membership settings (locale, default avatar), 2FA methods, and
+// resolved permission fields populated at query time.
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 
 import {

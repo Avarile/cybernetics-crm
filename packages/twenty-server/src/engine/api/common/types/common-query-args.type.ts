@@ -14,6 +14,8 @@ import {
   type CommonSelectedFieldsResult,
 } from 'src/engine/api/common/types/common-selected-fields-result.type';
 
+// Argument shapes for every common query-runner operation (findOne,
+// createMany, groupBy, etc.), shared across the GraphQL/REST/MCP APIs.
 export enum CommonQueryNames {
   FIND_ONE = 'findOne',
   FIND_MANY = 'findMany',
@@ -134,7 +136,11 @@ export type CommonQueryArgs =
   | RestoreManyQueryArgs
   | RestoreOneQueryArgs;
 
+// An operation's args as received from the caller, plus the raw
+// selectedFields the caller requested.
 export type CommonInput<T extends CommonQueryArgs> = T & BaseQueryArgs;
 
+// An operation's args after processArgs has run, with selectedFields
+// resolved into a parsed CommonSelectedFieldsResult.
 export type CommonExtendedInput<T extends CommonQueryArgs> = T &
   ExtendedBaseQueryArgs;

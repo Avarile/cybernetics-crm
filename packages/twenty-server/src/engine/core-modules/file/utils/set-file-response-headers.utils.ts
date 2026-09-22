@@ -6,6 +6,7 @@ import { isDefined } from 'twenty-shared/utils';
 import { fileFolderConfigs } from 'src/engine/core-modules/file/interfaces/file-folder.interface';
 import { getContentDisposition } from 'src/engine/core-modules/file/utils/get-content-disposition.utils';
 
+// Sets content-type/disposition/nosniff/cache-control headers for a served file response.
 export const setFileResponseHeaders = (
   res: Response,
   mimeType: string,

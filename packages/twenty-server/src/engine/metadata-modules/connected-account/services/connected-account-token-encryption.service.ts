@@ -19,11 +19,16 @@ import { SecretEncryptionService } from 'src/engine/core-modules/secret-encrypti
 import { ACCOUNT_TYPES } from 'twenty-shared/constants';
 
 @Injectable()
+// Encrypts and decrypts connected account secrets (OAuth tokens and
+// IMAP/SMTP/CalDAV passwords) using versioned envelope encryption, so
+// plaintext credentials never reach the database.
 export class ConnectedAccountTokenEncryptionService {
   constructor(
     private readonly secretEncryptionService: SecretEncryptionService,
   ) {}
 
+  // Encrypts a plaintext secret. Throws if the value already looks like
+  // ciphertext, to catch accidental double-encryption bugs.
   encrypt({
     plaintext,
     workspaceId,
@@ -43,6 +48,7 @@ export class ConnectedAccountTokenEncryptionService {
     });
   }
 
+  // Same as encrypt, but passes through null unchanged.
   encryptNullable({
     plaintext,
     workspaceId,
@@ -57,6 +63,9 @@ export class ConnectedAccountTokenEncryptionService {
     return this.encrypt({ plaintext, workspaceId });
   }
 
+  // Decrypts a ciphertext secret. Throws if the value doesn't carry the
+  // expected envelope prefix, which usually means an encryption backfill
+  // migration hasn't run yet.
   decrypt({
     ciphertext,
     workspaceId,
@@ -76,6 +85,7 @@ export class ConnectedAccountTokenEncryptionService {
     });
   }
 
+  // Same as decrypt, but passes through null unchanged.
   decryptNullable({
     ciphertext,
     workspaceId,
@@ -90,6 +100,7 @@ export class ConnectedAccountTokenEncryptionService {
     return this.decrypt({ ciphertext, workspaceId });
   }
 
+  // Encrypts an OAuth access/refresh token pair together.
   encryptTokenPair({
     accessToken,
     refreshToken,
@@ -118,6 +129,8 @@ export class ConnectedAccountTokenEncryptionService {
     return value.startsWith(SECRET_ENCRYPTION_ENVELOPE_PREFIX);
   }
 
+  // Encrypts the password field within each configured protocol
+  // (IMAP/SMTP/CALDAV) of a connection parameters object.
   encryptConnectionParameters({
     connectionParameters,
     workspaceId,
@@ -145,6 +158,8 @@ export class ConnectedAccountTokenEncryptionService {
     return result;
   }
 
+  // Decrypts the password field within each configured protocol
+  // (IMAP/SMTP/CALDAV) of a connection parameters object.
   decryptConnectionParameters({
     connectionParameters,
     workspaceId,
@@ -172,6 +187,7 @@ export class ConnectedAccountTokenEncryptionService {
     return result;
   }
 
+  // Decrypts the password for a single protocol's connection parameters.
   decryptProtocolPassword({
     protocolParams,
     workspaceId,

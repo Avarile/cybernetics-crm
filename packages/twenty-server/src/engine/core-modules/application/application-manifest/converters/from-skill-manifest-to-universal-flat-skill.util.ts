@@ -1,3 +1,5 @@
+// Converts a manifest-declared skill into the universal flat entity shape
+// used to build workspace migrations.
 import { type SkillManifest } from 'twenty-shared/application';
 
 import { type UniversalFlatSkill } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-skill.type';

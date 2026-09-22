@@ -1,3 +1,6 @@
+// Top-level module for the message import pipeline: wires up all provider
+// drivers, cron jobs/commands, and the services that fetch, parse, and
+// persist imported messages.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

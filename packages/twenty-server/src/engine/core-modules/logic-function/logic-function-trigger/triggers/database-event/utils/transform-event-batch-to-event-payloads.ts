@@ -6,6 +6,8 @@ import { type LogicFunctionTriggerJobData } from 'src/engine/core-modules/logic-
 import { type LogicFunctionEntity } from 'src/engine/metadata-modules/logic-function/logic-function.entity';
 import type { WorkspaceEventBatch } from 'src/engine/workspace-event-emitter/types/workspace-event-batch.type';
 
+// Builds one trigger job payload per matching event for each logic function,
+// filtering update events down to those touching a trigger's watched fields.
 export const transformEventBatchToEventPayloads = ({
   workspaceEventBatch,
   logicFunctions,
@@ -44,6 +46,8 @@ export const transformEventBatchToEventPayloads = ({
   return result;
 };
 
+// For update events, keeps only those whose updated fields intersect the
+// trigger's watched fields; other operations pass through unfiltered.
 const filterEventsByUpdatedFields = ({
   events,
   operation,

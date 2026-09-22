@@ -1,3 +1,6 @@
+// Validates a STANDALONE_RICH_TEXT-type page layout widget's configuration
+// on creation.
+
 import { msg, t } from '@lingui/core/macro';
 import { isDefined } from 'twenty-shared/utils';
 
@@ -7,6 +10,7 @@ import { validateStandaloneRichTextBody } from 'src/engine/metadata-modules/flat
 import { validateStandaloneRichTextConfigurationType } from 'src/engine/metadata-modules/flat-page-layout-widget/validators/utils/validate-standalone-rich-text-configuration-type.util';
 import { PageLayoutWidgetExceptionCode } from 'src/engine/metadata-modules/page-layout-widget/exceptions/page-layout-widget.exception';
 
+// Requires configuration, validates its type, then validates the body field.
 export const validateStandaloneRichTextFlatPageLayoutWidgetForCreation = (
   args: ValidateFlatPageLayoutWidgetTypeSpecificitiesForCreationArgs,
 ): FlatPageLayoutWidgetValidationError[] => {

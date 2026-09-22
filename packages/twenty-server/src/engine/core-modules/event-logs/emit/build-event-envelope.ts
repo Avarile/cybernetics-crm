@@ -1,3 +1,5 @@
+// Builders assembling the table/row envelopes stored for workspace events,
+// object events and pageviews, attaching workspace/user context fields.
 import {
   type TrackEventName,
   type TrackEventProperties,
@@ -12,6 +14,7 @@ import {
 } from 'src/engine/core-modules/event-logs/emit/analytics.utils';
 import { type PageviewProperties } from 'src/engine/core-modules/event-logs/emit/events/pageview/pageview';
 
+// Strips undefined workspaceId/userId from event context, keeping only defined fields.
 export const computeEventContextFields = (
   context?: EventContextFields,
 ): EventContextFields => ({
@@ -19,6 +22,7 @@ export const computeEventContextFields = (
   ...(context?.userId ? { userId: context.userId } : {}),
 });
 
+// Builds a workspaceEvent-table envelope for a track event.
 export const buildWorkspaceEventEnvelope = <T extends TrackEventName>(
   contextFields: EventContextFields,
   event: T,
@@ -28,6 +32,8 @@ export const buildWorkspaceEventEnvelope = <T extends TrackEventName>(
   row: { ...contextFields, ...makeTrackEvent(event, properties) },
 });
 
+// Builds an objectEvent-table envelope, pulling recordId/objectMetadataId/
+// isCustom out of the properties into top-level row fields.
 export const buildObjectEventEnvelope = <T extends TrackEventName>(
   contextFields: EventContextFields,
   event: T,
@@ -55,6 +61,7 @@ export const buildObjectEventEnvelope = <T extends TrackEventName>(
   };
 };
 
+// Builds a pageview-table envelope.
 export const buildPageviewEnvelope = (
   contextFields: EventContextFields,
   name: string,

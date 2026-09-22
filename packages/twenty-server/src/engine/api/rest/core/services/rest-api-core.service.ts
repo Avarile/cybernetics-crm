@@ -21,6 +21,8 @@ import { parseCorePath } from 'src/engine/api/rest/input-request-parsers/path-pa
 import { parseSoftDeleteRestRequest } from 'src/engine/api/rest/input-request-parsers/soft-delete-parser-utils/parse-soft-delete-rest-request.util';
 import { AuthenticatedRequest } from 'src/engine/api/rest/types/authenticated-request';
 
+// Dispatches REST core requests to the matching per-operation handler,
+// resolving one-vs-many and soft-vs-hard delete based on the request path.
 @Injectable()
 export class RestApiCoreService {
   constructor(
@@ -53,6 +55,8 @@ export class RestApiCoreService {
     return await this.restApiFindDuplicatesHandler.handle(request);
   }
 
+  // Routes to updateOne or updateMany depending on whether the path names
+  // a record id.
   async update(request: AuthenticatedRequest) {
     const { id: recordId } = parseCorePath(request);
 
@@ -63,6 +67,8 @@ export class RestApiCoreService {
     }
   }
 
+  // Routes to findOne or findMany depending on whether the path names a
+  // record id.
   async get(request: AuthenticatedRequest) {
     const { id: recordId } = parseCorePath(request);
 
@@ -77,6 +83,8 @@ export class RestApiCoreService {
     return await this.restApiGroupByHandler.handle(request);
   }
 
+  // Routes delete requests to destroy vs. (soft) delete, and one vs.
+  // many, based on the request's path and soft-delete flag.
   async delete(request: AuthenticatedRequest) {
     const { id: recordId } = parseCorePath(request);
 
@@ -93,6 +101,8 @@ export class RestApiCoreService {
       return await this.restApiDeleteManyHandler.handle(request);
   }
 
+  // Routes to restoreOne or restoreMany depending on whether the path
+  // names a record id.
   async restore(request: AuthenticatedRequest) {
     const { id: recordId } = parseCorePath(request);
 

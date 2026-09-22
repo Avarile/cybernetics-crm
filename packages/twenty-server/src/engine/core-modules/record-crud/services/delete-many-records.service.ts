@@ -1,3 +1,6 @@
+// Bulk soft-deletes records matching a filter for a given object, requiring
+// a non-empty filter to prevent accidental deletion of an entire table.
+
 import { Injectable, Logger } from '@nestjs/common';
 
 import { CommonDeleteManyQueryRunnerService } from 'src/engine/api/common/common-query-runners/common-delete-many-query-runner.service';
@@ -20,6 +23,8 @@ export class DeleteManyRecordsService {
     private readonly commonApiContextBuilder: CommonApiContextBuilderService,
   ) {}
 
+  // Soft-deletes records matching filter in objectName; rejects empty filters
+  // and objects that automation is not allowed to manage.
   async execute(params: DeleteManyRecordsParams): Promise<ToolOutput> {
     const { objectName, filter, authContext } = params;
 

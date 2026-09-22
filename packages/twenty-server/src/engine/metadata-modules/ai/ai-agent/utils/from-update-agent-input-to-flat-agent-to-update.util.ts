@@ -1,3 +1,5 @@
+// Builds the flat agent update (and any role-target create/update/delete) to
+// persist from an update-agent GraphQL input, to be run through a workspace migration.
 import { msg } from '@lingui/core/macro';
 import {
   extractAndSanitizeObjectStringFields,
@@ -27,6 +29,8 @@ type FlatRoleTargetToUpdateCreateDelete = {
   flatRoleTargetToCreate?: FlatRoleTarget;
   flatRoleTargetToDelete?: FlatRoleTarget;
 };
+// Given the requested roleId (undefined = unchanged, null = remove, string =
+// set), derives whether the agent's role target should be created, updated, or deleted.
 const computeAgentFlatRoleTargetToUpdate = ({
   roleId,
   flatAgent,
@@ -95,6 +99,8 @@ export type FromUpdateAgentInputToFlatAgentToUpdateArgs = {
   flatRoleTargetByAgentIdMaps: FlatRoleTargetByAgentIdMaps;
 } & Pick<AllFlatEntityMaps, 'flatRoleMaps'>;
 
+// Merges an UpdateAgentInput's editable fields onto the existing flat agent
+// and computes the associated role-target change, throwing if the agent doesn't exist.
 export const fromUpdateAgentInputToFlatAgentToUpdate = ({
   updateAgentInput: rawUpdateAgentInput,
   flatAgentMaps,

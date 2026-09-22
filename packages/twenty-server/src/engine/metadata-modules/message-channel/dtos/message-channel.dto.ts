@@ -22,6 +22,9 @@ import {
 
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';
 
+// GraphQL representation of a message (email) channel: its sync
+// configuration, contact auto-creation policy, and sync/throttle state.
+// Internal sync cursor is hidden from the schema.
 @ObjectType('MessageChannel')
 export class MessageChannelDTO {
   @IsUUID()

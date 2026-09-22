@@ -3,6 +3,9 @@ import { type QueryRunner } from 'typeorm';
 import { RegisteredInstanceCommand } from 'src/engine/core-modules/upgrade/decorators/registered-instance-command.decorator';
 import { type FastInstanceCommand } from 'src/engine/core-modules/upgrade/interfaces/fast-instance-command.interface';
 
+// Fast instance command (1.21.0): adds 'EMAIL_THREAD' to the
+// pageLayoutWidget_type_enum (rebuild-enum pattern: rename old type, create new
+// type with the extra value, repoint the column, drop the old type); down reverses it.
 @RegisteredInstanceCommand('1.21.0', 1775200000000)
 export class AddEmailThreadWidgetTypeFastInstanceCommand implements FastInstanceCommand {
   public async up(queryRunner: QueryRunner): Promise<void> {

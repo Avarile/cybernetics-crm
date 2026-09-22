@@ -1,3 +1,6 @@
+// Resolves a DestroyPageLayoutWidgetInput to the existing flat widget it
+// targets, throwing if the widget cannot be found.
+
 import { t } from '@lingui/core/macro';
 import {
   extractAndSanitizeObjectStringFields,
@@ -13,6 +16,8 @@ import {
   PageLayoutWidgetExceptionCode,
 } from 'src/engine/metadata-modules/page-layout-widget/exceptions/page-layout-widget.exception';
 
+// Looks up the widget by id in the flat maps and throws
+// PAGE_LAYOUT_WIDGET_NOT_FOUND if it doesn't exist.
 export const fromDestroyPageLayoutWidgetInputToFlatPageLayoutWidgetOrThrow = ({
   destroyPageLayoutWidgetInput,
   flatPageLayoutWidgetMaps,

@@ -1,3 +1,4 @@
+// Shared types implemented by each code interpreter backend (local, E2B, disabled)
 export type InputFile = {
   filename: string;
   content: Buffer;

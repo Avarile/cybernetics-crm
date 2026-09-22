@@ -35,6 +35,8 @@ type SeedUserWorkspacesArgs = {
   workspaceId: string;
 };
 
+// Links the seeded demo users (and, for Apple, the random users) to the
+// given workspace via userWorkspace rows.
 export const seedUserWorkspaces = async ({
   queryRunner,
   schemaName,
@@ -116,6 +118,7 @@ type DeleteUserWorkspacesArgs = {
   workspaceId: string;
 };
 
+// Removes all userWorkspace rows for the given workspace.
 export const deleteUserWorkspaces = async ({
   queryRunner,
   schemaName,

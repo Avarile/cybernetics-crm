@@ -14,6 +14,8 @@ import { WorkspaceCache } from 'src/engine/workspace-cache/decorators/workspace-
 import { createIdToUniversalIdentifierMap } from 'src/engine/workspace-cache/utils/create-id-to-universal-identifier-map.util';
 import { addFlatEntityToFlatEntityMapsThroughMutationOrThrow } from 'src/engine/workspace-manager/workspace-migration/utils/add-flat-entity-to-flat-entity-maps-through-mutation-or-throw.util';
 
+// Builds and caches the workspace's flat-front-component maps by loading front component
+// entities and resolving each component's application id to its universal identifier.
 @Injectable()
 @WorkspaceCache('flatFrontComponentMaps')
 export class WorkspaceFlatFrontComponentMapCacheService extends WorkspaceCacheProvider<FlatFrontComponentMaps> {
@@ -26,6 +28,8 @@ export class WorkspaceFlatFrontComponentMapCacheService extends WorkspaceCachePr
     super();
   }
 
+  // Loads all front components and application universal identifiers for the
+  // workspace, then assembles them into flat-front-component maps.
   async computeForCache(workspaceId: string): Promise<FlatFrontComponentMaps> {
     const [frontComponents, applications] = await Promise.all([
       this.frontComponentRepository.find({

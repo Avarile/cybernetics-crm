@@ -1,3 +1,6 @@
+// GraphQL resolver for creating, reading, updating, deleting, and managing
+// application registrations: tarball upload, client secret rotation,
+// ownership claim/transfer, and their variables/asset URLs.
 import { UseFilters, UseGuards, UsePipes } from '@nestjs/common';
 import {
   Args,
@@ -73,6 +76,7 @@ export class ApplicationRegistrationResolver {
     private readonly twentyConfigService: TwentyConfigService,
   ) {}
 
+  // Public lookup of a registration's non-sensitive fields by OAuth client id.
   @UseGuards(PublicEndpointGuard, NoPermissionGuard)
   @Query(() => PublicApplicationRegistrationDTO, { nullable: true })
   async findApplicationRegistrationByClientId(
@@ -81,6 +85,7 @@ export class ApplicationRegistrationResolver {
     return this.applicationRegistrationService.findPublicByClientId(clientId);
   }
 
+  // Looks up a registration by universal identifier.
   @UseGuards(WorkspaceAuthGuard, NoPermissionGuard)
   @Query(() => ApplicationRegistrationEntity, { nullable: true })
   async findApplicationRegistrationByUniversalIdentifier(
@@ -95,6 +100,7 @@ export class ApplicationRegistrationResolver {
     WorkspaceAuthGuard,
     SettingsPermissionGuard(PermissionFlagType.API_KEYS_AND_WEBHOOKS),
   )
+  // Returns all registrations visible to the workspace.
   @Query(() => [ApplicationRegistrationEntity])
   async findManyApplicationRegistrations(
     @AuthWorkspace() { id: workspaceId }: WorkspaceEntity,
@@ -106,6 +112,7 @@ export class ApplicationRegistrationResolver {
     WorkspaceAuthGuard,
     SettingsPermissionGuard(PermissionFlagType.API_KEYS_AND_WEBHOOKS),
   )
+  // Returns a single registration by id, scoped to the workspace.
   @Query(() => ApplicationRegistrationEntity)
   async findOneApplicationRegistration(
     @Args('id') id: string,
@@ -118,6 +125,7 @@ export class ApplicationRegistrationResolver {
     WorkspaceAuthGuard,
     SettingsPermissionGuard(PermissionFlagType.API_KEYS_AND_WEBHOOKS),
   )
+  // Returns usage/install stats for a registration.
   @Query(() => ApplicationRegistrationStatsDTO)
   async findApplicationRegistrationStats(
     @Args('id') id: string,
@@ -130,6 +138,7 @@ export class ApplicationRegistrationResolver {
     WorkspaceAuthGuard,
     SettingsPermissionGuard(PermissionFlagType.API_KEYS_AND_WEBHOOKS),
   )
+  // Creates a new application registration owned by the workspace.
   @Mutation(() => CreateApplicationRegistrationDTO)
   async createApplicationRegistration(
     @Args('input') input: CreateApplicationRegistrationInput,
@@ -147,6 +156,7 @@ export class ApplicationRegistrationResolver {
     WorkspaceAuthGuard,
     SettingsPermissionGuard(PermissionFlagType.API_KEYS_AND_WEBHOOKS),
   )
+  // Updates a registration's editable fields.
   @Mutation(() => ApplicationRegistrationEntity)
   async updateApplicationRegistration(
     @Args('input') input: UpdateApplicationRegistrationInput,
@@ -159,6 +169,7 @@ export class ApplicationRegistrationResolver {
     WorkspaceAuthGuard,
     SettingsPermissionGuard(PermissionFlagType.API_KEYS_AND_WEBHOOKS),
   )
+  // Deletes a registration owned by the workspace.
   @Mutation(() => Boolean)
   async deleteApplicationRegistration(
     @Args('id') id: string,
@@ -171,6 +182,7 @@ export class ApplicationRegistrationResolver {
     WorkspaceAuthGuard,
     SettingsPermissionGuard(PermissionFlagType.API_KEYS_AND_WEBHOOKS),
   )
+  // Rotates and returns the registration's OAuth client secret.
   @Mutation(() => RotateClientSecretDTO)
   async rotateApplicationRegistrationClientSecret(
     @Args('id') id: string,
@@ -189,6 +201,7 @@ export class ApplicationRegistrationResolver {
     WorkspaceAuthGuard,
     SettingsPermissionGuard(PermissionFlagType.API_KEYS_AND_WEBHOOKS),
   )
+  // Returns a registration's variables with secret values obfuscated.
   @Query(() => [ApplicationRegistrationVariableDTO])
   async findApplicationRegistrationVariables(
     @Args('applicationRegistrationId') applicationRegistrationId: string,
@@ -204,6 +217,7 @@ export class ApplicationRegistrationResolver {
     WorkspaceAuthGuard,
     SettingsPermissionGuard(PermissionFlagType.API_KEYS_AND_WEBHOOKS),
   )
+  // Creates a new application registration variable.
   @Mutation(() => ApplicationRegistrationVariableEntity)
   async createApplicationRegistrationVariable(
     @Args('input') input: CreateApplicationRegistrationVariableInput,
@@ -219,6 +233,7 @@ export class ApplicationRegistrationResolver {
     WorkspaceAuthGuard,
     SettingsPermissionGuard(PermissionFlagType.API_KEYS_AND_WEBHOOKS),
   )
+  // Updates an application registration variable's value.
   @Mutation(() => ApplicationRegistrationVariableEntity)
   async updateApplicationRegistrationVariable(
     @Args('input') input: UpdateApplicationRegistrationVariableInput,
@@ -234,6 +249,7 @@ export class ApplicationRegistrationResolver {
     WorkspaceAuthGuard,
     SettingsPermissionGuard(PermissionFlagType.API_KEYS_AND_WEBHOOKS),
   )
+  // Deletes an application registration variable.
   @Mutation(() => Boolean)
   async deleteApplicationRegistrationVariable(
     @Args('id') id: string,
@@ -249,6 +265,9 @@ export class ApplicationRegistrationResolver {
     WorkspaceAuthGuard,
     SettingsPermissionGuard(PermissionFlagType.MARKETPLACE_APPS),
   )
+  // Streams an uploaded app tarball into a buffer (capped at the
+  // configured max size) and hands it off to be stored as a new/updated
+  // TARBALL-sourced registration.
   @Mutation(() => ApplicationRegistrationEntity)
   async uploadAppTarball(
     @Args({ name: 'file', type: () => GraphQLUpload })
@@ -289,6 +308,8 @@ export class ApplicationRegistrationResolver {
     WorkspaceAuthGuard,
     SettingsPermissionGuard(PermissionFlagType.API_KEYS_AND_WEBHOOKS),
   )
+  // Returns a signed download URL for a TARBALL-sourced registration's
+  // uploaded tarball file, or null for other source types.
   @Query(() => String, { nullable: true })
   async applicationRegistrationTarballUrl(
     @Args('id') id: string,
@@ -317,6 +338,8 @@ export class ApplicationRegistrationResolver {
     WorkspaceAuthGuard,
     SettingsPermissionGuard(PermissionFlagType.APPLICATIONS),
   )
+  // Claims ownership of an unowned (e.g. catalog-synced) registration for
+  // the current workspace.
   @Mutation(() => ApplicationRegistrationEntity)
   async claimApplicationRegistrationOwnership(
     @Args()
@@ -333,6 +356,8 @@ export class ApplicationRegistrationResolver {
     WorkspaceAuthGuard,
     SettingsPermissionGuard(PermissionFlagType.APPLICATIONS),
   )
+  // Transfers ownership of a registration from the current workspace to
+  // another workspace identified by subdomain.
   @Mutation(() => ApplicationRegistrationEntity)
   async transferApplicationRegistrationOwnership(
     @Args()
@@ -349,6 +374,8 @@ export class ApplicationRegistrationResolver {
     });
   }
 
+  // Resolves whether the registration's required variables are all
+  // configured, via a dataloader to batch across a listing.
   @ResolveField(() => Boolean)
   async isConfigured(
     @Parent() registration: ApplicationRegistrationEntity,
@@ -359,6 +386,7 @@ export class ApplicationRegistrationResolver {
     });
   }
 
+  // Resolves the registration's logo display URL.
   @ResolveField(() => String, { nullable: true })
   logoUrl(
     @Parent() registration: ApplicationRegistrationEntity,
@@ -368,6 +396,7 @@ export class ApplicationRegistrationResolver {
     );
   }
 
+  // Resolves the registration's gallery image display URLs.
   @ResolveField(() => [String])
   galleryImagesUrls(
     @Parent() registration: ApplicationRegistrationEntity,

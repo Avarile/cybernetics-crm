@@ -22,6 +22,9 @@ import { createIdToUniversalIdentifierMap } from 'src/engine/workspace-cache/uti
 import { regroupEntitiesByRelatedEntityId } from 'src/engine/workspace-cache/utils/regroup-entities-by-related-entity-id';
 import { addFlatEntityToFlatEntityMapsThroughMutationOrThrow } from 'src/engine/workspace-manager/workspace-migration/utils/add-flat-entity-to-flat-entity-maps-through-mutation-or-throw.util';
 
+// Builds and caches the workspace's flat-row-level-permission-predicate-group maps by loading
+// predicate group entities (with child groups and predicates regrouped by parent/group id)
+// and resolving relation ids to universal identifiers.
 @Injectable()
 @WorkspaceCache('flatRowLevelPermissionPredicateGroupMaps')
 export class WorkspaceFlatRowLevelPermissionPredicateGroupMapCacheService extends WorkspaceCacheProvider<FlatRowLevelPermissionPredicateGroupMaps> {
@@ -40,6 +43,9 @@ export class WorkspaceFlatRowLevelPermissionPredicateGroupMapCacheService extend
     super();
   }
 
+  // Loads predicate groups plus related applications, object metadata, roles and predicates
+  // for the workspace, regroups children/predicates by parent group, then assembles
+  // flat-row-level-permission-predicate-group maps.
   async computeForCache(
     workspaceId: string,
   ): Promise<FlatRowLevelPermissionPredicateGroupMaps> {

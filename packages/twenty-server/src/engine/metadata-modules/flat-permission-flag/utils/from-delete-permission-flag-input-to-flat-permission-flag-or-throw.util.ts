@@ -8,6 +8,7 @@ import {
   PermissionFlagExceptionCode,
 } from 'src/engine/metadata-modules/permission-flag/permission-flag.exception';
 
+// Looks up the flat permission flag targeted for deletion, throwing if it doesn't exist.
 export const fromDeletePermissionFlagInputToFlatPermissionFlagOrThrow = ({
   flatPermissionFlagMaps,
   permissionFlagId,

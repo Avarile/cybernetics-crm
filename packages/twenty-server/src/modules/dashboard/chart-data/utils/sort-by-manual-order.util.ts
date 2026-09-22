@@ -6,6 +6,8 @@ type SortByManualOrderParams<T> = {
   getRawValue: (item: T) => string | null | undefined;
 };
 
+// Sorts items per a user-defined manual order (by raw value); items not
+// present in the manual order sort to the end.
 export const sortByManualOrder = <T>({
   items,
   manualSortOrder,

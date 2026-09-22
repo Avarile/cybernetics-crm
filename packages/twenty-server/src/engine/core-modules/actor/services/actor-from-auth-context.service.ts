@@ -1,3 +1,6 @@
+// Service that derives ActorMetadata (who performed an action) from a
+// workspace auth context (user, API key, or application) and injects
+// createdBy/updatedBy fields into records before they are persisted.
 import { Injectable, Logger } from '@nestjs/common';
 
 import { type ActorMetadata } from 'twenty-shared/types';
@@ -31,6 +34,7 @@ export class ActorFromAuthContextService {
     private readonly flatEntityMapsCacheService: WorkspaceManyOrAllFlatEntityMapsCacheService,
   ) {}
 
+  // Injects createdBy actor metadata into each record, if the object has that field.
   async injectCreatedBy({
     records,
     objectMetadataNameSingular,
@@ -44,6 +48,7 @@ export class ActorFromAuthContextService {
     });
   }
 
+  // Injects both createdBy and updatedBy actor metadata for newly created records.
   async injectActorFieldsOnCreate({
     records,
     objectMetadataNameSingular,
@@ -64,6 +69,7 @@ export class ActorFromAuthContextService {
     });
   }
 
+  // Injects updatedBy actor metadata into each record, if the object has that field.
   async injectUpdatedBy({
     records,
     objectMetadataNameSingular,
@@ -77,6 +83,8 @@ export class ActorFromAuthContextService {
     });
   }
 
+  // Looks up whether the target object has the given actor field, and if so,
+  // clones the records and stamps them with actor metadata from the auth context.
   private async injectActorField({
     records,
     objectMetadataNameSingular,
@@ -136,6 +144,9 @@ export class ActorFromAuthContextService {
     return clonedRecords;
   }
 
+  // Sets the actor field on a single record. For createdBy, only sets it when
+  // not already provided (preserving an existing name), so imports/migrations
+  // can supply their own createdBy without being overwritten.
   private injectActorToRecord(
     actorMetadata: ActorMetadata,
     record: RecordInput,
@@ -155,6 +166,8 @@ export class ActorFromAuthContextService {
     }
   }
 
+  // Builds ActorMetadata from the auth context, branching on whether the
+  // caller authenticated as a user, an API key, or an application.
   private buildActorMetadata(authContext: WorkspaceAuthContext): ActorMetadata {
     if (isUserAuthContext(authContext)) {
       return buildCreatedByFromFullNameMetadata({

@@ -31,6 +31,8 @@ export type CompleteViewSortSpec = {
   direction: ViewSortDirection;
 };
 
+// Inputs for replacing a view's full set of fields, filters, and/or sorts
+// in one go ("complete" children, as opposed to incremental add/remove).
 type BuildCompleteViewChildrenFlatOperationsArgs = {
   viewId: string;
   flatApplication: FlatApplication;
@@ -48,12 +50,18 @@ type BuildCompleteViewChildrenFlatOperationsArgs = {
   | 'flatViewFilterGroupMaps'
 >;
 
+// Create/delete/update operation sets for a view's fields, filters, and
+// sorts, ready to be applied through a workspace migration.
 type CompleteViewChildrenFlatOperations = {
   viewField?: FlatEntityToCreateDeleteUpdate<'viewField'>;
   viewFilter?: FlatEntityToCreateDeleteUpdate<'viewFilter'>;
   viewSort?: FlatEntityToCreateDeleteUpdate<'viewSort'>;
 };
 
+// For each of fields/filters/sorts provided, replaces the view's existing
+// set entirely: deletes all current entries for that child type and
+// creates new ones from the given specs. A child type left undefined is
+// untouched.
 export const buildCompleteViewChildrenFlatOperations = ({
   viewId,
   flatApplication,

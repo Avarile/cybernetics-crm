@@ -1,3 +1,5 @@
+// Agent tool for deleting a navigation menu item by id.
+
 import { z } from 'zod';
 
 import { type NavigationMenuItemToolContext } from 'src/engine/metadata-modules/navigation-menu-item/tools/types/navigation-menu-item-tool-context.type';
@@ -11,6 +13,7 @@ type DeleteNavigationMenuItemParams = z.infer<
   typeof deleteNavigationMenuItemSchema
 >;
 
+// Builds the delete_navigation_menu_item agent tool definition.
 export const createDeleteNavigationMenuItemTool = (
   deps: Pick<NavigationMenuItemToolDependencies, 'navigationMenuItemService'>,
   context: NavigationMenuItemToolContext,

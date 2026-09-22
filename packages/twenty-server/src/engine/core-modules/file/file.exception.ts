@@ -1,3 +1,4 @@
+// Exception type for file access/lookup errors, with per-code friendly messages.
 import { type MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { assertUnreachable } from 'twenty-shared/utils';
@@ -34,6 +35,8 @@ const getFileExceptionUserFriendlyMessage = (
   }
 };
 
+// Exception thrown by file services, defaulting to a friendly message
+// derived from the exception code.
 export class FileException extends CustomException<
   keyof typeof FileExceptionCode
 > {

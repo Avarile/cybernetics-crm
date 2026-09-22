@@ -8,6 +8,8 @@ import {
 } from 'src/engine/api/common/common-query-runners/errors/common-query-runner.exception';
 import type { FlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-metadata/types/flat-field-metadata.type';
 
+// Throws unless the given operator is among the operators allowed for the
+// field's type.
 export const validateOperatorForFieldTypeOrThrow = (
   operator: FilterOperator,
   fieldMetadata: FlatFieldMetadata,

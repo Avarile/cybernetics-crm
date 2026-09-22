@@ -1,3 +1,4 @@
+// Queue processor deleting a single file from storage by id/folder.
 import { FileFolder } from 'twenty-shared/types';
 
 import { FileStorageService } from 'src/engine/core-modules/file-storage/services/file-storage.service';
@@ -16,6 +17,7 @@ export class FileDeletionJob {
   constructor(private readonly fileStorageService: FileStorageService) {}
 
   @Process(FileDeletionJob.name)
+  // Deletes the given file from storage, throwing a descriptive error on failure.
   async handle({
     workspaceId,
     fileId,

@@ -1,3 +1,4 @@
+// GraphQL DTO for a suggested teammate email to invite during onboarding.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType('InviteSuggestion')

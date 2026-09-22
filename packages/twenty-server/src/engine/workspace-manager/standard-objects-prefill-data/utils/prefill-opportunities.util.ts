@@ -29,6 +29,8 @@ export const OPPORTUNITY_AIRBNB_ENTERPRISE_ID =
 export const OPPORTUNITY_FIGMA_DESIGN_ID =
   '9457f8e9-16ae-43b9-92ee-cbd21f3dded5';
 
+// Inserts a fixed set of sample opportunities linked to the prefilled
+// companies/people, assigned to the workspace's first member as owner.
 export const prefillOpportunities = async (
   entityManager: EntityManager,
   schemaName: string,

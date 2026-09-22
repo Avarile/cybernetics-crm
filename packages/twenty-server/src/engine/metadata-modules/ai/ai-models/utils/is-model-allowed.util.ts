@@ -1,10 +1,13 @@
 import { isAutoSelectModelId } from 'twenty-shared/utils';
 
+// A workspace's model access policy: either restrict to recommended models,
+// or use an explicit allow-list of enabled model ids.
 export type WorkspaceModelAvailabilitySettings = {
   useRecommendedModels: boolean;
   enabledAiModelIds: string[];
 };
 
+// Checks a model against the workspace's availability policy; auto-select is always allowed.
 export const isModelAllowedByWorkspace = (
   modelId: string,
   availabilitySettings: WorkspaceModelAvailabilitySettings,

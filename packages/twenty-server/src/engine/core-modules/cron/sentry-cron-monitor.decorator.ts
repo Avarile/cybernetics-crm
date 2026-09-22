@@ -1,5 +1,9 @@
+// Method decorator reporting a cron job's execution to Sentry Cron Monitors
+// (check-ins for start/success/failure), when Sentry is initialized.
 import * as Sentry from '@sentry/node';
 
+// Wraps the decorated method with Sentry checkIn calls tracking the given
+// monitor, using `schedule` (a crontab expression) to configure the monitor.
 export function SentryCronMonitor(monitorSlug: string, schedule: string) {
   return function (
     // oxlint-disable-next-line typescript/no-explicit-any

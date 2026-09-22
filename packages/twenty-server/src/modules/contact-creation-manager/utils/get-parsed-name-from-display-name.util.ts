@@ -6,6 +6,9 @@ import { getParsedNameFromEmailLocalPart } from 'src/modules/contact-creation-ma
 
 const EMPTY_NAME: ParsedName = { firstName: '', lastName: '' };
 
+// Parses first/last name out of a free-form display name, handling
+// "Last, First" comma-inverted forms, mailing-list group tags, and dotted
+// local-part-style first tokens (e.g. "john.doe Team").
 export const getParsedNameFromDisplayName = (
   displayName: string,
 ): ParsedName => {

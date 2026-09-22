@@ -1,3 +1,5 @@
+// Converts a manifest-declared role into the universal flat entity shape
+// used to build workspace migrations.
 import { type RoleManifest } from 'twenty-shared/application';
 
 import { type UniversalFlatRole } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-role.type';

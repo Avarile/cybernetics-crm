@@ -1,3 +1,7 @@
+// Dispatches page layout widget validation to a per-widget-type validator
+// function, since each widget type (iframe, graph, front component, etc.)
+// has its own configuration shape and creation/update rules.
+
 import { Injectable } from '@nestjs/common';
 
 import { msg } from '@lingui/core/macro';
@@ -151,6 +155,8 @@ export class FlatPageLayoutWidgetTypeValidatorService {
       ),
     };
 
+  // Looks up and runs the creation validator registered for the widget's
+  // type, or returns an "unsupported type" error if none is registered.
   public validateFlatPageLayoutWidgetTypeSpecificitiesForCreation(
     args: ValidateFlatPageLayoutWidgetTypeSpecificitiesForCreationArgs,
   ): FlatPageLayoutWidgetValidationError[] {
@@ -173,6 +179,8 @@ export class FlatPageLayoutWidgetTypeValidatorService {
     return pageLayoutWidgetTypeValidator(args);
   }
 
+  // Looks up and runs the update validator registered for the widget's
+  // type, or returns an "unsupported type" error if none is registered.
   public validateFlatPageLayoutWidgetTypeSpecificitiesForUpdate(
     args: ValidateFlatPageLayoutWidgetTypeSpecificitiesForUpdateArgs,
   ): FlatPageLayoutWidgetValidationError[] {

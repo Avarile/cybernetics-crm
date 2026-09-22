@@ -1,7 +1,8 @@
 import { type ExecutionContext } from '@nestjs/common';
 import { type GqlContextType, GqlExecutionContext } from '@nestjs/graphql';
 
-// extract request from the execution context
+// Extracts the underlying request object from a Nest execution context,
+// handling HTTP, GraphQL (including subscription connection context) and RPC.
 export const getRequest = (context: ExecutionContext) => {
   let request;
 

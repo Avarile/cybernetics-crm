@@ -7,6 +7,8 @@ import { GlobalWorkspaceOrmManager } from 'src/engine/twenty-orm/global-workspac
 import { buildSystemAuthContext } from 'src/engine/twenty-orm/utils/build-system-auth-context.util';
 import { deleteUsingPagination } from 'src/modules/messaging/message-cleaner/utils/delete-using-pagination.util';
 
+// Deletes calendar-channel/event associations and orphaned calendar events
+// in paginated batches to avoid loading large result sets into memory.
 @Injectable()
 export class CalendarEventCleanerService {
   private readonly logger = new Logger(CalendarEventCleanerService.name);
@@ -15,6 +17,7 @@ export class CalendarEventCleanerService {
     private readonly globalWorkspaceOrmManager: GlobalWorkspaceOrmManager,
   ) {}
 
+  // Deletes all event associations for a given calendar channel.
   async deleteCalendarChannelEventAssociationsByChannelId({
     workspaceId,
     calendarChannelId,
@@ -81,6 +84,7 @@ export class CalendarEventCleanerService {
     );
   }
 
+  // Deletes calendar events that no longer have any channel association.
   public async cleanWorkspaceCalendarEvents(workspaceId: string) {
     const authContext = buildSystemAuthContext(workspaceId);
 

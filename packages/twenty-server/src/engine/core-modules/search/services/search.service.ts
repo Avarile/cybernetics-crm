@@ -1,3 +1,6 @@
+// Implements cross-object full-text search: runs a tsvector query per
+// (chunked) object type with an ILIKE fallback for tokenization edge cases,
+// then merges, ranks, and cursor-paginates the combined results.
 import { Injectable, Logger } from '@nestjs/common';
 
 import { isNonEmptyString } from '@sniptt/guards';
@@ -71,6 +74,9 @@ export class SearchService {
     private readonly twentyConfigService: TwentyConfigService,
   ) {}
 
+  // Runs the search query for every included/searchable object type
+  // (processed in small chunks to bound concurrency), returning each
+  // object's matching records alongside its metadata.
   async getAllRecordsWithObjectMetadataItems({
     flatObjectMetadatas,
     flatFieldMetadataMaps,
@@ -145,6 +151,10 @@ export class SearchService {
     return allRecordsWithObjectMetadataItems;
   }
 
+  // Narrows the candidate object list to those eligible for this search: if
+  // an explicit inclusion list is given, restrict to it (excluding
+  // channel-visibility-constrained objects and explicitly excluded ones);
+  // otherwise default to all active, searchable, non-excluded objects.
   filterObjectMetadataItems({
     flatObjectMetadatas,
     includedObjectNameSingulars,
@@ -195,6 +205,8 @@ export class SearchService {
   // searchVector text to catch cases where tokenization fails (e.g. CJK text).
   // Skipped when tsvector finds any results (partial results mean the data just
   // has fewer matches, not a tokenization issue) and on paginated requests.
+  // Runs the primary tsvector search, falling back to the ILIKE query when
+  // it returns no results (see comment above for when the fallback triggers).
   async buildSearchQueryAndGetRecordsWithFallback<
     Entity extends ObjectLiteral,
   >({
@@ -249,6 +261,10 @@ export class SearchService {
     return [...tsvectorResults, ...fallbackResults];
   }
 
+  // Builds and runs the primary Postgres full-text-search query for one
+  // object type: matches the searchVector tsvector column against the
+  // search terms, ranks by ts_rank_cd/ts_rank, and applies cursor-based
+  // pagination via computeCursorWhereCondition.
   async buildSearchQueryAndGetRecords<Entity extends ObjectLiteral>({
     entityManager,
     flatObjectMetadata,
@@ -350,6 +366,9 @@ export class SearchService {
       .getRawMany();
   }
 
+  // Fallback search using ILIKE on the searchVector text, under a
+  // transaction-scoped statement_timeout so a slow scan can't hang the
+  // request; returns an empty result set (rather than throwing) on timeout.
   private async buildIlikeFallbackQuery<Entity extends ObjectLiteral>({
     entityManager,
     flatObjectMetadata,
@@ -468,6 +487,9 @@ export class SearchService {
     }
   }
 
+  // Builds the WHERE clause implementing keyset pagination on (tsRankCD,
+  // tsRank, id) from a decoded cursor, so results strictly after the
+  // previous page's last record are returned.
   computeCursorWhereCondition({
     after,
     objectMetadataNameSingular,
@@ -516,6 +538,8 @@ export class SearchService {
     }
   }
 
+  // Returns the column name(s) backing the object's label identifier field,
+  // splitting FULL_NAME into its first/last name columns.
   getLabelIdentifierColumns(
     flatObjectMetadata: FlatObjectMetadata,
     flatFieldMetadataMaps: FlatEntityMaps<FlatFieldMetadata>,
@@ -549,6 +573,8 @@ export class SearchService {
     return [labelIdentifierField.name];
   }
 
+  // Builds the display label for a record by joining its label identifier
+  // column value(s).
   getLabelIdentifierValue(
     record: ObjectRecord,
     flatObjectMetadata: FlatObjectMetadata,
@@ -562,6 +588,8 @@ export class SearchService {
     return labelIdentifierFields.map((field) => record[field]).join(' ');
   }
 
+  // Resolves the field metadata for the object's effective image identifier
+  // field, if any.
   private getEffectiveImageIdentifierFieldMetadata(
     flatObjectMetadata: FlatObjectMetadata,
     flatFieldMetadataMaps: FlatEntityMaps<FlatFieldMetadata>,
@@ -579,6 +607,8 @@ export class SearchService {
     });
   }
 
+  // Returns the column name(s) needed to compute the object's image
+  // identifier (special-cased for workspaceMember's avatarUrl).
   getImageIdentifierColumns(
     flatObjectMetadata: FlatObjectMetadata,
     flatFieldMetadataMaps: FlatEntityMaps<FlatFieldMetadata>,
@@ -618,6 +648,7 @@ export class SearchService {
     return [imageIdentifierField.name];
   }
 
+  // Signs a token-authenticated URL for a stored file.
   private async getImageUrlWithToken(
     avatarFileId: string,
     fileFolder: FileFolder,
@@ -630,6 +661,8 @@ export class SearchService {
     });
   }
 
+  // Resolves a record's display image URL: an avatar file, a FILES field's
+  // first attachment, or a LINKS field's favicon, depending on field type.
   async getImageIdentifierValue(
     record: ObjectRecord,
     flatObjectMetadata: FlatObjectMetadata,
@@ -707,6 +740,8 @@ export class SearchService {
     }
   }
 
+  // Builds pagination cursors for each result, carrying forward the last
+  // seen record id per object type so subsequent pages can resume correctly.
   computeEdges({
     sortedRecords,
     after,
@@ -744,6 +779,9 @@ export class SearchService {
     return recordEdges;
   }
 
+  // Flattens per-object search results into SearchRecordDTOs (resolving
+  // labels/images), sorts by relevance, trims to the page limit, and builds
+  // the paginated GraphQL connection response.
   async computeSearchObjectResults({
     recordsWithObjectMetadataItems,
     flatFieldMetadataMaps,
@@ -806,6 +844,8 @@ export class SearchService {
     };
   }
 
+  // Sorts merged search results by ts_rank_cd, then ts_rank, then a static
+  // per-object-type priority rank as a final tiebreaker.
   sortSearchObjectResults(searchObjectResultsWithRank: SearchRecordDTO[]) {
     return searchObjectResultsWithRank.sort((a, b) => {
       if (a.tsRankCD !== b.tsRankCD) {

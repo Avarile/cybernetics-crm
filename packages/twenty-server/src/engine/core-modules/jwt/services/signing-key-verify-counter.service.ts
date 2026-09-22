@@ -1,3 +1,7 @@
+// Tracks JWT verification counts per signing key (and for legacy tokens)
+// over a rolling 7-day window, buffering increments in memory and
+// periodically flushing them to daily Redis counter buckets — used to know
+// when it's safe to fully retire an old signing key.
 import {
   Injectable,
   Logger,
@@ -38,6 +42,7 @@ export class SigningKeyVerifyCounterService
     private readonly cacheStorage: CacheStorageService,
   ) {}
 
+  // Starts a periodic timer that flushes buffered counts to Redis.
   onModuleInit() {
     this.flushIntervalHandle = setInterval(() => {
       void this.flush();
@@ -48,6 +53,7 @@ export class SigningKeyVerifyCounterService
     }
   }
 
+  // Stops the flush timer and does a final flush of any pending counts.
   async onModuleDestroy() {
     if (isDefined(this.flushIntervalHandle)) {
       clearInterval(this.flushIntervalHandle);
@@ -57,14 +63,18 @@ export class SigningKeyVerifyCounterService
     await this.flush();
   }
 
+  // Buffers a verification count for the given signing key id.
   recordKidVerify(kid: string): void {
     this.increment(kid);
   }
 
+  // Buffers a verification count for legacy (symmetric) token verifications.
   recordLegacyVerify(): void {
     this.increment(LEGACY_BUCKET_ID);
   }
 
+  // Flushes pending counts, then reads and sums the last 7 days of verify
+  // counts for each requested kid plus the legacy bucket.
   async getUsageInWindow(kids: string[]): Promise<SigningKeyUsage> {
     await this.flush();
 
@@ -112,12 +122,16 @@ export class SigningKeyVerifyCounterService
     };
   }
 
+  // Increments the in-memory pending count for today's bucket of `bucketId`.
   private increment(bucketId: string): void {
     const key = this.buildBucketKey(bucketId, Date.now());
 
     this.pendingCounts.set(key, (this.pendingCounts.get(key) ?? 0) + 1);
   }
 
+  // Applies all buffered counts to Redis via incrBy, re-buffering any that
+  // fail so they're retried on the next flush, and sets a TTL on newly
+  // touched keys.
   private async flush(): Promise<void> {
     if (this.pendingCounts.size === 0) {
       return;
@@ -165,12 +179,14 @@ export class SigningKeyVerifyCounterService
     }
   }
 
+  // Builds the Redis key for `bucketId`'s daily bucket containing `timestamp`.
   private buildBucketKey(bucketId: string, timestamp: number): string {
     const bucketStart = Math.floor(timestamp / ONE_DAY_MS) * ONE_DAY_MS;
 
     return `${REDIS_KEY_PREFIX}:${bucketId}:${bucketStart}`;
   }
 
+  // Builds the Redis keys for `bucketId`'s daily buckets across the rolling window.
   private buildBucketKeysInWindow(bucketId: string): string[] {
     const currentBucketStart = Math.floor(Date.now() / ONE_DAY_MS) * ONE_DAY_MS;
 

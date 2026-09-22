@@ -1,3 +1,4 @@
+// GraphQL input for creating a new agent.
 import { Field, HideField, InputType } from '@nestjs/graphql';
 
 import { Type } from 'class-transformer';

@@ -9,6 +9,9 @@ import {
 import { SyncableEntity } from 'src/engine/workspace-manager/types/syncable-entity.interface';
 
 @Entity('frontComponent')
+// TypeORM entity for a front component: a custom UI component hosted by
+// an application, tracking its source/built file paths and a checksum
+// used to detect when the built bundle needs cache invalidation.
 export class FrontComponentEntity
   extends SyncableEntity
   implements Required<FrontComponentEntity>

@@ -1,3 +1,5 @@
+// Builds the `findOne` GraphQL query resolver for an object: delegates
+// to CommonFindOneQueryRunnerService and formats the matching record.
 import { Injectable } from '@nestjs/common';
 
 import graphqlFields from 'graphql-fields';
@@ -23,6 +25,8 @@ export class FindOneResolverFactory implements WorkspaceResolverBuilderFactoryIn
     private readonly commonFindOneQueryRunnerService: CommonFindOneQueryRunnerService,
   ) {}
 
+  // Returns a resolver function that fetches the matching record and
+  // formats it for the GraphQL response.
   create(
     context: WorkspaceSchemaBuilderContext,
   ): Resolver<FindOneResolverArgs> {

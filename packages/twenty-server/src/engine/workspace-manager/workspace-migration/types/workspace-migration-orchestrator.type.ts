@@ -11,12 +11,15 @@ import { type FailedFlatEntityValidation } from 'src/engine/workspace-manager/wo
 import { type WorkspaceMigrationBuilderOptions } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-builder/types/workspace-migration-builder-options.type';
 import { type WorkspaceMigration } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-builder/types/workspace-migration.type';
 
+// Per-metadata-kind pair of "from" (current) and "to" (target) universal flat entity maps that a
+// workspace migration build diffs against
 export type FromToAllUniversalFlatEntityMaps = {
   [P in keyof AllUniversalFlatEntityMaps]?: FromTo<
     AllUniversalFlatEntityMaps[P]
   >;
 };
 
+// Arguments accepted by WorkspaceMigrationBuildOrchestratorService.buildWorkspaceMigration
 export type WorkspaceMigrationOrchestratorBuildArgs = {
   workspaceId: string;
   buildOptions: WorkspaceMigrationBuilderOptions;
@@ -28,6 +31,7 @@ export type WorkspaceMigrationOrchestratorBuildArgs = {
   dependencyAllFlatEntityMaps?: Partial<AllUniversalFlatEntityMaps>;
 };
 
+// Validation failures collected during a workspace migration build, grouped by metadata kind
 export type OrchestratorFailureReport = {
   [P in AllMetadataName]: FailedFlatEntityValidation<
     P,
@@ -35,15 +39,18 @@ export type OrchestratorFailureReport = {
   >[];
 };
 
+// Generated create/update/delete actions collected during a workspace migration build, grouped by metadata kind
 export type OrchestratorActionsReport = {
   [P in AllMetadataName]: MetadataUniversalWorkspaceMigrationActionsRecord<P>;
 };
 
+// Result of a failed workspace migration build: the full per-metadata-kind failure report
 export type WorkspaceMigrationOrchestratorFailedResult = {
   status: 'fail';
   report: OrchestratorFailureReport;
 };
 
+// Result of a successful workspace migration build: the ordered, ready-to-run WorkspaceMigration
 export type WorkspaceMigrationOrchestratorSuccessfulResult = {
   status: 'success';
   workspaceMigration: WorkspaceMigration;

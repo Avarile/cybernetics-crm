@@ -15,6 +15,7 @@ type SortBySelectOptionPositionParams<T> = {
   direction: 'ASC' | 'DESC';
 };
 
+// Sorts items by their select field option's configured display position.
 export const sortBySelectOptionPosition = <T>({
   items,
   options,

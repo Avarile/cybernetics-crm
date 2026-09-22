@@ -24,10 +24,12 @@ import { WorkspaceMigrationGraphqlApiExceptionInterceptor } from 'src/engine/wor
   WorkspaceMigrationGraphqlApiExceptionInterceptor,
   SkillGraphqlApiExceptionInterceptor,
 )
+// GraphQL entry points for reading, creating, updating, deleting and (de)activating skills.
 @MetadataResolver(() => SkillDTO)
 export class SkillResolver {
   constructor(private readonly skillService: SkillService) {}
 
+  // Returns all skills in the workspace.
   @Query(() => [SkillDTO])
   async skills(
     @AuthWorkspace() workspace: WorkspaceEntity,
@@ -35,6 +37,7 @@ export class SkillResolver {
     return this.skillService.findAll(workspace.id);
   }
 
+  // Returns a single skill by id, or null if not found.
   @Query(() => SkillDTO, { nullable: true })
   async skill(
     @Args('id', { type: () => UUIDScalarType }) id: string,
@@ -43,6 +46,7 @@ export class SkillResolver {
     return this.skillService.findById(id, workspace.id);
   }
 
+  // Creates a new custom skill.
   @Mutation(() => SkillDTO)
   async createSkill(
     @Args('input') input: CreateSkillInput,
@@ -51,6 +55,7 @@ export class SkillResolver {
     return this.skillService.create(input, workspace.id);
   }
 
+  // Updates an existing custom skill.
   @Mutation(() => SkillDTO)
   async updateSkill(
     @Args('input') input: UpdateSkillInput,
@@ -59,6 +64,7 @@ export class SkillResolver {
     return this.skillService.update(input, workspace.id);
   }
 
+  // Deletes a custom skill.
   @Mutation(() => SkillDTO)
   async deleteSkill(
     @Args('id', { type: () => UUIDScalarType }) id: string,
@@ -67,6 +73,7 @@ export class SkillResolver {
     return this.skillService.delete(id, workspace.id);
   }
 
+  // Marks a skill active, making it available to agents.
   @Mutation(() => SkillDTO)
   async activateSkill(
     @Args('id', { type: () => UUIDScalarType }) id: string,
@@ -75,6 +82,7 @@ export class SkillResolver {
     return this.skillService.activate(id, workspace.id);
   }
 
+  // Marks a skill inactive, removing it from agents' available skills.
   @Mutation(() => SkillDTO)
   async deactivateSkill(
     @Args('id', { type: () => UUIDScalarType }) id: string,

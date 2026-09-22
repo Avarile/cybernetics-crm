@@ -18,6 +18,7 @@ import { InjectWorkspaceScopedRepository } from 'src/engine/twenty-orm/workspace
 import { WorkspaceScopedRepository } from 'src/engine/twenty-orm/workspace-scoped-repository/workspace-scoped-repository';
 import { isDefined } from 'twenty-shared/utils';
 import { isString } from '@sniptt/guards';
+// Handles Stripe customer and payment-method webhook events, syncing them to BillingCustomer
 @Injectable()
 export class BillingWebhookCustomerService {
   protected readonly logger = new Logger(BillingWebhookCustomerService.name);
@@ -30,6 +31,7 @@ export class BillingWebhookCustomerService {
     private readonly stripeCustomerService: StripeCustomerService,
   ) {}
 
+  // Routes a Stripe customer/payment-method event to its specific handler
   async processStripeEvent(
     event:
       | Stripe.CustomerCreatedEvent
@@ -49,6 +51,7 @@ export class BillingWebhookCustomerService {
     }
   }
 
+  // Records the Stripe customer id against the workspace named in the event metadata
   private async processCustomerCreated(data: Stripe.CustomerCreatedEvent.Data) {
     const { id: stripeCustomerId, metadata } = data.object;
 
@@ -71,6 +74,7 @@ export class BillingWebhookCustomerService {
     );
   }
 
+  // Marks the workspace's billing customer as having a payment method attached
   private async processPaymentMethodAttachedEvent(
     data: Stripe.PaymentMethodAttachedEvent.Data,
   ) {
@@ -94,6 +98,8 @@ export class BillingWebhookCustomerService {
     );
   }
 
+  // Re-checks whether the customer still has a payment method after one is detached,
+  // since Stripe may report other methods remaining
   private async processPaymentMethodDetachedEvent(
     data: Stripe.PaymentMethodDetachedEvent.Data,
   ) {
@@ -122,6 +128,8 @@ export class BillingWebhookCustomerService {
     );
   }
 
+  // Looks up the workspace owning a Stripe customer id, bypassing workspace scoping
+  // since the workspace context isn't known yet at this point
   private async getWorkspaceIdFromStripeCustomerId(
     stripeCustomerId: string,
   ): Promise<string | null> {
@@ -134,6 +142,7 @@ export class BillingWebhookCustomerService {
     return billingCustomer?.workspaceId ?? null;
   }
 
+  // Normalizes a Stripe customer reference (string id or expanded object) to its id
   private extractStripeCustomerId(
     customer:
       | string

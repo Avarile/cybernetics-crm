@@ -8,6 +8,8 @@ import { FeatureFlagModule } from 'src/engine/core-modules/feature-flag/feature-
 import { WorkspaceCacheModule } from 'src/engine/workspace-cache/workspace-cache.module';
 import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace-migration/workspace-migration.module';
 
+// Registers the 1.23 workspace commands (record page-layout backfill, global
+// object-context command-menu-item update) as providers for the upgrade runner.
 @Module({
   imports: [
     ApplicationModule,

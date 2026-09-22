@@ -1,3 +1,4 @@
+// GraphQL DTO wrapping all signing keys plus legacy-key verification window stats.
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 
 import { SigningKeyDTO } from 'src/engine/core-modules/admin-panel/dtos/signing-key.dto';

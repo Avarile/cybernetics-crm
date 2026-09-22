@@ -1,3 +1,5 @@
+// GraphQL input for paginated event log queries against a given table.
+
 import { Field, InputType, Int } from '@nestjs/graphql';
 
 import { IsInt, IsOptional, Max, Min } from 'class-validator';

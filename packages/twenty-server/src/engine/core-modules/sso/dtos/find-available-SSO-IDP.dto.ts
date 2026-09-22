@@ -1,5 +1,7 @@
 /* @license Enterprise */
 
+// GraphQL response DTO for discovering an available SSO identity provider
+// (used during login before the workspace is known) along with its workspace.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';

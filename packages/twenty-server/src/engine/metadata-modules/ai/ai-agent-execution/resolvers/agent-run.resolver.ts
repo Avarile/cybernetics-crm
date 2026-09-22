@@ -1,3 +1,5 @@
+// GraphQL resolver exposing a mutation to trigger a one-off, non-interactive
+// agent run (e.g. invoked from a workflow node).
 import { UseGuards } from '@nestjs/common';
 import { Args, Mutation } from '@nestjs/graphql';
 
@@ -18,6 +20,7 @@ import { AgentRunService } from 'src/engine/metadata-modules/ai/ai-agent-executi
 export class AgentRunResolver {
   constructor(private readonly agentRunService: AgentRunService) {}
 
+  // Runs the given agent once with a prompt and returns its result or error.
   @Mutation(() => RunAgentResultDTO)
   async runAgent(
     @Args('input') input: RunAgentInputDTO,

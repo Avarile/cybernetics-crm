@@ -1,3 +1,5 @@
+// NestJS module for managing FILES-type field attachments (upload tracking,
+// deletion listeners/jobs).
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

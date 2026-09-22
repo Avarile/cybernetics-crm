@@ -9,6 +9,8 @@ import {
   FieldMetadataExceptionCode,
 } from 'src/engine/metadata-modules/field-metadata/field-metadata.exception';
 
+// Looks up a composite field type's sub-property definitions, throwing if
+// the field type isn't actually composite.
 export const getCompositeTypeOrThrow = (
   fieldType: FieldMetadataType,
 ): CompositeType => {

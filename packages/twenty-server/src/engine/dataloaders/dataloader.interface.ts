@@ -32,6 +32,9 @@ import { type ViewFilterDTO } from 'src/engine/metadata-modules/view-filter/dtos
 import { type ViewGroupDTO } from 'src/engine/metadata-modules/view-group/dtos/view-group.dto';
 import { type ViewSortDTO } from 'src/engine/metadata-modules/view-sort/dtos/view-sort.dto';
 
+// Per-GraphQL-request set of DataLoader instances used to batch and cache
+// metadata lookups (relations, fields, indexes, views, etc.) within a
+// single request.
 export interface IDataloaders {
   relationLoader: DataLoader<RelationLoaderPayload, RelationDTO | null>;
 

@@ -5,6 +5,8 @@ import {
   createStandardSkillFlatMetadata,
 } from 'src/engine/workspace-manager/twenty-standard-application/utils/skill-metadata/create-standard-skill-flat-metadata.util';
 
+// Registry of builder functions, one per standard agent skill, each supplying that skill's fixed
+// label, icon and markdown instruction content (the agent-facing prompt) via createStandardSkillFlatMetadata
 export const STANDARD_FLAT_SKILL_METADATA_BUILDERS_BY_SKILL_NAME = {
   'workflow-building': (args: Omit<CreateStandardSkillArgs, 'context'>) =>
     createStandardSkillFlatMetadata({

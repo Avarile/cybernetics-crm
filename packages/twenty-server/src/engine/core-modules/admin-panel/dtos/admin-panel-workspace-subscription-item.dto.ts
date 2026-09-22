@@ -1,5 +1,6 @@
 import { Field, Float, ObjectType } from '@nestjs/graphql';
 
+// A single line item (product/price) within a workspace's Stripe subscription
 @ObjectType('AdminPanelWorkspaceSubscriptionItem')
 export class AdminPanelWorkspaceSubscriptionItemDTO {
   @Field(() => String)

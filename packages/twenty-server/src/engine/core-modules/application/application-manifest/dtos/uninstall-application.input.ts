@@ -1,3 +1,4 @@
+// GraphQL args for the uninstallApplication mutation.
 import { ArgsType, Field } from '@nestjs/graphql';
 
 @ArgsType()

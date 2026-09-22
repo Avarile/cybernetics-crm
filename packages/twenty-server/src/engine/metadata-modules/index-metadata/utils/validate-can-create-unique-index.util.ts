@@ -1,3 +1,7 @@
+// Validates that a field can back a unique index: relation/morph-relation
+// fields can't, and composite fields whose type has no property included in
+// its unique constraint can't either.
+
 import { msg } from '@lingui/core/macro';
 import {
   FieldMetadataType,
@@ -11,6 +15,7 @@ import {
 } from 'src/engine/metadata-modules/field-metadata/field-metadata.exception';
 import { isCompositeFieldMetadataType } from 'src/engine/metadata-modules/field-metadata/utils/is-composite-field-metadata-type.util';
 
+// Throws INVALID_FIELD_INPUT if the field type can't back a unique index.
 export const validateCanCreateUniqueIndex = (
   field: Pick<FieldMetadataEntity, 'type' | 'name'>,
 ) => {

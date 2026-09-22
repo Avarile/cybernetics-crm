@@ -6,6 +6,7 @@ import { BlocklistCreateOnePreQueryHook } from 'src/modules/blocklist/query-hook
 import { BlocklistUpdateManyPreQueryHook } from 'src/modules/blocklist/query-hooks/blocklist-update-many.pre-query.hook';
 import { BlocklistUpdateOnePreQueryHook } from 'src/modules/blocklist/query-hooks/blocklist-update-one.pre-query.hook';
 
+// Registers the pre-query hooks that guard blocklist create/update mutations.
 @Module({
   imports: [BlocklistValidationManagerModule],
   providers: [

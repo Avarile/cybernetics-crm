@@ -20,6 +20,8 @@ import {
 } from 'src/modules/calendar/calendar-event-participant-manager/jobs/calendar-event-participant-match-participant.job';
 import { type PersonWorkspaceEntity } from 'src/modules/person/standard-objects/person.workspace-entity';
 
+// Whenever a person is created/updated/deleted with an email change,
+// queues a job to re-match calendar event participants against their emails.
 @Injectable()
 export class CalendarEventParticipantPersonListener {
   constructor(
@@ -27,6 +29,7 @@ export class CalendarEventParticipantPersonListener {
     private readonly messageQueueService: MessageQueueService,
   ) {}
 
+  // New person with an email: match any existing participants with that email.
   @OnDatabaseBatchEvent('person', DatabaseEventAction.CREATED)
   async handleCreatedEvent(
     payload: WorkspaceEventBatch<
@@ -63,6 +66,7 @@ export class CalendarEventParticipantPersonListener {
     );
   }
 
+  // Person's email(s) changed: re-match participants against the new emails.
   @OnDatabaseBatchEvent('person', DatabaseEventAction.UPDATED)
   async handleUpdatedEvent(
     payload: WorkspaceEventBatch<
@@ -100,6 +104,8 @@ export class CalendarEventParticipantPersonListener {
     );
   }
 
+  // Person deleted: re-run matching so their old emails can match another
+  // (e.g. newly created) person or fall back to unmatched.
   @OnDatabaseBatchEvent('person', DatabaseEventAction.DESTROYED)
   async handleDestroyedEvent(
     payload: WorkspaceEventBatch<

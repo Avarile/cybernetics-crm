@@ -1,5 +1,7 @@
 /* @license Enterprise */
 
+// Cron job that periodically refreshes the enterprise license validity token
+// and reports the active seat count to the enterprise licensing API.
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -29,6 +31,8 @@ export class EnterpriseKeyValidationCronJob {
     EnterpriseKeyValidationCronJob.name,
     ENTERPRISE_KEY_VALIDATION_CRON_PATTERN,
   )
+  // Refreshes the validity token and reports the current seat count,
+  // logging (not throwing) on failure so the existing token keeps working.
   async handle(): Promise<void> {
     this.logger.log(
       'Starting enterprise validity token refresh and seat report...',
@@ -71,6 +75,8 @@ export class EnterpriseKeyValidationCronJob {
     }
   }
 
+  // Counts active (non-deleted) user-workspace links, floored at 1 for
+  // reporting purposes.
   private async getActiveUserWorkspaceCount(): Promise<number> {
     const count = await this.userWorkspaceRepository.count({
       where: { deletedAt: IsNull() },

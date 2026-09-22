@@ -9,6 +9,7 @@ import { RoleEntity } from 'src/engine/metadata-modules/role/role.entity';
 import { InjectWorkspaceScopedRepository } from 'src/engine/twenty-orm/workspace-scoped-repository/inject-workspace-scoped-repository.decorator';
 import { WorkspaceScopedRepository } from 'src/engine/twenty-orm/workspace-scoped-repository/workspace-scoped-repository';
 
+// Enforces constraints on which roles can be assigned to which target types.
 @Injectable()
 export class RoleValidationService {
   constructor(
@@ -16,6 +17,7 @@ export class RoleValidationService {
     private readonly roleRepository: WorkspaceScopedRepository<RoleEntity>,
   ) {}
 
+  // Throws unless the role exists and is flagged as assignable to users.
   async validateRoleAssignableToUsersOrThrow(
     roleId: string,
     workspaceId: string,

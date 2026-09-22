@@ -8,6 +8,7 @@ import { PermissionFlagEntity } from 'src/engine/metadata-modules/permission-fla
 import { RolePermissionFlagEntity } from 'src/engine/metadata-modules/role-permission-flag/role-permission-flag.entity';
 import { provideWorkspaceScopedRepository } from 'src/engine/twenty-orm/workspace-scoped-repository/provide-workspace-scoped-repository';
 
+// Provides the flat-permission-flag map cache used to read permission flag definitions in denormalized form.
 @Module({
   imports: [
     TypeOrmModule.forFeature([

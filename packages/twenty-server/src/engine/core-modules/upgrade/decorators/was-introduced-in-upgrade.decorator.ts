@@ -17,6 +17,8 @@ export type WasIntroducedInUpgradePropertyMap = Record<
   WasIntroducedInUpgradeOptions
 >;
 
+// Class/property decorator recording which upgrade command introduced this
+// entity or field, so upgrade-aware entity shape resolution can account for it
 export const WasIntroducedInUpgrade =
   (options: WasIntroducedInUpgradeOptions) =>
   (target: object, propertyKey?: string | symbol): void => {
@@ -29,11 +31,13 @@ export const WasIntroducedInUpgrade =
     });
   };
 
+// Reads the class-level @WasIntroducedInUpgrade metadata, if present
 export const getWasIntroducedInUpgradeClassMetadata = (
   target: Function,
 ): WasIntroducedInUpgradeOptions | undefined =>
   Reflect.getMetadata(WAS_INTRODUCED_IN_UPGRADE_CLASS_METADATA_KEY, target);
 
+// Reads the per-property @WasIntroducedInUpgrade metadata map for a class
 export const getWasIntroducedInUpgradePropertyMetadata = (
   target: Function,
 ): WasIntroducedInUpgradePropertyMap =>

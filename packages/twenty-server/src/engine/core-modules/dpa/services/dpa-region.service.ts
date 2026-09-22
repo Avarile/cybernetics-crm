@@ -5,6 +5,7 @@ import { type DpaRegion } from 'src/engine/core-modules/dpa/types/dpa.types';
 import { TwentyConfigService } from 'src/engine/core-modules/twenty-config/twenty-config.service';
 import { type WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.entity';
 
+// Resolves which DPA legal region (EU/US) applies to a deployment
 // Region is deployment-wide today; the unused per-workspace arg is kept so it can become a per-workspace override later without touching callers.
 @Injectable()
 export class DpaRegionService {
@@ -14,6 +15,7 @@ export class DpaRegionService {
     return this.getDeploymentRegion();
   }
 
+  // Returns the configured deployment region, falling back to the default
   getDeploymentRegion(): DpaRegion {
     const configured = this.twentyConfigService.get('DPA_DEPLOYMENT_REGION');
 

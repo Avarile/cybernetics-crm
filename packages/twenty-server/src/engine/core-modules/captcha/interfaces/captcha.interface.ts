@@ -1,3 +1,5 @@
+// Shared captcha types: the supported driver types (GraphQL enum), the
+// options a driver is constructed with, and its validation result shape.
 import { registerEnumType } from '@nestjs/graphql';
 
 export enum CaptchaDriverType {

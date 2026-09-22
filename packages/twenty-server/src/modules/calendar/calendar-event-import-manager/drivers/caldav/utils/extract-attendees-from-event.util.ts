@@ -5,6 +5,8 @@ import { isDefined } from 'twenty-shared/utils';
 import { mapPartStatToResponseStatus } from 'src/modules/calendar/calendar-event-import-manager/drivers/caldav/utils/map-partstat-to-response-status.util';
 import { type FetchedCalendarEventParticipant } from 'src/modules/calendar/common/types/fetched-calendar-event';
 
+// Normalizes an iCal event's ATTENDEE property (string or array, with or
+// without parameters) into the shared attendee/participant shape.
 export const extractAttendeesFromEvent = (
   event: ical.VEvent,
 ): FetchedCalendarEventParticipant[] => {

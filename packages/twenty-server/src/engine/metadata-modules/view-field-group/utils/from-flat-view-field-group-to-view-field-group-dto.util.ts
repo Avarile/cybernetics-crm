@@ -1,6 +1,9 @@
 import { type FlatViewFieldGroup } from 'src/engine/metadata-modules/flat-view-field-group/types/flat-view-field-group.type';
 import { type ViewFieldGroupDTO } from 'src/engine/metadata-modules/view-field-group/dtos/view-field-group.dto';
 
+// Converts a flat view field group into its GraphQL DTO, applying any
+// overrides on top of the base fields and converting timestamp strings
+// to Date objects.
 export const fromFlatViewFieldGroupToViewFieldGroupDto = (
   flatViewFieldGroup: FlatViewFieldGroup,
 ): ViewFieldGroupDTO => {

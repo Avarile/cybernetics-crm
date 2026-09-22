@@ -6,6 +6,7 @@ type HealthIndicatorInfo = {
   description: string;
 };
 
+// Static metadata (label/description) for each health indicator shown in the admin panel
 export const HEALTH_INDICATORS: Record<HealthIndicatorId, HealthIndicatorInfo> =
   {
     [HealthIndicatorId.database]: {

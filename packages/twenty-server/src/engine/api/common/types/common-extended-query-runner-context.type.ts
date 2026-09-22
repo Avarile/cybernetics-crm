@@ -7,6 +7,9 @@ import { type GlobalWorkspaceDataSource } from 'src/engine/twenty-orm/global-wor
 import { type WorkspaceRepository } from 'src/engine/twenty-orm/repository/workspace.repository';
 import { type RolePermissionConfig } from 'src/engine/twenty-orm/types/role-permission-config';
 
+// CommonBaseQueryRunnerContext extended with the resolved repository,
+// datasource, role-permission config, and query parser, as prepared by
+// CommonBaseQueryRunnerService before dispatching to run().
 export type CommonExtendedQueryRunnerContext = Omit<
   CommonBaseQueryRunnerContext,
   'authContext'

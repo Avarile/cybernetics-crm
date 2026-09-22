@@ -1,5 +1,7 @@
 /* @license Enterprise */
 
+// GraphQL exception filter mapping EnterpriseException codes to
+// UserInputError or ForbiddenError.
 import { Catch, type ExceptionFilter } from '@nestjs/common';
 
 import { assertUnreachable } from 'twenty-shared/utils';
@@ -15,6 +17,7 @@ import {
 
 @Catch(EnterpriseException)
 export class EnterpriseExceptionFilter implements ExceptionFilter {
+  // Maps each known EnterpriseExceptionCode to the appropriate GraphQL error.
   catch(exception: EnterpriseException) {
     switch (exception.code) {
       case EnterpriseExceptionCode.INVALID_ENTERPRISE_KEY:

@@ -8,6 +8,7 @@ import {
   NavigationMenuItemExceptionCode,
 } from 'src/engine/metadata-modules/navigation-menu-item/navigation-menu-item.exception';
 
+// Looks up the flat navigation menu item targeted for deletion, throwing if it doesn't exist.
 export const fromDeleteNavigationMenuItemInputToFlatNavigationMenuItemOrThrow =
   ({
     flatNavigationMenuItemMaps,

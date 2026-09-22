@@ -1,3 +1,5 @@
+// Builds the NestJS cache-manager module options, currently always
+// configuring a Redis-backed store using REDIS_URL.
 import { Logger } from '@nestjs/common';
 
 import { type CacheModuleOptions } from '@nestjs/cache-manager';
@@ -12,6 +14,8 @@ const cacheStorageLogger = new Logger('CacheStorage');
 
 const REDIS_PING_INTERVAL_MS = 60_000;
 
+// Creates cache-manager options for the Redis store, connecting a redis
+// client and wrapping it with the redis-yet adapter.
 export const cacheStorageModuleFactory = (
   twentyConfigService: TwentyConfigService,
 ): CacheModuleOptions => {

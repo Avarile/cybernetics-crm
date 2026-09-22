@@ -11,6 +11,8 @@ import {
   FrontComponentExceptionCode,
 } from 'src/engine/metadata-modules/front-component/front-component.exception';
 
+// Maps a FrontComponentException to the matching GraphQL error type,
+// rethrowing anything else (or the create-failed code) unchanged.
 export const frontComponentGraphqlApiExceptionHandler = (error: Error) => {
   if (error instanceof FrontComponentException) {
     switch (error.code) {

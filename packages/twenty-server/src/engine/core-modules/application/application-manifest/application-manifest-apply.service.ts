@@ -1,3 +1,5 @@
+// Applies a parsed application manifest to a workspace and keeps the
+// application's registration metadata in sync with what was applied.
 import { Injectable } from '@nestjs/common';
 
 import { type Manifest } from 'twenty-shared/application';
@@ -20,6 +22,9 @@ export class ApplicationManifestApplyService {
     private readonly applicationRegistrationService: ApplicationRegistrationService,
   ) {}
 
+  // Synchronizes the manifest's metadata into the workspace and, on first
+  // apply or whenever the schema metadata changed, regenerates the
+  // application's SDK client.
   async applyManifestToWorkspace({
     workspaceId,
     manifest,
@@ -57,6 +62,8 @@ export class ApplicationManifestApplyService {
     return { workspaceMigration, hasSchemaMetadataChanged };
   }
 
+  // Updates the application registration's stored manifest/version info,
+  // optionally scoped to only registrations owned by a given workspace.
   async refreshRegistrationFromManifest({
     applicationRegistrationId,
     manifest,

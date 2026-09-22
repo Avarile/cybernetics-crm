@@ -14,6 +14,8 @@ import { ConfigGroupHashService } from 'src/engine/core-modules/twenty-config/se
 import { TwentyConfigService } from 'src/engine/core-modules/twenty-config/twenty-config.service';
 import { resolveAbsolutePath } from 'src/utils/resolve-absolute-path';
 
+// Builds and caches the active file storage driver (local or S3), wrapped with
+// path validation, rebuilding when the relevant config changes
 @Injectable()
 export class FileStorageDriverFactory extends DriverFactoryBase<StorageDriver> {
   constructor(
@@ -23,6 +25,7 @@ export class FileStorageDriverFactory extends DriverFactoryBase<StorageDriver> {
     super(twentyConfigService, configGroupHashService);
   }
 
+  // Cache key for the current storage config, so a config change forces a rebuild
   protected buildConfigKey(): string {
     const storageType = this.twentyConfigService.get('STORAGE_TYPE');
 
@@ -43,6 +46,7 @@ export class FileStorageDriverFactory extends DriverFactoryBase<StorageDriver> {
     throw new Error(`Unsupported storage type: ${storageType}`);
   }
 
+  // Instantiates the driver matching STORAGE_TYPE, wrapping it with path-safety validation
   protected createDriver(): StorageDriver {
     const storageType = this.twentyConfigService.get('STORAGE_TYPE');
     let rawDriver: StorageDriver;

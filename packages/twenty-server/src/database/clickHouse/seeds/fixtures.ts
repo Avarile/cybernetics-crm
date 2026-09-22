@@ -1,3 +1,6 @@
+// Fixture data seeded into ClickHouse for local dev: sample workspace/object events
+// plus a generated 35-day history of synthetic AI/workflow usage events for the Apple
+// seed workspace, used to populate usage dashboards with realistic-looking data.
 import { OBJECT_RECORD_CREATED_EVENT } from 'src/engine/core-modules/event-logs/emit/events/object-event/object-record-created';
 import { OBJECT_RECORD_DELETED_EVENT } from 'src/engine/core-modules/event-logs/emit/events/object-event/object-record-delete';
 import { OBJECT_RECORD_UPDATED_EVENT } from 'src/engine/core-modules/event-logs/emit/events/object-event/object-record-updated';
@@ -86,6 +89,8 @@ export const objectEventFixtures: Array<ObjectEventFixture> = [
   },
 ];
 
+// Deterministically (seeded PRNG) generates ~35 days of synthetic per-user usage
+// events across AI/workflow operations, with weekday/recency weighting for realism.
 const buildUsageEventFixtures = (): UsageEventFixture[] => {
   const now = new Date();
   const fixtures: UsageEventFixture[] = [];

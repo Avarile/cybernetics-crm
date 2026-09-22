@@ -1,3 +1,5 @@
+// GraphQL resolver listing an application's declared connection providers
+// and whether each OAuth provider's client credentials are configured.
 import { UseGuards } from '@nestjs/common';
 import { Args, Query } from '@nestjs/graphql';
 
@@ -17,6 +19,8 @@ export class ApplicationConnectionProviderResolver {
     private readonly oauthProviderService: ConnectionProviderService,
   ) {}
 
+  // Returns an application's connection providers, with each OAuth
+  // provider's configured scopes and client-credentials status.
   @Query(() => [ApplicationConnectionProviderDTO])
   @UseGuards(NoPermissionGuard)
   async applicationConnectionProviders(

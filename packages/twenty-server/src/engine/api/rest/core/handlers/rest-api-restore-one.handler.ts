@@ -10,6 +10,8 @@ import { parseCorePath } from 'src/engine/api/rest/input-request-parsers/path-pa
 import { AuthenticatedRequest } from 'src/engine/api/rest/types/authenticated-request';
 import { workspaceQueryRunnerRestApiExceptionHandler } from 'src/engine/api/rest/utils/workspace-query-runner-rest-api-exception-handler.util';
 
+// REST handler for PATCH /rest/restore/{objects}/{id}: restores a single
+// soft-deleted record.
 @Injectable()
 export class RestApiRestoreOneHandler extends RestApiBaseHandler {
   constructor(
@@ -18,6 +20,8 @@ export class RestApiRestoreOneHandler extends RestApiBaseHandler {
     super();
   }
 
+  // Resolves the id from the path, runs the common restoreOne query
+  // runner, and formats the restored record as a REST response.
   async handle(request: AuthenticatedRequest) {
     try {
       const { id, depth } = this.parseRequestArgs(request);

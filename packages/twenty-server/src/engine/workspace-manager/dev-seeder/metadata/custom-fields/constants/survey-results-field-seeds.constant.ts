@@ -3,6 +3,8 @@ import { FieldMetadataType, NumberDataType } from 'twenty-shared/types';
 import { type FieldMetadataDTO } from 'src/engine/metadata-modules/field-metadata/dtos/field-metadata.dto';
 import { type FieldMetadataSeed } from 'src/engine/workspace-manager/dev-seeder/metadata/types/field-metadata-seed.type';
 
+// Sample custom fields on the custom Survey Result object, covering number
+// data type / text row-limit / file-count settings variations.
 export const SURVEY_RESULT_CUSTOM_FIELD_SEEDS: FieldMetadataSeed[] = [
   {
     type: FieldMetadataType.NUMBER,

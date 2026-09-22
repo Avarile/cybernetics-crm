@@ -7,6 +7,10 @@ import { PageLayoutType } from 'src/engine/metadata-modules/page-layout/enums/pa
 
 registerEnumType(PageLayoutType, { name: 'PageLayoutType' });
 
+// GraphQL representation of a page layout: a named layout (record page,
+// record index, dashboard, or standalone page) optionally scoped to an
+// object, with its tabs and which tab to focus by default on mobile/side
+// panel.
 @ObjectType('PageLayout')
 export class PageLayoutDTO {
   @Field(() => UUIDScalarType)

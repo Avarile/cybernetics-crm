@@ -17,6 +17,9 @@ import { WorkspaceScopedRepository } from 'src/engine/twenty-orm/workspace-scope
 import { WorkspaceCacheService } from 'src/engine/workspace-cache/services/workspace-cache.service';
 
 @Injectable()
+// Read/delete-all access to row-level permission predicate groups. All
+// reads are gated behind the RLS billing entitlement and a valid
+// enterprise plan, returning empty/null when the feature isn't available.
 export class RowLevelPermissionPredicateGroupService {
   constructor(
     private readonly flatEntityMapsCacheService: WorkspaceManyOrAllFlatEntityMapsCacheService,
@@ -27,6 +30,8 @@ export class RowLevelPermissionPredicateGroupService {
     private readonly enterprisePlanService: EnterprisePlanService,
   ) {}
 
+  // Returns all active predicate groups in the workspace, ordered by
+  // position within their parent group.
   async findByWorkspaceId(
     workspaceId: string,
   ): Promise<RowLevelPermissionPredicateGroupDTO[]> {
@@ -58,6 +63,7 @@ export class RowLevelPermissionPredicateGroupService {
       .map(fromFlatRowLevelPermissionPredicateGroupToDto);
   }
 
+  // Returns all active predicate groups for a given role.
   async findByRole(
     workspaceId: string,
     roleId: string,
@@ -90,6 +96,7 @@ export class RowLevelPermissionPredicateGroupService {
       .map(fromFlatRowLevelPermissionPredicateGroupToDto);
   }
 
+  // Finds a single active predicate group by id.
   async findById(
     id: string,
     workspaceId: string,
@@ -121,6 +128,8 @@ export class RowLevelPermissionPredicateGroupService {
     return fromFlatRowLevelPermissionPredicateGroupToDto(flatGroup);
   }
 
+  // Hard-deletes every predicate group in the workspace and invalidates
+  // the dependent permission caches.
   public async deleteAllRowLevelPermissionPredicateGroups(workspaceId: string) {
     await this.rowLevelPermissionPredicateGroupRepository.delete(
       workspaceId,
@@ -134,6 +143,8 @@ export class RowLevelPermissionPredicateGroupService {
     ]);
   }
 
+  // Checks whether the workspace's plan and billing entitlement allow use
+  // of the row-level permission (RLS) feature.
   private async hasRowLevelPermissionFeature(
     workspaceId: string,
   ): Promise<boolean> {

@@ -1,3 +1,6 @@
+// Queue processor matching a batch of database (object record) events
+// against logic functions with a database-event trigger and enqueueing
+// their execution, chunked to bound job payload size.
 import chunk from 'lodash.chunk';
 import { isDefined } from 'twenty-shared/utils';
 
@@ -27,6 +30,8 @@ export class CallDatabaseEventTriggerJobsJob {
   ) {}
 
   @Process(CallDatabaseEventTriggerJobsJob.name)
+  // Finds logic functions whose database-event trigger matches this batch's
+  // event name and enqueues chunked trigger jobs for them.
   async handle(workspaceEventBatch: WorkspaceEventBatch<ObjectRecordEvent>) {
     const { flatLogicFunctionMaps } =
       await this.workspaceCacheService.getOrRecompute(
@@ -77,6 +82,8 @@ export class CallDatabaseEventTriggerJobsJob {
     }
   }
 
+  // Checks whether a trigger's configured event name matches the batch's
+  // event name, allowing wildcard object/operation segments.
   private shouldTriggerJob({
     workspaceEventBatch,
     eventName,

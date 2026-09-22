@@ -1,3 +1,5 @@
+// GraphQL resolver for browsing agent turns and running/grading evaluations
+// against an agent (used by the agent-settings evaluation UI).
 import { Logger, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query } from '@nestjs/graphql';
 
@@ -43,6 +45,7 @@ export class AgentTurnResolver {
     private readonly agentService: AgentService,
   ) {}
 
+  // Lists an agent's turns with their messages and evaluations, most recent first.
   @Query(() => [AgentTurnDTO])
   async agentTurns(
     @Args('agentId', { type: () => UUIDScalarType }) agentId: string,
@@ -55,6 +58,7 @@ export class AgentTurnResolver {
     });
   }
 
+  // Triggers AI grading of an existing turn synchronously.
   @Mutation(() => AgentTurnEvaluationDTO)
   async evaluateAgentTurn(
     @Args('turnId', { type: () => UUIDScalarType }) turnId: string,
@@ -63,6 +67,8 @@ export class AgentTurnResolver {
     return this.graderService.evaluateTurn({ turnId, workspaceId });
   }
 
+  // Creates a new evaluation thread/turn for the agent and enqueues a job to
+  // run the given input through it and grade the result.
   @Mutation(() => AgentTurnDTO)
   async runEvaluationInput(
     @Args('agentId', { type: () => UUIDScalarType }) agentId: string,

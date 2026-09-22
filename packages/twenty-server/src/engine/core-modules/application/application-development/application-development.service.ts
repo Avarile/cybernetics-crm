@@ -1,3 +1,7 @@
+// Business logic backing the application-development GraphQL resolver:
+// creating dev applications, validating and applying manifest syncs under a
+// per-workspace lock, and handling application file uploads. Per-application
+// actions are rate limited to prevent abuse of the dev sync/upload flows.
 import { Injectable, Logger } from '@nestjs/common';
 
 import { FileFolder } from 'twenty-shared/types';
@@ -54,6 +58,9 @@ export class ApplicationDevelopmentService {
     private readonly cacheLockService: CacheLockService,
   ) {}
 
+  // Returns the existing application for this identifier if one already
+  // exists in the workspace, otherwise creates a new local-source one linked
+  // to its application registration.
   async createDevelopmentApplication({
     universalIdentifier,
     name,
@@ -95,6 +102,9 @@ export class ApplicationDevelopmentService {
     };
   }
 
+  // Validates the manifest's server-version compatibility, then either
+  // returns a dry-run preview of the migration actions or applies the
+  // manifest to the workspace under a per-workspace lock.
   async syncApplication({
     manifest,
     dryRun,
@@ -147,6 +157,8 @@ export class ApplicationDevelopmentService {
     );
   }
 
+  // Validates the target file folder and path, confirms the application
+  // exists in the workspace, then writes the uploaded file to storage.
   async uploadApplicationFile({
     workspaceId,
     applicationUniversalIdentifier,
@@ -209,6 +221,8 @@ export class ApplicationDevelopmentService {
     });
   }
 
+  // Applies the manifest to the workspace (creating metadata/entities per the
+  // manifest actions) and refreshes the application registration afterward.
   private async applyManifestSync(
     manifest: ApplicationInput['manifest'],
     workspaceId: string,
@@ -252,6 +266,8 @@ export class ApplicationDevelopmentService {
     };
   }
 
+  // Enforces a per-workspace, per-application token-bucket rate limit shared
+  // by all dev-application mutations.
   private async throttlePerApplication(
     applicationIdentifier: string,
     workspaceId: string,
@@ -264,6 +280,8 @@ export class ApplicationDevelopmentService {
     );
   }
 
+  // Looks up the application registration for a universal identifier,
+  // throwing if none has been created yet.
   private async findApplicationRegistrationId(
     universalIdentifier: string,
   ): Promise<string> {
@@ -282,6 +300,9 @@ export class ApplicationDevelopmentService {
     return existingRegistration.id;
   }
 
+  // Refreshes the application registration's metadata from the manifest and,
+  // if it changed, re-uploads the registration's public assets (logo,
+  // gallery images) from the workspace's file storage.
   private async syncRegistrationMetadata(
     applicationRegistrationId: string,
     manifest: ApplicationInput['manifest'],
@@ -317,6 +338,8 @@ export class ApplicationDevelopmentService {
     });
   }
 
+  // Reads a public asset file from the workspace's storage, returning null
+  // (rather than throwing) if it cannot be read.
   private async readPublicAssetFromWorkspaceStorage({
     workspaceId,
     applicationUniversalIdentifier,

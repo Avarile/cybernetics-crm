@@ -20,6 +20,9 @@ import { type MessageChannelDeletedEvent } from 'src/engine/metadata-modules/mes
 import { WorkspaceEventEmitter } from 'src/engine/workspace-event-emitter/workspace-event-emitter';
 
 @Injectable()
+// CRUD and lifecycle management for connected accounts (mailboxes,
+// calendars) — creation, ownership checks, ownership transfer on member
+// removal, and deletion with cascading channel cleanup and OAuth revocation.
 export class ConnectedAccountMetadataService {
   private readonly logger = new Logger(ConnectedAccountMetadataService.name);
 
@@ -34,6 +37,7 @@ export class ConnectedAccountMetadataService {
     private readonly workspaceEventEmitter: WorkspaceEventEmitter,
   ) {}
 
+  // Returns all connected accounts owned by a given user workspace membership.
   async findByUserWorkspaceId({
     userWorkspaceId,
     workspaceId,
@@ -46,6 +50,7 @@ export class ConnectedAccountMetadataService {
     });
   }
 
+  // Finds a connected account by id within a workspace.
   async findById({
     id,
     workspaceId,
@@ -56,6 +61,7 @@ export class ConnectedAccountMetadataService {
     return this.repository.findOne({ where: { id, workspaceId } });
   }
 
+  // Finds a connected account by id, scoped to a specific owning member.
   async findByIdAndUserWorkspaceId({
     id,
     userWorkspaceId,
@@ -70,6 +76,8 @@ export class ConnectedAccountMetadataService {
     });
   }
 
+  // Loads a connected account and throws unless it exists and is either
+  // shared workspace-wide or owned by the given user workspace membership.
   async verifyOwnership({
     id,
     userWorkspaceId,
@@ -103,6 +111,7 @@ export class ConnectedAccountMetadataService {
     return connectedAccount;
   }
 
+  // Returns the ids of all connected accounts owned by a given member.
   async getUserConnectedAccountIds({
     userWorkspaceId,
     workspaceId,
@@ -118,6 +127,7 @@ export class ConnectedAccountMetadataService {
     return accounts.map((account) => account.id);
   }
 
+  // Returns the ids of all connected accounts shared workspace-wide.
   async getWorkspaceSharedConnectedAccountIds({
     workspaceId,
   }: {
@@ -131,6 +141,7 @@ export class ConnectedAccountMetadataService {
     return accounts.map((account) => account.id);
   }
 
+  // Persists a new connected account record.
   async create(
     data: Partial<ConnectedAccountEntity> & {
       workspaceId: string;
@@ -144,6 +155,7 @@ export class ConnectedAccountMetadataService {
     return this.repository.save(entity);
   }
 
+  // Applies a partial update to a connected account.
   async update({
     id,
     workspaceId,
@@ -161,6 +173,10 @@ export class ConnectedAccountMetadataService {
     return this.repository.findOneOrFail({ where: { id, workspaceId } });
   }
 
+  // Reassigns all of a member's connected accounts to another member
+  // (e.g. when the original owner leaves the workspace), clearing stored
+  // credentials and archiving/disabling sync since the new owner hasn't
+  // re-authenticated them.
   async transferOwnership({
     fromUserWorkspaceId,
     toUserWorkspaceId,
@@ -216,6 +232,9 @@ export class ConnectedAccountMetadataService {
     }
   }
 
+  // Deletes a connected account, revoking its OAuth grant if applicable,
+  // and emits deletion events for its message/calendar channels and itself
+  // so dependent modules can clean up.
   async delete({
     id,
     workspaceId,

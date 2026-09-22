@@ -1,3 +1,4 @@
+// GraphQL response for the sendEmail mutation.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType('SendEmailOutput')

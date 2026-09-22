@@ -7,6 +7,9 @@ import {
 } from 'src/engine/api/graphql/graphql-query-runner/errors/graphql-query-runner.exception';
 import { type OrderByClause } from 'src/engine/api/graphql/graphql-query-runner/graphql-query-parsers/graphql-query-order/graphql-query-order.parser';
 
+// Converts a GraphQL OrderByDirection into a TypeORM order/nulls clause,
+// flipping ASC/DESC when paginating backwards so "last N" queries still
+// return results in the client-expected order after re-reversal.
 export const convertOrderByToFindOptionsOrder = (
   direction: OrderByDirection,
   isForwardPagination = true,

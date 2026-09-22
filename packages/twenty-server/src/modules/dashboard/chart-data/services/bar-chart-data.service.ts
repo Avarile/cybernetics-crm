@@ -46,6 +46,10 @@ type GetBarChartDataParams = {
   authContext: WorkspaceAuthContext;
 };
 
+// Resolves a bar chart widget's configuration into renderable chart data:
+// runs the group-by aggregate query, then formats it as one- or
+// two-dimensional (grouped/stacked) bars, applying sorting, gap-filling,
+// cumulative totals, and the max-bars/max-groups-per-bar limits.
 @Injectable()
 export class BarChartDataService {
   constructor(
@@ -53,6 +57,8 @@ export class BarChartDataService {
     private readonly chartDataQueryService: ChartDataQueryService,
   ) {}
 
+  // Loads field/object metadata, runs the aggregate query, and dispatches to
+  // the one- or two-dimensional transform based on whether a secondary axis is set.
   async getBarChartData({
     workspaceId,
     objectMetadataId,
@@ -193,6 +199,8 @@ export class BarChartDataService {
     }
   }
 
+  // Builds a single-series bar chart dataset: filters, gap-fills, sorts,
+  // limits to the max bar count, and optionally accumulates values.
   private transformToOneDimensionalBarChartData({
     rawResults,
     primaryAxisGroupByField,
@@ -318,6 +326,8 @@ export class BarChartDataService {
     };
   }
 
+  // Builds a multi-series (grouped or stacked) bar chart dataset, capping
+  // both bar count and groups-per-bar (and total segments when not stacked).
   private transformToTwoDimensionalBarChartData({
     rawResults,
     primaryAxisGroupByField,
@@ -526,6 +536,7 @@ export class BarChartDataService {
     };
   }
 
+  // Sorts the secondary-axis series keys per the configured order, if any.
   private sortSecondaryAxisKeys({
     keys,
     data,
@@ -573,6 +584,7 @@ export class BarChartDataService {
     });
   }
 
+  // Converts each series' per-bar values into running totals.
   private applyCumulativeTwoDimensional(
     data: Record<string, string | number>[],
     keys: string[],
@@ -604,6 +616,7 @@ export class BarChartDataService {
     return result;
   }
 
+  // Converts a single series' per-bar values into a running total.
   private applyCumulativeTransformInternal(
     data: Array<{
       formattedValue: string;
@@ -633,6 +646,7 @@ export class BarChartDataService {
     return result;
   }
 
+  // Capitalizes the first character (used to build the camelCase sub-field key).
   private capitalizeFirst(str: string): string {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }

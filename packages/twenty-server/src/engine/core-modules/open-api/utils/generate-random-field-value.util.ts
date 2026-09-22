@@ -1,3 +1,4 @@
+// Generates plausible sample values per field type for OpenAPI schema examples.
 import { faker } from '@faker-js/faker';
 import {
   type FieldMetadataDefaultValue,
@@ -9,6 +10,8 @@ import { v4 } from 'uuid';
 import { type FieldMetadataEntity } from 'src/engine/metadata-modules/field-metadata/field-metadata.entity';
 import { type FlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-metadata/types/flat-field-metadata.type';
 
+// Generates a plausible sample value for a field, keyed by its
+// FieldMetadataType, used to populate OpenAPI schema examples.
 export const generateRandomFieldValue = ({
   field,
 }: {

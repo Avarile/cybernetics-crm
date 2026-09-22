@@ -3,6 +3,10 @@ import { isDefined } from 'twenty-shared/utils';
 import { type MessageWithParticipants } from 'src/modules/messaging/message-import-manager/types/message';
 import { getDomainFromEmailOrThrow } from 'src/utils/get-domain-from-email-or-throw';
 
+// Drops messages where every participant shares the same domain as the
+// connected account (i.e. purely internal company email); if the domain
+// can't be resolved for a participant, the message is kept rather than
+// dropped.
 export const filterOutInternals = (
   primaryHandle: string,
   messages: MessageWithParticipants[],

@@ -24,6 +24,9 @@ import { WorkspaceMigrationGraphqlApiExceptionInterceptor } from 'src/engine/wor
 import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace-migration/workspace-migration.module';
 import { DashboardSyncModule } from 'src/modules/dashboard-sync/dashboard-sync.module';
 
+// Wires up page layout CRUD, duplication, reset-to-default, and
+// tabs-and-widgets update services, their REST controller, and GraphQL
+// resolver.
 @Module({
   imports: [
     TypeOrmModule.forFeature([PageLayoutEntity, WorkspaceEntity]),

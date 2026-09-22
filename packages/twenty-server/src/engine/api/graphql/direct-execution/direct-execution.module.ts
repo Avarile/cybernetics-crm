@@ -1,3 +1,7 @@
+// Wires up "direct execution": a fast path that bypasses the standard
+// GraphQL Yoga execution pipeline for simple, whitelisted workspace
+// queries/mutations by resolving them directly against the workspace
+// resolver factories, skipping full schema construction per request.
 import { Module } from '@nestjs/common';
 
 import { CoreCommonApiModule } from 'src/engine/api/common/core-common-api.module';

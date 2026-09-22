@@ -12,6 +12,7 @@ import {
   name: 'cron:calendar:calendar-events-import',
   description: 'Starts a cron job to import the calendar events',
 })
+// Registers the recurring cron job that schedules calendar events import.
 export class CalendarEventsImportCronCommand extends CommandRunner {
   constructor(
     @InjectMessageQueue(MessageQueue.cronQueue)

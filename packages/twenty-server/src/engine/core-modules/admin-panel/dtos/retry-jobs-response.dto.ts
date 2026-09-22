@@ -1,3 +1,4 @@
+// GraphQL DTO for the result of a bulk queue-job retry.
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 
 import { JobOperationResultDTO } from 'src/engine/core-modules/admin-panel/dtos/job-operation-result.dto';

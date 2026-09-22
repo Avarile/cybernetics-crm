@@ -1,3 +1,5 @@
+// GraphQL DTO returned when creating an application registration; carries
+// the one-time plaintext client secret alongside the created record.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 import { ApplicationRegistrationEntity } from 'src/engine/core-modules/application/application-registration/application-registration.entity';

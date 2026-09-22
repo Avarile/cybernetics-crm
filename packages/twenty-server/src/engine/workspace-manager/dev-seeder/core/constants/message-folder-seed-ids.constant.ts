@@ -1,3 +1,4 @@
+// Fixed ids for the sample message folders created in dev-seeded workspaces.
 export const MESSAGE_FOLDER_DATA_SEED_IDS = {
   TIM_INBOX: '20202020-f1a2-4b3c-8d4e-5f6a7b8c9d0e',
   TIM_SENT: '20202020-f1a2-4b3c-8d4e-5f6a7b8c9d1e',

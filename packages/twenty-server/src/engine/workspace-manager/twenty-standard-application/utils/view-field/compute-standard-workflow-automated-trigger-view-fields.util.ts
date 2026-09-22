@@ -4,6 +4,7 @@ import {
   type CreateStandardViewFieldArgs,
 } from 'src/engine/workspace-manager/twenty-standard-application/utils/view-field/create-standard-view-field-flat-metadata.util';
 
+// Builds the fixed set of standard view fields for the "workflowAutomatedTrigger" object's views
 export const computeStandardWorkflowAutomatedTriggerViewFields = (
   args: Omit<
     CreateStandardViewFieldArgs<'workflowAutomatedTrigger'>,

@@ -1,3 +1,5 @@
+// Core-schema entity for one part of an agent message: text, reasoning, a
+// tool call/result, a source reference, or a file attachment, in stream order.
 import { JSONValue } from 'ai';
 import {
   Column,

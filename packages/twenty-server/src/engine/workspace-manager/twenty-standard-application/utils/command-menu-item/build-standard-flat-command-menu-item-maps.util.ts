@@ -16,6 +16,9 @@ const STANDARD_COMMAND_MENU_ITEM_NAMES = Object.keys(
   STANDARD_COMMAND_MENU_ITEMS,
 ) as Array<keyof typeof STANDARD_COMMAND_MENU_ITEMS>;
 
+// Builds the flat command menu item maps for a workspace: one entry per fixed STANDARD_COMMAND_MENU_ITEMS
+// definition, plus one auto-generated "navigate to <object>" entry per active object metadata,
+// appended after the standard items in navigation position order
 export const buildStandardFlatCommandMenuItemMaps = ({
   now,
   workspaceId,

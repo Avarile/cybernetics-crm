@@ -1,3 +1,6 @@
+// Service wrapping the Google Maps Places API for address autocomplete and
+// place-details lookups, disabled unless maps/address-autocomplete is
+// enabled and an API key is configured.
 import { Injectable } from '@nestjs/common';
 
 import { isNonEmptyString } from '@sniptt/guards';
@@ -28,6 +31,8 @@ export class GeoMapService {
     this.apiMapKey = this.twentyConfigService.get('GOOGLE_MAP_API_KEY');
   }
 
+  // Calls the Google Places Autocomplete API for the given address text,
+  // optionally scoped to a country and to cities only.
   public async getAutoCompleteAddress(
     address: string,
     token: string,
@@ -57,6 +62,8 @@ export class GeoMapService {
     return [];
   }
 
+  // Calls the Google Places Details API for a place id and sanitizes the
+  // response into structured address fields plus coordinates.
   public async getAddressDetails(
     placeId: string,
     token: string,

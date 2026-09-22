@@ -1,3 +1,4 @@
+// GraphQL DTO for a public domain registered by a workspace application.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';

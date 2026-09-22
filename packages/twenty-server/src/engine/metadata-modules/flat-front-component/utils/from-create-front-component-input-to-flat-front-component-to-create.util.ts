@@ -5,6 +5,8 @@ import { type FlatApplication } from 'src/engine/core-modules/application/types/
 import { type FlatFrontComponent } from 'src/engine/metadata-modules/flat-front-component/types/flat-front-component.type';
 import { type CreateFrontComponentInput } from 'src/engine/metadata-modules/front-component/dtos/create-front-component.input';
 
+// Builds a new flat front component from a create-front-component input, generating
+// ids when not provided and normalizing the name field.
 export const fromCreateFrontComponentInputToFlatFrontComponentToCreate = ({
   createFrontComponentInput,
   workspaceId,

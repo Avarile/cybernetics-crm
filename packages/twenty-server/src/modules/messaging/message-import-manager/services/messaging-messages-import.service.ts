@@ -1,3 +1,7 @@
+// Orchestrates the "messages import" sync stage: pops a batch of cached
+// pending message external ids, fetches their full content via the
+// provider driver, maps external folder ids to internal ones, filters out
+// blocklisted/internal/excluded-group messages, and persists the survivors.
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -59,6 +63,13 @@ export class MessagingMessagesImportService {
     private readonly twentyConfigService: TwentyConfigService,
   ) {}
 
+  // No-ops unless the channel is in the expected scheduled-import stage.
+  // Pops one batch of cached message ids, fetches and filters them
+  // (blocklist, internal messages, excluded group emails), saves the
+  // result, and advances sync status — back to import-pending if the
+  // popped batch was a full batch (more likely remain) or to sync
+  // completed otherwise. On failure, re-queues the popped ids so they
+  // aren't lost and routes the error to the shared exception handler.
   async processMessageBatchImport(
     messageChannel: MessageChannelEntity,
     connectedAccount: ConnectedAccountEntity,
@@ -265,6 +276,7 @@ export class MessagingMessagesImportService {
     );
   }
 
+  // Emits the messages_import.completed monitoring event.
   private async trackMessageImportCompleted(
     messageChannel: MessageChannelEntity,
     workspaceId: string,

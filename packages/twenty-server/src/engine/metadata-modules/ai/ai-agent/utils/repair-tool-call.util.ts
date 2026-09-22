@@ -1,3 +1,5 @@
+// Attempts to fix a tool call the model made with invalid input, by asking
+// the model to regenerate the input against the tool's schema.
 import {
   type LanguageModel,
   type LanguageModelUsage,
@@ -29,6 +31,10 @@ type RepairToolCallBillingContext = {
   operationType: UsageOperationType;
 };
 
+// Re-prompts the model to produce input matching the tool's schema when a
+// tool call fails validation; bills the repair call's usage if a billing
+// context is given, and returns null (letting the error propagate) if repair
+// isn't applicable or fails.
 export const repairToolCall = async ({
   toolCall,
   tools,

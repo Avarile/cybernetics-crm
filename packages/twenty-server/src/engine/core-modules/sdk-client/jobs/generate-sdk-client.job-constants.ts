@@ -1,3 +1,5 @@
+// Job name and payload shape for the background job that (re)generates a
+// workspace application's SDK client archive.
 export const GENERATE_SDK_CLIENT_JOB_NAME = 'GenerateSdkClientJob';
 
 export type GenerateSdkClientJobData = {

@@ -1,3 +1,5 @@
+// GraphQL DTO for an installed application's configuration variable, with
+// its value already obfuscated for display.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 import { IsBoolean, IsOptional, IsString } from 'class-validator';

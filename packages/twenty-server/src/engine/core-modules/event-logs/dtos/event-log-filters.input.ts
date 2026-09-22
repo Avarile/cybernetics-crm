@@ -1,3 +1,6 @@
+// GraphQL input types for filtering event log queries by type, user,
+// date range, record, or object metadata.
+
 import { Field, InputType } from '@nestjs/graphql';
 
 @InputType()

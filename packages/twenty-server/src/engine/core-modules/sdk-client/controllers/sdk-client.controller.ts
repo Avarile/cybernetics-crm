@@ -1,3 +1,5 @@
+// Serves a workspace application's generated SDK client module (core or
+// metadata) as a JS file, generating it on the fly if not yet cached.
 import {
   Controller,
   Get,
@@ -31,6 +33,8 @@ export class SdkClientController {
 
   @Get(':applicationId/:moduleName')
   @UseGuards(NoPermissionGuard)
+  // Validates the module name and application id, then streams the
+  // requested SDK module file back as JavaScript.
   async getSdkModule(
     @Res() res: Response,
     @Param('applicationId') applicationId: string,

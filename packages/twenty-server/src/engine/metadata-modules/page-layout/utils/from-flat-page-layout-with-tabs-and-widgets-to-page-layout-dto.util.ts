@@ -3,6 +3,8 @@ import { type PageLayoutDTO } from 'src/engine/metadata-modules/page-layout/dtos
 import { fromFlatPageLayoutTabWithWidgetsToPageLayoutTabDto } from 'src/engine/metadata-modules/page-layout-tab/utils/from-flat-page-layout-tab-with-widgets-to-page-layout-tab-dto.util';
 import { fromFlatPageLayoutToPageLayoutDto } from 'src/engine/metadata-modules/page-layout/utils/from-flat-page-layout-to-page-layout-dto.util';
 
+// Converts a flat page layout (with its reconstructed tabs and their
+// widgets) into its full GraphQL DTO, including the mapped tab DTOs.
 export const fromFlatPageLayoutWithTabsAndWidgetsToPageLayoutDto = (
   flatPageLayoutWithTabsAndWidgets: FlatPageLayoutWithTabsAndWidgets,
 ): PageLayoutDTO => {

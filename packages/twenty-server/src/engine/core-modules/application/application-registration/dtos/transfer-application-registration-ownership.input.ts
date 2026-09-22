@@ -1,3 +1,4 @@
+// GraphQL args for the transferApplicationRegistrationOwnership mutation.
 import { ArgsType, Field } from '@nestjs/graphql';
 
 import { IsNotEmpty, IsString, IsUUID } from 'class-validator';

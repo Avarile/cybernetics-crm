@@ -11,6 +11,7 @@ const CALENDAR_EVENTS_LIST_CRON_PATTERN = '*/5 * * * *';
   name: 'cron:calendar:calendar-event-list-fetch',
   description: 'Starts a cron job to fetch the calendar event list',
 })
+// Registers the recurring cron job that schedules calendar event list fetches.
 export class CalendarEventListFetchCronCommand extends CommandRunner {
   constructor(
     @InjectMessageQueue(MessageQueue.cronQueue)

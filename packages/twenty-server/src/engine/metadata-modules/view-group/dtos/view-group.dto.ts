@@ -2,6 +2,8 @@ import { Field, ObjectType } from '@nestjs/graphql';
 
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';
 
+// GraphQL representation of a view group: one distinct value bucket of a
+// grouped view (e.g. a Kanban column), with its visibility and position.
 @ObjectType('ViewGroup')
 export class ViewGroupDTO {
   @Field(() => UUIDScalarType)

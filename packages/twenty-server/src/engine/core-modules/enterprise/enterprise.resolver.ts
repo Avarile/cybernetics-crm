@@ -1,5 +1,8 @@
 /* @license Enterprise */
 
+// GraphQL resolver for admin-facing enterprise licensing operations: billing
+// portal/checkout links, subscription status, and setting/releasing/refreshing
+// the enterprise license key.
 import { UseFilters, UseGuards, UsePipes } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -43,6 +46,7 @@ export class EnterpriseResolver {
     private readonly userWorkspaceRepository: Repository<UserWorkspaceEntity>,
   ) {}
 
+  // Counts active (non-deleted) user-workspace links, floored at 1.
   private async getActiveUserWorkspaceCount(): Promise<number> {
     const count = await this.userWorkspaceRepository.count({
       where: { deletedAt: IsNull() },
@@ -78,6 +82,7 @@ export class EnterpriseResolver {
     AdminPanelGuard,
     NoPermissionGuard,
   )
+  // Returns a URL to the billing portal for managing an existing subscription.
   async enterprisePortalSession(
     // for existing subscriptions
     @Args('returnUrlPath', { nullable: true }) returnUrlPath?: string,
@@ -92,6 +97,8 @@ export class EnterpriseResolver {
     AdminPanelGuard,
     NoPermissionGuard,
   )
+  // Returns a checkout URL to start a new enterprise subscription, sized to
+  // the workspace's current active seat count.
   async enterpriseCheckoutSession(
     // for new subscriptions
     @Args('billingInterval', { nullable: true }) billingInterval?: string,
@@ -109,6 +116,7 @@ export class EnterpriseResolver {
     AdminPanelGuard,
     NoPermissionGuard,
   )
+  // Returns the current enterprise subscription's billing status.
   async enterpriseSubscriptionStatus(): Promise<EnterpriseSubscriptionStatusDTO | null> {
     return this.enterprisePlanService.getSubscriptionStatus();
   }
@@ -120,6 +128,8 @@ export class EnterpriseResolver {
     AdminPanelGuard,
     NoPermissionGuard,
   )
+  // Triggers a manual validity token refresh, surfacing a server-binding
+  // rejection as an error if one occurred.
   async refreshEnterpriseValidityToken(): Promise<boolean> {
     const refreshed = await this.enterprisePlanService.refreshValidityToken();
 
@@ -135,6 +145,8 @@ export class EnterpriseResolver {
     AdminPanelGuard,
     NoPermissionGuard,
   )
+  // Releases this server's claim on the enterprise key (so it can be used
+  // elsewhere), then refreshes the token and re-reports seats.
   async releaseEnterpriseServerBinding(): Promise<EnterpriseLicenseInfoDTO> {
     await this.enterprisePlanService.releaseServerBinding();
 
@@ -154,6 +166,9 @@ export class EnterpriseResolver {
     AdminPanelGuard,
     NoPermissionGuard,
   )
+  // Validates and stores a new enterprise key, refreshes the validity token,
+  // reports seats, and returns the resulting license info. Falls back to an
+  // "invalid" license info payload on non-fatal errors.
   async setEnterpriseKey(
     @Args('enterpriseKey') enterpriseKey: string,
   ): Promise<EnterpriseLicenseInfoDTO> {

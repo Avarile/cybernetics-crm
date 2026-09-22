@@ -1,3 +1,4 @@
+// Maps ThrottlerException codes to HTTP REST API exceptions.
 import { HttpException, HttpStatus } from '@nestjs/common';
 
 import { assertUnreachable } from 'twenty-shared/utils';
@@ -7,6 +8,7 @@ import {
   ThrottlerExceptionCode,
 } from 'src/engine/core-modules/throttler/throttler.exception';
 
+// Maps a ThrottlerException to an HTTP 429 Too Many Requests exception.
 export const throttlerToRestApiExceptionHandler = (
   error: ThrottlerException,
 ): never => {

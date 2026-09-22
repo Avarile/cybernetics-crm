@@ -1,6 +1,7 @@
 import { type AllStandardObjectName } from 'src/engine/workspace-manager/twenty-standard-application/types/all-standard-object-name.type';
 import { type AllStandardObjectView } from 'src/engine/workspace-manager/twenty-standard-application/types/all-standard-object-view.type';
 
+// Union of all view names defined on a given standard object
 export type AllStandardObjectViewName<T extends AllStandardObjectName> =
   AllStandardObjectView<T> extends never
     ? never

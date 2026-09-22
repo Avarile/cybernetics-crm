@@ -1,3 +1,5 @@
+// GraphQL DTO for a message thread as shown in a record's timeline, with
+// subject/body redacted for threads the current user lacks full access to.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 import { MessageChannelVisibility } from 'twenty-shared/types';

@@ -13,6 +13,8 @@ import {
 } from 'src/engine/workspace-manager/standard-objects-prefill-data/utils/prefill-front-component-definitions.util';
 import { type WorkspaceMigrationValidateBuildAndRunService } from 'src/engine/workspace-manager/workspace-migration/services/workspace-migration-validate-build-and-run-service';
 
+// Creates command menu items pointing at the seeded front components (e.g.
+// Hello World), via a workspace migration, unless they already exist.
 export const prefillFrontComponentCommandMenuItems = async ({
   workspaceId,
   applicationService,

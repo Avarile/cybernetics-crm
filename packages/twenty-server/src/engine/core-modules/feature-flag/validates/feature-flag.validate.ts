@@ -1,3 +1,4 @@
+// Assertion helper validating that a string is a known FeatureFlagKey.
 import { isDefined } from 'twenty-shared/utils';
 import { FeatureFlagKey } from 'twenty-shared/types';
 

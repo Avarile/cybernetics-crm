@@ -1,3 +1,5 @@
+// Queue processor executing a batch of logic function trigger invocations
+// (from cron, database events, etc.) via the executor service.
 import { Scope } from '@nestjs/common';
 
 import { Process } from 'src/engine/core-modules/message-queue/decorators/process.decorator';
@@ -23,6 +25,7 @@ export class LogicFunctionTriggerJob {
   ) {}
 
   @Process(LogicFunctionTriggerJob.name)
+  // Executes every queued logic function trigger payload in parallel.
   async handle(logicFunctionPayloads: LogicFunctionTriggerJobData[]) {
     await Promise.all(
       logicFunctionPayloads.map(

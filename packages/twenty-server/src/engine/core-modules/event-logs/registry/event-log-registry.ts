@@ -1,5 +1,8 @@
 /* @license Enterprise */
 
+// Central registry mapping each EventLogTable to its ClickHouse table name,
+// required billing entitlement, and a normalize function converting a raw
+// stored row into the shared EventLogRecord shape.
 import { EventLogTable } from 'twenty-shared/types';
 
 import { BillingEntitlementKey } from 'src/engine/core-modules/billing/enums/billing-entitlement-key.enum';
@@ -28,6 +31,7 @@ export type EventLogTypeDefinition = {
   ) => Omit<EventLogRecord, 'timestamp'>;
 };
 
+// Builds a normalize function for tables that key off a single event/name field.
 const normalizeGenericEvent =
   (eventFieldName: 'event' | 'name') =>
   (row: Record<string, unknown>): Omit<EventLogRecord, 'timestamp'> => {
@@ -105,5 +109,6 @@ export const EVENT_LOG_TYPES: Record<EventLogTable, EventLogTypeDefinition> = {
   },
 };
 
+// Looks up the ClickHouse table name backing a given EventLogTable.
 export const getClickHouseTableName = (table: EventLogTable): string =>
   EVENT_LOG_TYPES[table].clickHouseTable;

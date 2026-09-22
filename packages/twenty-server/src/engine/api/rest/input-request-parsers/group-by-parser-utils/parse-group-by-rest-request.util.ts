@@ -6,6 +6,8 @@ import {
 } from 'src/engine/api/rest/input-request-parsers/rest-input-request-parser.exception';
 import { type AuthenticatedRequest } from 'src/engine/api/rest/types/authenticated-request';
 
+// Parses the `?group_by=[...]` REST query param (a JSON array of groupBy
+// entries) into an ObjectRecordGroupBy; throws on malformed JSON.
 export const parseGroupByRestRequest = (
   request: AuthenticatedRequest,
 ): ObjectRecordGroupBy => {

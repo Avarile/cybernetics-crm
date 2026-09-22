@@ -1,3 +1,7 @@
+// GraphQL resolver exposing authentication operations: password sign-in/up,
+// email verification, login-token exchange (including impersonation),
+// password reset, API key/playground token generation and workspace logo
+// upload during onboarding.
 import { UseFilters, UseGuards, UsePipes } from '@nestjs/common';
 import { Args, Context, Mutation, Query } from '@nestjs/graphql';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -147,6 +151,7 @@ export class AuthResolver {
     private readonly fileCorePictureService: FileCorePictureService,
   ) {}
 
+  // Checks whether a user account exists for the given email.
   @UseGuards(CaptchaGuard, PublicEndpointGuard, NoPermissionGuard)
   @Query(() => CheckUserExistDTO)
   async checkUserExists(
@@ -157,6 +162,7 @@ export class AuthResolver {
     );
   }
 
+  // Builds the redirect URL to start an SSO login flow for a given identity provider.
   @Mutation(() => GetAuthorizationUrlForSSODTO)
   @UseGuards(PublicEndpointGuard, NoPermissionGuard)
   async getAuthorizationUrlForSSO(
@@ -168,6 +174,7 @@ export class AuthResolver {
     );
   }
 
+  // Validates that a workspace invite hash is still usable.
   @Query(() => WorkspaceInviteHashValidDTO)
   @UseGuards(PublicEndpointGuard, NoPermissionGuard)
   async checkWorkspaceInviteHashIsValid(
@@ -178,6 +185,7 @@ export class AuthResolver {
     );
   }
 
+  // Resolves the workspace targeted by an invite hash, or throws if invalid.
   @Query(() => WorkspaceEntity)
   @UseGuards(PublicEndpointGuard, NoPermissionGuard)
   async findWorkspaceFromInviteHash(
@@ -188,6 +196,8 @@ export class AuthResolver {
     );
   }
 
+  // Validates email/password credentials and issues a short-lived login
+  // token scoped to the workspace resolved from the request origin.
   @Mutation(() => LoginTokenDTO)
   @UseGuards(CaptchaGuard, PublicEndpointGuard, NoPermissionGuard)
   async getLoginTokenFromCredentials(
@@ -223,6 +233,8 @@ export class AuthResolver {
     return { loginToken };
   }
 
+  // Validates password credentials and returns the user's available
+  // workspaces along with a workspace-agnostic access token and refresh token.
   @Mutation(() => AvailableWorkspacesAndAccessTokensDTO)
   @UseGuards(CaptchaGuard, PublicEndpointGuard, NoPermissionGuard)
   async signIn(
@@ -261,6 +273,8 @@ export class AuthResolver {
     };
   }
 
+  // Consumes an email verification token, marks the user verified, applies
+  // any pending email change, and issues a login token for the resolved workspace.
   @Mutation(() => VerifyEmailAndGetLoginTokenDTO)
   @UseGuards(PublicEndpointGuard, NoPermissionGuard)
   async verifyEmailAndGetLoginToken(
@@ -306,6 +320,8 @@ export class AuthResolver {
     return { loginToken, workspaceUrls };
   }
 
+  // Consumes an email verification token, marks the user verified, and
+  // returns the user's available workspaces with a workspace-agnostic token pair.
   @Mutation(() => AvailableWorkspacesAndAccessTokensDTO)
   @UseGuards(PublicEndpointGuard, NoPermissionGuard)
   async verifyEmailAndGetWorkspaceAgnosticToken(
@@ -361,6 +377,7 @@ export class AuthResolver {
     };
   }
 
+  // Verifies a login token plus a two-factor OTP code, then issues full auth tokens.
   @Mutation(() => AuthTokens)
   @UseGuards(CaptchaGuard, PublicEndpointGuard, NoPermissionGuard)
   async getAuthTokensFromOTP(
@@ -390,6 +407,8 @@ export class AuthResolver {
     return await this.authService.verify(email, workspace.id, authProvider);
   }
 
+  // Creates a new user account without a workspace, sends a verification
+  // email, and returns available workspaces with a workspace-agnostic token pair.
   @Mutation(() => AvailableWorkspacesAndAccessTokensDTO)
   @UseGuards(CaptchaGuard, PublicEndpointGuard, NoPermissionGuard)
   async signUp(
@@ -444,6 +463,9 @@ export class AuthResolver {
     };
   }
 
+  // Signs a user up directly into a target workspace (via invite hash or
+  // personal invite token), creating the account and workspace membership,
+  // then sends a verification email and issues a login token.
   @Mutation(() => SignUpDTO)
   @UseGuards(CaptchaGuard, PublicEndpointGuard, NoPermissionGuard)
   async signUpInWorkspace(
@@ -518,6 +540,7 @@ export class AuthResolver {
     };
   }
 
+  // Checks whether a subdomain is free to use for a new workspace.
   @Query(() => SubdomainAvailabilityDTO)
   @UseGuards(UserAuthGuard, NoPermissionGuard)
   async checkWorkspaceSubdomainAvailability(
@@ -526,6 +549,8 @@ export class AuthResolver {
     return this.subdomainManagerService.getSubdomainAvailability(subdomain);
   }
 
+  // Returns default subdomain/display-name suggestions for a new workspace
+  // based on the current user's email.
   @Query(() => WorkspaceCreationDefaultsDTO)
   @UseGuards(UserAuthGuard, NoPermissionGuard)
   async getWorkspaceCreationDefaults(
@@ -538,6 +563,7 @@ export class AuthResolver {
     );
   }
 
+  // Creates a brand-new workspace for the already-authenticated current user.
   @Mutation(() => SignUpDTO)
   @UseGuards(UserAuthGuard, NoPermissionGuard)
   async signUpInNewWorkspace(
@@ -567,6 +593,7 @@ export class AuthResolver {
     };
   }
 
+  // Uploads a logo for a workspace that is still pending creation/setup.
   @Mutation(() => FileWithSignedUrlDTO)
   @UseGuards(UserAuthGuard, NoPermissionGuard)
   async uploadNewWorkspaceLogo(
@@ -595,6 +622,8 @@ export class AuthResolver {
     });
   }
 
+  // Issues a short-lived transient token for the current user's workspace
+  // member, used for narrowly-scoped follow-up requests.
   @Mutation(() => TransientTokenDTO)
   @UseGuards(UserAuthGuard, NoPermissionGuard)
   async generateTransientToken(
@@ -619,6 +648,9 @@ export class AuthResolver {
     return { transientToken };
   }
 
+  // Exchanges a login token for full auth tokens. Handles two paths:
+  // impersonation logins (validated and audit-logged separately) and
+  // regular logins (which additionally enforce 2FA requirements).
   @Mutation(() => AuthTokens)
   @UseGuards(PublicEndpointGuard, NoPermissionGuard)
   async getAuthTokensFromLoginToken(
@@ -672,12 +704,15 @@ export class AuthResolver {
     }
   }
 
+  // Verifies and decodes a login token JWT.
   private async validateAndDecodeLoginToken(
     loginToken: string,
   ): Promise<LoginTokenJwtPayload> {
     return await this.loginTokenService.verifyLoginToken(loginToken);
   }
 
+  // Resolves the workspace for the request origin and ensures it matches
+  // the workspace the token was issued for.
   private async validateWorkspaceAccess(
     origin: string,
     tokenWorkspaceId: string,
@@ -705,6 +740,8 @@ export class AuthResolver {
     return workspace;
   }
 
+  // Loads the user by email, ensures their email is verified, and loads
+  // their membership in the target workspace.
   private async validateUserAccess(
     email: string,
     workspaceId: string,
@@ -722,6 +759,8 @@ export class AuthResolver {
     return { user, userWorkspace };
   }
 
+  // Enforces the workspace's two-factor authentication requirement for a
+  // non-impersonation login.
   private async validateRegularAuthentication(
     workspace: WorkspaceEntity,
     userWorkspace: UserWorkspaceEntity,
@@ -732,6 +771,10 @@ export class AuthResolver {
     );
   }
 
+  // Validates that the impersonator is authorized to impersonate the target
+  // user, emitting audit events for the attempt, denial reason, and success.
+  // Throws if either user-workspace is missing, they are the same user, or
+  // authorization is denied.
   private async validateAndLogImpersonation(
     tokenPayload: LoginTokenJwtPayload,
     workspace: WorkspaceEntity,
@@ -829,6 +872,7 @@ export class AuthResolver {
     };
   }
 
+  // Generates an OAuth-style authorization code for a third-party application.
   @Mutation(() => AuthorizeAppDTO)
   @UseGuards(UserAuthGuard, NoPermissionGuard)
   async authorizeApp(
@@ -843,6 +887,7 @@ export class AuthResolver {
     );
   }
 
+  // Exchanges a refresh token (app token) for a new pair of auth tokens.
   @Mutation(() => AuthTokens)
   @UseGuards(PublicEndpointGuard, NoPermissionGuard)
   async renewToken(@Args() args: AppTokenInput): Promise<AuthTokens> {
@@ -858,6 +903,7 @@ export class AuthResolver {
     RequireAccessTokenGuard,
     SettingsPermissionGuard(PermissionFlagType.API_KEYS_AND_WEBHOOKS),
   )
+  // Generates a long-lived API key token for the workspace.
   @Mutation(() => ApiKeyToken)
   async generateApiKeyToken(
     @Args() args: ApiKeyTokenInput,
@@ -875,6 +921,7 @@ export class AuthResolver {
     RequireAccessTokenGuard,
     SettingsPermissionGuard(PermissionFlagType.API_KEYS_AND_WEBHOOKS),
   )
+  // Generates a token scoped for use in the GraphQL playground.
   @Mutation(() => AuthToken)
   async generatePlaygroundToken(
     @AuthUser() user: UserEntity,
@@ -888,6 +935,7 @@ export class AuthResolver {
     });
   }
 
+  // Generates a password reset token and emails the reset link to the user.
   @Mutation(() => EmailPasswordResetLinkDTO)
   @UseGuards(PublicEndpointGuard, NoPermissionGuard)
   async emailPasswordResetLink(
@@ -907,6 +955,7 @@ export class AuthResolver {
     });
   }
 
+  // Validates a password reset token, updates the password, and invalidates the token.
   @Mutation(() => InvalidatePasswordDTO)
   @UseGuards(PublicEndpointGuard, NoPermissionGuard)
   async updatePasswordViaResetToken(
@@ -923,6 +972,7 @@ export class AuthResolver {
     return await this.resetPasswordService.invalidatePasswordResetToken(id);
   }
 
+  // Checks whether a password reset token is still valid.
   @Query(() => ValidatePasswordResetTokenDTO)
   @UseGuards(PublicEndpointGuard, NoPermissionGuard)
   async validatePasswordResetToken(

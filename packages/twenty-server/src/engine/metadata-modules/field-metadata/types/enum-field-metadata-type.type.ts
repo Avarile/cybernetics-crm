@@ -1,3 +1,4 @@
+// Field types whose values are drawn from a fixed set of options.
 import { FieldMetadataType } from 'twenty-shared/types';
 
 const enumFieldTypes = [

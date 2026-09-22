@@ -1,3 +1,6 @@
+// Builds and caches the per-workspace map of flat logic functions from the
+// database entities.
+
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -29,6 +32,8 @@ export class WorkspaceFlatLogicFunctionMapCacheService extends WorkspaceCachePro
     super();
   }
 
+  // Loads all logic functions and applications for the workspace, converts
+  // each entity to its flat representation, and assembles the flat entity maps.
   async computeForCache(
     workspaceId: string,
   ): Promise<FlatEntityMaps<FlatLogicFunction>> {

@@ -7,6 +7,7 @@ import { type MessageQueueWorkerOptions } from 'src/engine/core-modules/message-
 
 import { type MessageQueue } from 'src/engine/core-modules/message-queue/message-queue.constants';
 
+// Contract implemented by each message queue backend (BullMQ, sync)
 export interface MessageQueueDriver {
   add<T extends MessageQueueJobData>(
     queueName: MessageQueue,

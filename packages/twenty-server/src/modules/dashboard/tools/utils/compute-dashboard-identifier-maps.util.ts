@@ -6,6 +6,8 @@ import {
   type DashboardToolDependencies,
 } from 'src/modules/dashboard/tools/types/dashboard-tool-dependencies.type';
 
+// Builds the object-name and field-name lookup maps used to resolve
+// AI-supplied object/field names into metadata UUIDs for dashboard tools.
 export const computeDashboardIdentifierMaps = async (
   deps: Pick<DashboardToolDependencies, 'flatEntityMapsCacheService'>,
   context: DashboardToolContext,

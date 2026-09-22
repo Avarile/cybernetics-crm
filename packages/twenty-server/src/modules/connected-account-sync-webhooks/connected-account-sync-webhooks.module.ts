@@ -4,6 +4,7 @@ import { ConnectedAccountSyncWebhooksController } from 'src/modules/connected-ac
 import { GoogleWebhookDriverModule } from 'src/modules/connected-account-sync-webhooks/drivers/google/google-webhook-driver.module';
 import { MicrosoftWebhookDriverModule } from 'src/modules/connected-account-sync-webhooks/drivers/microsoft/microsoft-webhook-driver.module';
 
+// Exposes the public webhook controller and its provider driver modules.
 @Module({
   imports: [GoogleWebhookDriverModule, MicrosoftWebhookDriverModule],
   controllers: [ConnectedAccountSyncWebhooksController],

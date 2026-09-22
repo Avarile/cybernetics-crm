@@ -1,3 +1,6 @@
+// GraphQL input for looking up a logic function's logs, by id or by
+// application + name.
+
 import { Field, InputType } from '@nestjs/graphql';
 
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';

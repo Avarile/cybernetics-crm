@@ -1,3 +1,4 @@
+// NestJS module providing the file URL signing service.
 import { Module } from '@nestjs/common';
 
 import { JwtModule } from 'src/engine/core-modules/jwt/jwt.module';

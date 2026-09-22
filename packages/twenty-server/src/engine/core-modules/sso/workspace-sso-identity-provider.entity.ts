@@ -1,5 +1,7 @@
 /* @license Enterprise */
 
+// TypeORM entity for a workspace's configured SSO identity provider (OIDC or
+// SAML), storing both providers' fields on one row with nullable columns.
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import {
   Column,

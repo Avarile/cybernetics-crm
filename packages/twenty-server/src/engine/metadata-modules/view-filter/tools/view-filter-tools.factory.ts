@@ -9,6 +9,7 @@ import { ViewFilterService } from 'src/engine/metadata-modules/view-filter/servi
 import { type ViewFilterValue } from 'src/engine/metadata-modules/view-filter/types/view-filter-value.type';
 import { WorkspaceMigrationBuilderException } from 'src/engine/workspace-manager/workspace-migration/exceptions/workspace-migration-builder-exception';
 
+// Filter operand values exposed to the AI tool schemas below.
 const VIEW_FILTER_OPERAND_OPTIONS = Object.values(ViewFilterOperand);
 
 const GetViewFiltersInputSchema = z.object({
@@ -89,9 +90,11 @@ const DeleteViewFilterInputSchema = z.object({
 });
 
 @Injectable()
+// Builds the AI agent tool set for reading and writing view filters.
 export class ViewFilterToolsFactory {
   constructor(private readonly viewFilterService: ViewFilterService) {}
 
+  // Builds the read-only tools (listing view filters) exposed to AI agents.
   generateReadTools(workspaceId: string): ToolSet {
     return {
       get_view_filters: {
@@ -118,6 +121,9 @@ export class ViewFilterToolsFactory {
     };
   }
 
+  // Builds the write tools (create/update/delete view filters) exposed to
+  // AI agents, translating workspace migration validation errors into
+  // agent-friendly error messages.
   generateWriteTools(workspaceId: string): ToolSet {
     return {
       create_view_filter: {

@@ -4,6 +4,8 @@ import { PageLayoutType } from 'src/engine/metadata-modules/page-layout/enums/pa
 import { PAGE_LAYOUT_SEEDS } from 'src/engine/workspace-manager/dev-seeder/core/constants/page-layout-seeds.constant';
 import { generateSeedId } from 'src/engine/workspace-manager/dev-seeder/core/utils/generate-seed-id.util';
 
+// Returns the seed page layouts (sales/customer/team dashboards and the
+// documentation standalone page) for a workspace.
 export const getPageLayoutFlatEntitySeeds = ({
   workspaceId,
   flatApplication,

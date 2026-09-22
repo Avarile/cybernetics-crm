@@ -1,3 +1,5 @@
+// Exception type for all AI-related failures (agents, chat, models, billing),
+// pairing a machine-readable code with a translated user-facing message.
 import { type MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { assertUnreachable } from 'twenty-shared/utils';
@@ -25,6 +27,7 @@ export enum AiExceptionCode {
   STREAM_INTERRUPTED = 'STREAM_INTERRUPTED',
 }
 
+// Maps each AI exception code to its default translated user-facing message.
 const getAiExceptionUserFriendlyMessage = (code: AiExceptionCode) => {
   switch (code) {
     case AiExceptionCode.AGENT_NOT_FOUND:
@@ -68,6 +71,8 @@ const getAiExceptionUserFriendlyMessage = (code: AiExceptionCode) => {
   }
 };
 
+// Thrown for AI-domain errors; defaults to the code's standard user-facing
+// message unless one is explicitly overridden.
 export class AiException extends CustomException<AiExceptionCode> {
   constructor(
     message: string,

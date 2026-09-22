@@ -1,3 +1,5 @@
+// Listens for object record destroy events, extracts any FILES-field file
+// ids from the deleted records, and enqueues them for storage deletion.
 import { Injectable } from '@nestjs/common';
 
 import { type ObjectRecordDestroyEvent } from 'twenty-shared/database-events';
@@ -34,6 +36,8 @@ export class FilesFieldDeletionListener {
   ) {}
 
   @OnDatabaseBatchEvent('*', DatabaseEventAction.DESTROYED)
+  // For a batch of destroyed records, finds any FILES-type fields on their
+  // object and enqueues deletion of every attached file id found.
   async handleDestroyedEvent(
     payload: WorkspaceEventBatch<ObjectRecordDestroyEvent>,
   ) {

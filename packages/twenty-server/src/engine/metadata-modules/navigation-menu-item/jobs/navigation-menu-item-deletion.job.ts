@@ -1,3 +1,6 @@
+// Background job that cascades navigation menu item deletion when records
+// they point at are deleted.
+
 import { Scope } from '@nestjs/common';
 
 import { Process } from 'src/engine/core-modules/message-queue/decorators/process.decorator';
@@ -19,6 +22,8 @@ export class NavigationMenuItemDeletionJob {
     private readonly navigationMenuItemDeletionService: NavigationMenuItemDeletionService,
   ) {}
 
+  // Delegates to the deletion service to remove navigation menu items
+  // targeting the deleted records.
   @Process(NavigationMenuItemDeletionJob.name)
   async handle(data: NavigationMenuItemDeletionJobData): Promise<void> {
     await this.navigationMenuItemDeletionService.deleteNavigationMenuItemsForDeletedRecords(

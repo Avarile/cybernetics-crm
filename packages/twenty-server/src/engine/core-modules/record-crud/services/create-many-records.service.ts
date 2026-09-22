@@ -1,3 +1,6 @@
+// Bulk-creates records for a given object on behalf of workflows/tools,
+// enforcing automation permissions and stamping actor metadata.
+
 import { Injectable, Logger } from '@nestjs/common';
 
 import { FieldActorSource } from 'twenty-shared/types';
@@ -23,6 +26,8 @@ export class CreateManyRecordsService {
     private readonly commonApiContextBuilder: CommonApiContextBuilderService,
   ) {}
 
+  // Creates multiple records for objectName, rejecting objects that automation
+  // is not allowed to manage and returning a ToolOutput summary.
   async execute(params: CreateManyRecordsParams): Promise<ToolOutput> {
     const { objectName, objectRecords, authContext } = params;
 

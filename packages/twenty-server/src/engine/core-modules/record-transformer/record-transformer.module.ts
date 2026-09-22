@@ -1,3 +1,4 @@
+// NestJS module exposing RecordInputTransformerService.
 import { Module } from '@nestjs/common';
 
 import { RecordInputTransformerService } from './services/record-input-transformer.service';

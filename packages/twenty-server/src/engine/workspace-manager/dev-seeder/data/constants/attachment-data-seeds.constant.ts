@@ -1,3 +1,4 @@
+// Seed data for sample dev-seeded attachments linked to notes/companies/etc.
 import { FieldActorSource } from 'twenty-shared/types';
 
 import { COMPANY_DATA_SEED_IDS } from 'src/engine/workspace-manager/dev-seeder/data/constants/company-data-seeds.constant';

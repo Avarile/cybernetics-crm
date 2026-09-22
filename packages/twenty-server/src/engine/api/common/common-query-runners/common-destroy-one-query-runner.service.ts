@@ -24,6 +24,8 @@ import { FlatEntityMaps } from 'src/engine/metadata-modules/flat-entity/types/fl
 import { FlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-metadata/types/flat-field-metadata.type';
 import { FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object-metadata/types/flat-object-metadata.type';
 
+// Handles destroyOne by delegating to CommonDestroyManyQueryRunnerService
+// with an id-equality filter.
 @Injectable()
 export class CommonDestroyOneQueryRunnerService extends CommonBaseQueryRunnerService<
   DestroyOneQueryArgs,
@@ -37,6 +39,7 @@ export class CommonDestroyOneQueryRunnerService extends CommonBaseQueryRunnerSer
 
   protected readonly operationName = CommonQueryNames.DESTROY_ONE;
 
+  // Delegates to destroyMany filtered by id, throwing if no record matched.
   async run(
     args: CommonExtendedInput<DestroyOneQueryArgs>,
     queryRunnerContext: CommonExtendedQueryRunnerContext,
@@ -62,6 +65,7 @@ export class CommonDestroyOneQueryRunnerService extends CommonBaseQueryRunnerSer
     return result[0];
   }
 
+  // No args transformation needed for destroyOne.
   async computeArgs(
     args: CommonInput<DestroyOneQueryArgs>,
     _queryRunnerContext: CommonBaseQueryRunnerContext,
@@ -69,6 +73,7 @@ export class CommonDestroyOneQueryRunnerService extends CommonBaseQueryRunnerSer
     return args;
   }
 
+  // Runs the destroyed record through the common result-getter pipeline.
   async processQueryResult(
     queryResult: ObjectRecord,
     flatObjectMetadata: FlatObjectMetadata,
@@ -85,6 +90,7 @@ export class CommonDestroyOneQueryRunnerService extends CommonBaseQueryRunnerSer
     );
   }
 
+  // Requires a target id to be present.
   async validate(
     args: CommonInput<DestroyOneQueryArgs>,
     _queryRunnerContext: CommonBaseQueryRunnerContext,

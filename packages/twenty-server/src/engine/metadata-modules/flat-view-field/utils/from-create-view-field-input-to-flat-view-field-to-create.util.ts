@@ -8,6 +8,7 @@ import { DEFAULT_VIEW_FIELD_SIZE } from 'src/engine/metadata-modules/flat-view-f
 import { type CreateViewFieldInput } from 'src/engine/metadata-modules/view-field/dtos/inputs/create-view-field.input';
 import { type UniversalFlatViewField } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-view-field.type';
 
+// Inputs for building a new flat view field from a create input.
 export type FromCreateViewFieldInputToFlatViewFieldToCreateArgs = {
   createViewFieldInput: CreateViewFieldInput;
   flatApplication: FlatApplication;
@@ -16,6 +17,9 @@ export type FromCreateViewFieldInputToFlatViewFieldToCreateArgs = {
   'flatFieldMetadataMaps' | 'flatViewMaps' | 'flatViewFieldGroupMaps'
 >;
 
+// Builds a new flat view field from a create input, resolving referenced
+// field/view/group ids to universal identifiers and defaulting unset
+// fields (e.g. default size and visibility).
 export const fromCreateViewFieldInputToFlatViewFieldToCreate = ({
   createViewFieldInput: rawCreateViewFieldInput,
   flatApplication,

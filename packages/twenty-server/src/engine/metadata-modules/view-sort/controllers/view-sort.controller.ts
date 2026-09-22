@@ -44,9 +44,12 @@ import { ViewSortDirection } from 'twenty-shared/types';
   FlatEntityMapsRestApiExceptionFilter,
   WorkspaceMigrationRunnerRestApiExceptionFilter,
 )
+// REST API for view sorts (GraphQL exposes the same operations via
+// ViewSortResolver).
 export class ViewSortController {
   constructor(private readonly viewSortService: ViewSortService) {}
 
+  // Lists view sorts in the workspace, optionally filtered to one view.
   @Get()
   @UseGuards(NoPermissionGuard)
   async findMany(
@@ -60,6 +63,7 @@ export class ViewSortController {
     return this.viewSortService.findByWorkspaceId(workspace.id);
   }
 
+  // Fetches a single view sort by id, throwing a not-found error if absent.
   @Get(':id')
   @UseGuards(NoPermissionGuard)
   async findOne(
@@ -86,6 +90,7 @@ export class ViewSortController {
     return viewSort;
   }
 
+  // Creates a new view sort.
   @Post()
   @UseGuards(CreateViewSortPermissionGuard)
   async create(
@@ -98,6 +103,7 @@ export class ViewSortController {
     });
   }
 
+  // Updates a view sort's direction.
   @Patch(':id')
   @UseGuards(UpdateViewSortPermissionGuard)
   async update(
@@ -111,6 +117,7 @@ export class ViewSortController {
     });
   }
 
+  // Soft-deletes a view sort.
   @Delete(':id')
   @UseGuards(DeleteViewSortPermissionGuard)
   async delete(

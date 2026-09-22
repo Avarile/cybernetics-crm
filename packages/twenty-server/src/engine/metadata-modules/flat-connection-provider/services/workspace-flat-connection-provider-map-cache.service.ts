@@ -14,6 +14,8 @@ import { WorkspaceCache } from 'src/engine/workspace-cache/decorators/workspace-
 import { createIdToUniversalIdentifierMap } from 'src/engine/workspace-cache/utils/create-id-to-universal-identifier-map.util';
 import { addFlatEntityToFlatEntityMapsThroughMutationOrThrow } from 'src/engine/workspace-manager/workspace-migration/utils/add-flat-entity-to-flat-entity-maps-through-mutation-or-throw.util';
 
+// Builds and caches the workspace's flat-connection-provider maps by loading connection
+// provider entities and resolving each provider's application id to its universal identifier.
 @Injectable()
 @WorkspaceCache('flatConnectionProviderMaps')
 export class WorkspaceFlatConnectionProviderMapCacheService extends WorkspaceCacheProvider<FlatConnectionProviderMaps> {
@@ -26,6 +28,8 @@ export class WorkspaceFlatConnectionProviderMapCacheService extends WorkspaceCac
     super();
   }
 
+  // Loads all connection providers and application universal identifiers for the
+  // workspace, then assembles them into flat-connection-provider maps.
   async computeForCache(
     workspaceId: string,
   ): Promise<FlatConnectionProviderMaps> {

@@ -1,3 +1,8 @@
+// Walks a GraphQL selection set for an object and translates it into
+// TypeORM find-options shape: which columns to select, which relations
+// to join (recursively, via the relation parser), and which aggregates
+// to compute. Also flags queries with 2+ nested one-to-many relations,
+// which callers use to guard against cartesian-product blowups.
 import {
   FieldMetadataType,
   compositeTypeDefinitions,
@@ -47,6 +52,8 @@ export class GraphqlQuerySelectedFieldsParser {
     this.aggregateParser = new GraphqlQuerySelectedFieldsAggregateParser();
   }
 
+  // Entry point: handles both a connection-shaped selection (edges/node)
+  // and a plain record selection, accumulating select/relations/aggregate.
   parse(
     // oxlint-disable-next-line typescript/no-explicit-any
     graphqlSelectedFields: Partial<Record<string, any>>,
@@ -89,6 +96,9 @@ export class GraphqlQuerySelectedFieldsParser {
     return accumulator;
   }
 
+  // Iterates every field on the object's metadata and, for each one that
+  // was actually requested, records it as a select, relation (recursing
+  // into the relation parser), or expanded composite sub-fields.
   private parseRecordFields(
     // oxlint-disable-next-line typescript/no-explicit-any
     graphqlSelectedFields: Partial<Record<string, any>>,
@@ -202,6 +212,8 @@ export class GraphqlQuerySelectedFieldsParser {
     }
   }
 
+  // Unwraps a Relay-style connection selection (edges.node) down to its
+  // record fields, plus any aggregate fields requested at the connection root.
   private parseConnectionField(
     // oxlint-disable-next-line typescript/no-explicit-any
     graphqlSelectedFields: Partial<Record<string, any>>,
@@ -226,6 +238,7 @@ export class GraphqlQuerySelectedFieldsParser {
     );
   }
 
+  // Detects a connection-shaped selection by the presence of an 'edges' field.
   private isRootConnection(
     // oxlint-disable-next-line typescript/no-explicit-any
     graphqlSelectedFields: Partial<Record<string, any>>,
@@ -233,6 +246,8 @@ export class GraphqlQuerySelectedFieldsParser {
     return Object.keys(graphqlSelectedFields).includes('edges');
   }
 
+  // Expands a composite field's requested sub-fields into their
+  // underlying column select flags (e.g. addressCity, addressCountry).
   private parseCompositeField(
     fieldMetadata: FlatFieldMetadata,
     // oxlint-disable-next-line typescript/no-explicit-any

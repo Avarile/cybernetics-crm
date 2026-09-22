@@ -1,3 +1,8 @@
+// CRUD and lifecycle management for per-workspace application installs
+// (ApplicationEntity): lookups, creation of the built-in Twenty Standard
+// and workspace Custom applications with their default package files,
+// updates that keep the flat application cache in sync, and full deletion
+// (DB rows, files, and cache invalidation).
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 
@@ -61,6 +66,8 @@ export class ApplicationService {
     private readonly applicationVariableRepository: Repository<ApplicationVariableEntity>,
   ) {}
 
+  // Returns an installed application's default role id, throwing if the
+  // application or its default role isn't set.
   async findApplicationRoleId(
     applicationId: string,
     workspaceId: string,
@@ -79,6 +86,9 @@ export class ApplicationService {
     return application.defaultRoleId;
   }
 
+  // Resolves the workspace's built-in Twenty Standard and workspace
+  // Custom flat applications from the cache, throwing if either is
+  // missing.
   async findWorkspaceTwentyStandardAndCustomApplicationOrThrow({
     workspace: workspaceInput,
     workspaceId,
@@ -146,6 +156,8 @@ export class ApplicationService {
     };
   }
 
+  // Returns all applications installed in a workspace, with their
+  // registration.
   async findManyApplications(
     workspaceId: string,
   ): Promise<ApplicationEntity[]> {
@@ -155,6 +167,8 @@ export class ApplicationService {
     });
   }
 
+  // Returns all non-deleted flat applications installed in a workspace,
+  // from the cache.
   async findManyInstalledFlatApplications(
     workspaceId: string,
   ): Promise<FlatApplication[]> {
@@ -169,6 +183,9 @@ export class ApplicationService {
     );
   }
 
+  // Looks up an application by id or universal identifier and hydrates it
+  // with its logic functions, agents, front components, command menu
+  // items, objects, and variables.
   async findOneApplication({
     id,
     universalIdentifier,
@@ -237,6 +254,7 @@ export class ApplicationService {
     return application;
   }
 
+  // Same as findOneApplication, throwing if not found.
   async findOneApplicationOrThrow({
     id,
     universalIdentifier,
@@ -262,12 +280,15 @@ export class ApplicationService {
     return application;
   }
 
+  // Looks up an application by id, with no workspace scoping.
   async findById(id: string): Promise<ApplicationEntity | null> {
     return this.applicationRepository.findOne({
       where: { id },
     });
   }
 
+  // Returns an application's configured primary public domain name, or
+  // null.
   async findPrimaryPublicDomainName({
     applicationId,
     workspaceId,
@@ -283,6 +304,7 @@ export class ApplicationService {
     return application?.primaryPublicDomain?.domain ?? null;
   }
 
+  // Looks up an application by universal identifier within a workspace.
   async findByUniversalIdentifier({
     universalIdentifier,
     workspaceId,
@@ -344,6 +366,8 @@ export class ApplicationService {
     }));
   }
 
+  // Returns a workspace's built-in Twenty Standard application entity
+  // (and its workspace), throwing if either can't be found.
   async findTwentyStandardApplicationOrThrow(workspaceId: string): Promise<{
     application: ApplicationEntity;
     workspace: WorkspaceEntity;
@@ -381,6 +405,9 @@ export class ApplicationService {
     return { application, workspace };
   }
 
+  // Creates the workspace's built-in Twenty Standard application (a no-op
+  // if it already exists) along with its default package files, and
+  // refreshes the flat application cache unless told to skip it.
   async createTwentyStandardApplication(
     {
       workspaceId,
@@ -431,6 +458,9 @@ export class ApplicationService {
     return twentyStandardApplication;
   }
 
+  // Creates the workspace's Custom application (the container for
+  // user-defined objects/logic not belonging to an installed app), along
+  // with its LOCAL registration and default package files.
   async createWorkspaceCustomApplication(
     {
       workspaceId,
@@ -481,6 +511,8 @@ export class ApplicationService {
     return workspaceCustomApplication;
   }
 
+  // Creates the LOCAL application registration backing the workspace's
+  // Custom application, owned by the workspace itself.
   async createWorkspaceCustomApplicationRegistration(
     {
       workspaceId,
@@ -514,6 +546,8 @@ export class ApplicationService {
     return this.applicationRegistrationRepository.save(applicationRegistration);
   }
 
+  // Writes the bundled default package.json/yarn.lock as the application's
+  // dependency files and records their checksums and available packages.
   async uploadDefaultPackageFilesAndSetFileIds(
     application: Pick<
       ApplicationEntity,
@@ -580,6 +614,8 @@ export class ApplicationService {
     }
   }
 
+  // Creates an application row, refreshing the flat application cache
+  // unless running inside a caller-managed transaction (queryRunner).
   async create(
     data: Partial<ApplicationEntity> & { workspaceId: string },
     queryRunner?: QueryRunner,
@@ -599,6 +635,7 @@ export class ApplicationService {
     return savedApplication;
   }
 
+  // Updates an application row and refreshes the flat application cache.
   async update(
     id: string,
     data: Parameters<typeof this.applicationRepository.update>[1] & {
@@ -623,6 +660,10 @@ export class ApplicationService {
     return updatedApplication;
   }
 
+  // Deletes an application: clears its package file references, removes
+  // its file storage rows and the application row itself in one
+  // transaction, then best-effort deletes its storage folder and
+  // invalidates all flat entity caches for the workspace.
   async delete(universalIdentifier: string, workspaceId: string) {
     const application = await this.findByUniversalIdentifier({
       universalIdentifier,

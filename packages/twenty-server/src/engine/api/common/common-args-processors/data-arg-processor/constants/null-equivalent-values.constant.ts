@@ -1,3 +1,5 @@
+// Default "empty" values used to detect whether a composite/simple field is effectively
+// null so it can be treated consistently across validation, filtering and Postgres defaults.
 import { FieldMetadataType } from 'twenty-shared/types';
 
 export const POSTGRES_DEFAULT_TEXT_FIELD_NULL_EQUIVALENT_VALUE = '';

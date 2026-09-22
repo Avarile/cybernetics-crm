@@ -25,6 +25,10 @@ type BuildCursorCumulativeWhereConditionsParams<CursorValue> = {
   }: BuildCursorConditionParams<CursorValue>) => ObjectRecordFilter;
 };
 
+// Builds the classic keyset-pagination OR-of-ANDs condition from ordered
+// cursor entries: for each entry, ANDs an equality condition on every
+// earlier cursor key with the direction-aware comparison on the current
+// key, producing one alternative per cursor field.
 export const buildCursorCumulativeWhereCondition = <
   CursorValue extends
     | ObjectRecordCursorLeafCompositeValue

@@ -12,6 +12,11 @@ import { MessageFolderEntity } from 'src/engine/metadata-modules/message-folder/
 const UUID_REGEX =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
+// Workspace command (1.21.0): rewrites messageFolder.parentFolderId from an
+// internal row-id UUID reference to the parent's externalId (the provider's folder
+// id), which is what the field is meant to hold going forward. A value that isn't
+// a UUID is assumed to already be an externalId and left alone; a UUID whose parent
+// can't be resolved to an externalId is nulled out.
 @RegisteredWorkspaceCommand('1.21.0', 1775500011000)
 @Command({
   name: 'upgrade:1-21:migrate-message-folder-parent-id-to-external-id',
@@ -27,6 +32,9 @@ export class MigrateMessageFolderParentIdToExternalIdCommand extends Provisioned
     super(workspaceIteratorService);
   }
 
+  // Builds an id -> externalId map from all folders, then for each folder whose
+  // parentFolderId is a raw UUID, resolves it to the parent's externalId (or nulls
+  // it if unresolvable).
   override async runOnWorkspace({
     workspaceId,
     options,

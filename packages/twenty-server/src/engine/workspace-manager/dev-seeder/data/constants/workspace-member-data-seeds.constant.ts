@@ -1,3 +1,4 @@
+// Seed data for sample dev-seeded workspace members, linked to seeded users.
 import {
   SEED_APPLE_WORKSPACE_ID,
   SEED_YCOMBINATOR_WORKSPACE_ID,

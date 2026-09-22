@@ -17,6 +17,7 @@ import { type CustomException } from 'src/utils/custom-exception';
 
 @Injectable()
 @Catch(DashboardException)
+// Maps DashboardException codes to REST HTTP status codes.
 export class DashboardRestApiExceptionFilter implements ExceptionFilter {
   constructor(
     private readonly httpExceptionHandlerService: HttpExceptionHandlerService,

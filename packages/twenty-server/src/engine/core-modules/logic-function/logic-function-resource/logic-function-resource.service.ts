@@ -1,3 +1,6 @@
+// Manages a logic function's source and built code files in storage: seeding
+// new functions from a template project, uploading/reading/copying source
+// and built handler files, and preparing dependency files for local builds.
 import { Injectable } from '@nestjs/common';
 
 import crypto from 'crypto';
@@ -62,6 +65,8 @@ type CopySourceParams = Identifier & {
 export class LogicFunctionResourceService {
   constructor(private readonly fileStorageService: FileStorageService) {}
 
+  // Writes the seed project's source/built files for a new logic function
+  // and returns the resulting handler name and built-code checksum.
   async seedSourceFiles({
     workspaceId,
     applicationUniversalIdentifier,
@@ -122,6 +127,7 @@ export class LogicFunctionResourceService {
     };
   }
 
+  // Writes a logic function's source code to storage.
   async uploadSourceFile({
     sourceHandlerPath,
     workspaceId,
@@ -140,6 +146,7 @@ export class LogicFunctionResourceService {
     });
   }
 
+  // Deletes a logic function's source file from storage.
   async deleteSourceFile({
     sourceHandlerPath,
     workspaceId,
@@ -153,6 +160,7 @@ export class LogicFunctionResourceService {
     });
   }
 
+  // Writes a logic function's compiled/built code to storage.
   async uploadBuiltFile({
     workspaceId,
     applicationUniversalIdentifier,
@@ -175,6 +183,7 @@ export class LogicFunctionResourceService {
     });
   }
 
+  // Reads a logic function's source code, or null if the file doesn't exist.
   async getSourceFile({
     sourceHandlerPath,
     workspaceId,
@@ -204,6 +213,7 @@ export class LogicFunctionResourceService {
     }
   }
 
+  // Copies a logic function's source (and built, if present) files to new paths.
   async copyResources({
     fromSourceHandlerPath,
     toSourceHandlerPath,
@@ -254,6 +264,9 @@ export class LogicFunctionResourceService {
     });
   }
 
+  // Downloads an application's package.json/yarn.lock into a local folder
+  // for a layer build, synthesizing an empty yarn.lock if none exists, and
+  // stripping SDK packages that must not be resolved by the build.
   async copyDependenciesInMemory({
     applicationUniversalIdentifier,
     workspaceId,
@@ -354,6 +367,7 @@ export class LogicFunctionResourceService {
     );
   }
 
+  // Reads a logic function's built/compiled code as a string.
   async getBuiltCode({
     builtHandlerPath,
     workspaceId,
@@ -371,6 +385,7 @@ export class LogicFunctionResourceService {
     ).toString('utf-8');
   }
 
+  // Downloads a logic function's built code into a local folder for execution.
   async copyBuiltCodeInMemory({
     builtHandlerPath,
     workspaceId,

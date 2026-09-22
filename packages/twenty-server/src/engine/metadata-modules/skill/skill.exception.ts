@@ -4,6 +4,7 @@ import { assertUnreachable } from 'twenty-shared/utils';
 
 import { CustomException } from 'src/utils/custom-exception';
 
+// Error codes for invalid skill operations (missing skill, duplicate name, mutating standard skills, etc.).
 export enum SkillExceptionCode {
   SKILL_NOT_FOUND = 'SKILL_NOT_FOUND',
   SKILL_ALREADY_EXISTS = 'SKILL_ALREADY_EXISTS',
@@ -11,6 +12,7 @@ export enum SkillExceptionCode {
   INVALID_SKILL_INPUT = 'INVALID_SKILL_INPUT',
 }
 
+// Maps an exception code to the message shown to the end user.
 const getSkillExceptionUserFriendlyMessage = (code: SkillExceptionCode) => {
   switch (code) {
     case SkillExceptionCode.SKILL_NOT_FOUND:
@@ -26,6 +28,7 @@ const getSkillExceptionUserFriendlyMessage = (code: SkillExceptionCode) => {
   }
 };
 
+// Domain exception for skill failures, carrying a user-friendly message by default.
 export class SkillException extends CustomException<SkillExceptionCode> {
   constructor(
     message: string,

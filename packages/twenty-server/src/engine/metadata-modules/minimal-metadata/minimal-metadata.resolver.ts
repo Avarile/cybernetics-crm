@@ -11,6 +11,7 @@ import { WorkspaceAuthGuard } from 'src/engine/guards/workspace-auth.guard';
 import { MinimalMetadataDTO } from 'src/engine/metadata-modules/minimal-metadata/dtos/minimal-metadata.dto';
 import { MinimalMetadataService } from 'src/engine/metadata-modules/minimal-metadata/minimal-metadata.service';
 
+// GraphQL entry point for the lightweight bootstrap metadata payload.
 @MetadataResolver(() => MinimalMetadataDTO)
 @UseGuards(WorkspaceAuthGuard, NoPermissionGuard)
 export class MinimalMetadataResolver {
@@ -18,6 +19,7 @@ export class MinimalMetadataResolver {
     private readonly minimalMetadataService: MinimalMetadataService,
   ) {}
 
+  // Returns the minimal metadata payload for the current workspace/user/locale.
   @Query(() => MinimalMetadataDTO)
   async minimalMetadata(
     @AuthWorkspace() workspace: WorkspaceEntity,

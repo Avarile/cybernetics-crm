@@ -48,6 +48,9 @@ import {
 } from 'src/engine/metadata-modules/permissions/permissions.exception';
 import { PermissionsService } from 'src/engine/metadata-modules/permissions/permissions.service';
 import { PermissionsGraphqlApiExceptionFilter } from 'src/engine/metadata-modules/permissions/utils/permissions-graphql-api-exception.filter';
+
+// GraphQL resolver exposing billing portal/checkout sessions, plan and
+// interval switching, trial handling, and resource-credit usage queries.
 @MetadataResolver()
 @UsePipes(ResolverValidationPipe)
 @UseFilters(
@@ -65,6 +68,8 @@ export class BillingResolver {
     private readonly permissionsService: PermissionsService,
   ) {}
 
+  // Returns a Stripe billing portal URL for the workspace to manage payment
+  // methods or subscription details.
   @Query(() => BillingSessionDTO)
   @UseGuards(
     WorkspaceAuthGuard,
@@ -83,6 +88,8 @@ export class BillingResolver {
     };
   }
 
+  // Starts a subscription checkout: creates the subscription directly for
+  // no-payment-method trials, otherwise returns a Stripe checkout session URL.
   @Mutation(() => BillingSessionDTO)
   @UseGuards(WorkspaceAuthGuard, UserAuthGuard, NoPermissionGuard)
   async checkoutSession(
@@ -144,6 +151,8 @@ export class BillingResolver {
     }
   }
 
+  // Creates a Stripe PaymentIntent for a new subscription (used when payment
+  // must be collected up front rather than via checkout redirect).
   @Mutation(() => BillingPaymentIntentDTO)
   @UseGuards(WorkspaceAuthGuard, UserAuthGuard, NoPermissionGuard)
   async createSubscriptionPaymentIntent(
@@ -183,6 +192,8 @@ export class BillingResolver {
     WorkspaceAuthGuard,
     SettingsPermissionGuard(PermissionFlagType.BILLING),
   )
+  // Creates a SetupIntent so the workspace can add/update a payment method
+  // outside of a subscription checkout flow.
   async createBillingPaymentMethodSetupIntent(
     @AuthWorkspace() workspace: WorkspaceEntity,
   ): Promise<BillingPaymentIntentDTO> {
@@ -196,6 +207,7 @@ export class BillingResolver {
     WorkspaceAuthGuard,
     SettingsPermissionGuard(PermissionFlagType.BILLING),
   )
+  // Switches the workspace's subscription billing interval (e.g. monthly to yearly).
   async switchSubscriptionInterval(
     @AuthWorkspace() workspace: WorkspaceEntity,
   ) {
@@ -218,6 +230,7 @@ export class BillingResolver {
     WorkspaceAuthGuard,
     SettingsPermissionGuard(PermissionFlagType.BILLING),
   )
+  // Switches the workspace to a different billing plan.
   async switchBillingPlan(@AuthWorkspace() workspace: WorkspaceEntity) {
     await this.billingSubscriptionUpdateService.changePlan(workspace.id);
 
@@ -238,6 +251,7 @@ export class BillingResolver {
     WorkspaceAuthGuard,
     SettingsPermissionGuard(PermissionFlagType.BILLING),
   )
+  // Cancels a previously scheduled plan switch.
   async cancelSwitchBillingPlan(@AuthWorkspace() workspace: WorkspaceEntity) {
     await this.billingSubscriptionUpdateService.cancelSwitchPlan(workspace.id);
 
@@ -258,6 +272,7 @@ export class BillingResolver {
     WorkspaceAuthGuard,
     SettingsPermissionGuard(PermissionFlagType.BILLING),
   )
+  // Cancels a previously scheduled billing interval switch.
   async cancelSwitchBillingInterval(
     @AuthWorkspace() workspace: WorkspaceEntity,
   ) {
@@ -282,6 +297,7 @@ export class BillingResolver {
     WorkspaceAuthGuard,
     SettingsPermissionGuard(PermissionFlagType.BILLING),
   )
+  // Changes the price used for the workspace's resource-credit subscription item.
   async setResourceCreditSubscriptionPrice(
     @AuthWorkspace() workspace: WorkspaceEntity,
     @Args() { priceId }: BillingUpdateSubscriptionItemPriceInput,
@@ -305,6 +321,7 @@ export class BillingResolver {
 
   @Query(() => [BillingPlanDTO])
   @UseGuards(WorkspaceAuthGuard, NoPermissionGuard)
+  // Lists all available billing plans with their prices.
   async listPlans(): Promise<BillingPlanDTO[]> {
     const plans = await this.billingPlanService.listPlans();
 
@@ -316,6 +333,8 @@ export class BillingResolver {
     WorkspaceAuthGuard,
     SettingsPermissionGuard(PermissionFlagType.BILLING),
   )
+  // Ends the workspace's trial period early; if no payment method is on file,
+  // returns a billing portal URL to collect one instead of ending the trial.
   async endSubscriptionTrialPeriod(
     @AuthWorkspace() workspace: WorkspaceEntity,
   ): Promise<BillingEndTrialPeriodDTO> {
@@ -348,6 +367,7 @@ export class BillingResolver {
     WorkspaceAuthGuard,
     SettingsPermissionGuard(PermissionFlagType.BILLING),
   )
+  // Returns resource-credit usage for the workspace, converted to display units.
   async getResourceCreditUsage(
     @AuthWorkspace() workspace: WorkspaceEntity,
   ): Promise<BillingResourceCreditUsageDTO[]> {
@@ -369,6 +389,7 @@ export class BillingResolver {
     WorkspaceAuthGuard,
     SettingsPermissionGuard(PermissionFlagType.BILLING),
   )
+  // Cancels a previously scheduled resource-credit price switch.
   async cancelSwitchResourceCreditPrice(
     @AuthWorkspace() workspace: WorkspaceEntity,
   ) {
@@ -388,6 +409,8 @@ export class BillingResolver {
     };
   }
 
+  // Allows checkout during onboarding/incomplete-subscription states without
+  // a permission check; otherwise requires the BILLING setting permission.
   private async validateCanCheckoutSessionPermissionOrThrow({
     workspaceId,
     userWorkspaceId,

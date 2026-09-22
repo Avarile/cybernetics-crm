@@ -1,3 +1,6 @@
+// Serves marketplace catalog data for GraphQL resolvers: listing apps from
+// the cached catalog and building the full detail DTO (including asset
+// URLs and role/permission breakdown) for a single app.
 import { Injectable } from '@nestjs/common';
 
 import { type RoleManifest } from 'twenty-shared/application';
@@ -24,6 +27,8 @@ export class MarketplaceQueryService {
     private readonly coreEntityCacheService: CoreEntityCacheService,
   ) {}
 
+  // Reads the cached marketplace catalog and optionally filters to
+  // specific universal identifiers and/or vetted status.
   async findManyMarketplaceApps({
     universalIdentifiers,
     isVetted,
@@ -53,6 +58,8 @@ export class MarketplaceQueryService {
     return apps.filter((app) => app.isVetted === isVetted);
   }
 
+  // Looks up a registration by universal identifier and returns its full
+  // marketplace detail DTO.
   async findMarketplaceAppDetail(
     universalIdentifier: string,
   ): Promise<MarketplaceAppDetailDTO> {
@@ -62,6 +69,8 @@ export class MarketplaceQueryService {
     return this.toMarketplaceAppDetailDTO(registration);
   }
 
+  // Looks up an application registration by universal identifier, throwing
+  // if none exists.
   async findRegistrationByUniversalIdentifier(
     universalIdentifier: string,
   ): Promise<ApplicationRegistrationEntity> {
@@ -80,6 +89,9 @@ export class MarketplaceQueryService {
     return registration;
   }
 
+  // Maps a registration entity (falling back to manifest fields for
+  // metadata not yet promoted to registration columns) into the full
+  // marketplace app detail DTO, resolving logo/gallery asset URLs.
   private toMarketplaceAppDetailDTO(
     registration: ApplicationRegistrationEntity,
   ): MarketplaceAppDetailDTO {
@@ -144,6 +156,8 @@ export class MarketplaceQueryService {
     };
   }
 
+  // Maps a manifest role (with its permission entries) to the marketplace
+  // app role DTO shown to admins before installing.
   private toMarketplaceAppRoleDTO(role: RoleManifest): MarketplaceAppRoleDTO {
     return {
       universalIdentifier: role.universalIdentifier,

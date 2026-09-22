@@ -11,6 +11,9 @@ type WorkspaceTableColumnSets = {
   generatedColumns: Set<string>;
 };
 
+// Derives, per object, which columns are JSON-typed (need JSON-aware value
+// formatting) and which are generated (e.g. tsvector search columns, which must be
+// excluded from COPY since Postgres computes them itself).
 export const buildWorkspaceTableColumnSets = (
   workspaceId: string,
   objectMetadata: ObjectMetadataEntity,

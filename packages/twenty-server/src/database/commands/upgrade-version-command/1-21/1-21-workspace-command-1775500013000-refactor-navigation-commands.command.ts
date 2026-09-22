@@ -62,6 +62,11 @@ const SETTINGS_NAVIGATION_ITEM_KEYS = [
   'goToSettingsUpdates',
 ] as const satisfies ReadonlyArray<keyof typeof STANDARD_COMMAND_MENU_ITEMS>;
 
+// Workspace command (1.21.0): replaces the per-object GO_TO_* command menu items
+// with unified NAVIGATION-keyed items (one per active object plus each settings
+// page), relabels any stale NAVIGATION items to the interpolated label/icon, and,
+// once run across all workspaces, applies the CHK_CMD_MENU_ITEM_ENGINE_KEY_COHERENCE
+// check constraint on the core commandMenuItem table.
 @RegisteredWorkspaceCommand('1.21.0', 1775500013000)
 @Command({
   name: 'upgrade:1-21:refactor-navigation-commands',
@@ -80,6 +85,9 @@ export class RefactorNavigationCommandsCommand extends ProvisionedWorkspaceComma
     super(workspaceIteratorService);
   }
 
+  // After the per-workspace pass completes, applies the coherence check constraint
+  // once — but only when the command ran against every workspace (no -w filter),
+  // since the constraint would otherwise reject rows in workspaces not yet migrated.
   override async run(
     passedParams: string[],
     options: WorkspaceCommandOptions,
@@ -116,6 +124,10 @@ export class RefactorNavigationCommandsCommand extends ProvisionedWorkspaceComma
     }
   }
 
+  // Computes the GO_TO_* items to delete, the NAVIGATION items to create (one per
+  // active object plus settings pages, skipping ones that already exist by their
+  // deterministic v5 uuid), and any stale NAVIGATION items to relabel, then applies
+  // all three via a single workspace migration.
   override async runOnWorkspace({
     workspaceId,
     options,

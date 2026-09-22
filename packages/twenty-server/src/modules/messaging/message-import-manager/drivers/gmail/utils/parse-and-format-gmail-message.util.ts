@@ -11,6 +11,12 @@ import { buildReplyToParticipants } from 'src/modules/messaging/message-import-m
 import { extractMessageBodyText } from 'src/modules/messaging/message-import-manager/utils/extract-message-body-text.util';
 import { formatAddressObjectAsParticipants } from 'src/modules/messaging/message-import-manager/utils/format-address-object-as-participants.util';
 
+// Parses a raw Gmail API message into the pipeline's normalized message
+// shape: synthesizes a Message-ID for drafts (which Gmail may omit),
+// builds participants from from/reply-to/to/cc/bcc (falling back to the
+// Delivered-To header when there's no To), and drops messages with no
+// sender/thread/header id, or with no recipient participants unless it's
+// a draft.
 export const parseAndFormatGmailMessage = (
   message: gmailV1.Schema$Message,
   connectedAccount: Pick<ConnectedAccountEntity, 'handle' | 'handleAliases'>,

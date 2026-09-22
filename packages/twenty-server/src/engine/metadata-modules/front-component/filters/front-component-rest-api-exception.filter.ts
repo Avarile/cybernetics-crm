@@ -15,6 +15,8 @@ import {
 
 @Catch(FrontComponentException)
 @Injectable()
+// Maps FrontComponentException to the appropriate HTTP status/response
+// for the REST API.
 export class FrontComponentRestApiExceptionFilter implements ExceptionFilter {
   constructor(
     private readonly httpExceptionHandlerService: HttpExceptionHandlerService,

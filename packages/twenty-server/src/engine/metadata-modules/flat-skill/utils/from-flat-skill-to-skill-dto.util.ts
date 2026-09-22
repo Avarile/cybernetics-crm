@@ -1,6 +1,7 @@
 import { type FlatSkill } from 'src/engine/metadata-modules/flat-skill/types/flat-skill.type';
 import { type SkillDTO } from 'src/engine/metadata-modules/skill/dtos/skill.dto';
 
+// Maps a flat skill to the GraphQL SkillDTO shape.
 export const fromFlatSkillToSkillDto = (flatSkill: FlatSkill): SkillDTO => ({
   id: flatSkill.id,
   name: flatSkill.name,

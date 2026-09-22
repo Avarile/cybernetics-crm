@@ -1,3 +1,5 @@
+// GraphQL resolver exposing the mutation to toggle a public feature flag
+// from the workspace's "lab" settings page.
 import { UseFilters, UseGuards, UsePipes } from '@nestjs/common';
 import { Args, Mutation } from '@nestjs/graphql';
 
@@ -31,6 +33,8 @@ export class LabResolver {
 
   @UseGuards(WorkspaceAuthGuard)
   @Mutation(() => FeatureFlagDTO)
+  // Updates the workspace's value for a public feature flag, converting a
+  // rejected (non-public) flag into a GraphQL user input error.
   async updateLabPublicFeatureFlag(
     @Args('input') input: UpdateLabPublicFeatureFlagInput,
     @AuthWorkspace() workspace: WorkspaceEntity,

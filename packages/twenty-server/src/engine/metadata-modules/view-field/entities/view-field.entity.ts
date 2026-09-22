@@ -22,6 +22,8 @@ import { ViewFieldGroupEntity } from 'src/engine/metadata-modules/view-field-gro
 import { ViewEntity } from 'src/engine/metadata-modules/view/entities/view.entity';
 import { OverridableEntity } from 'src/engine/workspace-manager/types/overridable-entity';
 
+// Workspace-level fields that can override a standard-app view field's
+// defaults without mutating the original definition.
 export type ViewFieldOverrides = {
   isVisible?: boolean;
   size?: number;
@@ -43,6 +45,9 @@ export type ViewFieldOverrides = {
     where: '"deletedAt" IS NULL',
   },
 )
+// TypeORM entity for a view field: a displayed column on a view, with
+// visibility, width, position, optional aggregate operation, and
+// membership in a view field group.
 export class ViewFieldEntity
   extends OverridableEntity<ViewFieldOverrides>
   implements Required<ViewFieldEntity>

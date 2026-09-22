@@ -45,6 +45,10 @@ const filterViewFieldsByViewUniversalIdentifier = ({
         viewField.viewUniversalIdentifier === viewUniversalIdentifier,
     );
 
+// Workspace command (1.21.0): re-syncs the standard allMessageThreads view (creating
+// it if missing, recreating its view fields from the current standard definition)
+// and repoints messageThread.labelIdentifierFieldMetadataId to the subject field,
+// for workspaces that missed these changes on upgrade from before 1.21.
 @RegisteredWorkspaceCommand('1.21.0', 1775500014000)
 @Command({
   name: 'upgrade:1-21:fix-message-thread-view-and-label-identifier',
@@ -61,6 +65,8 @@ export class FixMessageThreadViewAndLabelIdentifierCommand extends ProvisionedWo
     super(workspaceIteratorService);
   }
 
+  // Computes the view/view-field/object-metadata diffs needed and applies them in
+  // one workspace migration.
   override async runOnWorkspace({
     workspaceId,
     options,

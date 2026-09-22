@@ -15,6 +15,8 @@ export const PATRICK_COLLISON_ID = 'edf6d445-13a7-4373-9a47-8f89e8c0a877'; // St
 export const DYLAN_FIELD_ID = 'b1e26fa6-c757-4c88-abfa-4b11f5cf3acf'; // Figma
 export const IVAN_ZHAO_ID = '7a93d1e5-3f74-4945-8a65-d7f996083f72'; // Notion
 
+// Inserts a fixed set of sample people (linked to the prefilled companies)
+// into a newly provisioned workspace schema, ignoring conflicts.
 export const prefillPeople = async (
   entityManager: EntityManager,
   schemaName: string,

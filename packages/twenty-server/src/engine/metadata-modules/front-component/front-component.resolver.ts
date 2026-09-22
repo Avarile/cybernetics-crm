@@ -32,6 +32,10 @@ import { WorkspaceMigrationGraphqlApiExceptionInterceptor } from 'src/engine/wor
   FrontComponentGraphqlApiExceptionInterceptor,
 )
 @MetadataResolver(() => FrontComponentDTO)
+// GraphQL resolver for front components: CRUD plus, for a single
+// component fetch, issuing an application token pair and exposing its
+// non-secret application variables so the component can call back into
+// the platform at runtime.
 export class FrontComponentResolver {
   constructor(
     @Inject(FrontComponentService)
@@ -41,6 +45,7 @@ export class FrontComponentResolver {
     private readonly workspaceCacheService: WorkspaceCacheService,
   ) {}
 
+  // Lists all front components in the workspace.
   @Query(() => [FrontComponentDTO])
   @UseGuards(NoPermissionGuard)
   async frontComponents(
@@ -49,6 +54,9 @@ export class FrontComponentResolver {
     return await this.frontComponentService.findAll(workspace.id);
   }
 
+  // Fetches a front component by id along with a freshly issued
+  // application token pair and its non-secret application variables, so
+  // the client can render and authenticate the component immediately.
   @Query(() => FrontComponentDTO, { nullable: true })
   @UseGuards(UserAuthGuard, NoPermissionGuard)
   async frontComponent(
@@ -99,6 +107,7 @@ export class FrontComponentResolver {
     };
   }
 
+  // Registers a new front component.
   @Mutation(() => FrontComponentDTO)
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.APPLICATIONS))
   async createFrontComponent(
@@ -113,6 +122,8 @@ export class FrontComponentResolver {
     return fromFlatFrontComponentToFrontComponentDto(flatFrontComponent);
   }
 
+  // Updates an existing front component's metadata (name, description,
+  // built checksum).
   @Mutation(() => FrontComponentDTO)
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.APPLICATIONS))
   async updateFrontComponent(
@@ -128,6 +139,7 @@ export class FrontComponentResolver {
     return fromFlatFrontComponentToFrontComponentDto(flatFrontComponent);
   }
 
+  // Permanently removes a front component.
   @Mutation(() => FrontComponentDTO)
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.APPLICATIONS))
   async deleteFrontComponent(

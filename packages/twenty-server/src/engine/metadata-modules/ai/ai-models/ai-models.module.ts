@@ -1,3 +1,5 @@
+// Global NestJS module for AI model catalog/registry/config: resolves which
+// provider SDKs and models are available and configured for a workspace.
 import { Global, Module } from '@nestjs/common';
 
 import { AiModelConfigService } from 'src/engine/metadata-modules/ai/ai-models/services/ai-model-config.service';

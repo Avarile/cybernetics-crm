@@ -43,6 +43,8 @@ import { WorkspaceMigrationBuilderException } from 'src/engine/workspace-manager
 import { WorkspaceMigrationValidateBuildAndRunService } from 'src/engine/workspace-manager/workspace-migration/services/workspace-migration-validate-build-and-run-service';
 import { DashboardSyncService } from 'src/modules/dashboard-sync/services/dashboard-sync.service';
 
+// Inputs for replacing a page layout's fields and its full tabs/widgets
+// tree in one call.
 type UpdatePageLayoutWithTabsParams = {
   id: string;
   workspaceId: string;
@@ -50,6 +52,11 @@ type UpdatePageLayoutWithTabsParams = {
 };
 
 @Injectable()
+// Replaces a page layout's fields together with its complete tabs/widgets
+// tree in one call: diffs incoming tabs and each tab's widgets against
+// what currently exists, creating/updating/deactivating/hard-deleting as
+// appropriate (based on ownership), and cleans up views orphaned when
+// FIELDS widgets are removed or moved out of scope.
 export class PageLayoutUpdateService {
   private readonly logger = new Logger(PageLayoutUpdateService.name);
 
@@ -61,6 +68,11 @@ export class PageLayoutUpdateService {
     private readonly viewService: ViewService,
   ) {}
 
+  // Diffs the input tabs (and their widgets) against the existing page
+  // layout's tabs/widgets, computes the necessary create/update/delete
+  // operations, applies them all in one validated workspace migration,
+  // syncs linked dashboards, and destroys any views left orphaned by
+  // removed/moved FIELDS widgets.
   async updatePageLayoutWithTabs({
     id,
     workspaceId,
@@ -258,6 +270,9 @@ export class PageLayoutUpdateService {
     );
   }
 
+  // Diffs input tabs against the page layout's existing tabs, splitting
+  // into tabs to create, update (including restore-and-update for
+  // reactivated tabs), and delete/deactivate based on ownership.
   private computeTabOperations({
     existingPageLayout,
     tabs,
@@ -437,6 +452,8 @@ export class PageLayoutUpdateService {
     };
   }
 
+  // Runs computeWidgetOperationsForTab across every tab in the input and
+  // aggregates the create/update/delete widget operation sets.
   private computeWidgetOperationsForAllTabs({
     tabs,
     flatPageLayoutWidgetMaps,
@@ -506,6 +523,9 @@ export class PageLayoutUpdateService {
     };
   }
 
+  // Validates chart widget field references, then diffs a tab's input
+  // widgets against its existing ones (plus any widgets being moved into
+  // this tab), producing create/update/delete operations based on ownership.
   private computeWidgetOperationsForTab({
     tabId,
     widgets,
@@ -685,6 +705,9 @@ export class PageLayoutUpdateService {
     };
   }
 
+  // Builds the updated flat widget for an update input, applying
+  // overridable-property sanitization and re-resolving universal
+  // identifiers/configuration when the relevant fields changed.
   private buildUpdatedFlatPageLayoutWidget({
     widgetInput,
     flatPageLayoutWidgetMaps,
@@ -817,6 +840,9 @@ export class PageLayoutUpdateService {
     return updatedWidget;
   }
 
+  // Finds a tab's existing widgets plus any widget elsewhere whose id
+  // appears in this tab's input (i.e. being moved into this tab), so both
+  // can be diffed together.
   private findWidgetsInTabOrMovingToTab({
     tabId,
     widgetIdsInCurrentTabInput,
@@ -835,6 +861,8 @@ export class PageLayoutUpdateService {
       );
   }
 
+  // Filters out widget ids that are being moved to a different tab in the
+  // same request, so they aren't mistakenly treated as removed.
   private excludeWidgetsMovedToOtherTabs({
     idsToRemove,
     widgetIdsAcrossAllTabs,
@@ -847,6 +875,8 @@ export class PageLayoutUpdateService {
     );
   }
 
+  // Validates that a chart widget's configuration only references fields
+  // that exist on its target object, throwing otherwise.
   private validateChartFieldReferences({
     widgetInput,
     flatFieldMetadataMaps,
@@ -869,6 +899,10 @@ export class PageLayoutUpdateService {
     });
   }
 
+  // Determines which FIELDS-widget views are left with no active widget
+  // pointing at them after this update (removed/deactivated widgets and
+  // tabs), excluding views still referenced by a create/update/existing
+  // widget elsewhere, so they can be cleaned up.
   private collectOrphanedViewIdsFromRemovedWidgets({
     widgetsToCreate,
     widgetsToUpdate,
@@ -949,6 +983,8 @@ export class PageLayoutUpdateService {
     return [...viewIdsToDelete];
   }
 
+  // Extracts the view id from a widget's configuration if it's a FIELDS
+  // widget, otherwise undefined.
   private getViewIdFromFieldsWidget(
     widget: FlatPageLayoutWidget,
   ): string | undefined {
@@ -963,6 +999,8 @@ export class PageLayoutUpdateService {
     return typeof viewId === 'string' ? viewId : undefined;
   }
 
+  // Best-effort destroys each given view, logging (rather than throwing)
+  // on failure so a single bad view doesn't block the overall update.
   private async destroyOrphanedFieldsWidgetViews({
     viewIds,
     workspaceId,

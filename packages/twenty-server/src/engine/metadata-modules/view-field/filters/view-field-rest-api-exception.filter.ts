@@ -24,6 +24,8 @@ import {
 
 @Injectable()
 @Catch(ViewFieldException, WorkspaceMigrationBuilderException)
+// Maps ViewFieldException and WorkspaceMigrationBuilderException to the
+// appropriate HTTP status/response for the REST API.
 export class ViewFieldRestApiExceptionFilter implements ExceptionFilter {
   constructor(
     private readonly httpExceptionHandlerService: HttpExceptionHandlerService,

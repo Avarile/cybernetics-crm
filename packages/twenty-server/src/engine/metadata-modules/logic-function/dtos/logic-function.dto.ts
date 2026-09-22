@@ -1,3 +1,6 @@
+// GraphQL object type exposing a logic function's metadata (runtime,
+// handler, timeout, and per-trigger-type settings) to the API.
+
 import {
   Field,
   HideField,

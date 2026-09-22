@@ -45,6 +45,9 @@ import { assertMutationNotOnRemoteObject } from 'src/engine/metadata-modules/obj
 import { WorkspaceEntityManager } from 'src/engine/twenty-orm/entity-manager/workspace-entity-manager';
 import { WorkspaceRepository } from 'src/engine/twenty-orm/repository/workspace.repository';
 
+// Handles mergeMany: deep-merges several records of the same object into
+// one "priority" record, re-pointing relations that pointed at the merged
+// records and deleting them, all within a transaction (unless dryRun).
 @Injectable()
 export class CommonMergeManyQueryRunnerService extends CommonBaseQueryRunnerService<
   MergeManyQueryArgs,
@@ -52,6 +55,10 @@ export class CommonMergeManyQueryRunnerService extends CommonBaseQueryRunnerServ
 > {
   protected readonly operationName = CommonQueryNames.MERGE_MANY;
 
+  // Fetches the records to merge, computes the merged field values, and
+  // either returns a dry-run preview or performs the merge (migrate
+  // relations, delete non-priority records, update the priority record)
+  // inside a transaction.
   async run(
     args: CommonExtendedInput<MergeManyQueryArgs>,
     queryRunnerContext: CommonExtendedQueryRunnerContext,
@@ -104,6 +111,9 @@ export class CommonMergeManyQueryRunnerService extends CommonBaseQueryRunnerServ
     return updatedRecord;
   }
 
+  // Re-points relations from the records being merged away onto the
+  // priority record, deletes those records, and applies the merged data
+  // to the priority record — all using the transaction-scoped repository.
   private async executeMergeWithinTransaction(
     transactionManager: WorkspaceEntityManager,
     {
@@ -163,6 +173,8 @@ export class CommonMergeManyQueryRunnerService extends CommonBaseQueryRunnerServ
     );
   }
 
+  // Fetches the records to merge (in the given id order), throwing if any
+  // are missing, and hydrates nested relations for a dry-run preview.
   private async fetchRecordsToMerge(
     context: CommonExtendedQueryRunnerContext,
     args: CommonExtendedInput<MergeManyQueryArgs>,
@@ -217,6 +229,8 @@ export class CommonMergeManyQueryRunnerService extends CommonBaseQueryRunnerServ
     return recordsToMerge;
   }
 
+  // Resolves the record at conflictPriorityIndex as the merge's priority
+  // record (whose values win field-value conflicts); throws if missing.
   private validateAndGetPriorityRecord(
     recordsToMerge: ObjectRecord[],
     ids: string[],
@@ -240,6 +254,10 @@ export class CommonMergeManyQueryRunnerService extends CommonBaseQueryRunnerServ
     return priorityRecord;
   }
 
+  // Merges every non-system field across the records: fields with a
+  // single defined value pass through, fields with several use
+  // mergeFieldValues (which applies field-type-specific merge/priority
+  // rules) to pick the combined result.
   private performDeepMerge(
     recordsToMerge: ObjectRecord[],
     priorityRecordId: string,
@@ -315,6 +333,7 @@ export class CommonMergeManyQueryRunnerService extends CommonBaseQueryRunnerServ
     return mergedResult;
   }
 
+  // System fields (id, timestamps, etc.) are excluded from the merge.
   private shouldExcludeFieldFromMerge(
     fieldName: string,
     fieldIdByName: Record<string, string>,
@@ -328,6 +347,9 @@ export class CommonMergeManyQueryRunnerService extends CommonBaseQueryRunnerServ
     return fieldMetadata?.isSystem ?? false;
   }
 
+  // Builds a synthetic (never-persisted) preview record for a dry-run
+  // merge: the priority record's fields overlaid with the merged data,
+  // under a fresh id and marked deleted.
   private createDryRunResponse(
     priorityRecord: ObjectRecord,
     mergedData: Partial<ObjectRecord>,
@@ -342,6 +364,8 @@ export class CommonMergeManyQueryRunnerService extends CommonBaseQueryRunnerServ
     return dryRunRecord;
   }
 
+  // Applies the merged field values to the priority record and returns
+  // the updated record with the caller's requested columns.
   private async updatePriorityRecord(
     args: CommonExtendedInput<MergeManyQueryArgs>,
     queryRunnerContext: CommonExtendedQueryRunnerContext,
@@ -387,6 +411,9 @@ export class CommonMergeManyQueryRunnerService extends CommonBaseQueryRunnerServ
     return updatedRecord;
   }
 
+  // Repoints every many-to-one relation field elsewhere in the workspace
+  // that references one of the merged-away records, so it points at the
+  // priority record instead before those records are deleted.
   private async migrateRelatedRecords(
     transactionManager: WorkspaceEntityManager,
     context: CommonExtendedQueryRunnerContext,
@@ -462,6 +489,7 @@ export class CommonMergeManyQueryRunnerService extends CommonBaseQueryRunnerServ
     }
   }
 
+  // Hydrates requested nested relations on the merged record.
   private async processNestedRelations({
     args,
     queryRunnerContext,
@@ -499,6 +527,7 @@ export class CommonMergeManyQueryRunnerService extends CommonBaseQueryRunnerServ
     }
   }
 
+  // No args transformation needed for mergeMany.
   async computeArgs(
     args: CommonInput<MergeManyQueryArgs>,
     _queryRunnerContext: CommonBaseQueryRunnerContext,
@@ -506,6 +535,7 @@ export class CommonMergeManyQueryRunnerService extends CommonBaseQueryRunnerServ
     return args;
   }
 
+  // No further processing needed for the merged record.
   async processQueryResult(
     queryResult: ObjectRecord,
     _flatObjectMetadata: FlatObjectMetadata,
@@ -516,6 +546,9 @@ export class CommonMergeManyQueryRunnerService extends CommonBaseQueryRunnerServ
     return queryResult;
   }
 
+  // Rejects mutations on remote objects, objects without duplicate
+  // criteria (merge requires it), fewer than 2 or too many ids, and an
+  // out-of-range conflictPriorityIndex.
   async validate(
     args: CommonInput<MergeManyQueryArgs>,
     queryRunnerContext: CommonExtendedQueryRunnerContext,

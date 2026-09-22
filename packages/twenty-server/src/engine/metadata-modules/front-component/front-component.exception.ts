@@ -4,6 +4,8 @@ import { assertUnreachable } from 'twenty-shared/utils';
 
 import { CustomException } from 'src/utils/custom-exception';
 
+// Exception thrown by the front component module for missing records,
+// duplicate names, invalid input, or a build that isn't ready to serve.
 export enum FrontComponentExceptionCode {
   FRONT_COMPONENT_NOT_FOUND = 'FRONT_COMPONENT_NOT_FOUND',
   FRONT_COMPONENT_ALREADY_EXISTS = 'FRONT_COMPONENT_ALREADY_EXISTS',
@@ -12,6 +14,7 @@ export enum FrontComponentExceptionCode {
   FRONT_COMPONENT_NOT_READY = 'FRONT_COMPONENT_NOT_READY',
 }
 
+// Maps an exception code to the localized message shown to end users.
 const getFrontComponentExceptionUserFriendlyMessage = (
   code: FrontComponentExceptionCode,
 ) => {

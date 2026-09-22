@@ -1,3 +1,5 @@
+// A sender/recipient on a message, optionally matched to a person,
+// workspace member, or message campaign recipient in the CRM.
 import { type MessageParticipantRole } from 'twenty-shared/types';
 
 import { BaseWorkspaceEntity } from 'src/engine/twenty-orm/base.workspace-entity';

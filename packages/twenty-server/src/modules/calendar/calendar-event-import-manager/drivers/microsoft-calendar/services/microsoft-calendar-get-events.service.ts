@@ -11,6 +11,8 @@ import { type GetCalendarEventsResponse } from 'src/modules/calendar/calendar-ev
 import { MicrosoftOAuth2ClientProvider } from 'src/modules/connected-account/oauth2-client-manager/drivers/microsoft/microsoft-oauth2-client.provider';
 import { type ConnectedAccountEntity } from 'src/engine/metadata-modules/connected-account/entities/connected-account.entity';
 
+// Import-manager driver entry point for Microsoft Calendar: pages through the
+// delta query (via the Graph SDK's PageIterator) to report changed/deleted event ids.
 @Injectable()
 export class MicrosoftCalendarGetEventsService {
   constructor(

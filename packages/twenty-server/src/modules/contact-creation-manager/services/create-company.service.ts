@@ -29,6 +29,8 @@ export type CompanyToCreate = {
   };
 };
 
+// Creates or restores companies for a set of work-email domains, looking up
+// company name/city from a public company-info API when creating new ones.
 @Injectable()
 export class CreateCompanyService {
   private readonly httpService: AxiosInstance;
@@ -42,6 +44,8 @@ export class CreateCompanyService {
     });
   }
 
+  // Deduplicates the given domains, then creates any that don't already
+  // exist and restores any that are soft-deleted, returning a domain -> id map.
   async createOrRestoreCompanies(
     companies: CompanyToCreate[],
     workspaceId: string,
@@ -159,6 +163,7 @@ export class CreateCompanyService {
     );
   }
 
+  // Finds companies to create that match an existing soft-deleted company by domain.
   private filterCompaniesToRestore(
     uniqueCompanies: CompanyToCreate[],
     existingCompanies: CompanyWorkspaceEntity[],
@@ -183,6 +188,7 @@ export class CreateCompanyService {
       .filter(isDefined);
   }
 
+  // Builds an insertable company record, enriching it with looked-up name/city.
   private async prepareCompanyData(
     company: CompanyToCreate,
     position: number,
@@ -214,6 +220,7 @@ export class CreateCompanyService {
     };
   }
 
+  // Builds a domain -> company id lookup map from a list of companies.
   private createCompanyMap(
     companies: Pick<CompanyWorkspaceEntity, 'id' | 'domainName'>[],
   ) {
@@ -232,6 +239,7 @@ export class CreateCompanyService {
     );
   }
 
+  // Returns the highest existing company position, for appending new companies after it.
   private async getLastCompanyPosition(
     companyRepository: WorkspaceRepository<CompanyWorkspaceEntity>,
   ): Promise<number> {
@@ -243,6 +251,8 @@ export class CreateCompanyService {
     return lastCompanyPosition ?? 0;
   }
 
+  // Looks up a company's name/city from its domain via the public company-info
+  // API, falling back to a name derived from the domain if the lookup fails.
   private async getCompanyInfoFromDomainName(
     domainName: string | undefined,
   ): Promise<{

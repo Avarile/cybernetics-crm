@@ -1,6 +1,8 @@
 import { type CommandMenuItemDTO } from 'src/engine/metadata-modules/command-menu-item/dtos/command-menu-item.dto';
 import { type FlatCommandMenuItem } from 'src/engine/metadata-modules/flat-command-menu-item/types/flat-command-menu-item.type';
 
+// Converts a flat command menu item to its GraphQL DTO, applying any
+// overrides on top of the base fields before mapping.
 export const fromFlatCommandMenuItemToCommandMenuItemDto = (
   flatCommandMenuItem: FlatCommandMenuItem,
 ): CommandMenuItemDTO => {

@@ -9,6 +9,9 @@ import {
 
 import { WorkspaceRelatedEntity } from 'src/engine/workspace-manager/types/workspace-related-entity';
 
+// A workspace's installed logic-function dependency layer: the package.json/yarn.lock
+// used to resolve npm packages available to serverless functions, plus checksums to
+// detect when the layer needs to be rebuilt.
 @Entity('logicFunctionLayer')
 export class LogicFunctionLayerEntity extends WorkspaceRelatedEntity {
   @PrimaryGeneratedColumn('uuid')

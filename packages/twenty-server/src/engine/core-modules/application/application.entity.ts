@@ -1,3 +1,7 @@
+// TypeORM entity representing an installed application within a workspace,
+// tracking its source package (local, marketplace, or dev), version, package
+// checksums/files, and relations to the objects, agents, logic functions,
+// front components and other metadata it owns.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 import {

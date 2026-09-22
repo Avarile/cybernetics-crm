@@ -8,6 +8,8 @@ import { LogicFunctionModule } from 'src/engine/metadata-modules/logic-function/
 import { PrefillFrontComponentService } from 'src/engine/workspace-manager/standard-objects-prefill-data/services/prefill-front-component.service';
 import { PrefillLogicFunctionService } from 'src/engine/workspace-manager/standard-objects-prefill-data/services/prefill-logic-function.service';
 
+// Wires up the services that seed prefilled logic functions and front
+// components into newly provisioned workspaces.
 @Module({
   imports: [
     LogicFunctionModule,

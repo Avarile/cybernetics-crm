@@ -16,6 +16,8 @@ import {
 import { WorkspaceMigrationBuilderException } from 'src/engine/workspace-manager/workspace-migration/exceptions/workspace-migration-builder-exception';
 import { WorkspaceMigrationValidateBuildAndRunService } from 'src/engine/workspace-manager/workspace-migration/services/workspace-migration-validate-build-and-run-service';
 
+// Manages which permission flags are granted to a role, diffing the desired set against
+// current grants and running the resulting create/delete as a workspace migration.
 @Injectable()
 export class RolePermissionFlagService {
   constructor(
@@ -24,6 +26,9 @@ export class RolePermissionFlagService {
     private readonly applicationService: ApplicationService,
   ) {}
 
+  // Replaces a role's granted permission flags with the desired set of flag keys:
+  // validates every key resolves to a known permission flag, then diffs against the
+  // role's current grants and runs the create/delete as a single workspace migration.
   public async upsertPermissionFlags({
     workspaceId,
     input,

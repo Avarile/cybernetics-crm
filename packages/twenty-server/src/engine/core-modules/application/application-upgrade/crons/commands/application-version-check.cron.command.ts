@@ -1,3 +1,5 @@
+// CLI command that registers the recurring cron job which checks for
+// newer app versions on npm registries.
 import { Command, CommandRunner } from 'nest-commander';
 
 import { ApplicationVersionCheckCronJob } from 'src/engine/core-modules/application/application-upgrade/crons/application-version-check.cron.job';
@@ -19,6 +21,7 @@ export class ApplicationVersionCheckCronCommand extends CommandRunner {
     super();
   }
 
+  // Registers the recurring app version check cron schedule.
   async run(): Promise<void> {
     await this.messageQueueService.addCron<undefined>({
       jobName: ApplicationVersionCheckCronJob.name,

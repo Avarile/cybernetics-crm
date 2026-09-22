@@ -1,6 +1,7 @@
 import { type AuthenticatedRequest } from 'src/engine/api/rest/types/authenticated-request';
 import { type RequestContext } from 'src/engine/api/rest/types/RequestContext';
 
+// Parses the `?ending_before=` REST pagination cursor query param.
 export const parseEndingBeforeRestRequest = (
   request: AuthenticatedRequest | RequestContext,
 ): string | undefined => {

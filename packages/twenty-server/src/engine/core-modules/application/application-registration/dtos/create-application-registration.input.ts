@@ -1,3 +1,4 @@
+// GraphQL input for creating a new application registration.
 import { Field, InputType } from '@nestjs/graphql';
 
 import {

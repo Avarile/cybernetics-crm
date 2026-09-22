@@ -9,6 +9,8 @@ import { isGmailNetworkError } from 'src/modules/messaging/message-import-manage
 import { parseGmailApiError } from 'src/modules/messaging/message-import-manager/drivers/gmail/utils/parse-gmail-api-error.util';
 import { parseGmailNetworkError } from 'src/modules/messaging/message-import-manager/drivers/gmail/utils/parse-gmail-network-error.util';
 
+// Classifies errors from Gmail's send-as (alias) API into typed exceptions,
+// reusing the Gmail message-import error parsers.
 @Injectable()
 export class GmailEmailAliasErrorHandlerService {
   private readonly logger = new Logger(GmailEmailAliasErrorHandlerService.name);

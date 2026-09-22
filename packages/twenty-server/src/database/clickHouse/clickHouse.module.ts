@@ -1,3 +1,4 @@
+// Registers the ClickHouse client service used for analytics event storage/queries.
 import { Module } from '@nestjs/common';
 
 import { TwentyConfigModule } from 'src/engine/core-modules/twenty-config/twenty-config.module';

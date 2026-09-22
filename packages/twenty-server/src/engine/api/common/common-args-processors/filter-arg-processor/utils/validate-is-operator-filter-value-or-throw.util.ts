@@ -5,6 +5,8 @@ import {
   CommonQueryRunnerExceptionCode,
 } from 'src/engine/api/common/common-query-runners/errors/common-query-runner.exception';
 
+// Throws unless the value is the literal "NULL" or "NOT_NULL", as required
+// by the "is" operator.
 export const validateIsOperatorFilterValueOrThrow = (value: unknown): void => {
   if (value !== 'NULL' && value !== 'NOT_NULL') {
     throw new CommonQueryRunnerException(

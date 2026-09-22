@@ -5,6 +5,8 @@ import { type FlatApplication } from 'src/engine/core-modules/application/types/
 import { type FlatPermissionFlag } from 'src/engine/metadata-modules/flat-permission-flag/types/flat-permission-flag.type';
 import { type CreatePermissionFlagInput } from 'src/engine/metadata-modules/permission-flag/dtos/create-permission-flag.input';
 
+// Builds a new flat permission flag from a create-permission-flag input, generating
+// ids when not provided and normalizing its string fields.
 export const fromCreatePermissionFlagInputToFlatPermissionFlagToCreate = ({
   createPermissionFlagInput,
   workspaceId,

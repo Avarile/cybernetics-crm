@@ -1,3 +1,6 @@
+// Orchestrates end-to-end logic function execution: throttling, resolving
+// the driver/execution mode, building the runtime env (tokens, server/
+// workspace variables), invoking the driver, and recording logs/events/usage.
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -57,6 +60,7 @@ import { WorkspaceCacheService } from 'src/engine/workspace-cache/services/works
 import { WorkspaceEventEmitter } from 'src/engine/workspace-event-emitter/workspace-event-emitter';
 import { cleanServerUrl } from 'src/utils/clean-server-url';
 
+// Error thrown for execution preconditions (not found, rate limited).
 export class LogicFunctionExecutionException extends Error {
   constructor(
     message: string,
@@ -98,6 +102,8 @@ export class LogicFunctionExecutorService {
     private readonly applicationRegistrationVariableRepository: Repository<ApplicationRegistrationVariableEntity>,
   ) {}
 
+  // Throttles, resolves entities/env/execution mode, invokes the active
+  // driver to run the function, and records the outcome.
   async execute({
     logicFunctionId,
     workspaceId,
@@ -179,6 +185,8 @@ export class LogicFunctionExecutorService {
     return resultLogicFunction;
   }
 
+  // Resolves LIVE vs PREBUILT mode: caller override wins, else the function's
+  // configured mode, gated on the prebuilt-mode feature flag.
   private async resolveEffectiveExecutionMode({
     workspaceId,
     flatLogicFunction,
@@ -205,6 +213,7 @@ export class LogicFunctionExecutorService {
     return flatLogicFunction.executionMode ?? LogicFunctionExecutionMode.LIVE;
   }
 
+  // Throws unless the driver's installed prebuilt bundle checksum matches the expected one.
   private async assertPrebuiltBundleInstalled({
     driver,
     flatLogicFunction,
@@ -225,6 +234,7 @@ export class LogicFunctionExecutorService {
     }
   }
 
+  // Delegates transpilation to the active logic-function driver.
   async transpile(
     params: LogicFunctionTranspileParams,
   ): Promise<LogicFunctionTranspileResult> {
@@ -233,6 +243,7 @@ export class LogicFunctionExecutorService {
     return driver.transpile(params);
   }
 
+  // Enforces the per-workspace execution rate limit, throwing on excess.
   private async throttleExecution(workspaceId: string) {
     try {
       await this.throttlerService.tokenBucketThrottleOrThrow(
@@ -249,6 +260,8 @@ export class LogicFunctionExecutorService {
     }
   }
 
+  // Resolves the logic function/application/variables from cache, throwing if
+  // either the function or its owning application isn't found.
   private async getFlatEntitiesOrThrow({
     workspaceId,
     logicFunctionId,
@@ -307,6 +320,8 @@ export class LogicFunctionExecutorService {
     return { flatApplication, flatLogicFunction, flatApplicationVariables };
   }
 
+  // Builds the environment variables passed into a function execution:
+  // access token, API/functions URLs, decrypted server and workspace variables.
   private async getExecutionEnvVariables({
     workspaceId,
     flatApplication,
@@ -353,6 +368,7 @@ export class LogicFunctionExecutorService {
     };
   }
 
+  // Builds the public functions base URL for the application/workspace, if resolvable.
   private async buildFunctionsBaseUrl({
     workspaceId,
     flatApplication,
@@ -381,6 +397,7 @@ export class LogicFunctionExecutorService {
     });
   }
 
+  // Decrypts an application registration's server-side variables into an env map.
   private async buildServerVariableEnvMap(
     applicationRegistrationId: string | null,
   ): Promise<Record<string, string>> {
@@ -410,6 +427,8 @@ export class LogicFunctionExecutorService {
     return envMap;
   }
 
+  // Publishes execution logs to the live-logs channel, only if a CLI/UI is
+  // currently watching this workspace's logic function logs.
   private async publishLogicFunctionLogsToCli({
     result,
     flatApplication,
@@ -450,6 +469,8 @@ export class LogicFunctionExecutorService {
     }
   }
 
+  // Post-execution side effects: records application logs, publishes live
+  // logs, emits an execution event, decrements billing credits, and reports usage.
   private async handleExecutionResult({
     result,
     flatApplication,

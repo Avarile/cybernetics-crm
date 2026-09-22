@@ -151,6 +151,7 @@ const PERSON_PAGE_TABS = {
   },
 } as const satisfies Record<string, StandardPageLayoutTabConfig>;
 
+// Fixed record page layout (tabs and widgets) for the standard "person" object
 export const STANDARD_PERSON_PAGE_LAYOUT_CONFIG = {
   name: 'Default Person Layout',
   type: PageLayoutType.RECORD_PAGE,

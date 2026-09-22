@@ -17,6 +17,9 @@ type RotateSecretEncryptionCommandOptions = {
   description:
     'Re-encrypts every at-rest secret stored in an enc:v2 envelope using the current ENCRYPTION_KEY. Idempotent: rows already on the current key are skipped via a SQL filter, so the command is safe to interrupt and re-run. Requires FALLBACK_ENCRYPTION_KEY to be set to the previous key when rotating to a fresh ENCRYPTION_KEY. Pass --site=<name> to scope to a single site; an invalid value lists all available sites.',
 })
+// CLI command (`secret-encryption:rotate`): delegates to
+// SecretEncryptionRotationRunnerService to re-encrypt at-rest secrets onto the
+// current ENCRYPTION_KEY, then fails the command if any row errored.
 export class RotateSecretEncryptionCommand extends CommandRunner {
   protected logger: CommandLogger;
 
@@ -65,6 +68,8 @@ export class RotateSecretEncryptionCommand extends CommandRunner {
     return true;
   }
 
+  // Runs the rotation across every (or one --site) registered secret site and
+  // throws if any row failed to rotate, so the command exits non-zero on error.
   override async run(
     _passedParams: string[],
     options: RotateSecretEncryptionCommandOptions,

@@ -1,3 +1,5 @@
+// Shapes of the JWT payloads and metadata exchanged with the enterprise
+// licensing API.
 import { type EnterpriseInstanceType } from 'twenty-shared/constants';
 
 export type EnterpriseKeyPayload = {

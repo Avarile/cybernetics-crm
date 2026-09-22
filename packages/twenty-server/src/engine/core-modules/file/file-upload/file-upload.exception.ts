@@ -1,3 +1,4 @@
+// Exception type for direct file-upload errors.
 import { type MessageDescriptor } from '@lingui/core';
 
 import { CustomException } from 'src/utils/custom-exception';
@@ -10,6 +11,7 @@ export enum FileUploadExceptionCode {
   FILE_TOO_LARGE = 'FILE_TOO_LARGE',
 }
 
+// Exception thrown by file-upload services; requires an explicit friendly message.
 export class FileUploadException extends CustomException<FileUploadExceptionCode> {
   constructor(
     message: string,

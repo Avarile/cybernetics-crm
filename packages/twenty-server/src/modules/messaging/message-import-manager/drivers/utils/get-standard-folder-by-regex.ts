@@ -1,3 +1,7 @@
+// Multi-language name patterns (English plus French, German, Spanish,
+// Portuguese, Italian, Korean, Japanese, Polish, Russian, and Gmail's
+// bracketed labels) used to classify an IMAP/Graph folder name into a
+// StandardFolder when the provider doesn't expose an explicit flag for it.
 import { StandardFolder } from 'src/modules/messaging/message-import-manager/drivers/types/standard-folder';
 
 const FOLDER_REGEX_PATTERNS: Record<StandardFolder, string[]> = {
@@ -212,6 +216,8 @@ const CACHED_REGEX_PATTERNS = Object.fromEntries(
   ]),
 );
 
+// Matches a folder name against each standard folder's compiled pattern
+// set, returning the first match or null if none apply.
 export function getStandardFolderByRegex(
   folderName: string,
 ): StandardFolder | null {

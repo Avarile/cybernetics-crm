@@ -11,6 +11,8 @@ import { DashboardDuplicationService } from 'src/modules/dashboard/services/dash
 @Controller('rest/dashboards')
 @UseGuards(JwtAuthGuard, WorkspaceAuthGuard, NoPermissionGuard)
 @UseFilters(DashboardRestApiExceptionFilter)
+// REST endpoint for duplicating a dashboard (used where the GraphQL mutation
+// isn't accessible, e.g. some frontend flows).
 export class DashboardController {
   constructor(
     private readonly dashboardDuplicationService: DashboardDuplicationService,

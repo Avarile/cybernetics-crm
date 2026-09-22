@@ -51,6 +51,7 @@ const toCancellationDetailsJson = (
   };
 };
 
+// Maps a Stripe subscription (with its schedule) to the shape stored in BillingSubscription
 export const transformStripeSubscriptionEventToDatabaseSubscription = (
   workspaceId: string,
   subscription: SubscriptionWithSchedule,
@@ -101,6 +102,7 @@ export const transformStripeSubscriptionEventToDatabaseSubscription = (
   };
 };
 
+// Maps a Stripe subscription status string to the internal SubscriptionStatus enum
 export const getSubscriptionStatus = (status: Stripe.Subscription.Status) => {
   switch (status) {
     case 'active':

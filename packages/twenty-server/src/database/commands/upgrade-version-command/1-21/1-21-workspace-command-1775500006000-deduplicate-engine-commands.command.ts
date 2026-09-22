@@ -30,6 +30,9 @@ const NEW_UNIVERSAL_IDENTIFIERS = new Set<string>([
   STANDARD_COMMAND_MENU_ITEMS.exportRecords.universalIdentifier,
 ]);
 
+// Workspace command (1.21.0): deletes the legacy single/multiple-record command
+// menu items (delete/restore/destroy/export) and creates their unified
+// select-all-aware replacements from the standard application, where not already present.
 @RegisteredWorkspaceCommand('1.21.0', 1775500006000)
 @Command({
   name: 'upgrade:1-21:deduplicate-engine-commands',
@@ -46,6 +49,8 @@ export class DeduplicateEngineCommandsCommand extends ProvisionedWorkspaceComman
     super(workspaceIteratorService);
   }
 
+  // Computes the old items to delete and the new unified items to create (skipping
+  // ones already present), then applies both via a single workspace migration.
   override async runOnWorkspace({
     workspaceId,
     options,

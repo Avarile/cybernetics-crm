@@ -1,3 +1,5 @@
+// Converts a manifest-declared object into the universal flat object
+// metadata shape used to build workspace migrations.
 import { type ObjectManifest } from 'twenty-shared/application';
 
 import { type UniversalFlatObjectMetadata } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-object-metadata.type';

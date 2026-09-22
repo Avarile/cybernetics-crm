@@ -22,6 +22,9 @@ import { ConnectedAccountEntity } from 'src/engine/metadata-modules/connected-ac
 const ZERO_UUID = '00000000-0000-0000-0000-000000000000';
 
 @Injectable()
+// Dedicated rotation handler for ConnectedAccount.connectionParameters: a JSON blob
+// holding per-protocol (IMAP/SMTP/CALDAV) connection settings, each with its own
+// encrypted password. Rotates each protocol's password independently within the row.
 export class ConnectionParametersRotationHandler extends SecretEncryptionRotationHandler {
   private readonly logger = new Logger(
     ConnectionParametersRotationHandler.name,
@@ -35,6 +38,7 @@ export class ConnectionParametersRotationHandler extends SecretEncryptionRotatio
     super();
   }
 
+  // Counts connected accounts with at least one protocol password not on the current key.
   async countRemaining({
     currentEncryptionKeyId,
   }: Pick<
@@ -44,6 +48,8 @@ export class ConnectionParametersRotationHandler extends SecretEncryptionRotatio
     return this.buildRowToSelectQuery({ currentEncryptionKeyId }).getCount();
   }
 
+  // Pages through connected accounts needing rotation and re-encrypts each protocol's
+  // password, using an optimistic-concurrency UPDATE keyed on the original JSON value.
   async rotate({
     siteName,
     currentEncryptionKeyId,
@@ -124,6 +130,8 @@ export class ConnectionParametersRotationHandler extends SecretEncryptionRotatio
     return outcome;
   }
 
+  // Decrypts and re-encrypts the password for every protocol present in this row's
+  // connectionParameters, leaving other fields untouched.
   private reEncryptConnectionParametersOrThrow({
     connectionParameters,
     workspaceId,
@@ -158,6 +166,8 @@ export class ConnectionParametersRotationHandler extends SecretEncryptionRotatio
     return result;
   }
 
+  // Selects connected accounts with a non-null connectionParameters where at least
+  // one protocol's password isn't already on the current encryption key.
   private buildRowToSelectQuery({
     currentEncryptionKeyId,
   }: {

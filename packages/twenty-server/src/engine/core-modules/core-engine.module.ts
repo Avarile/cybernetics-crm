@@ -1,3 +1,6 @@
+// Root NestJS module that wires together every core-engine feature module
+// (auth, billing, workspaces, emailing, applications, etc.) plus their
+// global providers, so the whole engine can be imported as a single unit.
 import { Module } from '@nestjs/common';
 import { APP_FILTER, HttpAdapterHost } from '@nestjs/core';
 import { EventEmitterModule } from '@nestjs/event-emitter';

@@ -1,3 +1,6 @@
+// Upserts a single record for a given object, creating or updating it based
+// on conflict detection, on behalf of workflows/tools.
+
 import { Injectable, Logger } from '@nestjs/common';
 
 import { canObjectBeManagedByAutomation } from 'twenty-shared/workflow';
@@ -21,6 +24,8 @@ export class UpsertRecordService {
     private readonly commonApiContextBuilder: CommonApiContextBuilderService,
   ) {}
 
+  // Upserts one record in objectName, rejecting objects that automation is
+  // not allowed to manage.
   async execute(params: UpsertRecordParams): Promise<ToolOutput> {
     const { objectName, objectRecord, authContext } = params;
 

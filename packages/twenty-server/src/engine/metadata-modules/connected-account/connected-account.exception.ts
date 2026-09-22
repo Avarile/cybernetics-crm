@@ -4,12 +4,15 @@ import { assertUnreachable } from 'twenty-shared/utils';
 
 import { CustomException } from 'src/utils/custom-exception';
 
+// Exception thrown by the connected account module for missing records,
+// invalid input, or ownership violations.
 export enum ConnectedAccountExceptionCode {
   CONNECTED_ACCOUNT_NOT_FOUND = 'CONNECTED_ACCOUNT_NOT_FOUND',
   INVALID_CONNECTED_ACCOUNT_INPUT = 'INVALID_CONNECTED_ACCOUNT_INPUT',
   CONNECTED_ACCOUNT_OWNERSHIP_VIOLATION = 'CONNECTED_ACCOUNT_OWNERSHIP_VIOLATION',
 }
 
+// Maps an exception code to the localized message shown to end users.
 const getConnectedAccountExceptionUserFriendlyMessage = (
   code: ConnectedAccountExceptionCode,
 ) => {

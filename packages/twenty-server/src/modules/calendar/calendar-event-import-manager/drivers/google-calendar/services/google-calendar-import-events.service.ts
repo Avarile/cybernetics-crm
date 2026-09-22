@@ -11,6 +11,8 @@ import { type FetchedCalendarEvent } from 'src/modules/calendar/common/types/fet
 import { GoogleOAuth2ClientProvider } from 'src/modules/connected-account/oauth2-client-manager/drivers/google/google-oauth2-client.provider';
 import { type ConnectedAccountEntity } from 'src/engine/metadata-modules/connected-account/entities/connected-account.entity';
 
+// Import-manager driver entry point for Google Calendar: fetches full event
+// data for a set of external event ids, silently dropping ones that 404/410.
 @Injectable()
 export class GoogleCalendarImportEventsService {
   constructor(

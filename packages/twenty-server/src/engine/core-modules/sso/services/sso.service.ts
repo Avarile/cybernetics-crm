@@ -1,5 +1,8 @@
 /* @license Enterprise */
 
+// Service (enterprise-only) managing per-workspace SSO identity providers:
+// OIDC discovery/creation, SAML registration, and the URLs used to drive the
+// SSO login/callback flow.
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -36,6 +39,7 @@ export class SSOService {
     private readonly exceptionHandlerService: ExceptionHandlerService,
   ) {}
 
+  // Throws if the workspace doesn't have the SSO billing entitlement.
   private async isSSOEnabled(workspaceId: string) {
     const isSSOBillingEnabled = await this.billingService.hasEntitlement(
       workspaceId,
@@ -50,6 +54,8 @@ export class SSOService {
     }
   }
 
+  // Discovers an OIDC issuer's metadata, throwing an SSOException if
+  // discovery fails.
   private async getIssuerForOIDC(issuerUrl: string) {
     try {
       return await Issuer.discover(issuerUrl);
@@ -61,6 +67,9 @@ export class SSOService {
     }
   }
 
+  // Verifies SSO entitlement, discovers the OIDC issuer, and persists a new
+  // OIDC identity provider. Returns the created SSOException itself (rather
+  // than throwing) on failure, for the resolver to pass through as a union type.
   async createOIDCIdentityProvider(
     data: Pick<
       WorkspaceSSOIdentityProviderEntity,
@@ -104,6 +113,7 @@ export class SSOService {
     }
   }
 
+  // Verifies SSO entitlement and persists a new SAML identity provider.
   async createSAMLIdentityProvider(
     data: Pick<
       WorkspaceSSOIdentityProviderEntity,
@@ -129,6 +139,7 @@ export class SSOService {
     };
   }
 
+  // Finds an identity provider by id, including its owning workspace.
   async findSSOIdentityProviderById(identityProviderId: string) {
     return (await this.workspaceSSOIdentityProviderRepository.findOne({
       where: { id: identityProviderId },
@@ -136,6 +147,7 @@ export class SSOService {
     })) as (SSOConfiguration & WorkspaceSSOIdentityProviderEntity) | null;
   }
 
+  // Builds the OAuth/SAML callback URL for an identity provider.
   buildCallbackUrl(
     identityProvider: Pick<WorkspaceSSOIdentityProviderEntity, 'type' | 'id'>,
   ) {
@@ -150,6 +162,8 @@ export class SSOService {
     return callbackURL.toString();
   }
 
+  // Builds the login/authorization URL for an identity provider, optionally
+  // appending extra query parameters.
   buildIssuerURL(
     identityProvider: Pick<WorkspaceSSOIdentityProviderEntity, 'id' | 'type'>,
     searchParams?: Record<string, string | boolean>,
@@ -169,6 +183,7 @@ export class SSOService {
     return authorizationUrl.toString();
   }
 
+  // Type guard: whether the identity provider is configured for OIDC.
   private isOIDCIdentityProvider(
     identityProvider: WorkspaceSSOIdentityProviderEntity,
   ): identityProvider is OIDCConfiguration &
@@ -176,6 +191,7 @@ export class SSOService {
     return identityProvider.type === IdentityProviderType.OIDC;
   }
 
+  // Type guard: whether the identity provider is configured for SAML.
   isSAMLIdentityProvider(
     identityProvider: WorkspaceSSOIdentityProviderEntity,
   ): identityProvider is SAMLConfiguration &
@@ -183,6 +199,8 @@ export class SSOService {
     return identityProvider.type === IdentityProviderType.SAML;
   }
 
+  // Builds an openid-client Client instance for the OIDC identity provider,
+  // throwing if the provider isn't actually an OIDC one.
   getOIDCClient(
     identityProvider: WorkspaceSSOIdentityProviderEntity,
     issuer: Issuer,
@@ -202,6 +220,8 @@ export class SSOService {
     });
   }
 
+  // Looks up an identity provider and builds its authorization URL for
+  // starting an SSO login.
   async getAuthorizationUrlForSSO(
     identityProviderId: string,
     searchParams: Record<string, string | boolean>,
@@ -227,6 +247,7 @@ export class SSOService {
     };
   }
 
+  // Lists a workspace's configured identity providers (public fields only).
   async getSSOIdentityProviders(workspaceId: string) {
     return (await this.workspaceSSOIdentityProviderRepository.find({
       where: { workspaceId },
@@ -239,6 +260,8 @@ export class SSOService {
     >;
   }
 
+  // Deletes an identity provider belonging to the workspace, throwing if
+  // not found.
   async deleteSSOIdentityProvider(
     identityProviderId: string,
     workspaceId: string,
@@ -265,6 +288,8 @@ export class SSOService {
     return { identityProviderId: identityProvider.id };
   }
 
+  // Updates an identity provider belonging to the workspace, throwing if
+  // not found.
   async editSSOIdentityProvider(
     payload: Partial<WorkspaceSSOIdentityProviderEntity>,
     workspaceId: string,

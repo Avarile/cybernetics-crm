@@ -21,6 +21,8 @@ type CleanSuspendedWorkspacesCommandOptions = MigrationCommandOptions &
     onlyOperation?: CleanSuspendedWorkspacesOperation;
   };
 
+// CLI command to warn, soft-delete, or hard-delete suspended workspaces,
+// depending on how long they've been suspended.
 @Command({
   name: 'workspace:clean',
   description: 'Clean suspended workspace',
@@ -69,6 +71,7 @@ export class CleanSuspendedWorkspacesCommand extends MigrationCommandRunner {
     return val as CleanSuspendedWorkspacesOperation;
   }
 
+  // Resolves suspended workspaces, narrowed to explicit ids when provided.
   async fetchSuspendedWorkspaceIds(): Promise<string[]> {
     const suspendedWorkspaces = await this.workspaceRepository.find({
       where: {
@@ -81,6 +84,8 @@ export class CleanSuspendedWorkspacesCommand extends MigrationCommandRunner {
     return suspendedWorkspaces.map((workspace) => workspace.id);
   }
 
+  // Runs the warn/soft-delete/hard-delete pipeline for suspended workspaces,
+  // optionally restricted to a single operation or bypassing the grace period.
   override async runMigrationCommand(
     _passedParams: string[],
     options: CleanSuspendedWorkspacesCommandOptions,

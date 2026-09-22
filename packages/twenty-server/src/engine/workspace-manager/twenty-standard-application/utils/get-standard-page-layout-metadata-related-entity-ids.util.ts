@@ -6,6 +6,7 @@ type WidgetIds = Record<string, { id: string }>;
 
 type TabIds = Record<string, { id: string; widgets: WidgetIds }>;
 
+// Pre-generated ids for every standard page layout, its tabs, and each tab's widgets
 export type StandardPageLayoutMetadataRelatedEntityIds = Record<
   string,
   { id: string; tabs: TabIds }
@@ -36,6 +37,8 @@ const computeTabIds = (
   return tabIds;
 };
 
+// Generates a fresh id for every standard page layout, its tabs, and their widgets, for use as a
+// consistent id source across the standard page layout builders in a single build run
 export const getStandardPageLayoutMetadataRelatedEntityIds =
   (): StandardPageLayoutMetadataRelatedEntityIds => {
     const result: StandardPageLayoutMetadataRelatedEntityIds = {};

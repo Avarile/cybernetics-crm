@@ -1,6 +1,8 @@
 import DOMPurify from 'dompurify';
 import { JSDOM } from 'jsdom';
 
+// Sanitizes SVG file content with DOMPurify to strip scripts/embedded
+// content before storage; other file types pass through unchanged.
 export const sanitizeFile = ({
   file,
   ext,

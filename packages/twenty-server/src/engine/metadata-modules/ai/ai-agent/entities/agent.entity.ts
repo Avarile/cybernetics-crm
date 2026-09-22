@@ -1,3 +1,5 @@
+// TypeORM entity persisting an AI agent's configuration (prompt, model,
+// response format) as workspace metadata.
 import {
   Column,
   CreateDateColumn,

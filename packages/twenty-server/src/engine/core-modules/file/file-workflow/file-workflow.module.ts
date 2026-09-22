@@ -1,3 +1,4 @@
+// NestJS module for uploading files used by workflow steps.
 import { Module } from '@nestjs/common';
 
 import { ApplicationModule } from 'src/engine/core-modules/application/application.module';

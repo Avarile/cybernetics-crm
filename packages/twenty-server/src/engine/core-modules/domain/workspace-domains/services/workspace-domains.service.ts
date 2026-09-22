@@ -14,6 +14,8 @@ import { WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.ent
 import { WorkspaceNotFoundDefaultError } from 'src/engine/core-modules/workspace/workspace.exception';
 import { SEED_APPLE_WORKSPACE_ID } from 'src/engine/workspace-manager/dev-seeder/core/constants/seeder-workspaces.constant';
 
+// Resolves which workspace a request origin belongs to, and builds workspace/public
+// function URLs from subdomain or custom domain
 @Injectable()
 export class WorkspaceDomainsService {
   constructor(
@@ -27,6 +29,7 @@ export class WorkspaceDomainsService {
     private readonly publicDomainRepository: Repository<PublicDomainEntity>,
   ) {}
 
+  // Builds a URL on the workspace's custom domain if enabled, otherwise its subdomain
   buildWorkspaceURL({
     workspace,
     pathname,
@@ -50,6 +53,7 @@ export class WorkspaceDomainsService {
     return url;
   }
 
+  // Builds a workspace URL carrying an errorMessage query param, for redirect flows
   computeWorkspaceRedirectErrorUrl(
     errorMessage: string,
     workspace: WorkspaceDomainConfig,
@@ -64,6 +68,8 @@ export class WorkspaceDomainsService {
     return url.toString();
   }
 
+  // In single-workspace mode, returns the one workspace to use, preferring the
+  // seeded Apple workspace over the most recently created one if multiple exist
   private async getDefaultWorkspace() {
     if (this.twentyConfigService.get('IS_MULTIWORKSPACE_ENABLED')) {
       throw new Error(
@@ -94,12 +100,16 @@ export class WorkspaceDomainsService {
     return foundWorkspace;
   }
 
+  // Resolves the workspace for a request origin, falling back to the single
+  // default workspace when multi-workspace mode is off
   async getWorkspaceByOriginOrDefaultWorkspace(origin: string) {
     const { workspace } = await this.resolveWorkspaceAndPublicDomain(origin);
 
     return workspace;
   }
 
+  // Classifies the origin (public function domain, custom domain, or subdomain)
+  // and resolves the matching workspace and, if applicable, its public domain
   async resolveWorkspaceAndPublicDomain(origin: string): Promise<{
     workspace: WorkspaceEntity | undefined;
     publicDomain: PublicDomainEntity | null;
@@ -188,6 +198,8 @@ export class WorkspaceDomainsService {
     };
   }
 
+  // Builds the base URL serverless functions are exposed under for a workspace,
+  // preferring an explicit primary public domain over the subdomain-based default
   buildPublicFunctionBaseUrl({
     workspace,
     primaryPublicDomain,
@@ -213,6 +225,7 @@ export class WorkspaceDomainsService {
     return url.origin;
   }
 
+  // Appends a path to the workspace's public function base URL
   buildPublicFunctionUrl({
     workspace,
     path,
@@ -229,6 +242,7 @@ export class WorkspaceDomainsService {
     return `${baseUrl}${path.startsWith('/') ? path : `/${path}`}`;
   }
 
+  // Builds the workspace's front URL with the custom domain as hostname
   private getCustomWorkspaceUrl(customDomain: string) {
     const url = this.domainServerConfigService.getFrontUrl();
 
@@ -237,6 +251,7 @@ export class WorkspaceDomainsService {
     return url.toString();
   }
 
+  // Builds the workspace's front URL with the subdomain prefixed, when multi-workspace is on
   private getTwentyWorkspaceUrl(subdomain: string) {
     const url = this.domainServerConfigService.getFrontUrl();
 
@@ -247,6 +262,8 @@ export class WorkspaceDomainsService {
     return url.toString();
   }
 
+  // Normalizes a workspace's domain config, falling back to the default subdomain
+  // when there's no workspace or custom domain isn't enabled
   getSubdomainAndCustomDomainFromWorkspaceFallbackOnDefaultSubdomain(
     workspace?: WorkspaceDomainConfig | null,
   ) {
@@ -269,6 +286,7 @@ export class WorkspaceDomainsService {
     return workspace;
   }
 
+  // Returns the workspace's subdomain URL, plus its custom domain URL if enabled
   getWorkspaceUrls({
     subdomain,
     customDomain,
@@ -283,6 +301,7 @@ export class WorkspaceDomainsService {
     };
   }
 
+  // Looks up a workspace by its custom domain
   async findByCustomDomain(customDomain: string) {
     return this.workspaceRepository.findOne({ where: { customDomain } });
   }

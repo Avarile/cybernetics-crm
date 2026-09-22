@@ -1,3 +1,7 @@
+// IMAP implementation of MessageFolderDriver: lists the account's mailboxes,
+// resolves the sent folder heuristically, filters out unselectable/duplicate
+// mailboxes, and builds externalIds that embed each mailbox's UIDVALIDITY so
+// downstream sync can detect a mailbox being recreated.
 import { Injectable, Logger } from '@nestjs/common';
 
 import { ImapFlow, type ListResponse } from 'imapflow';
@@ -26,6 +30,8 @@ export class ImapGetAllFoldersService implements MessageFolderDriver {
     private readonly imapFindSentFolderService: ImapFindSentFolderService,
   ) {}
 
+  // Lists all mailboxes over IMAP and maps them to discovered folders,
+  // closing the client connection when done.
   public async getAllMessageFolders(
     connectedAccount: Pick<
       ConnectedAccountEntity,
@@ -59,6 +65,10 @@ export class ImapGetAllFoldersService implements MessageFolderDriver {
     }
   }
 
+  // Builds the sent folder first (if found and selectable), then the
+  // remaining selectable, non-duplicate mailboxes whose standard-folder
+  // classification says they should be created by default; finally
+  // rewrites each folder's parentFolderId from mailbox path to externalId.
   private async filterAndMapFolders(
     client: ImapFlow,
     mailboxList: ListResponse[],
@@ -158,6 +168,8 @@ export class ImapGetAllFoldersService implements MessageFolderDriver {
     return true;
   }
 
+  // A mailbox is valid to include when selectable and not already added
+  // (matched by comparing IMAP paths derived from existing folders' ids).
   private isValidMailbox(
     mailbox: ListResponse,
     existingFolders: DiscoveredMessageFolder[],
@@ -173,6 +185,8 @@ export class ImapGetAllFoldersService implements MessageFolderDriver {
     return !isDuplicate;
   }
 
+  // Returns the mailbox's UIDVALIDITY from the list response if present,
+  // otherwise fetches it via a STATUS command; returns null on failure.
   private async getUidValidity(
     client: ImapFlow,
     mailbox: ListResponse,

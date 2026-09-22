@@ -16,6 +16,7 @@ import { GoogleOAuth2ClientProvider } from 'src/modules/connected-account/oauth2
 
 const GOOGLE_CALENDAR_ID = 'primary';
 
+// Creates an event on the connected account's primary Google Calendar.
 @Injectable()
 export class GoogleCalendarCreateEventService implements CalendarEventCreationDriver {
   constructor(

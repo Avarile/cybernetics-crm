@@ -18,10 +18,13 @@ import { type FlatEntityMaps } from 'src/engine/metadata-modules/flat-entity/typ
 import { findFlatEntityByIdInFlatEntityMaps } from 'src/engine/metadata-modules/flat-entity/utils/find-flat-entity-by-id-in-flat-entity-maps.util';
 import { type FlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-metadata/types/flat-field-metadata.type';
 
+// Type guard: true when the value is a recognized OrderByDirection.
 const isOrderByDirection = (value: unknown): value is OrderByDirection => {
   return Object.values(OrderByDirection).includes(value as OrderByDirection);
 };
 
+// Type guard: true when the order-by entry's value for `key` is a plain
+// direction (a scalar-field order-by).
 const isOrderByForScalarField = (
   orderByLeaf: Record<string, unknown>,
   key: keyof ObjectRecord,
@@ -31,6 +34,8 @@ const isOrderByForScalarField = (
   return isDefined(value) && isOrderByDirection(value);
 };
 
+// Type guard: true when the order-by entry's value for `key` is an object
+// of subfield -> direction pairs (a composite-field order-by).
 const isOrderByForCompositeField = (
   orderByLeaf: Record<string, unknown>,
   key: keyof ObjectRecord,
@@ -46,6 +51,8 @@ const isOrderByForCompositeField = (
   );
 };
 
+// Finds and validates the order-by entry for a scalar field key; throws
+// if the key isn't ordered by or is ordered as a composite field.
 export const validateAndGetOrderByForScalarField = (
   key: keyof ObjectRecord,
   orderBy: ObjectRecordOrderBy,
@@ -71,6 +78,9 @@ export const validateAndGetOrderByForScalarField = (
   return keyOrderBy;
 };
 
+// Finds, merges, and validates the order-by entries for a composite field
+// key (multiple entries for the same field's different subfields are
+// merged into one); throws if none found or merged shape isn't composite.
 export const validateAndGetOrderByForCompositeField = (
   key: keyof ObjectRecord,
   orderBy: ObjectRecordOrderBy,
@@ -109,6 +119,8 @@ export const validateAndGetOrderByForCompositeField = (
   return mergedOrderBy;
 };
 
+// Counts how many order-by entries sort by a RELATION field, used to
+// score query complexity (relation ordering requires extra joins).
 export const countRelationFieldsInOrderBy = (
   orderBy: ObjectRecordOrderBy,
   flatFieldMetadataMaps: FlatEntityMaps<FlatFieldMetadata>,
@@ -126,6 +138,7 @@ export const countRelationFieldsInOrderBy = (
   }).length;
 };
 
+// True when any order-by entry sorts by a RELATION field.
 export const hasRelationFieldInOrderBy = (
   orderBy: ObjectRecordOrderBy,
   flatFieldMetadataMaps: FlatEntityMaps<FlatFieldMetadata>,

@@ -1,3 +1,4 @@
+// Interactive confirmation prompt shown before destructive CLI commands proceed.
 import { Question, QuestionSet } from 'nest-commander';
 
 @QuestionSet({

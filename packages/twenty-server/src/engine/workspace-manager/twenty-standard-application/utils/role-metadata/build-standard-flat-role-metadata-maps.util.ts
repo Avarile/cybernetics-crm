@@ -5,6 +5,8 @@ import { type FlatRole } from 'src/engine/metadata-modules/flat-role/types/flat-
 import { STANDARD_FLAT_ROLE_METADATA_BUILDERS_BY_ROLE_NAME } from 'src/engine/workspace-manager/twenty-standard-application/utils/role-metadata/create-standard-flat-role-metadata.util';
 import { type CreateStandardRoleArgs } from 'src/engine/workspace-manager/twenty-standard-application/utils/role-metadata/create-standard-role-flat-metadata.util';
 
+// Builds every standard role's flat metadata and assembles them into a single FlatEntityMaps, used
+// as the "target" state when seeding or syncing a workspace's standard roles
 export const buildStandardFlatRoleMetadataMaps = (
   args: Omit<CreateStandardRoleArgs, 'context'>,
 ): FlatEntityMaps<FlatRole> => {

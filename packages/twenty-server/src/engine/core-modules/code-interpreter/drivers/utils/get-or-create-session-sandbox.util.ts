@@ -4,6 +4,8 @@ import { isDefined } from 'twenty-shared/utils';
 
 import { SESSION_SANDBOX_METADATA_KEY } from 'src/engine/core-modules/code-interpreter/constants/session-sandbox-metadata-key.constant';
 
+// Finds or creates the warm E2B sandbox for a session, keeping it alive and
+// killing any duplicate sandboxes left over for the same session
 type SandboxApi = typeof Sandbox;
 
 type GetOrCreateSessionSandboxArgs = {
@@ -14,6 +16,7 @@ type GetOrCreateSessionSandboxArgs = {
   idleTimeoutMs: number;
 };
 
+// Lists sandboxes tagged with the given session id, re-verifying the tag client-side
 const listSandboxesForSession = async (
   sandboxApi: SandboxApi,
   apiKey: string,
@@ -40,6 +43,8 @@ const listSandboxesForSession = async (
   );
 };
 
+// Connects to an existing sandbox and refreshes its timeout, killing it if the
+// timeout can't be refreshed rather than leaving it running unattended
 const connectAndKeepAlive = async (
   sandboxApi: SandboxApi,
   apiKey: string,
@@ -66,12 +71,15 @@ const connectAndKeepAlive = async (
   }
 };
 
+// Kills a sandbox by id, swallowing errors since this is best-effort cleanup
 const killSandboxById = (
   sandboxApi: SandboxApi,
   apiKey: string,
   sandboxId: string,
 ) => sandboxApi.kill(sandboxId, { apiKey }).catch(() => undefined);
 
+// Creates a new sandbox tagged with the session id, configured to pause on
+// timeout and auto-resume on next use
 const createSessionSandbox = (
   sandboxApi: SandboxApi,
   apiKey: string,
@@ -85,6 +93,8 @@ const createSessionSandbox = (
     metadata: { [SESSION_SANDBOX_METADATA_KEY]: sessionId },
   });
 
+// Reuses the session's live sandbox if one connects successfully, killing any
+// other duplicates found for the session; otherwise creates a fresh one
 export const getOrCreateSessionSandbox = async ({
   sandboxApi,
   apiKey,

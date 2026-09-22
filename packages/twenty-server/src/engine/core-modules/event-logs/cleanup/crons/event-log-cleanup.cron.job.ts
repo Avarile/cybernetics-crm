@@ -1,5 +1,9 @@
 /* @license Enterprise */
 
+// Cron job that fans out event-log cleanup work: for every active workspace
+// it enqueues a per-workspace EventLogCleanupJob honoring that workspace's
+// retention setting.
+
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -38,6 +42,8 @@ export class EventLogCleanupCronJob {
     EventLogCleanupCronJob.name,
     EVENT_LOG_CLEANUP_CRON_PATTERN,
   )
+  // Enqueues one EventLogCleanupJob per active workspace, isolating failures
+  // per workspace so one enqueue error doesn't block the rest.
   async handle(): Promise<void> {
     const workspaces = await this.getActiveWorkspaces();
 
@@ -74,6 +80,7 @@ export class EventLogCleanupCronJob {
     );
   }
 
+  // Fetches active workspaces with only the fields needed for cleanup.
   private async getActiveWorkspaces(): Promise<
     Array<{ id: string; eventLogRetentionDays: number }>
   > {

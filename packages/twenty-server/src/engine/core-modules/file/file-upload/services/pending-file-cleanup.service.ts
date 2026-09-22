@@ -1,3 +1,5 @@
+// Reaps stale PENDING direct-upload file records (and their partial storage
+// objects) across all workspaces, run by the pending-file cleanup cron.
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 

@@ -1,5 +1,7 @@
+// Shared OpenAPI response definitions for 400/401 error responses.
 import { type OpenAPIV3_1 } from 'openapi-types';
 
+// Documents the standard 400 Bad Request response shape.
 export const get400ErrorResponses = (): OpenAPIV3_1.ResponseObject => {
   return {
     description: 'Bad Request',
@@ -23,6 +25,7 @@ export const get400ErrorResponses = (): OpenAPIV3_1.ResponseObject => {
   };
 };
 
+// Documents the standard 401 Unauthorized response shape.
 export const get401ErrorResponses = (): OpenAPIV3_1.ResponseObject => {
   return {
     description: 'Unauthorized',

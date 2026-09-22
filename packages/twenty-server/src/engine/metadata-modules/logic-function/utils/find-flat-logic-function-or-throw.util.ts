@@ -1,3 +1,6 @@
+// Looks up a logic function by id, throwing LOGIC_FUNCTION_NOT_FOUND if it
+// doesn't exist or has been soft-deleted.
+
 import { isDefined } from 'twenty-shared/utils';
 
 import { type MetadataFlatEntityMaps } from 'src/engine/metadata-modules/flat-entity/types/metadata-flat-entity-maps.type';

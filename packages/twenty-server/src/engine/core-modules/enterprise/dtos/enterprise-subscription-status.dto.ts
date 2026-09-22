@@ -1,5 +1,6 @@
 /* @license Enterprise */
 
+// GraphQL DTO describing the enterprise subscription's billing status.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()

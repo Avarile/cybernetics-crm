@@ -15,6 +15,8 @@ import {
 import { ConnectedAccountTokenEncryptionService } from 'src/engine/metadata-modules/connected-account/services/connected-account-token-encryption.service';
 import { ConnectedAccountRefreshTokensService } from 'src/modules/connected-account/refresh-tokens-manager/services/connected-account-refresh-tokens.service';
 
+// Builds an authenticated Google OAuth2 client for a connected account by
+// decrypting its stored refresh token.
 @Injectable()
 export class GoogleOAuth2ClientProvider {
   constructor(

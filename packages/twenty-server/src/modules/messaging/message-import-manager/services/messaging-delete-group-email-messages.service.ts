@@ -1,3 +1,6 @@
+// Removes messages sent from a group email address (e.g. mailing lists)
+// from a message channel, cursor-paginating over its message
+// associations to bound memory use on large mailboxes.
 import { Injectable, Logger } from '@nestjs/common';
 
 import chunk from 'lodash.chunk';
@@ -30,6 +33,10 @@ export class MessagingDeleteGroupEmailMessagesService {
     private readonly messagingMessageCleanerService: MessagingMessageCleanerService,
   ) {}
 
+  // Cursor-pages through the channel's message associations (joined to
+  // their FROM participant), identifies messages whose sender handle is a
+  // group email, and deletes them (and resulting orphans) in chunks;
+  // returns the total count deleted.
   async deleteGroupEmailMessages(
     workspaceId: string,
     messageChannelId: string,

@@ -2,6 +2,8 @@ import { createHash } from 'crypto';
 
 import type { LineChartConfigurationDTO } from 'src/engine/metadata-modules/page-layout-widget/dtos/line-chart-configuration.dto';
 
+// Derives a short, stable series id prefix from the widget's object and
+// configuration, so identical series across chart re-renders keep the same key.
 export const buildLineChartSeriesIdPrefix = (
   objectMetadataId: string,
   configuration: LineChartConfigurationDTO,

@@ -10,6 +10,8 @@ interface DecoratorOptions {
   allowUndefined?: boolean;
 }
 
+// Injects the authenticated user's workspace-membership id, throwing
+// unless `allowUndefined` is passed (API keys have no user-workspace id).
 export const AuthUserWorkspaceId = createParamDecorator(
   (options: DecoratorOptions | undefined, ctx: ExecutionContext) => {
     const request = getRequest(ctx);

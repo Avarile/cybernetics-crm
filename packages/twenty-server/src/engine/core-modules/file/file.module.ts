@@ -1,3 +1,5 @@
+// Top-level NestJS module aggregating all file-related submodules (upload,
+// URL signing, email attachments, workflow files, pictures, deletion jobs).
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

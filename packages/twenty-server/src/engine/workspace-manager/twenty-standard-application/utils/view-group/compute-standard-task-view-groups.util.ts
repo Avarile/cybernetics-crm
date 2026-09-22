@@ -4,6 +4,7 @@ import {
   type CreateStandardViewGroupArgs,
 } from 'src/engine/workspace-manager/twenty-standard-application/utils/view-group/create-standard-view-group-flat-metadata.util';
 
+// Builds the fixed set of standard view groups (kanban status columns) for the "task" object's views
 export const computeStandardTaskViewGroups = (
   args: Omit<CreateStandardViewGroupArgs<'task'>, 'context'>,
 ): Record<string, FlatViewGroup> => {

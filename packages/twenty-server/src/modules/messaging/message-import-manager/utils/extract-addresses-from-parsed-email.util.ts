@@ -3,6 +3,8 @@ import { type Address } from 'postal-mime';
 import { type EmailAddress } from 'src/modules/messaging/message-import-manager/types/email-address';
 import { sanitizeString } from 'src/modules/messaging/message-import-manager/utils/sanitize-string.util';
 
+// Flattens a postal-mime address field (single, array, or a group
+// containing nested mailboxes) into a plain list of email addresses.
 export const extractAddressesFromParsedEmail = (
   address: Address | Address[] | undefined,
 ): EmailAddress[] => {

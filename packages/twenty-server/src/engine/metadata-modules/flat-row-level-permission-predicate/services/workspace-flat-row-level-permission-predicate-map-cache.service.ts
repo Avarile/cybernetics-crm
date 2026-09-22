@@ -22,6 +22,9 @@ import { WorkspaceCache } from 'src/engine/workspace-cache/decorators/workspace-
 import { createIdToUniversalIdentifierMap } from 'src/engine/workspace-cache/utils/create-id-to-universal-identifier-map.util';
 import { addFlatEntityToFlatEntityMapsThroughMutationOrThrow } from 'src/engine/workspace-manager/workspace-migration/utils/add-flat-entity-to-flat-entity-maps-through-mutation-or-throw.util';
 
+// Builds and caches the workspace's flat-row-level-permission-predicate maps by loading
+// predicate entities and resolving their application, field metadata, object metadata,
+// role and predicate group ids to universal identifiers.
 @Injectable()
 @WorkspaceCache('flatRowLevelPermissionPredicateMaps')
 export class WorkspaceFlatRowLevelPermissionPredicateMapCacheService extends WorkspaceCacheProvider<FlatRowLevelPermissionPredicateMaps> {
@@ -42,6 +45,8 @@ export class WorkspaceFlatRowLevelPermissionPredicateMapCacheService extends Wor
     super();
   }
 
+  // Loads predicates plus related applications, field metadata, object metadata, roles
+  // and predicate groups for the workspace, then assembles flat-row-level-permission-predicate maps.
   async computeForCache(
     workspaceId: string,
   ): Promise<FlatRowLevelPermissionPredicateMaps> {

@@ -1,3 +1,5 @@
+// Computes which search field metadata rows must be created when an object's
+// label identifier field changes, so the new label identifier stays searchable.
 import { type FromTo } from 'twenty-shared/types';
 import { isDefined, isSearchableFieldType } from 'twenty-shared/utils';
 

@@ -1,3 +1,7 @@
+// Wires up the workspace query hook infrastructure (discovery, storage,
+// metadata reading, and the service resolvers call into) plus every
+// feature module that registers its own query hooks (messaging,
+// calendar, dashboard, blocklist, workspace member, note, task).
 import { Module } from '@nestjs/common';
 import { DiscoveryModule } from '@nestjs/core';
 

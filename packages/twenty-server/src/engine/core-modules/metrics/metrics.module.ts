@@ -1,3 +1,4 @@
+// NestJS module exposing the metrics-collection and metrics-caching services.
 import { Module } from '@nestjs/common';
 
 import { MetricsCacheService } from 'src/engine/core-modules/metrics/metrics-cache.service';

@@ -2,6 +2,7 @@
 
 import type Stripe from 'stripe';
 
+// Maps a Stripe subscription event to the BillingCustomer fields it identifies
 export const transformStripeSubscriptionEventToDatabaseCustomer = (
   workspaceId: string,
   data:

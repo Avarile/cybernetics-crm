@@ -17,6 +17,9 @@ import { SyncableEntity } from 'src/engine/workspace-manager/types/syncable-enti
 @Entity({ name: 'viewGroup', schema: 'core' })
 @Index('IDX_VIEW_GROUP_WORKSPACE_ID_VIEW_ID', ['workspaceId', 'viewId'])
 @Index('IDX_VIEW_GROUP_VIEW_ID', ['viewId'])
+// TypeORM entity for a view group: one distinct value bucket of a view's
+// mainGroupByFieldMetadataId (e.g. a Kanban column), with visibility and
+// display position.
 export class ViewGroupEntity
   extends SyncableEntity
   implements Required<ViewGroupEntity>

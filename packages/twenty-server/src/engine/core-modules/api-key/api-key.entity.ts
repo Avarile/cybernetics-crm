@@ -1,3 +1,5 @@
+// TypeORM entity for programmatic API keys issued to a workspace, used to
+// authenticate requests to the public API without a user session.
 import { Field, ObjectType } from '@nestjs/graphql';
 import {
   Column,

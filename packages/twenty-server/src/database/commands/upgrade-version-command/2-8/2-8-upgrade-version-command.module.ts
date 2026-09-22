@@ -13,6 +13,9 @@ import { WorkspaceSchemaManagerModule } from 'src/engine/twenty-orm/workspace-sc
 import { WorkspaceCacheModule } from 'src/engine/workspace-cache/workspace-cache.module';
 import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace-migration/workspace-migration.module';
 
+// Registers the 2.8 workspace commands (drop channel standard objects, backfill
+// relation join-column indexes, gate default command menu items by permission flag,
+// restore channel association scalar field metadata) as providers for the upgrade runner.
 @Module({
   imports: [
     ApplicationModule,

@@ -36,6 +36,8 @@ import { ViewGraphqlApiExceptionFilter } from 'src/engine/metadata-modules/view/
 @MetadataResolver(() => ViewFieldGroupDTO)
 @UseFilters(ViewGraphqlApiExceptionFilter)
 @UseGuards(WorkspaceAuthGuard)
+// GraphQL resolver exposing CRUD for view field groups and the
+// fields-widget layout upsert mutation.
 export class ViewFieldGroupResolver {
   constructor(
     private readonly viewFieldGroupService: ViewFieldGroupService,
@@ -43,6 +45,8 @@ export class ViewFieldGroupResolver {
     private readonly i18nService: I18nService,
   ) {}
 
+  // Resolves the group's display name, translating the standard label
+  // (or override) via the owning application's i18n catalog.
   @ResolveField(() => String)
   async name(
     @Parent() viewFieldGroup: ViewFieldGroupDTO,
@@ -73,6 +77,7 @@ export class ViewFieldGroupResolver {
     });
   }
 
+  // Lists view field groups belonging to a specific view.
   @Query(() => [ViewFieldGroupDTO])
   @UseGuards(NoPermissionGuard)
   async getViewFieldGroups(
@@ -82,6 +87,7 @@ export class ViewFieldGroupResolver {
     return this.viewFieldGroupService.findByViewId(workspace.id, viewId);
   }
 
+  // Fetches a single view field group by id.
   @Query(() => ViewFieldGroupDTO, { nullable: true })
   @UseGuards(NoPermissionGuard)
   async getViewFieldGroup(
@@ -91,6 +97,7 @@ export class ViewFieldGroupResolver {
     return this.viewFieldGroupService.findById(id, workspace.id);
   }
 
+  // Updates a single view field group.
   @Mutation(() => ViewFieldGroupDTO)
   @UseGuards(NoPermissionGuard)
   async updateViewFieldGroup(
@@ -103,6 +110,7 @@ export class ViewFieldGroupResolver {
     });
   }
 
+  // Creates a single new view field group.
   @Mutation(() => ViewFieldGroupDTO)
   @UseGuards(NoPermissionGuard)
   async createViewFieldGroup(
@@ -116,6 +124,7 @@ export class ViewFieldGroupResolver {
     });
   }
 
+  // Creates multiple view field groups in one migration.
   @Mutation(() => [ViewFieldGroupDTO])
   @UseGuards(NoPermissionGuard)
   async createManyViewFieldGroups(
@@ -129,6 +138,7 @@ export class ViewFieldGroupResolver {
     });
   }
 
+  // Soft-deletes a view field group.
   @Mutation(() => ViewFieldGroupDTO)
   @UseGuards(NoPermissionGuard)
   async deleteViewFieldGroup(
@@ -141,6 +151,7 @@ export class ViewFieldGroupResolver {
     });
   }
 
+  // Permanently destroys a view field group.
   @Mutation(() => ViewFieldGroupDTO)
   @UseGuards(NoPermissionGuard)
   async destroyViewFieldGroup(
@@ -154,6 +165,8 @@ export class ViewFieldGroupResolver {
     });
   }
 
+  // Replaces the layout (groups+fields, or a flat field list) of a FIELDS
+  // page layout widget in one call, returning the owning view.
   @Mutation(() => ViewDTO)
   @UseGuards(NoPermissionGuard)
   @UsePipes(ResolverValidationPipe)
@@ -167,6 +180,8 @@ export class ViewFieldGroupResolver {
     });
   }
 
+  // Resolves the group's member view fields, using the preloaded list if
+  // present or lazily loading via a dataloader otherwise.
   @ResolveField(() => [ViewFieldDTO])
   async viewFields(
     @Parent() viewFieldGroup: ViewFieldGroupDTO,

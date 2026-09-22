@@ -10,6 +10,8 @@ import {
 
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';
 
+// GraphQL input for registering a new front component (a custom UI
+// component built and hosted by a workspace application).
 @InputType()
 export class CreateFrontComponentInput {
   @IsUUID()

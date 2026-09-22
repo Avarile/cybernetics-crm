@@ -1,3 +1,5 @@
+// Admin-panel service exposing a workspace's AI agent chat threads/messages
+// to support staff, gated on the workspace having impersonation/support access enabled.
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -25,6 +27,7 @@ export class AdminPanelChatService {
     private readonly agentMessageRepository: WorkspaceScopedRepository<AgentMessageEntity>,
   ) {}
 
+  // Throws if the workspace doesn't exist or hasn't opted into support access.
   private async assertWorkspaceAllowsImpersonation(
     workspaceId: string,
   ): Promise<void> {
@@ -42,6 +45,7 @@ export class AdminPanelChatService {
     }
   }
 
+  // Lists the 100 most recently updated chat threads for a workspace.
   async getWorkspaceChatThreads(
     workspaceId: string,
   ): Promise<AdminWorkspaceChatThreadDTO[]> {
@@ -64,6 +68,7 @@ export class AdminPanelChatService {
     }));
   }
 
+  // Returns a chat thread with its ordered messages and message parts.
   async getChatThreadMessages(threadId: string): Promise<{
     thread: AdminWorkspaceChatThreadDTO;
     messages: AdminChatMessageDTO[];

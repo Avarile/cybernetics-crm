@@ -1,3 +1,6 @@
+// Generates the OpenAPI 3.1 documents for the workspace's core (per-object
+// CRUD) and metadata REST APIs, deriving paths/schemas/webhooks from the
+// workspace's flat object/field metadata resolved via the request's token.
 import { Injectable } from '@nestjs/common';
 
 import { type Request } from 'express';
@@ -57,6 +60,8 @@ export class OpenApiService {
     private readonly flatEntityMapsCacheService: WorkspaceManyOrAllFlatEntityMapsCacheService,
   ) {}
 
+  // Resolves the workspace from the request's access token, or null if
+  // unauthenticated/invalid (returning a schema without paths in that case).
   private async getWorkspaceFromRequest(request: Request) {
     try {
       const { workspace } =
@@ -70,6 +75,8 @@ export class OpenApiService {
     }
   }
 
+  // Loads and sorts (alphabetically by plural name) the workspace's flat
+  // object metadata, along with the field maps needed to build schemas.
   private async getFlatObjectMetadataArray(workspaceId: string) {
     const { flatObjectMetadataMaps, flatFieldMetadataMaps } =
       await this.flatEntityMapsCacheService.getOrRecomputeManyOrAllFlatEntityMaps(
@@ -94,6 +101,9 @@ export class OpenApiService {
     };
   }
 
+  // Builds the full core REST API OpenAPI document: CRUD/batch/restore/merge/
+  // groupBy paths and change webhooks for every workspace object, plus
+  // schema/parameter/response components and tags.
   async generateCoreSchema(request: Request): Promise<OpenAPIV3_1.Document> {
     const baseUrl = getServerUrl({
       serverUrlEnv: this.twentyConfigService.get('SERVER_URL'),
@@ -250,6 +260,8 @@ export class OpenApiService {
     return schema;
   }
 
+  // Builds the metadata REST API OpenAPI document: fixed CRUD paths for
+  // metadata resources (objects, fields, webhooks, views, etc).
   async generateMetaDataSchema(
     request: Request,
   ): Promise<OpenAPIV3_1.Document> {
@@ -408,6 +420,7 @@ export class OpenApiService {
     return schema;
   }
 
+  // Builds the display name for a webhook event, e.g. "Person Created".
   createWebhookEventName(
     action: DatabaseEventAction,
     objectName: string,

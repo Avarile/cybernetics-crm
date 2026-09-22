@@ -15,6 +15,8 @@ import {
   BlocklistValidationService,
 } from 'src/modules/blocklist/blocklist-validation-manager/services/blocklist-validation.service';
 
+// Runs before `blocklist.createMany`; validates the new entries and rejects
+// unauthenticated requests before the mutation is executed.
 @WorkspaceQueryHook(`blocklist.createMany`)
 export class BlocklistCreateManyPreQueryHook implements WorkspacePreQueryHookInstance {
   constructor(

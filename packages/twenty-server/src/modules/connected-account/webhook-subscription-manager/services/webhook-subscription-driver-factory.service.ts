@@ -10,6 +10,7 @@ import { GoogleWebhookSubscriptionDriver } from 'src/modules/connected-account/w
 import { MicrosoftWebhookSubscriptionDriver } from 'src/modules/connected-account/webhook-subscription-manager/drivers/microsoft/microsoft-webhook-subscription.driver';
 import { type WebhookSubscriptionDriver } from 'src/modules/connected-account/webhook-subscription-manager/types/webhook-subscription-driver.type';
 
+// Resolves the correct webhook subscription driver for a connected account's provider.
 @Injectable()
 export class WebhookSubscriptionDriverFactory {
   private readonly driversByProvider: Partial<
@@ -27,10 +28,12 @@ export class WebhookSubscriptionDriverFactory {
     };
   }
 
+  // Whether a webhook subscription driver exists for the given provider.
   isProviderSupported(provider: ConnectedAccountProvider): boolean {
     return provider in this.driversByProvider;
   }
 
+  // Returns the driver for a provider, throwing if none is registered.
   getDriver(provider: ConnectedAccountProvider): WebhookSubscriptionDriver {
     const driver = this.driversByProvider[provider];
 

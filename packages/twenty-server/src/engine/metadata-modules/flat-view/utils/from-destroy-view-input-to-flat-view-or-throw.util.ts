@@ -13,6 +13,8 @@ import {
 } from 'src/engine/metadata-modules/view/exceptions/view.exception';
 import { type UniversalFlatView } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-view.type';
 
+// Looks up the flat view targeted by a permanent-destroy request,
+// throwing if it doesn't exist.
 export const fromDestroyViewInputToFlatViewOrThrow = ({
   destroyViewInput: rawDestroyViewInput,
   flatViewMaps,

@@ -28,6 +28,8 @@ type SortChartDataParams<T> = {
   dateGranularity?: ObjectRecordGroupByDateGranularity | null;
 };
 
+// Sorts primary-axis chart data points per the configured GraphOrderBy
+// strategy (manual, by aggregate value, by field value, or by select option position).
 export const sortChartDataIfNeeded = <T>({
   data,
   orderBy,

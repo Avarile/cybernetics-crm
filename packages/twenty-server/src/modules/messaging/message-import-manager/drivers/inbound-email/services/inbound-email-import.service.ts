@@ -1,3 +1,6 @@
+// Handles an inbound (SNS/S3-delivered) email destined for an email-group
+// message channel: matches the recipient to a channel, parses and saves
+// the message, then removes the raw object from S3.
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -36,6 +39,10 @@ export class InboundEmailImportService {
     private readonly connectedAccountRepository: Repository<ConnectedAccountEntity>,
   ) {}
 
+  // Resolves the S3 object to a matching email-group channel and connected
+  // account, saves the parsed message, and cleans up the raw S3 object.
+  // Returns an outcome tag rather than throwing for expected non-matches
+  // (unconfigured feature, no matching recipient/channel).
   async importInboundMessage(
     params: ImportInboundMessageParams,
   ): Promise<InboundEmailImportOutcome> {
@@ -116,6 +123,8 @@ export class InboundEmailImportService {
     };
   }
 
+  // Finds the first envelope recipient whose address is at the configured
+  // inbound email domain (case-insensitive).
   private matchInboundRecipient(
     envelopeRecipients: string[],
     inboundEmailDomain: string,

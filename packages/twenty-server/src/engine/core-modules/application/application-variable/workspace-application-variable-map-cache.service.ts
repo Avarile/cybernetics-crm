@@ -1,3 +1,6 @@
+// Workspace cache provider that computes the flat entity maps for a
+// workspace's application variables, resolving each entity's owning
+// application to its universal identifier.
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -26,6 +29,8 @@ export class WorkspaceApplicationVariableMapCacheService extends WorkspaceCacheP
     super();
   }
 
+  // Loads a workspace's application variables and converts them to flat
+  // entity maps keyed by universal identifier.
   async computeForCache(
     workspaceId: string,
   ): Promise<ApplicationVariableCacheMaps> {

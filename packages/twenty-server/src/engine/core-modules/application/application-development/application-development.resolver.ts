@@ -1,3 +1,6 @@
+// GraphQL resolver exposing mutations used during application development:
+// creating a dev application, syncing its manifest into the workspace, and
+// uploading application files (logic functions, front components, assets).
 import {
   UseFilters,
   UseGuards,
@@ -41,6 +44,8 @@ export class ApplicationDevelopmentResolver {
     private readonly applicationDevelopmentService: ApplicationDevelopmentService,
   ) {}
 
+  // Creates (or returns the existing) local development application for the
+  // given universal identifier, linking it to its application registration.
   @Mutation(() => DevelopmentApplicationDTO)
   async createDevelopmentApplication(
     @Args() { universalIdentifier, name }: CreateDevelopmentApplicationInput,
@@ -53,6 +58,8 @@ export class ApplicationDevelopmentResolver {
     });
   }
 
+  // Applies (or dry-runs) an application manifest against the workspace,
+  // returning the resulting workspace migration actions.
   @Mutation(() => WorkspaceMigrationDTO)
   async syncApplication(
     @Args() { manifest, dryRun }: ApplicationInput,
@@ -65,6 +72,8 @@ export class ApplicationDevelopmentResolver {
     });
   }
 
+  // Streams an uploaded file into the application's storage under an
+  // allow-listed file folder (built assets, public assets, source, deps).
   @Mutation(() => FileDTO)
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.UPLOAD_FILE))
   async uploadApplicationFile(

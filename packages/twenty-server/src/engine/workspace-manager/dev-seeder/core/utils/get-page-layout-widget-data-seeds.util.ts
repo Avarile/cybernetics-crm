@@ -25,6 +25,8 @@ import {
   getSeedFrontComponentIds,
 } from 'src/engine/workspace-manager/standard-objects-prefill-data/utils/prefill-front-component-definitions.util';
 
+// Builds the seed dashboard widgets (v1 + v2), resolving each widget's
+// field/front-component references to universal identifiers.
 export const getPageLayoutWidgetFlatEntitySeeds = ({
   workspaceId,
   flatApplication,
@@ -99,6 +101,10 @@ const getFieldId = (
   return object?.fields?.find((field) => field.name === fieldName)?.id;
 };
 
+// Defines the "v1" sample dashboard widgets (aggregate/bar charts) shown
+// across the sales, customer, and team dashboard tabs, plus a front
+// component widget and a documentation iframe widget. Widgets are dropped
+// when their referenced object/field doesn't exist in the workspace.
 export const getPageLayoutWidgetDataSeeds = (
   workspaceId: string,
   objectMetadataItems: ObjectMetadataEntity[],

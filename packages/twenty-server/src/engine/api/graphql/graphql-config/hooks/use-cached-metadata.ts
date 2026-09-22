@@ -1,3 +1,8 @@
+// GraphQL Yoga plugin that short-circuits a request with a cached
+// response for a configured allow-list of operations (e.g. metadata
+// queries that rarely change), keyed by workspace, metadata version,
+// locale/user, and a hash of the query body, and populates that cache
+// from successful (error-free) responses.
 import { createHash } from 'crypto';
 
 import { type Request } from 'express';
@@ -14,7 +19,13 @@ export type CacheMetadataPluginConfig = {
   operationsToCache: string[];
 };
 
+// Creates the plugin. On request, returns a cached response early (if
+// present) for whitelisted operations; on response, stores a
+// successful response under the same cache key for next time.
 export function useCachedMetadata(config: CacheMetadataPluginConfig): Plugin {
+  // Derives a cache key scoped to workspace + metadata version (so schema
+  // changes invalidate the cache), plus locale/user or query hash to keep
+  // entries distinct per request variant.
   const computeCacheKey = ({
     operationName,
     request,

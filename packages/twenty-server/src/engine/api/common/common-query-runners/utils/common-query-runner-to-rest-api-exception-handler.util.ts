@@ -12,6 +12,8 @@ import {
   type CommonQueryRunnerException,
 } from 'src/engine/api/common/common-query-runners/errors/common-query-runner.exception';
 
+// Maps a CommonQueryRunnerException to the matching NestJS HTTP exception
+// (BadRequest, NotFound, Unauthorized, InternalServerError).
 export const commonQueryRunnerToRestApiExceptionHandler = (
   error: CommonQueryRunnerException,
 ): never => {

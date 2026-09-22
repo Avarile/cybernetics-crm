@@ -11,6 +11,7 @@ import {
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';
 import { PageLayoutType } from 'src/engine/metadata-modules/page-layout/enums/page-layout-type.enum';
 
+// GraphQL/REST input for creating a new page layout.
 @InputType()
 export class CreatePageLayoutInput {
   @Field({ nullable: false })

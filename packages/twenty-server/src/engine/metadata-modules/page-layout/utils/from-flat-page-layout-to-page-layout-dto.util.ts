@@ -1,6 +1,8 @@
 import { type FlatPageLayout } from 'src/engine/metadata-modules/flat-page-layout/types/flat-page-layout.type';
 import { type PageLayoutDTO } from 'src/engine/metadata-modules/page-layout/dtos/page-layout.dto';
 
+// Converts a flat page layout into its GraphQL DTO (without tabs),
+// converting timestamp strings to Date objects.
 export const fromFlatPageLayoutToPageLayoutDto = (
   flatPageLayout: FlatPageLayout,
 ): Omit<PageLayoutDTO, 'tabs'> => {

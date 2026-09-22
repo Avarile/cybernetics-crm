@@ -1,3 +1,7 @@
+// Generic get/set/delete service over the key-value-pair table, scoped by
+// an optional user id and/or workspace id (undefined = ignore that scope,
+// null = require it to be unset), with type-safe values via a caller-
+// supplied key-to-value-type map.
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { type QueryRunner, IsNull, Repository } from 'typeorm';
@@ -16,6 +20,8 @@ export class KeyValuePairService<
     private readonly keyValuePairRepository: Repository<KeyValuePairEntity>,
   ) {}
 
+  // Finds key-value pairs matching the given scope/type/key, falling back to
+  // the deprecated text value column when the JSONB value is unset.
   async get<K extends keyof KeyValueTypesMap>({
     userId,
     workspaceId,
@@ -50,6 +56,9 @@ export class KeyValuePairService<
     }));
   }
 
+  // Upserts a key-value pair, picking the conflict target (and matching
+  // partial unique index predicate) based on which of userId/workspaceId
+  // are null, so the upsert lands on the correct scoped unique constraint.
   async set<K extends keyof KeyValueTypesMap>(
     {
       userId,
@@ -103,6 +112,7 @@ export class KeyValuePairService<
     });
   }
 
+  // Deletes key-value pairs matching the given scope/type/key.
   async delete(
     {
       userId,

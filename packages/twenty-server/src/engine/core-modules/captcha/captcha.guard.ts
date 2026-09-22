@@ -1,3 +1,5 @@
+// GraphQL guard that validates the request's captchaToken argument, tracking
+// invalid attempts via metrics and rejecting the request if validation fails.
 import {
   type CanActivate,
   type ExecutionContext,
@@ -22,6 +24,8 @@ export class CaptchaGuard implements CanActivate {
     private metricsService: MetricsService,
   ) {}
 
+  // Validates the GraphQL request's captchaToken, incrementing an invalid-
+  // captcha metric and throwing when validation fails.
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const ctx = GqlExecutionContext.create(context);
 

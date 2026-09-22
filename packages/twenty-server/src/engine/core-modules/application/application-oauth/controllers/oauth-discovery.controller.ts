@@ -1,3 +1,6 @@
+// Serves the OAuth 2.0 / OIDC well-known discovery documents (RFC 8414
+// authorization server metadata and RFC 9728 protected resource metadata)
+// so OAuth and MCP clients can auto-discover Twenty's OAuth endpoints.
 import { Controller, Get, Req, UseGuards } from '@nestjs/common';
 
 import { type Request } from 'express';
@@ -20,6 +23,8 @@ export class OAuthDiscoveryController {
     private readonly applicationRegistrationService: ApplicationRegistrationService,
   ) {}
 
+  // Returns the RFC 8414 authorization server metadata document, including
+  // the CLI's OAuth client id when a CLI registration exists.
   @Get('oauth-authorization-server')
   @UseGuards(PublicEndpointGuard, NoPermissionGuard)
   async getAuthorizationServerMetadata(@Req() request: Request) {
@@ -71,6 +76,8 @@ export class OAuthDiscoveryController {
   // <origin>/mcp. Strict clients probing the path-aware variant will reject
   // mismatching metadata.
 
+  // Returns protected resource metadata for the API origin itself as the
+  // resource.
   @Get('oauth-protected-resource')
   @UseGuards(PublicEndpointGuard, NoPermissionGuard)
   getProtectedResourceMetadataRoot(@Req() request: Request) {
@@ -79,6 +86,7 @@ export class OAuthDiscoveryController {
     return this.buildProtectedResourceMetadata(base, base);
   }
 
+  // Returns protected resource metadata scoped to the /mcp resource path.
   @Get('oauth-protected-resource/mcp')
   @UseGuards(PublicEndpointGuard, NoPermissionGuard)
   getProtectedResourceMetadataMcp(@Req() request: Request) {
@@ -87,6 +95,8 @@ export class OAuthDiscoveryController {
     return this.buildProtectedResourceMetadata(base, `${base}/mcp`);
   }
 
+  // Builds the RFC 9728 protected resource metadata body for a given
+  // resource identifier and authorization server base.
   private buildProtectedResourceMetadata(base: string, resource: string) {
     return {
       resource,
@@ -96,6 +106,8 @@ export class OAuthDiscoveryController {
     };
   }
 
+  // True when the request host matches the API-only SERVER_URL rather than
+  // a host that also serves the frontend.
   private isApiHost(request: Request): boolean {
     const serverUrl = this.twentyConfigService.get('SERVER_URL');
 

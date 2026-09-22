@@ -5,6 +5,7 @@ import { type FlatNavigationMenuItem } from 'src/engine/metadata-modules/flat-na
 import { type FlatView } from 'src/engine/metadata-modules/flat-view/types/flat-view.type';
 import { TWENTY_STANDARD_APPLICATION } from 'src/engine/workspace-manager/twenty-standard-application/constants/twenty-standard-applications';
 
+// Builds a standard navigation menu FOLDER item's flat metadata (a grouping container with no target view)
 export const createStandardNavigationMenuItemFolderFlatMetadata = ({
   universalIdentifier,
   name,
@@ -50,6 +51,8 @@ export const createStandardNavigationMenuItemFolderFlatMetadata = ({
   updatedAt: now,
 });
 
+// Builds a standard navigation menu item nested inside a folder, resolving its target view by
+// universal identifier and linking it to its parent folder
 export const createStandardNavigationMenuItemFolderItemFlatMetadata = ({
   universalIdentifier,
   viewUniversalIdentifier,

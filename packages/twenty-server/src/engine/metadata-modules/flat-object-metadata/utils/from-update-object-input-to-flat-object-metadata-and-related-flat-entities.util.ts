@@ -1,3 +1,7 @@
+// Converts an UpdateOneObjectInput GraphQL input into the flat object metadata
+// record to persist, plus the related flat entities (indexes, view fields,
+// other fields, search fields) that must change as a side effect of the update.
+
 import {
   isDefined,
   isImageIdentifierFieldMetadataType,
@@ -34,6 +38,9 @@ type FromUpdateObjectInputToFlatObjectMetadataArgs = {
   | 'flatSearchFieldMetadataMaps'
 >;
 
+// Validates the update input against the existing object metadata (image
+// identifier field checks, standard-vs-custom editable properties), merges
+// the changes in, and computes the resulting side effects on related entities.
 export const fromUpdateObjectInputToFlatObjectMetadataAndRelatedFlatEntities =
   ({
     flatObjectMetadataMaps: existingFlatObjectMetadataMaps,

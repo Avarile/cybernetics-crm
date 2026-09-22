@@ -6,6 +6,9 @@ import { isGroupByRelationField } from 'src/engine/api/common/common-query-runne
 import { formatColumnNameAsAlias } from 'src/engine/api/common/common-query-runners/utils/remove-quote.util';
 import { formatColumnNamesFromCompositeFieldAndSubfields } from 'src/engine/twenty-orm/utils/format-column-names-from-composite-field-and-subfield.util';
 
+// Converts resolved GroupByField entries into SQL-ready GroupByDefinitions
+// (column reference, GROUP BY expression, and a unique column alias,
+// disambiguated by date granularity when relevant).
 export const getGroupByDefinitions = ({
   groupByFields,
   objectMetadataNameSingular,

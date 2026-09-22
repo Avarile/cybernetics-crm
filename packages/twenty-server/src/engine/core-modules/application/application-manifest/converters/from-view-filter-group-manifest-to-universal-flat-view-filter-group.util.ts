@@ -1,3 +1,5 @@
+// Converts a manifest-declared view filter group into the universal flat
+// entity shape used to build workspace migrations.
 import { type ViewFilterGroupManifest } from 'twenty-shared/application';
 
 import { type UniversalFlatViewFilterGroup } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-view-filter-group.type';

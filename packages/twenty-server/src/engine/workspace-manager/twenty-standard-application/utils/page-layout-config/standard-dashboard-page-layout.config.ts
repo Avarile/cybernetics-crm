@@ -61,6 +61,7 @@ const DASHBOARD_PAGE_TABS = {
   },
 } as const satisfies Record<string, StandardPageLayoutTabConfig>;
 
+// Fixed page layout (tabs and widgets) for the standard "My First Dashboard" seeded page
 export const STANDARD_DASHBOARD_PAGE_LAYOUT_CONFIG = {
   name: 'My First Dashboard',
   type: PageLayoutType.DASHBOARD,

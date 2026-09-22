@@ -7,6 +7,8 @@ import { resolveEntityRelationUniversalIdentifiers } from 'src/engine/metadata-m
 import { type RowLevelPermissionPredicateGroupInput } from 'src/engine/metadata-modules/row-level-permission-predicate/dtos/inputs/upsert-row-level-permission-predicates.input';
 import { type FlatRowLevelPermissionPredicateGroup } from 'src/engine/metadata-modules/row-level-permission-predicate/types/flat-row-level-permission-predicate-group.type';
 
+// Builds a new flat row-level permission predicate group from an upsert input,
+// resolving object metadata and parent group references to universal identifiers.
 export const fromCreateRowLevelPermissionPredicateGroupInputToFlatRowLevelPermissionPredicateGroup =
   ({
     input,

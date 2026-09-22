@@ -14,6 +14,8 @@ import {
   AiExceptionCode,
 } from 'src/engine/metadata-modules/ai/ai.exception';
 
+// Maps AiException (and delegates BillingException) codes to their
+// corresponding GraphQL error types, rethrowing anything else unchanged.
 export const aiGraphqlApiExceptionHandler = (error: Error) => {
   if (error instanceof BillingException) {
     return billingGraphqlApiExceptionHandler(error);

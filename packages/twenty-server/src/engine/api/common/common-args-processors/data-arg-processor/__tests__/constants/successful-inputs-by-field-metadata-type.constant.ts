@@ -1,3 +1,5 @@
+// Test fixture: per field-metadata-type inputs that the data-arg-processor
+// should accept, paired with the transformed output they must produce.
 import { joinColumnNameForManyToOneMorphRelationField1 } from 'test/integration/graphql/suites/inputs-validation/utils/setup-test-objects-with-all-field-types.util';
 import { FieldMetadataType } from 'twenty-shared/types';
 

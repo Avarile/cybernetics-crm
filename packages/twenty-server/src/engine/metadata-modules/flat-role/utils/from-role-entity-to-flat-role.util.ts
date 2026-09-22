@@ -17,6 +17,8 @@ type FromRoleEntityToFlatRoleArgs = {
   };
 } & EntityManyToOneIdByUniversalIdentifierMaps<'role'>;
 
+// Converts a RoleEntity (with its regrouped permission and role-target relations) into its
+// flat representation, resolving relation ids to universal identifiers.
 export const fromRoleEntityToFlatRole = (
   args: FromRoleEntityToFlatRoleArgs,
 ): FlatRole => {

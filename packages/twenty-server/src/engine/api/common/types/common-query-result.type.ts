@@ -8,6 +8,7 @@ import {
   CommonQueryArgs,
 } from 'src/engine/api/common/types/common-query-args.type';
 
+// Union of every shape a common query-runner operation can return.
 export type CommonQueryResult =
   | ObjectRecord[]
   | ObjectRecord
@@ -15,6 +16,8 @@ export type CommonQueryResult =
   | CommonFindManyOutput
   | CommonFindDuplicatesOutputItem[];
 
+// Pairs an operation's result with the fully-processed args that produced
+// it, as returned by CommonBaseQueryRunnerService.execute.
 export type CommonQueryExecutionResult<
   Output extends CommonQueryResult,
   Args extends CommonQueryArgs,

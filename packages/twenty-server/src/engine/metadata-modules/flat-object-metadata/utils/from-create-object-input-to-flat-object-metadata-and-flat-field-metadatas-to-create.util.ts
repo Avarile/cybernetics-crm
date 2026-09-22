@@ -1,3 +1,5 @@
+// Converts a CreateObjectInput GraphQL input into the flat object metadata and
+// related flat field/index metadata that must be created for a new custom object.
 import { getFieldUniversalIdentifier } from 'twenty-shared/application';
 import {
   capitalize,
@@ -21,6 +23,8 @@ type FromCreateObjectInputToFlatObjectMetadataAndFlatFieldMetadatasToCreateArgs 
     flatApplication: FlatApplication;
   } & Pick<AllFlatEntityMaps, 'flatObjectMetadataMaps'>;
 
+// Builds the new object's flat metadata plus its default "name" field and
+// standard relation fields/indexes, ready to be applied by the migration builder.
 export const fromCreateObjectInputToFlatObjectMetadataAndFlatFieldMetadatasToCreate =
   ({
     createObjectInput: rawCreateObjectInput,

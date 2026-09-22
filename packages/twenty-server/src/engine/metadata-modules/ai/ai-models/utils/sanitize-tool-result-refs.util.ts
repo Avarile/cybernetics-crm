@@ -1,9 +1,12 @@
+// Converts JSON tool-result values containing JSON Schema `$ref`/`$defs`
+// into plain text, since Gemini rejects those fields in tool results.
 import {
   type LanguageModelV3Prompt,
   type LanguageModelV3ToolResultPart,
 } from '@ai-sdk/provider';
 import { isArray, isObject, isString } from '@sniptt/guards';
 
+// Recursively checks whether a value contains a JSON Schema `$ref` or `$defs` key.
 const containsJsonSchemaDefsRef = (value: unknown): boolean => {
   if (isArray(value)) {
     return value.some(containsJsonSchemaDefsRef);
@@ -20,6 +23,7 @@ const containsJsonSchemaDefsRef = (value: unknown): boolean => {
   );
 };
 
+// Serializes a JSON tool-result part to text if its value contains schema refs.
 const sanitizeToolResultPart = (
   part: LanguageModelV3ToolResultPart,
 ): LanguageModelV3ToolResultPart => {
@@ -45,6 +49,7 @@ const sanitizeToolResultPart = (
   };
 };
 
+// Sanitizes tool-result parts across all tool messages in a prompt.
 export const sanitizeToolResultRefs = (
   prompt: LanguageModelV3Prompt,
 ): LanguageModelV3Prompt =>

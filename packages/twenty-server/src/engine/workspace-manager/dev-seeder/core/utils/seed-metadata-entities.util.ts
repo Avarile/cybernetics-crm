@@ -20,6 +20,10 @@ import { UnsubscribeTopicVisibility } from 'src/engine/core-modules/emailing-dom
 import { getSeededEmailGroupDomains } from 'src/engine/workspace-manager/dev-seeder/core/utils/seed-emailing-domains.util';
 import { CONNECTED_ACCOUNT_DATA_SEED_IDS } from 'src/engine/workspace-manager/dev-seeder/data/constants/connected-account-data-seeds.constant';
 
+// Seeds core sample messaging/calendar entities (connected accounts,
+// message channels/folders, calendar channels, unsubscribe topics) for the
+// Apple and YCombinator seed workspaces, using separate fixed ids per
+// workspace since these core tables aren't workspace-schema-scoped.
 type SeedMetadataEntitiesArgs = {
   queryRunner: QueryRunner;
   schemaName: string;
@@ -77,6 +81,8 @@ const YC_UNSUBSCRIBE_TOPIC_IDS = {
   TRANSACTIONAL: '30303030-7b1c-4a2d-8e3f-300000000003',
 } as const;
 
+// Resolves the workspace-specific fixed ids to use for seeding, since the
+// YCombinator workspace needs its own ids distinct from Apple's.
 const getSeedIds = (workspaceId: string) => {
   if (workspaceId === SEED_YCOMBINATOR_WORKSPACE_ID) {
     return {
@@ -109,6 +115,9 @@ const getSeedIds = (workspaceId: string) => {
   };
 };
 
+// Seeds connected accounts, message channels, unsubscribe topics, calendar
+// channels, and message folders, in order, for the Apple/YCombinator
+// workspaces only.
 export const seedMetadataEntities = async ({
   queryRunner,
   schemaName,

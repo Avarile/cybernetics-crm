@@ -39,6 +39,8 @@ const toMicrosoftEventDateTime = (
   timeZone,
 });
 
+// Converts a provider-agnostic calendar event input into the Microsoft Graph
+// event payload, including attendees and an optional Teams meeting request.
 export const toMicrosoftEventInput = (input: CalendarEventToCreate): Event => {
   const event: Event = {
     subject: input.title,

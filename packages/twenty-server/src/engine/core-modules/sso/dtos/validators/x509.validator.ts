@@ -1,5 +1,7 @@
 /* @license Enterprise */
 
+// class-validator decorator validating that a string is a well-formed X.509
+// certificate (used for SAML SSO setup).
 import * as crypto from 'crypto';
 
 import {
@@ -12,6 +14,7 @@ import {
 @ValidatorConstraint({ async: false })
 export class IsX509CertificateConstraint implements ValidatorConstraintInterface {
   // oxlint-disable-next-line typescript/no-explicit-any
+  // Attempts to parse the value as a base64-encoded X.509 certificate.
   validate(value: any) {
     if (typeof value !== 'string') {
       return false;
@@ -38,6 +41,7 @@ export class IsX509CertificateConstraint implements ValidatorConstraintInterface
   }
 }
 
+// Property decorator applying the X509 certificate validator.
 export function IsX509Certificate(validationOptions?: ValidationOptions) {
   return function (object: object, propertyName: string) {
     registerDecorator({

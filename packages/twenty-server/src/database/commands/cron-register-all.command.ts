@@ -31,6 +31,9 @@ import { WorkflowHandleStaledRunsCronCommand } from 'src/modules/workflow/workfl
 import { WorkflowRunEnqueueCronCommand } from 'src/modules/workflow/workflow-runner/workflow-run-queue/cron/command/workflow-run-enqueue.cron.command';
 import { WorkflowCronTriggerCronCommand } from 'src/modules/workflow/workflow-trigger/automated-trigger/crons/commands/workflow-cron-trigger.cron.command';
 
+// CLI command (`cron:register:all`): runs every background sync/cleanup cron
+// command's registration logic once, e.g. for re-registering jobs after a deploy.
+// Each entry can be conditionally skipped based on feature flags/config.
 @Command({
   name: 'cron:register:all',
   description: 'Register all background sync cron jobs',
@@ -73,6 +76,8 @@ export class CronRegisterAllCommand extends CommandRunner {
     super();
   }
 
+  // Runs each enabled command's `.run()` sequentially, collecting successes/failures/
+  // skips so one failing registration doesn't stop the rest.
   async run(): Promise<void> {
     this.logger.log('Registering all background sync cron jobs...');
 

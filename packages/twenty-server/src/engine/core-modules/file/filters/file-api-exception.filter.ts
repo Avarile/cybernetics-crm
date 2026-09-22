@@ -1,3 +1,4 @@
+// Maps FileException codes to HTTP status codes for REST file endpoints.
 import {
   type ArgumentsHost,
   Catch,
@@ -18,6 +19,7 @@ export class FileApiExceptionFilter implements ExceptionFilter {
     private readonly httpExceptionHandlerService: HttpExceptionHandlerService,
   ) {}
 
+  // Translates the exception code into the matching HTTP response status.
   catch(exception: FileException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();

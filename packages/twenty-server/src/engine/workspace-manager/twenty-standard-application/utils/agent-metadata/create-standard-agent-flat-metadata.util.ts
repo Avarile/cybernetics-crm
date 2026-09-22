@@ -9,6 +9,7 @@ import { STANDARD_AGENT } from 'src/engine/workspace-manager/twenty-standard-app
 import { type AllStandardAgentName } from 'src/engine/workspace-manager/twenty-standard-application/types/all-standard-agent-name.type';
 import { type StandardBuilderArgs } from 'src/engine/workspace-manager/twenty-standard-application/types/metadata-standard-buillder-args.type';
 
+// Per-agent content (name, prompt, model, etc.) supplied by each standard agent's builder
 export type CreateStandardAgentContext = {
   agentName: AllStandardAgentName;
   name: string;
@@ -27,6 +28,8 @@ export type CreateStandardAgentArgs = StandardBuilderArgs<'agent'> & {
   context: CreateStandardAgentContext;
 };
 
+// Builds a single standard agent's FlatAgent record, resolving its fixed universal identifier from
+// STANDARD_AGENT and stamping it with the standard application id and current timestamps
 export const createStandardAgentFlatMetadata = ({
   context: {
     agentName,

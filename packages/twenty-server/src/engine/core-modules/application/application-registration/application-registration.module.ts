@@ -1,3 +1,5 @@
+// Wires together application registration management: CRUD, tarball
+// upload, ownership claim/transfer, variables, and asset URL resolution.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

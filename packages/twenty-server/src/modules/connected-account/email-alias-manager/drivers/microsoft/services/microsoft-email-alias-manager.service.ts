@@ -11,6 +11,8 @@ export class MicrosoftEmailAliasManagerService {
     private readonly microsoftOAuth2ClientProvider: MicrosoftOAuth2ClientProvider,
   ) {}
 
+  // Lists the account's SMTP proxy addresses (aliases), excluding the
+  // uppercase "SMTP:" primary address.
   public async getHandleAliases(connectedAccount: ConnectedAccountEntity) {
     const microsoftClient = await this.microsoftOAuth2ClientProvider.getClient(
       connectedAccount.id,

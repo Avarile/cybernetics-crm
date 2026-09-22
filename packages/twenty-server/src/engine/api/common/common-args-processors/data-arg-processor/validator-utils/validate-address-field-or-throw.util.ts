@@ -9,6 +9,9 @@ import {
   CommonQueryRunnerExceptionCode,
 } from 'src/engine/api/common/common-query-runners/errors/common-query-runner.exception';
 
+// Validates an address composite field input, checking each subfield type
+// and rejecting unknown subfields; throws a CommonQueryRunnerException on
+// any violation.
 export const validateAddressFieldOrThrow = (
   value: unknown,
   fieldName: string,

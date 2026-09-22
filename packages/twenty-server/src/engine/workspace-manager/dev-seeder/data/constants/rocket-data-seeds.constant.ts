@@ -1,3 +1,4 @@
+// Seed data for the sample custom "Rocket" objects used to demo custom objects.
 type RocketDataSeed = {
   id: string;
   name: string;

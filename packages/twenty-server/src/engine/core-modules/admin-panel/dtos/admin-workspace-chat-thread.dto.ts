@@ -2,6 +2,7 @@ import { Field, Int, ObjectType } from '@nestjs/graphql';
 
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';
 
+// A chat thread between an admin and the workspace AI assistant, with aggregate token usage
 @ObjectType('AdminWorkspaceChatThread')
 export class AdminWorkspaceChatThreadDTO {
   @Field(() => UUIDScalarType)

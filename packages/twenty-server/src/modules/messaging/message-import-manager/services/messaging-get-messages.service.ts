@@ -1,3 +1,5 @@
+// Dispatches full message fetching to the driver matching the connected
+// account's provider (Gmail, Microsoft, or IMAP).
 import { Injectable } from '@nestjs/common';
 
 import { ConnectedAccountProvider } from 'twenty-shared/types';
@@ -23,6 +25,8 @@ export class MessagingGetMessagesService {
     private readonly imapGetMessagesService: ImapGetMessagesService,
   ) {}
 
+  // Routes to the provider-specific messages service, or throws
+  // PROVIDER_NOT_SUPPORTED for an unrecognized provider.
   public async getMessages(
     messageIds: string[],
     connectedAccount: Pick<

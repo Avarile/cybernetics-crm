@@ -1,3 +1,5 @@
+// Pairs a search query's matching records with the object metadata they
+// belong to.
 import { type ObjectRecord } from 'twenty-shared/types';
 
 import { type FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object-metadata/types/flat-object-metadata.type';

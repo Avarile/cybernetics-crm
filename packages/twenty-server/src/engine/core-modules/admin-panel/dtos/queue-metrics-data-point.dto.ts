@@ -1,3 +1,4 @@
+// GraphQL DTO for a single (x, y) point on a queue metrics graph.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType('QueueMetricsDataPoint')

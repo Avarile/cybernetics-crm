@@ -7,6 +7,8 @@ type FlatObjectWithActivityAndIdentifier = {
   universalIdentifier: string;
 };
 
+// Filters flat objects down to active, non-workflow-related ones eligible to
+// be exposed to an agent's database CRUD tools.
 export const getDatabaseCrudToolFlatObjects = <
   T extends FlatObjectWithActivityAndIdentifier,
 >(

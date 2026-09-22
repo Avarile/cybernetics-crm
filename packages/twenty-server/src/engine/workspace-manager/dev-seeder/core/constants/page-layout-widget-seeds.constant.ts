@@ -1,3 +1,5 @@
+// Universal identifiers for the standard page layout widgets seeded into
+// every workspace's dashboards.
 export const PAGE_LAYOUT_WIDGET_SEEDS = {
   SALES_PIPELINE_VALUE: 'SALES_PIPELINE_VALUE_WIDGET',
   SALES_AVERAGE_DEAL_SIZE: 'SALES_AVERAGE_DEAL_SIZE_WIDGET',

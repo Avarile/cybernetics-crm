@@ -3,7 +3,10 @@ import { type ExceptionHandlerOptions } from 'src/engine/core-modules/exception-
 
 import { type ExceptionHandlerDriverInterface } from 'src/engine/core-modules/exception-handler/interfaces';
 
+// Dev/local exception handler driver that logs exceptions to the console instead
+// of sending them to an external service
 export class ExceptionHandlerConsoleDriver implements ExceptionHandlerDriverInterface {
+  // Logs sanitized options and the raw exceptions to the console; returns no event ids
   captureExceptions(
     // oxlint-disable-next-line typescript/no-explicit-any
     exceptions: ReadonlyArray<any>,

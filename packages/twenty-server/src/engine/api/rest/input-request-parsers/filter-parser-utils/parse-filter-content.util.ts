@@ -1,3 +1,6 @@
+// Splits the comma-separated predicates inside a conjunction's outer
+// parentheses (e.g. and(a,b,c) -> ["a","b","c"]), respecting nested
+// parens, brackets, and quoted strings so commas inside them don't split.
 export const parseFilterContent = (filterQuery: string): string[] => {
   let isWithinBrackets = false;
   let isWithinDoubleQuotes = false;

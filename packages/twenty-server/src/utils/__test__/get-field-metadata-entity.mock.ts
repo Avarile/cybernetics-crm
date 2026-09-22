@@ -1,3 +1,5 @@
+// Test fixture: builds a fully-populated fake FieldMetadataEntity with sensible
+// defaults, letting callers override only the fields relevant to their test.
 import { faker } from '@faker-js/faker';
 import { type FieldMetadataType } from 'twenty-shared/types';
 

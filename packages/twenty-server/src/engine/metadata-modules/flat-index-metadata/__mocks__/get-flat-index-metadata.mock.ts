@@ -13,6 +13,8 @@ type FlatIndexMetadataOverrides = Required<
   >
 > &
   Partial<FlatIndexMetadata>;
+
+// Builds a FlatIndexMetadata fixture with sane defaults, merging in caller-provided overrides.
 export const getFlatIndexMetadataMock = (
   overrides: FlatIndexMetadataOverrides,
 ): FlatIndexMetadata => {

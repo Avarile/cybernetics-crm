@@ -1,3 +1,6 @@
+// Validates an application manifest's required server version (engines.
+// twenty) against either the server's own inferred version or a specific
+// workspace's completed upgrade version, to gate install/upgrade.
 import { Injectable } from '@nestjs/common';
 
 import semver from 'semver';
@@ -27,6 +30,8 @@ export class ApplicationVersionValidationService {
     private readonly upgradeStatusService: UpgradeStatusService,
   ) {}
 
+  // Checks the required server version range against the server's own
+  // inferred version.
   async validateServerCompatibility(
     requiredServerVersion: string | undefined,
   ): Promise<VersionValidationResult> {
@@ -52,6 +57,9 @@ export class ApplicationVersionValidationService {
     });
   }
 
+  // Checks the required server version range against the version the
+  // target workspace has actually completed its upgrade to (which may lag
+  // the server's own version).
   async validateWorkspaceCompatibility({
     requiredServerVersion,
     workspaceId,
@@ -89,6 +97,9 @@ export class ApplicationVersionValidationService {
     });
   }
 
+  // Shared range-check logic: verifies a version is valid semver and
+  // satisfies the required range, returning a scope-appropriate failure
+  // reason and message otherwise.
   private validateVersionAgainstRange({
     version,
     requiredVersionRange,

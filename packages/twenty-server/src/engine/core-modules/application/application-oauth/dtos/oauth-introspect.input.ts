@@ -1,3 +1,4 @@
+// REST body for the OAuth introspection endpoint (RFC 7662).
 import { IsOptional, IsString, MaxLength } from 'class-validator';
 
 export class OAuthIntrospectInput {

@@ -16,6 +16,7 @@ export type DestroyPageLayoutTabInput = {
   id: string;
 };
 
+// Looks up the flat page layout tab targeted for destruction, throwing if it doesn't exist.
 export const fromDestroyPageLayoutTabInputToFlatPageLayoutTabOrThrow = ({
   destroyPageLayoutTabInput,
   flatPageLayoutTabMaps,

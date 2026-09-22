@@ -22,6 +22,8 @@ export type FindRoleTargetInput = {
   workspaceId: string;
 };
 
+// CRUD for role targets (assigning a role to a user workspace, agent, or API key),
+// applying each change as a workspace migration.
 @Injectable()
 export class RoleTargetService {
   constructor(
@@ -30,6 +32,7 @@ export class RoleTargetService {
     private readonly applicationService: ApplicationService,
   ) {}
 
+  // Creates a single role target; see createMany for the underlying batch behavior.
   async create({
     createRoleTargetInput,
     workspaceId,
@@ -45,6 +48,9 @@ export class RoleTargetService {
     return flatRoleTarget;
   }
 
+  // Creates role targets for each input, replacing any existing role target on the same
+  // target entity (a target can only hold one role at a time), and runs the resulting
+  // create/delete as a single workspace migration.
   async createMany({
     createRoleTargetInputs,
     workspaceId,
@@ -136,6 +142,7 @@ export class RoleTargetService {
     );
   }
 
+  // Deletes a role target via a workspace migration, throwing if it doesn't exist.
   async delete({ id, workspaceId }: DeleteRoleTargetInput): Promise<void> {
     const { workspaceCustomFlatApplication } =
       await this.applicationService.findWorkspaceTwentyStandardAndCustomApplicationOrThrow(
@@ -182,6 +189,7 @@ export class RoleTargetService {
     }
   }
 
+  // Returns a role target by id, or null if not found.
   async findOne({
     findRoleTargetInput,
   }: {

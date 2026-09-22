@@ -7,6 +7,8 @@ import { findFlatEntityByIdInFlatEntityMaps } from 'src/engine/metadata-modules/
 import { LogicFunctionFromSourceService } from 'src/engine/metadata-modules/logic-function/services/logic-function-from-source.service';
 import { type PrefilledWorkflowCodeStepLogicFunctionDefinition } from 'src/engine/workspace-manager/standard-objects-prefill-data/utils/prefill-workflow-code-step-logic-functions.util';
 
+// Seeds prefilled logic functions (e.g. code-step helpers used by seeded
+// workflows) into a workspace, skipping ones that already exist.
 @Injectable()
 export class PrefillLogicFunctionService {
   constructor(
@@ -14,6 +16,8 @@ export class PrefillLogicFunctionService {
     private readonly flatEntityMapsCacheService: WorkspaceManyOrAllFlatEntityMapsCacheService,
   ) {}
 
+  // Creates any logic function definitions not already present in the
+  // workspace from their source handler code.
   async ensureSeeded({
     workspaceId,
     definitions,

@@ -1,3 +1,9 @@
+// Filters and redacts messages returned to the API according to each
+// message channel's visibility setting, so a requesting user only sees
+// full message content for channels they have access to (either because
+// visibility is SHARE_EVERYTHING or the channel belongs to one of their
+// own connected accounts); otherwise the subject/text are redacted or the
+// message is dropped entirely.
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -28,6 +34,9 @@ export class ApplyMessagesVisibilityRestrictionsService {
     private readonly messageChannelRepository: Repository<MessageChannelEntity>,
   ) {}
 
+  // Mutates `messages` in place: removes messages the requesting user has no
+  // access to, redacts subject/text on metadata- or subject-only-visible
+  // channels, and leaves fully-visible messages untouched.
   public async applyMessagesVisibilityRestrictions(
     messages: MessageWorkspaceEntity[],
     workspaceId: string,

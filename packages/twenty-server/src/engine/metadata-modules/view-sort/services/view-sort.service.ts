@@ -23,6 +23,8 @@ import { WorkspaceMigrationBuilderException } from 'src/engine/workspace-manager
 import { WorkspaceMigrationValidateBuildAndRunService } from 'src/engine/workspace-manager/workspace-migration/services/workspace-migration-validate-build-and-run-service';
 
 @Injectable()
+// CRUD for view sorts, backed by the flat entity maps and applied through
+// validated workspace migrations.
 export class ViewSortService {
   constructor(
     @InjectWorkspaceScopedRepository(ViewSortEntity)
@@ -32,6 +34,8 @@ export class ViewSortService {
     private readonly applicationService: ApplicationService,
   ) {}
 
+  // Builds a flat view sort from the input and applies it through a
+  // validated workspace migration, then returns the persisted DTO.
   async createOne({
     createViewSortInput,
     workspaceId,
@@ -101,6 +105,8 @@ export class ViewSortService {
     );
   }
 
+  // Applies partial updates to an existing view sort via a validated
+  // workspace migration.
   async updateOne({
     updateViewSortInput,
     workspaceId,
@@ -170,6 +176,8 @@ export class ViewSortService {
     );
   }
 
+  // Soft-deletes a view sort (sets deletedAt) via a validated workspace
+  // migration.
   async deleteOne({
     deleteViewSortInput,
     workspaceId,
@@ -241,6 +249,7 @@ export class ViewSortService {
     );
   }
 
+  // Permanently removes a view sort via a validated workspace migration.
   async destroyOne({
     destroyViewSortInput,
     workspaceId,
@@ -301,6 +310,7 @@ export class ViewSortService {
     return fromFlatViewSortToViewSortDto(existingFlatViewSort);
   }
 
+  // Returns all active (non-deleted) view sorts in the workspace.
   async findByWorkspaceId(workspaceId: string): Promise<ViewSortEntity[]> {
     return this.viewSortRepository.find(workspaceId, {
       where: {
@@ -310,6 +320,7 @@ export class ViewSortService {
     });
   }
 
+  // Returns all active view sorts belonging to a specific view.
   async findByViewId(
     workspaceId: string,
     viewId: string,
@@ -323,6 +334,7 @@ export class ViewSortService {
     });
   }
 
+  // Finds a single active view sort by id.
   async findById(
     id: string,
     workspaceId: string,

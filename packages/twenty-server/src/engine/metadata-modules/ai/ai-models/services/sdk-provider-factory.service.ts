@@ -1,3 +1,6 @@
+// Builds and caches Vercel AI SDK provider instances (one per configured
+// provider) from provider config, handling each SDK package's specific setup
+// (standard API key providers, xAI's responses API, Bedrock credentials, etc.).
 import { Injectable } from '@nestjs/common';
 
 import { createAmazonBedrock } from '@ai-sdk/amazon-bedrock';
@@ -39,6 +42,7 @@ export type AiSdkProviderInstance = {
 export class SdkProviderFactoryService {
   private readonly providerInstances = new Map<string, AiSdkProviderInstance>();
 
+  // Returns the cached SDK provider instance for this provider name, building it if needed.
   createProvider(
     providerName: string,
     config: AiProviderConfig,
@@ -56,6 +60,8 @@ export class SdkProviderFactoryService {
     return instance;
   }
 
+  // Returns the raw underlying SDK provider object for direct access to
+  // provider-specific tools/APIs, only if it matches one of the allowed SDK packages.
   getRawProvider<T>(
     providerName: string,
     ...allowedPackages: string[]
@@ -69,6 +75,7 @@ export class SdkProviderFactoryService {
     return instance.rawProvider as T;
   }
 
+  // Typed accessor for the raw Anthropic provider, e.g. for its native web search tool.
   getRawAnthropicProvider(providerName: string): AnthropicProvider | undefined {
     return this.getRawProvider<AnthropicProvider>(
       providerName,
@@ -76,18 +83,23 @@ export class SdkProviderFactoryService {
     );
   }
 
+  // Typed accessor for the raw OpenAI provider, e.g. for its native web search tool.
   getRawOpenAIProvider(providerName: string): OpenAIProvider | undefined {
     return this.getRawProvider<OpenAIProvider>(providerName, AI_SDK_OPENAI);
   }
 
+  // Typed accessor for the raw xAI provider, e.g. for its web/X search tools.
   getRawXaiProvider(providerName: string): XaiProvider | undefined {
     return this.getRawProvider<XaiProvider>(providerName, AI_SDK_XAI);
   }
 
+  // Drops all cached provider instances, forcing them to be rebuilt from
+  // current config on next use (e.g. after config changes).
   clearCache(): void {
     this.providerInstances.clear();
   }
 
+  // Dispatches to the SDK-package-specific provider builder.
   private buildProviderInstance(
     config: AiProviderConfig,
   ): AiSdkProviderInstance {
@@ -115,6 +127,8 @@ export class SdkProviderFactoryService {
     }
   }
 
+  // Builds a provider for SDK packages that follow the standard
+  // apiKey/baseURL factory shape, optionally wrapping models with middleware.
   private buildStandardProvider(
     config: AiProviderConfig,
     factory: (opts: { apiKey?: string; baseURL?: string }) => CallableFunction,
@@ -138,6 +152,7 @@ export class SdkProviderFactoryService {
     };
   }
 
+  // Builds the xAI provider, using its responses API for model creation.
   private buildXaiProvider(config: AiProviderConfig): AiSdkProviderInstance {
     const provider = createXai({
       ...(config.apiKey && { apiKey: config.apiKey }),
@@ -151,6 +166,8 @@ export class SdkProviderFactoryService {
     };
   }
 
+  // Builds the Bedrock provider, using an AWS role credential chain or
+  // static access keys depending on the configured auth type.
   private buildBedrockProvider(
     config: AiProviderConfig,
   ): AiSdkProviderInstance {
@@ -189,6 +206,7 @@ export class SdkProviderFactoryService {
     };
   }
 
+  // Builds a generic OpenAI-compatible provider, requiring an explicit base URL.
   private buildOpenAiCompatibleProvider(
     config: AiProviderConfig,
   ): AiSdkProviderInstance {
@@ -209,6 +227,7 @@ export class SdkProviderFactoryService {
     };
   }
 
+  // Builds the Azure OpenAI provider, requiring an explicit base URL.
   private buildAzureProvider(config: AiProviderConfig): AiSdkProviderInstance {
     if (!config.baseUrl) {
       throw new Error('baseUrl is required for Azure OpenAI providers');

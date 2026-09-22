@@ -3,6 +3,7 @@ import { type LogicFunctionResourceService } from 'src/engine/core-modules/logic
 import { type SdkClientArchiveService } from 'src/engine/core-modules/sdk-client/sdk-client-archive.service';
 import { type WorkspaceCacheService } from 'src/engine/workspace-cache/services/workspace-cache.service';
 
+// Dependencies injected into the local logic-function driver's services.
 export interface LocalDriverOptions {
   logicFunctionResourceService: LogicFunctionResourceService;
   sdkClientArchiveService: SdkClientArchiveService;

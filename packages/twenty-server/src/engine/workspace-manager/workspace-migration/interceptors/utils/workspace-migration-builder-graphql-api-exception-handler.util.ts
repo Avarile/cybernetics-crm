@@ -10,6 +10,8 @@ import {
 import { type WorkspaceMigrationBuilderException } from 'src/engine/workspace-manager/workspace-migration/exceptions/workspace-migration-builder-exception';
 import { buildMetadataValidationErrorPayload } from 'src/engine/workspace-manager/workspace-migration/interceptors/utils/build-metadata-validation-error-payload.util';
 
+// Converts a WorkspaceMigrationBuilderException into a GraphQL error, with a validation summary
+// message listing how many entities of each metadata kind failed
 export const workspaceMigrationBuilderGraphqlApiExceptionHandler = (
   exception: WorkspaceMigrationBuilderException,
 ) => {

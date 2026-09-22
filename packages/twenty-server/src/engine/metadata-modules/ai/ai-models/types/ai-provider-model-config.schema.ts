@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { ModelFamily } from 'src/engine/metadata-modules/ai/ai-models/types/model-family.enum';
 import { longContextCostSchema } from 'src/engine/metadata-modules/ai/ai-models/types/long-context-cost.schema';
 
+// Validation schema for a single model entry within a provider's config.
 export const aiProviderModelConfigSchema = z.object({
   name: z.string(),
   label: z.string(),

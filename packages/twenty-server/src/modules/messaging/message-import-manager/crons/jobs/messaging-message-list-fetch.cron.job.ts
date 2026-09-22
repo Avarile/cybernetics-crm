@@ -1,3 +1,7 @@
+// Cron job (runs every 5 minutes, offset by 2) that scans all active
+// workspaces for message channels pending a message list fetch, skips
+// throttled or webhook-actively-synced-and-fresh channels, and enqueues a
+// fetch job for the rest.
 import { Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -47,6 +51,10 @@ export class MessagingMessageListFetchCronJob {
     MessagingMessageListFetchCronJob.name,
     MESSAGING_MESSAGE_LIST_FETCH_CRON_PATTERN,
   )
+  // For each active workspace, finds non-email-group channels pending a
+  // list fetch that aren't throttled and (for webhook-active channels)
+  // whose last successful sync is stale, atomically flips them to
+  // scheduled, and enqueues a fetch job for each.
   async handle(): Promise<void> {
     const activeWorkspaces = await this.workspaceRepository.find({
       where: {

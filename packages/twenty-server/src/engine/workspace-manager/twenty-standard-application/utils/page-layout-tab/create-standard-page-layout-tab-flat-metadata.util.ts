@@ -8,6 +8,7 @@ import { TWENTY_STANDARD_APPLICATION } from 'src/engine/workspace-manager/twenty
 import { type StandardPageLayoutMetadataRelatedEntityIds } from 'src/engine/workspace-manager/twenty-standard-application/utils/get-standard-page-layout-metadata-related-entity-ids.util';
 import { type StandardPageLayoutTabConfig } from 'src/engine/workspace-manager/twenty-standard-application/utils/page-layout-config';
 
+// Per-tab content (title, position, icon, layout mode) supplied by each standard page layout tab's builder
 export type CreateStandardPageLayoutTabContext = {
   layoutName: string;
   tabTitle: string;
@@ -17,6 +18,7 @@ export type CreateStandardPageLayoutTabContext = {
   layoutMode: PageLayoutTabLayoutMode;
 };
 
+// Arguments accepted by createStandardPageLayoutTabFlatMetadata
 export type CreateStandardPageLayoutTabArgs = {
   now: string;
   workspaceId: string;
@@ -25,6 +27,8 @@ export type CreateStandardPageLayoutTabArgs = {
   context: CreateStandardPageLayoutTabContext;
 };
 
+// Builds a single standard page layout tab's FlatPageLayoutTab, resolving its id and its widgets'
+// ids/universal identifiers from the standard layout's fixed config and pre-generated related entity ids
 export const createStandardPageLayoutTabFlatMetadata = ({
   context: { layoutName, tabTitle, title, position, icon, layoutMode },
   workspaceId,

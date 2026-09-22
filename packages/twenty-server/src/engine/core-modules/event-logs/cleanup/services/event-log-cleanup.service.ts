@@ -1,5 +1,8 @@
 /* @license Enterprise */
 
+// Deletes ClickHouse event-log rows older than a workspace's retention
+// window, iterating over every known event log table.
+
 import { Injectable, Logger } from '@nestjs/common';
 
 import { EventLogTable } from 'twenty-shared/types';
@@ -19,6 +22,8 @@ export class EventLogCleanupService {
 
   constructor(private readonly clickHouseService: ClickHouseService) {}
 
+  // Issues a ClickHouse lightweight delete for rows older than the cutoff
+  // date, per event log table, tolerating per-table failures.
   async cleanupWorkspaceEventLogs({
     workspaceId,
     retentionDays,

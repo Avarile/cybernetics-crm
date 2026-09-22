@@ -6,6 +6,7 @@ import { ApplicationEntity } from 'src/engine/core-modules/application/applicati
 import { WorkspaceFlatConnectionProviderMapCacheService } from 'src/engine/metadata-modules/flat-connection-provider/services/workspace-flat-connection-provider-map-cache.service';
 import { WorkspaceManyOrAllFlatEntityMapsCacheModule } from 'src/engine/metadata-modules/flat-entity/services/workspace-many-or-all-flat-entity-maps-cache.module';
 
+// Provides the flat-connection-provider map cache used to read connection providers in denormalized form.
 @Module({
   imports: [
     TypeOrmModule.forFeature([ApplicationEntity, ConnectionProviderEntity]),

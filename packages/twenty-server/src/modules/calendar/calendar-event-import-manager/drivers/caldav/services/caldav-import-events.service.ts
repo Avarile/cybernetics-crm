@@ -6,6 +6,8 @@ import { parseCalDAVError } from 'src/modules/calendar/calendar-event-import-man
 import { CalendarEventImportDriverException } from 'src/modules/calendar/calendar-event-import-manager/drivers/exceptions/calendar-event-import-driver.exception';
 import { type FetchedCalendarEvent } from 'src/modules/calendar/common/types/fetched-calendar-event';
 
+// Import-manager driver entry point for CalDAV: fetches full event data for
+// a given set of external (href) ids.
 @Injectable()
 export class CalDavImportEventsService {
   private readonly logger = new Logger(CalDavImportEventsService.name);

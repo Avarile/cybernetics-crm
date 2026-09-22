@@ -11,6 +11,10 @@ const CONVERT_OPTIONS = {
   preserveNewlines: true,
 } satisfies HtmlToTextOptions;
 
+// Builds a reusable HTML-to-plain-text converter: sanitizes the HTML
+// (DOMPurify), strips quoted reply/forward chains (planer), then converts
+// to text — falling back to converting the un-stripped sanitized HTML if
+// quote-stripping happened to remove the entire body.
 export const createHtmlToTextConverter = (): ((html: string) => string) => {
   const jsdom = new JSDOM('');
   const purify = createDOMPurify(jsdom.window);

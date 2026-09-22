@@ -17,6 +17,9 @@ import { ObjectMetadataEntity } from 'src/engine/metadata-modules/object-metadat
 import { RoleEntity } from 'src/engine/metadata-modules/role/role.entity';
 import { SyncableEntity } from 'src/engine/workspace-manager/types/syncable-entity.interface';
 
+// A role's read/update permission override on a single field of an object; only used to
+// restrict access below the role's object-level permission (canUpdateFieldValue can only
+// be false or null, never explicitly true).
 @Entity('fieldPermission')
 @Unique('IDX_FIELD_PERMISSION_FIELD_METADATA_ID_ROLE_ID_UNIQUE', [
   'fieldMetadataId',

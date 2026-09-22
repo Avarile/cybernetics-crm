@@ -1,3 +1,4 @@
+// Envelope format markers, sizes, and HKDF context strings for the secret encryption scheme
 export const SECRET_ENCRYPTION_ENVELOPE_PREFIX = 'enc:';
 export const SECRET_ENCRYPTION_ENVELOPE_V2_PREFIX = 'enc:v2:';
 

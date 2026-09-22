@@ -1,3 +1,5 @@
+// Exception type for authentication/authorization failures, mapping each
+// error code to a user-facing, translatable message.
 import { type MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { assertUnreachable } from 'twenty-shared/utils';
@@ -38,6 +40,7 @@ export const AuthExceptionCode = appendCommonExceptionCode({
   USER_ALREADY_EXISTS: 'USER_ALREADY_EXISTS',
 } as const);
 
+// Maps an auth exception code to the translated message shown to end users.
 const getAuthExceptionUserFriendlyMessage = (
   code: keyof typeof AuthExceptionCode,
 ) => {
@@ -93,6 +96,8 @@ const getAuthExceptionUserFriendlyMessage = (
   }
 };
 
+// Thrown throughout the auth module; carries a machine-readable code plus
+// a user-friendly, localized message derived from that code.
 export class AuthException extends CustomException<
   keyof typeof AuthExceptionCode
 > {

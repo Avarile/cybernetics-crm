@@ -1,3 +1,10 @@
+// Discovers every @WorkspaceQueryHook-decorated provider at startup and
+// registers it into WorkspaceQueryHookStorage, then handles actually
+// invoking a hook's `execute` method at request time — including
+// resolving request-scoped hook instances per-request via NestJS's
+// context injection, and normalizing a post-hook's payload down to a
+// flat array of records regardless of its original connection/array/
+// single-record shape.
 import { Injectable, Logger, type OnModuleInit } from '@nestjs/common';
 import { DiscoveryService, ModuleRef, createContextId } from '@nestjs/core';
 import { Injector } from '@nestjs/core/injector/injector';
@@ -45,6 +52,8 @@ export class WorkspaceQueryHookExplorer implements OnModuleInit {
     await this.explore();
   }
 
+  // Scans all discovered providers for the @WorkspaceQueryHook metadata
+  // and registers each one (pre or post) into the hook storage.
   async explore() {
     const hooks = this.discoveryService
       .getProviders()
@@ -87,6 +96,9 @@ export class WorkspaceQueryHookExplorer implements OnModuleInit {
     }
   }
 
+  // Invokes a pre-hook's execute(), resolving a fresh request-scoped
+  // instance via NestJS's per-context injector when the hook is
+  // request-scoped, otherwise calling the singleton instance directly.
   async handlePreHook(
     executeParams: Parameters<WorkspacePreQueryHookInstance['execute']>,
     instance: object,
@@ -131,6 +143,9 @@ export class WorkspaceQueryHookExplorer implements OnModuleInit {
     }
   }
 
+  // Normalizes a resolver's output (connection, nested-record array,
+  // plain array, or single record) into a flat ObjectRecord[] for
+  // post-hooks to consume uniformly.
   private transformPayload(payload: QueryResultFieldValue): ObjectRecord[] {
     if (isQueryResultFieldValueAConnection(payload)) {
       return payload.edges.map((edge) => edge.node);
@@ -155,6 +170,9 @@ export class WorkspaceQueryHookExplorer implements OnModuleInit {
     );
   }
 
+  // Invokes a post-hook's execute() with the normalized payload,
+  // resolving a request-scoped instance (registering auth context
+  // details for it) when needed, same as handlePreHook.
   async handlePostHook(
     executeParams: Parameters<WorkspacePostQueryHookInstance['execute']>,
     instance: object,
@@ -222,6 +240,8 @@ export class WorkspaceQueryHookExplorer implements OnModuleInit {
     }
   }
 
+  // Registers a discovered hook instance into the pre- or post-hook
+  // storage map based on its declared WorkspaceQueryHookType.
   private registerWorkspaceQueryHook(
     key: WorkspaceQueryHookKey,
     type: WorkspaceQueryHookType,

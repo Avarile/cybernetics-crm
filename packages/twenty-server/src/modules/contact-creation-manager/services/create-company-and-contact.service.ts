@@ -33,6 +33,10 @@ import { WorkspaceMemberWorkspaceEntity } from 'src/modules/workspace-member/sta
 import { computeDisplayName } from 'src/utils/compute-display-name';
 import { isWorkDomain, isWorkEmail } from 'src/utils/is-work-email';
 
+// Orchestrates turning message/calendar participant handles into CRM
+// people and companies: filters out self/workspace-member handles, matches
+// against existing (including soft-deleted) people, creates or restores as
+// needed, and enriches names on auto-created people that lack them.
 @Injectable()
 export class CreateCompanyAndPersonService {
   constructor(
@@ -46,6 +50,8 @@ export class CreateCompanyAndPersonService {
     private readonly workspaceRepository: Repository<WorkspaceEntity>,
   ) {}
 
+  // Creates or restores companies/people for a batch of contacts, skipping
+  // ones that belong to the connected account's own domain or workspace members.
   async createCompaniesAndPeople(
     connectedAccount: ConnectedAccountEntity,
     contactsToCreate: Contact[],
@@ -170,6 +176,8 @@ export class CreateCompanyAndPersonService {
     );
   }
 
+  // Batches the full contact list and processes each batch independently,
+  // capturing (not throwing) errors so one bad batch doesn't block the rest.
   async createCompaniesAndPeopleAndUpdateParticipants(
     connectedAccount: ConnectedAccountEntity,
     contactsToCreate: Contact[],
@@ -229,6 +237,9 @@ export class CreateCompanyAndPersonService {
     }
   }
 
+  // Splits contacts into those needing a new person, those needing an
+  // existing soft-deleted person restored, those eligible for name
+  // enrichment, and the work-email domains whose companies need creating.
   computeContactsThatNeedPersonCreateAndRestoreAndWorkDomainNamesToCreate(
     uniqueContacts: Contact[],
     alreadyCreatedPeople: PersonWorkspaceEntity[],
@@ -420,6 +431,8 @@ export class CreateCompanyAndPersonService {
     );
   }
 
+  // Builds insertable person records from contacts, linking each to its
+  // parsed name and matching company.
   formatPeopleToCreateFromContacts({
     contactsToCreate,
     createdBy,
@@ -470,6 +483,8 @@ export class CreateCompanyAndPersonService {
     });
   }
 
+  // Builds the restore payload (person id + company id) for contacts
+  // matching a soft-deleted existing person.
   formatPeopleToRestoreFromContacts({
     contactsToRestore,
     companiesMap,

@@ -1,3 +1,5 @@
+// Maps each impersonation denial reason to the exception code and
+// user-facing message to surface when impersonation is rejected.
 import { type MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 

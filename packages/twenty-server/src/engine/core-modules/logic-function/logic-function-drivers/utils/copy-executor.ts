@@ -11,6 +11,7 @@ const EXECUTOR_FILE_PATH = resolve(
   ),
 );
 
+// Copies the logic-function executor runtime assets into a build directory.
 export const copyExecutor = async (buildDirectory: string) => {
   await fs.mkdir(buildDirectory, {
     recursive: true,

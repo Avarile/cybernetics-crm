@@ -14,6 +14,8 @@ export enum SecretEncryptionExceptionCode {
   ALREADY_ENCRYPTED = 'ALREADY_ENCRYPTED',
 }
 
+// All codes share a generic user-facing message so internal encryption details
+// (key ids, envelope format) are never leaked to end users
 const getSecretEncryptionExceptionUserFriendlyMessage = (
   code: SecretEncryptionExceptionCode,
 ) => {
@@ -31,6 +33,7 @@ const getSecretEncryptionExceptionUserFriendlyMessage = (
   }
 };
 
+// Exception thrown by secret encryption/decryption operations
 export class SecretEncryptionException extends CustomException<SecretEncryptionExceptionCode> {
   constructor(
     message: string,

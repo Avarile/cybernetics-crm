@@ -1,3 +1,5 @@
+// Returns an entity's override value for a property if one is set,
+// otherwise falls back to the entity's own base value.
 export const resolveOverridableEntityProperty = <
   TEntity extends { overrides?: Partial<TEntity> | null },
   K extends string & keyof TEntity,

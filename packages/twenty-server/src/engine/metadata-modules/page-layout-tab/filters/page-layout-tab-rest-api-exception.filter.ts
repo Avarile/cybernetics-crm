@@ -13,6 +13,8 @@ import {
 } from 'src/engine/metadata-modules/page-layout-tab/exceptions/page-layout-tab.exception';
 
 @Catch(PageLayoutTabException)
+// Maps PageLayoutTabException to the appropriate HTTP status/response
+// for the REST API.
 export class PageLayoutTabRestApiExceptionFilter implements ExceptionFilter {
   constructor(
     private readonly httpExceptionHandlerService: HttpExceptionHandlerService,

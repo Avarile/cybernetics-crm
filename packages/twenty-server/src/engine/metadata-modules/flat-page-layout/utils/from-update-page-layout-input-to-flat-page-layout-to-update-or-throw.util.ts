@@ -22,6 +22,9 @@ export type UpdatePageLayoutInputWithId = {
   update: UpdatePageLayoutInput;
 };
 
+// Applies an update-page-layout input onto the matching existing flat page layout, throwing
+// if it doesn't exist, and re-resolving the object metadata universal identifier when that
+// foreign key changes.
 export const fromUpdatePageLayoutInputToFlatPageLayoutToUpdateOrThrow = ({
   updatePageLayoutInput: rawUpdatePageLayoutInput,
   flatPageLayoutMaps,

@@ -1,3 +1,6 @@
+// Wires up the index metadata resolver and service with the entity
+// repository and the modules needed for permission checks and migrations.
+
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
@@ -20,4 +23,6 @@ import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace
   providers: [IndexMetadataResolver, IndexMetadataService],
   exports: [IndexMetadataService],
 })
+// Provides index metadata create/delete GraphQL mutations and the
+// underlying service to other metadata modules.
 export class IndexMetadataModule {}

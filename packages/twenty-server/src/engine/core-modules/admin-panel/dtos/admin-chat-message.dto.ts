@@ -7,6 +7,7 @@ import { AgentMessageRole } from 'src/engine/metadata-modules/ai/ai-agent-execut
 // Ensure the enum is registered with GraphQL
 import 'src/engine/core-modules/admin-panel/enums/agent-message-role.enum';
 
+// GraphQL representation of a single message within an admin chat thread
 @ObjectType('AdminChatMessage')
 export class AdminChatMessageDTO {
   @Field(() => UUIDScalarType)

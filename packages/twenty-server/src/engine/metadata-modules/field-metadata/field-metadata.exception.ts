@@ -1,3 +1,5 @@
+// Exception type for field metadata failures, pairing a code with a
+// translated user-facing message.
 import { type MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { assertUnreachable } from 'twenty-shared/utils';
@@ -30,6 +32,7 @@ export const FieldMetadataExceptionCode = appendCommonExceptionCode({
 export type FieldMetadataExceptionCode =
   (typeof FieldMetadataExceptionCode)[keyof typeof FieldMetadataExceptionCode];
 
+// Maps each field metadata exception code to its default translated user-facing message.
 const getFieldMetadataExceptionUserFriendlyMessage = (
   code: keyof typeof FieldMetadataExceptionCode,
 ) => {
@@ -67,6 +70,8 @@ const getFieldMetadataExceptionUserFriendlyMessage = (
   }
 };
 
+// Thrown for field metadata errors; defaults to the code's standard
+// user-facing message unless one is explicitly overridden.
 export class FieldMetadataException extends CustomException<
   keyof typeof FieldMetadataExceptionCode
 > {

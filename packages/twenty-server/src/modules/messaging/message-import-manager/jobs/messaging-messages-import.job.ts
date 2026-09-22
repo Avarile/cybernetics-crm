@@ -1,3 +1,7 @@
+// Queue entry point for importing a message channel's already-fetched
+// message list: loads the channel, verifies sync is enabled and it's
+// still in the expected sync stage, then delegates to
+// MessagingMessagesImportService.
 import { Scope } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -31,6 +35,9 @@ export class MessagingMessagesImportJob {
     private readonly messageChannelRepository: Repository<MessageChannelEntity>,
   ) {}
 
+  // No-ops if the channel is missing, sync-disabled, or no longer
+  // scheduled for import (e.g. a duplicate/stale job); otherwise imports
+  // the batch of pending messages.
   @Process(MessagingMessagesImportJob.name)
   async handle(data: MessagingMessagesImportJobData): Promise<void> {
     const { messageChannelId, workspaceId } = data;

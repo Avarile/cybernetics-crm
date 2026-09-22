@@ -1,6 +1,7 @@
 import { type AgentDTO } from 'src/engine/metadata-modules/ai/ai-agent/dtos/agent.dto';
 import { type FlatAgentWithRoleId } from 'src/engine/metadata-modules/flat-agent/types/flat-agent.type';
 
+// Maps a flat agent (with its resolved role id) to the GraphQL AgentDTO shape.
 export const fromFlatAgentWithRoleIdToAgentDto = ({
   applicationId,
   createdAt,

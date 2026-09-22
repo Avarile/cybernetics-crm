@@ -39,6 +39,8 @@ import {
 @UseGuards(WorkspaceAuthGuard)
 @UseInterceptors(MessageChannelGraphqlApiExceptionInterceptor)
 @MetadataResolver(() => MessageChannelDTO)
+// GraphQL resolver for message channels: listing, updates (including
+// group-email pending-action side effects), and email-group provisioning.
 export class MessageChannelResolver {
   constructor(
     private readonly messageChannelMetadataService: MessageChannelMetadataService,
@@ -48,6 +50,9 @@ export class MessageChannelResolver {
     private readonly messagingProcessGroupEmailActionsService: MessagingProcessGroupEmailActionsService,
   ) {}
 
+  // Resolves the channel's connected account. Email-group channels are
+  // shared and looked up without an ownership check; others are scoped to
+  // the requesting member.
   @ResolveField('connectedAccount', () => ConnectedAccountPublicDTO, {
     nullable: true,
   })
@@ -75,6 +80,8 @@ export class MessageChannelResolver {
     return buildPublicConnectedAccount(account);
   }
 
+  // Lists the message channels visible to the caller, optionally filtered
+  // to a single connected account (with an ownership check in that case).
   @Query(() => [MessageChannelDTO])
   @UseGuards(NoPermissionGuard)
   async myMessageChannels(
@@ -102,6 +109,10 @@ export class MessageChannelResolver {
     });
   }
 
+  // Updates a message channel after verifying ownership. Rejects updates
+  // while a sync is ongoing with pending folder/group-email actions, and
+  // marks the channel for a pending group-emails import/deletion when
+  // excludeGroupEmails changes on an already-configured channel.
   @Mutation(() => MessageChannelDTO)
   @UseGuards(NoPermissionGuard)
   async updateMessageChannel(
@@ -165,6 +176,7 @@ export class MessageChannelResolver {
     });
   }
 
+  // Creates a shared email-group inbox for the given handle.
   @Mutation(() => CreateEmailGroupChannelOutput)
   @UseGuards(NoPermissionGuard)
   async createEmailGroupChannel(
@@ -179,6 +191,7 @@ export class MessageChannelResolver {
     });
   }
 
+  // Deletes a shared email-group inbox.
   @Mutation(() => MessageChannelDTO)
   @UseGuards(NoPermissionGuard)
   async deleteEmailGroupChannel(

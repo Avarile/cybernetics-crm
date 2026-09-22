@@ -1,3 +1,4 @@
+// Field types that reference another object via a relation.
 import { FieldMetadataType } from 'twenty-shared/types';
 
 export const MORPH_OR_RELATION_FIELD_TYPES = [

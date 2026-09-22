@@ -11,6 +11,8 @@ export type ListSkillsResult = {
   message: string;
 };
 
+// Builds the MCP tool that returns the workspace's current skill names,
+// for clients whose cached instructions may be stale.
 export const createListSkillsTool = (
   skillService: SkillService,
   workspaceId: string,

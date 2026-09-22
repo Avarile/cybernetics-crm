@@ -44,9 +44,12 @@ import { WorkspaceMigrationRunnerRestApiExceptionFilter } from 'src/engine/works
   FlatEntityMapsRestApiExceptionFilter,
   WorkspaceMigrationRunnerRestApiExceptionFilter,
 )
+// REST API for view groups (GraphQL exposes the same operations via
+// ViewGroupResolver).
 export class ViewGroupController {
   constructor(private readonly viewGroupService: ViewGroupService) {}
 
+  // Lists view groups in the workspace, optionally filtered to one view.
   @Get()
   @UseGuards(NoPermissionGuard)
   async findMany(
@@ -60,6 +63,7 @@ export class ViewGroupController {
     return this.viewGroupService.findByWorkspaceId(workspace.id);
   }
 
+  // Fetches a single view group by id, throwing not-found if absent.
   @Get(':id')
   @UseGuards(NoPermissionGuard)
   async findOne(
@@ -86,6 +90,7 @@ export class ViewGroupController {
     return viewGroup;
   }
 
+  // Creates a new view group.
   @Post()
   @UseGuards(CreateViewGroupPermissionGuard)
   async create(
@@ -98,6 +103,8 @@ export class ViewGroupController {
     });
   }
 
+  // Updates a view group. Accepts either a nested `update` payload or a
+  // flat body (mapped into the expected `update` shape) for REST clients.
   @Patch(':id')
   @UseGuards(UpdateViewGroupPermissionGuard)
   async update(
@@ -116,6 +123,7 @@ export class ViewGroupController {
     });
   }
 
+  // Soft-deletes a view group.
   @Delete(':id')
   @UseGuards(DeleteViewGroupPermissionGuard)
   async delete(

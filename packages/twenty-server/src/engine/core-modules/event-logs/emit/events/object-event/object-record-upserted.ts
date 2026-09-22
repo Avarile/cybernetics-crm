@@ -1,3 +1,4 @@
+// Track-event schema for object record upserts.
 import { z } from 'zod';
 
 import { registerEvent } from 'src/engine/core-modules/event-logs/emit/events/workspace-event/track';

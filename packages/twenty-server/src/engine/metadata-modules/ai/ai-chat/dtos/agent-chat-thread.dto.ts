@@ -1,3 +1,5 @@
+// GraphQL representation of a chat thread, including its token/credit usage
+// totals and conversation size.
 import { Field, Float, HideField, ID, Int, ObjectType } from '@nestjs/graphql';
 
 @ObjectType('AgentChatThread')

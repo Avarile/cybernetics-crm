@@ -1,3 +1,4 @@
+// Zod schema for pageview events, extending the base schema with page/browser context.
 import { z } from 'zod';
 
 import { baseEventSchema } from 'src/engine/core-modules/event-logs/emit/events/common/base-schemas';

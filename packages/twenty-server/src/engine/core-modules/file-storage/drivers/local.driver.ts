@@ -19,6 +19,8 @@ export interface LocalDriverOptions {
   storagePath: string;
 }
 
+// Filesystem-backed storage driver; every resolved path is canonicalized and
+// checked to stay within the configured storage root to prevent path traversal
 export class LocalDriver implements StorageDriver {
   private options: LocalDriverOptions;
 
@@ -30,6 +32,8 @@ export class LocalDriver implements StorageDriver {
     return fs.mkdir(folderPath, { recursive: true });
   }
 
+  // Throws unless the resolved real path is inside the storage root, guarding
+  // against traversal via symlinks or ".." segments
   private assertRealPathIsWithinStorage(realPath: string): void {
     const storageRoot = realpathSync(path.resolve(this.options.storagePath));
 
@@ -218,6 +222,7 @@ export class LocalDriver implements StorageDriver {
     });
   }
 
+  // Recursively copies a storage folder to a local path, refusing to follow symlinks
   private async downloadFolderFromRealPath(params: {
     rootFolderPath: string;
     localPath: string;

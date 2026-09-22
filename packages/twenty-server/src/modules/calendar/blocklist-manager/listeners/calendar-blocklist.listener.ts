@@ -22,6 +22,8 @@ import {
 import { OnDatabaseBatchEvent } from 'src/engine/api/graphql/graphql-query-runner/decorators/on-database-batch-event.decorator';
 import { DatabaseEventAction } from 'src/engine/api/graphql/graphql-query-runner/enums/database-event-action';
 
+// Listens for blocklist record changes and queues the jobs that keep
+// calendar events in sync with the current blocklist.
 @Injectable()
 export class CalendarBlocklistListener {
   constructor(
@@ -29,6 +31,7 @@ export class CalendarBlocklistListener {
     private readonly messageQueueService: MessageQueueService,
   ) {}
 
+  // Blocklist entry created: queue deletion of matching calendar events.
   @OnDatabaseBatchEvent('blocklist', DatabaseEventAction.CREATED)
   async handleCreatedEvent(
     payload: WorkspaceEventBatch<
@@ -41,6 +44,7 @@ export class CalendarBlocklistListener {
     );
   }
 
+  // Blocklist entry deleted: queue a reimport of previously filtered events.
   @OnDatabaseBatchEvent('blocklist', DatabaseEventAction.DELETED)
   async handleDeletedEvent(
     payload: WorkspaceEventBatch<
@@ -53,6 +57,8 @@ export class CalendarBlocklistListener {
     );
   }
 
+  // Blocklist entry updated: both clean up newly matched events and
+  // reimport events that no longer match.
   @OnDatabaseBatchEvent('blocklist', DatabaseEventAction.UPDATED)
   async handleUpdatedEvent(
     payload: WorkspaceEventBatch<

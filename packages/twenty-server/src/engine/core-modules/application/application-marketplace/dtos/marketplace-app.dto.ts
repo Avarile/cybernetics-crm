@@ -1,3 +1,4 @@
+// GraphQL DTO with the summary card fields for a marketplace app listing.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 import {

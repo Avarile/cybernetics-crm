@@ -1,3 +1,5 @@
+// Test fixtures: sample normalized messages (internal, external, and
+// personal/non-work) used to test message filtering logic.
 import { MessageParticipantRole } from 'twenty-shared/types';
 
 import { MessageDirection } from 'src/modules/messaging/common/enums/message-direction.enum';

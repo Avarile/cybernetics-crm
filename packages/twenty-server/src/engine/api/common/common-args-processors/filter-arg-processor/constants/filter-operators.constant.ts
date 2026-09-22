@@ -1,3 +1,5 @@
+// Allowed filter operators per field-metadata-type category, used to
+// validate and reject unsupported operators when processing filter args.
 import { type FilterOperator } from 'src/engine/api/common/common-args-processors/filter-arg-processor/types/filter-operator.type';
 
 export const STRING_FILTER_OPERATORS: FilterOperator[] = [

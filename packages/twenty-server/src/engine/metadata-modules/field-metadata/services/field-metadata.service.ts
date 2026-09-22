@@ -1,3 +1,6 @@
+// Service for creating/updating/deleting field metadata: transpiles GraphQL
+// inputs into flat entity operations (fields, indexes, view fields/filters/
+// groups, page layout widgets) and runs them through a workspace migration.
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -45,6 +48,7 @@ export class FieldMetadataService extends TypeOrmQueryService<FieldMetadataEntit
     super(fieldMetadataRepository);
   }
 
+  // Creates a single field via createManyFields.
   async createOneField({
     createFieldInput,
     workspaceId,
@@ -70,6 +74,8 @@ export class FieldMetadataService extends TypeOrmQueryService<FieldMetadataEntit
     return createdFieldMetadata;
   }
 
+  // Deletes a field (and its affected indexes and any page layout widgets
+  // that reference it) via a workspace migration.
   async deleteOneField({
     deleteOneFieldInput,
     workspaceId,
@@ -190,6 +196,8 @@ export class FieldMetadataService extends TypeOrmQueryService<FieldMetadataEntit
     return deletedFlatFieldMetadata;
   }
 
+  // Updates a field, transpiling side effects across indexes, views, view
+  // groups/filters/fields, then running them all through one workspace migration.
   async updateOneField({
     updateFieldInput,
     workspaceId,
@@ -346,6 +354,8 @@ export class FieldMetadataService extends TypeOrmQueryService<FieldMetadataEntit
     });
   }
 
+  // Transpiles multiple create-field inputs into flat fields/indexes/view
+  // fields and creates them together in one workspace migration.
   async createManyFields({
     createFieldInputs,
     workspaceId,
@@ -488,6 +498,7 @@ export class FieldMetadataService extends TypeOrmQueryService<FieldMetadataEntit
     );
   }
 
+  // Finds a single field metadata row scoped to the given workspace.
   public async findOneWithinWorkspace(
     workspaceId: string,
     options: FindOneOptions<FieldMetadataEntity>,

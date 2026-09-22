@@ -1,3 +1,6 @@
+// Queue processor that, every minute, scans all active workspaces for logic
+// functions with a matching cron trigger and enqueues their execution,
+// deduplicating dispatches per pattern occurrence.
 import { Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -38,6 +41,8 @@ export class CronTriggerCronJob {
 
   @Process(CronTriggerCronJob.name)
   @SentryCronMonitor(CronTriggerCronJob.name, CRON_TRIGGER_CRON_PATTERN)
+  // For each active workspace, finds cron-triggered logic functions due to
+  // fire now and enqueues their execution, deduplicating per pattern tick.
   async handle() {
     const activeWorkspaces = await this.workspaceRepository.find({
       where: {

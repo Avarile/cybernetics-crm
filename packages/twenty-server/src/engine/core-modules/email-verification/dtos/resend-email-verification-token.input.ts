@@ -1,3 +1,4 @@
+// GraphQL args for the resendEmailVerificationToken mutation.
 import { ArgsType, Field } from '@nestjs/graphql';
 
 import { IsEmail, IsNotEmpty } from 'class-validator';

@@ -23,6 +23,8 @@ import { WorkspaceMigrationBuilderException } from 'src/engine/workspace-manager
 import { WorkspaceMigrationValidateBuildAndRunService } from 'src/engine/workspace-manager/workspace-migration/services/workspace-migration-validate-build-and-run-service';
 
 @Injectable()
+// CRUD for view filter groups, backed by the flat entity maps and applied
+// through validated workspace migrations.
 export class ViewFilterGroupService {
   constructor(
     @InjectWorkspaceScopedRepository(ViewFilterGroupEntity)
@@ -32,6 +34,8 @@ export class ViewFilterGroupService {
     private readonly applicationService: ApplicationService,
   ) {}
 
+  // Builds a flat view filter group from the input and applies it through
+  // a validated workspace migration, then returns the persisted DTO.
   async createOne({
     createViewFilterGroupInput,
     workspaceId,
@@ -107,6 +111,8 @@ export class ViewFilterGroupService {
     );
   }
 
+  // Applies partial updates to an existing view filter group via a
+  // validated workspace migration.
   async updateOne({
     id,
     updateViewFilterGroupInput,
@@ -180,6 +186,8 @@ export class ViewFilterGroupService {
     );
   }
 
+  // Soft-deletes a view filter group (sets deletedAt) via a validated
+  // workspace migration.
   async deleteOne({
     deleteViewFilterGroupInput,
     workspaceId,
@@ -253,6 +261,8 @@ export class ViewFilterGroupService {
     );
   }
 
+  // Permanently removes a view filter group via a validated workspace
+  // migration.
   async destroyOne({
     destroyViewFilterGroupInput,
     workspaceId,
@@ -318,6 +328,8 @@ export class ViewFilterGroupService {
     });
   }
 
+  // Returns all active view filter groups in the workspace, ordered by
+  // position, with their filters and parent/child group relations loaded.
   async findByWorkspaceId(
     workspaceId: string,
   ): Promise<ViewFilterGroupEntity[]> {
@@ -336,6 +348,7 @@ export class ViewFilterGroupService {
     });
   }
 
+  // Returns all active view filter groups belonging to a specific view.
   async findByViewId(
     workspaceId: string,
     viewId: string,
@@ -356,6 +369,7 @@ export class ViewFilterGroupService {
     });
   }
 
+  // Finds a single active view filter group by id.
   async findById(
     id: string,
     workspaceId: string,

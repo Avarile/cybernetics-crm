@@ -3,6 +3,8 @@ import { type ExtendedUIMessage, isExtendedFileUIPart } from 'twenty-shared/ai';
 import { CODE_INTERPRETER_MIME_TYPES } from 'src/engine/metadata-modules/ai/ai-chat/constants/code-interpreter-mime-types.constant';
 import { getNativeMimeTypesForModalities } from 'src/engine/metadata-modules/ai/ai-chat/utils/get-native-mime-types-for-modalities.util';
 
+// Replaces file attachments the model/code-interpreter can't handle with a
+// plain-text placeholder, so unsupported files don't break the model call.
 export const replaceUnsupportedFileParts = (
   messages: ExtendedUIMessage[],
   modalities: string[] = [],

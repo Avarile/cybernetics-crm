@@ -6,6 +6,8 @@ import {
 
 import { TwentyConfigService } from 'src/engine/core-modules/twenty-config/twenty-config.service';
 
+// Restricts an endpoint to instances that have billing disabled (e.g.
+// self-hosted deployments without a billing integration).
 @Injectable()
 export class BillingDisabledGuard implements CanActivate {
   constructor(private readonly twentyConfigService: TwentyConfigService) {}

@@ -9,6 +9,8 @@ import { GoogleAPIRefreshAccessTokenModule } from 'src/modules/connected-account
 import { MicrosoftAPIRefreshAccessTokenModule } from 'src/modules/connected-account/refresh-tokens-manager/drivers/microsoft/microsoft-api-refresh-access-token.module';
 import { ConnectedAccountRefreshTokensService } from 'src/modules/connected-account/refresh-tokens-manager/services/connected-account-refresh-tokens.service';
 
+// Wires up per-provider OAuth token refresh drivers behind the shared
+// ConnectedAccountRefreshTokensService.
 @Module({
   imports: [
     JwtModule,

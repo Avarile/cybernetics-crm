@@ -6,6 +6,7 @@ import { STANDARD_SKILL } from 'src/engine/workspace-manager/twenty-standard-app
 import { type AllStandardSkillName } from 'src/engine/workspace-manager/twenty-standard-application/types/all-standard-skill-name.type';
 import { type StandardBuilderArgs } from 'src/engine/workspace-manager/twenty-standard-application/types/metadata-standard-buillder-args.type';
 
+// Per-skill content (label, icon, instruction markdown) supplied by each standard skill's builder
 export type CreateStandardSkillContext = {
   skillName: AllStandardSkillName;
   name: string;
@@ -17,10 +18,12 @@ export type CreateStandardSkillContext = {
   isActive?: boolean;
 };
 
+// Arguments accepted by createStandardSkillFlatMetadata
 export type CreateStandardSkillArgs = StandardBuilderArgs<'skill'> & {
   context: CreateStandardSkillContext;
 };
 
+// Builds a single standard skill's FlatSkill, resolving its universal identifier from STANDARD_SKILL
 export const createStandardSkillFlatMetadata = ({
   context: {
     skillName,

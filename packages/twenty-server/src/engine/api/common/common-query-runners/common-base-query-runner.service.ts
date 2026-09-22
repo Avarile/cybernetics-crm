@@ -56,6 +56,10 @@ import { getWorkspaceContext } from 'src/engine/twenty-orm/storage/orm-workspace
 import { resolveRolePermissionConfig } from 'src/engine/twenty-orm/utils/resolve-role-permission-config.util';
 import { WorkspaceCacheService } from 'src/engine/workspace-cache/services/workspace-cache.service';
 
+// Abstract base for the common query runners shared across GraphQL/REST/MCP:
+// handles throttling, permission checks, pre/post query hooks, query-
+// complexity validation, and dispatches to each subclass's run() to
+// perform the actual operation.
 @Injectable()
 export abstract class CommonBaseQueryRunnerService<
   Args extends CommonQueryArgs,
@@ -98,6 +102,10 @@ export abstract class CommonBaseQueryRunnerService<
 
   protected readonly isReadOnly: boolean = false;
 
+  // Entry point for every common-API operation: throttles, validates,
+  // checks settings permissions on system objects, computes/hooks args,
+  // enforces query-complexity limits, then runs the query in the
+  // workspace ORM context.
   public async execute(
     args: CommonInput<Args>,
     queryRunnerContext: CommonBaseQueryRunnerContext,
@@ -181,6 +189,8 @@ export abstract class CommonBaseQueryRunnerService<
     authContext: WorkspaceAuthContext,
   ): Promise<Output>;
 
+  // Default query-complexity scoring: 1 point plus one per nested relation
+  // field selected; subclasses may override for operation-specific costs.
   protected computeQueryComplexity(
     selectedFieldsResult: CommonSelectedFieldsResult,
     _args: CommonExtendedInput<Args>,
@@ -193,6 +203,8 @@ export abstract class CommonBaseQueryRunnerService<
     return selectedFieldsComplexity;
   }
 
+  // Runs the subclass's computeArgs, then passes the result through
+  // registered pre-query hooks before execution.
   private async processArgs(
     args: CommonInput<Args>,
     queryRunnerContext: CommonBaseQueryRunnerContext,
@@ -213,6 +225,8 @@ export abstract class CommonBaseQueryRunnerService<
     return hookedArgs;
   }
 
+  // Prepares the extended context (workspace datasource/repository), runs
+  // the subclass's operation, then enriches results with getters/post hooks.
   private async executeQueryAndEnrichResults(
     processedArgs: CommonExtendedInput<Args>,
     queryRunnerContext: CommonBaseQueryRunnerContext,
@@ -238,6 +252,8 @@ export abstract class CommonBaseQueryRunnerService<
     });
   }
 
+  // Applies the subclass's result-getter processing and runs post-query
+  // hooks on the final result.
   private async enrichResultsWithGettersAndHooks({
     results,
     operationName,
@@ -271,6 +287,8 @@ export abstract class CommonBaseQueryRunnerService<
     return resultWithGetters as Output;
   }
 
+  // For system objects requiring an explicit workspace-settings
+  // permission, throws unless the caller has that permission.
   private async validateSettingsPermissionsOnObjectOrThrow(
     authContext: WorkspaceAuthContext,
     queryRunnerContext: CommonBaseQueryRunnerContext,
@@ -310,6 +328,9 @@ export abstract class CommonBaseQueryRunnerService<
     }
   }
 
+  // Resolves the caller's role-permission config and obtains a
+  // permission-scoped repository (using a read replica for read-only
+  // runners) to extend the base query-runner context.
   private async prepareExtendedQueryRunnerContextWithGlobalDatasource(
     queryRunnerContext: CommonBaseQueryRunnerContext,
   ): Promise<Omit<CommonExtendedQueryRunnerContext, 'commonQueryParser'>> {
@@ -347,6 +368,8 @@ export abstract class CommonBaseQueryRunnerService<
     };
   }
 
+  // Applies short- and long-window token-bucket rate limiting for API-key
+  // callers, recording a metric and rethrowing if the limit is hit.
   private async throttleQueryExecution(authContext: WorkspaceAuthContext) {
     try {
       if (!isApiKeyAuthContext(authContext)) return;
@@ -394,6 +417,9 @@ export abstract class CommonBaseQueryRunnerService<
     }
   }
 
+  // Throws if the query nests a one-to-many relation inside another
+  // one-to-many relation, or if computeQueryComplexity exceeds the
+  // configured maximum.
   private validateQueryComplexity(
     selectedFieldsResult: CommonSelectedFieldsResult,
     args: CommonExtendedInput<Args>,

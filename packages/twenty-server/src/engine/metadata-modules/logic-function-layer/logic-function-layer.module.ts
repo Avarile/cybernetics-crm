@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { LogicFunctionLayerEntity } from 'src/engine/metadata-modules/logic-function-layer/logic-function-layer.entity';
 
+// Registers the LogicFunctionLayerEntity repository for injection elsewhere.
 @Module({
   imports: [TypeOrmModule.forFeature([LogicFunctionLayerEntity])],
   exports: [TypeOrmModule],

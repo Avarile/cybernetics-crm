@@ -4,6 +4,8 @@ import { isDefined } from 'twenty-shared/utils';
 
 import type Stripe from 'stripe';
 
+// Diffs the previous and current subscription item lists on a Stripe subscription
+// event to find item ids that were removed
 export const getDeletedStripeSubscriptionItemIdsFromStripeSubscriptionEvent = (
   event:
     | Stripe.CustomerSubscriptionUpdatedEvent

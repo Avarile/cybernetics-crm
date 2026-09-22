@@ -19,6 +19,7 @@ import { type CalendarChannelDeletedEvent } from 'src/engine/metadata-modules/ca
 import { ConnectedAccountMetadataService } from 'src/engine/metadata-modules/connected-account/connected-account-metadata.service';
 import { WorkspaceEventEmitter } from 'src/engine/workspace-event-emitter/workspace-event-emitter';
 
+// CRUD and ownership-verification operations for calendar channels (per-connected-account calendar sync configuration).
 @Injectable()
 export class CalendarChannelMetadataService {
   constructor(
@@ -32,6 +33,7 @@ export class CalendarChannelMetadataService {
     return this.repository.find({ where: { workspaceId } });
   }
 
+  // Returns the calendar channels belonging to any connected account owned by the given user workspace.
   async findByUserWorkspaceId({
     userWorkspaceId,
     workspaceId,
@@ -51,6 +53,7 @@ export class CalendarChannelMetadataService {
     });
   }
 
+  // Verifies the connected account belongs to the requesting user before returning its calendar channels.
   async findByConnectedAccountIdForUser({
     connectedAccountId,
     userWorkspaceId,
@@ -69,6 +72,7 @@ export class CalendarChannelMetadataService {
     return this.findByConnectedAccountId({ connectedAccountId, workspaceId });
   }
 
+  // Returns calendar channels for a single connected account.
   async findByConnectedAccountId({
     connectedAccountId,
     workspaceId,
@@ -81,6 +85,7 @@ export class CalendarChannelMetadataService {
     });
   }
 
+  // Returns calendar channels across multiple connected accounts, short-circuiting on an empty list.
   async findByConnectedAccountIds({
     connectedAccountIds,
     workspaceId,
@@ -97,6 +102,7 @@ export class CalendarChannelMetadataService {
     });
   }
 
+  // Returns a single calendar channel by id, scoped to the workspace.
   async findById({
     id,
     workspaceId,
@@ -107,6 +113,7 @@ export class CalendarChannelMetadataService {
     return this.repository.findOne({ where: { id, workspaceId } });
   }
 
+  // Throws unless the calendar channel exists and belongs to a connected account owned by the given user workspace.
   async verifyOwnership({
     id,
     userWorkspaceId,
@@ -143,6 +150,7 @@ export class CalendarChannelMetadataService {
     return calendarChannel;
   }
 
+  // Creates a new calendar channel record.
   async create(
     data: Partial<CalendarChannelEntity> & {
       workspaceId: string;
@@ -157,6 +165,7 @@ export class CalendarChannelMetadataService {
     return this.repository.save(entity);
   }
 
+  // Applies a partial update and returns the refreshed calendar channel.
   async update({
     id,
     workspaceId,
@@ -174,6 +183,7 @@ export class CalendarChannelMetadataService {
     return this.repository.findOneOrFail({ where: { id, workspaceId } });
   }
 
+  // Deletes the calendar channel and emits a deletion event so dependent data (events, associations) can react.
   async delete({
     id,
     workspaceId,

@@ -1,3 +1,4 @@
+// TypeORM entity for a per-workspace feature flag toggle.
 import { registerEnumType } from '@nestjs/graphql';
 
 import { FeatureFlagKey } from 'twenty-shared/types';

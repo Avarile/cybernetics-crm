@@ -19,6 +19,9 @@ type GenerateDateGroupsInRangeResult = {
   wasTruncated: boolean;
 };
 
+// Generates every date bucket between start and end at the given
+// granularity, stopping early (and reporting truncation) if the range would
+// exceed the max bar/point count.
 export const generateDateGroupsInRange = ({
   startDate,
   endDate,

@@ -1,5 +1,7 @@
 /* @license Enterprise */
 
+// GraphQL resolver (enterprise-only) for configuring a workspace's SSO
+// identity providers (OIDC/SAML) from settings.
 import { UseFilters, UseGuards, UsePipes } from '@nestjs/common';
 import { Args, Mutation, Query } from '@nestjs/graphql';
 
@@ -39,6 +41,7 @@ export class SSOResolver {
 
   @UseGuards(WorkspaceAuthGuard, EnterpriseFeaturesEnabledGuard)
   @Mutation(() => SetupSsoDTO)
+  // Sets up a new OIDC identity provider for the workspace.
   async createOIDCIdentityProvider(
     @Args('input') setupSsoInput: SetupOIDCSsoInput,
     @AuthWorkspace() { id: workspaceId }: WorkspaceEntity,
@@ -51,6 +54,7 @@ export class SSOResolver {
 
   @UseGuards(WorkspaceAuthGuard, EnterpriseFeaturesEnabledGuard)
   @Query(() => [FindAvailableSSOIDPDTO])
+  // Lists the workspace's configured SSO identity providers.
   async getSSOIdentityProviders(
     @AuthWorkspace() { id: workspaceId }: WorkspaceEntity,
   ) {
@@ -59,6 +63,7 @@ export class SSOResolver {
 
   @UseGuards(WorkspaceAuthGuard, EnterpriseFeaturesEnabledGuard)
   @Mutation(() => SetupSsoDTO)
+  // Sets up a new SAML identity provider for the workspace.
   async createSAMLIdentityProvider(
     @Args('input') setupSsoInput: SetupSAMLSsoInput,
     @AuthWorkspace() { id: workspaceId }: WorkspaceEntity,
@@ -71,6 +76,7 @@ export class SSOResolver {
 
   @UseGuards(WorkspaceAuthGuard, EnterpriseFeaturesEnabledGuard)
   @Mutation(() => DeleteSsoDTO)
+  // Deletes an SSO identity provider from the workspace.
   async deleteSSOIdentityProvider(
     @Args('input') { identityProviderId }: DeleteSsoInput,
     @AuthWorkspace() { id: workspaceId }: WorkspaceEntity,
@@ -83,6 +89,7 @@ export class SSOResolver {
 
   @UseGuards(WorkspaceAuthGuard, EnterpriseFeaturesEnabledGuard)
   @Mutation(() => EditSsoDTO)
+  // Updates an existing SSO identity provider's settings.
   async editSSOIdentityProvider(
     @Args('input') input: EditSsoInput,
     @AuthWorkspace() { id: workspaceId }: WorkspaceEntity,

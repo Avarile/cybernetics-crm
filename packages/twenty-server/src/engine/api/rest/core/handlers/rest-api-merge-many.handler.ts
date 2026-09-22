@@ -9,6 +9,8 @@ import { parseDepthRestRequest } from 'src/engine/api/rest/input-request-parsers
 import { AuthenticatedRequest } from 'src/engine/api/rest/types/authenticated-request';
 import { workspaceQueryRunnerRestApiExceptionHandler } from 'src/engine/api/rest/utils/workspace-query-runner-rest-api-exception-handler.util';
 
+// REST handler for PATCH /rest/{objects}/merge: merges several records
+// into one.
 @Injectable()
 export class RestApiMergeManyHandler extends RestApiBaseHandler {
   constructor(
@@ -17,6 +19,8 @@ export class RestApiMergeManyHandler extends RestApiBaseHandler {
     super();
   }
 
+  // Parses the request body, runs the common mergeMany query runner, and
+  // formats the resulting record as a REST response.
   async handle(request: AuthenticatedRequest) {
     try {
       const { depth, ...restArgs } = await this.parseRequestArgs(request);

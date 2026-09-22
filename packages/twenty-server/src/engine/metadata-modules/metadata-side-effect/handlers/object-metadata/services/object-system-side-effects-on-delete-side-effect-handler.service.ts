@@ -1,3 +1,7 @@
+// Side effect: cascade-deletes an object's engine-owned side effect entities
+// on deletion (system fields, system indexes, and search field rows), since
+// they're excluded from normal manifest deletion inference.
+
 import { Injectable } from '@nestjs/common';
 
 import { isDefined } from 'twenty-shared/utils';
@@ -20,6 +24,9 @@ export class ObjectSystemSideEffectsOnDeleteSideEffectHandlerService extends Met
       'When an object is deleted, cascade-delete its engine-owned side effects: the reserved system fields, every system index (including the GIN searchVector index), and its searchFieldMetadata rows. These entities are excluded from manifest deletion inference, so the cascade must be explicit. Caller-provided defaults (name, default relations) are NOT engine-owned and are deleted through normal deletion inference / the object delete transpiler.',
   },
 ) {
+  // Collects every system-side-effect field, index, and search field row
+  // belonging to (or referencing) the deleted object, and returns them as
+  // delete operations, or noop if none are found.
   buildSideEffects({
     flatEntity: flatObjectMetadata,
     relatedFlatEntityMaps,

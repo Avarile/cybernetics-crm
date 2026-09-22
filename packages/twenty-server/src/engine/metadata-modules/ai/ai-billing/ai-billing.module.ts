@@ -1,3 +1,4 @@
+// NestJS module for computing and recording AI usage cost/credits consumption.
 import { Module } from '@nestjs/common';
 
 import { BillingModule } from 'src/engine/core-modules/billing/billing.module';

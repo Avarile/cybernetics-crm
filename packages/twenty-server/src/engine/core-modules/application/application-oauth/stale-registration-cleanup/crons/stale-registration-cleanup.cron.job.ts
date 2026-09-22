@@ -1,3 +1,5 @@
+// Queue processor that runs the recurring stale OAuth registration
+// cleanup job.
 import { Injectable, Logger } from '@nestjs/common';
 
 import { SentryCronMonitor } from 'src/engine/core-modules/cron/sentry-cron-monitor.decorator';
@@ -23,6 +25,8 @@ export class StaleRegistrationCleanupCronJob {
     StaleRegistrationCleanupCronJob.name,
     STALE_REGISTRATION_CLEANUP_CRON_PATTERN,
   )
+  // Runs the stale registration cleanup, capturing and rethrowing any
+  // failure to the exception handler.
   async handle(): Promise<void> {
     this.logger.log('Starting stale OAuth registration cleanup');
 

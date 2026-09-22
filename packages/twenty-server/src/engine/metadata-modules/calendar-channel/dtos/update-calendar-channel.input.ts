@@ -16,6 +16,7 @@ import {
 
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';
 
+// User-editable calendar channel fields exposed through the update mutation.
 @InputType()
 export class UpdateCalendarChannelInputUpdates {
   @IsOptional()
@@ -39,6 +40,7 @@ export class UpdateCalendarChannelInputUpdates {
   isSyncEnabled?: boolean;
 }
 
+// Input for the updateCalendarChannel mutation: target channel id plus the fields to change.
 @InputType()
 export class UpdateCalendarChannelInput {
   @IsUUID()

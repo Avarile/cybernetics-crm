@@ -29,16 +29,19 @@ msgid "{senderName} (<0>{senderEmail}</0>): Please validate this domain to allow
 msgstr "{senderName} (<0>{senderEmail}</0>): Si us plau, valida aquest domini per permetre als usuaris amb adreces de correu electrònic <1>@{domain}</1> unir-se al teu espai de treball sense requerir una invitació."
 
 #. js-lingui-explicit-id
+#: src/emails/billing-trial-converting.email.js
 #: src/emails/billing-trial-converting.email.tsx
 msgid "A heads up before your trial ends"
 msgstr "Un avís abans que finalitzi la vostra prova"
 
 #. js-lingui-explicit-id
+#: src/emails/send-invite-link.email.js
 #: src/emails/send-invite-link.email.tsx
 msgid "Accept invite"
 msgstr "Accepta la invitació"
 
 #. js-lingui-explicit-id
+#: src/emails/billing-trial-ending.email.js
 #: src/emails/billing-trial-ending.email.tsx
 msgid "Add a payment method"
 msgstr "Afegiu un mètode de pagament"
@@ -49,24 +52,28 @@ msgid "After that, the workspace and all of its data will be permanently deleted
 msgstr "Després d'això, l'espai de treball i totes les seves dades se suprimiran de manera permanent — i no el podrem recuperar."
 
 #. js-lingui-explicit-id
+#: src/emails/send-email-verification-link.email.js
 #: src/emails/send-email-verification-link.email.tsx
 msgid "Confirm new email"
 msgstr ""
 
 #. js-lingui-explicit-id
+#: src/emails/send-email-verification-link.email.js
 #: src/emails/send-email-verification-link.email.tsx
 msgid "Confirm your email address"
 msgstr "Confirma la teva adreça de correu electrònic"
 
 #. js-lingui-explicit-id
+#: src/emails/send-email-verification-link.email.js
 #: src/emails/send-email-verification-link.email.tsx
 msgid "Confirm your new email address"
 msgstr ""
 
 #. js-lingui-explicit-id
+#: src/emails/password-update-notify.email.js
 #: src/emails/password-update-notify.email.tsx
-msgid "Connect to Twenty"
-msgstr "Connecta't a Twenty"
+msgid "Connect to Cybernetics"
+msgstr "Connecta't a Cybernetics"
 
 #. js-lingui-explicit-id
 #: src/emails/password-update-notify.email.tsx
@@ -74,21 +81,19 @@ msgid "Dear {userName},"
 msgstr "Benvolgut {userName},"
 
 #. js-lingui-explicit-id
-#: src/components/Footer.tsx
-msgid "Developers"
-msgstr "Desenvolupadors"
-
-#. js-lingui-explicit-id
+#: src/emails/server-admin-access-changed.email.js
 #: src/emails/server-admin-access-changed.email.tsx
 msgid "Disabled"
 msgstr "Desactivat"
 
 #. js-lingui-explicit-id
+#: src/emails/server-admin-access-changed.email.js
 #: src/emails/server-admin-access-changed.email.tsx
 msgid "Enabled"
 msgstr "Activat"
 
 #. js-lingui-explicit-id
+#: src/components/Footer.js
 #: src/components/Footer.tsx
 msgid "Github"
 msgstr "Github"
@@ -119,8 +124,8 @@ msgstr "Hola {userName},"
 
 #. js-lingui-explicit-id
 #: src/emails/billing-trial-converting.email.tsx
-msgid "If Twenty is working for you, you're all set — there's nothing to do. If it's not the right fit, you can cancel in one click before then and you won't be charged."
-msgstr "Si Twenty us funciona, ja està tot preparat — no heu de fer res. Si no és el producte adequat, la podeu cancel·lar amb un sol clic abans d'aquesta data i no se us cobrarà res."
+msgid "If Cybernetics is working for you, you're all set — there's nothing to do. If it's not the right fit, you can cancel in one click before then and you won't be charged."
+msgstr "Si Cybernetics us funciona, ja està tot preparat — no heu de fer res. Si no és el producte adequat, la podeu cancel·lar amb un sol clic abans d'aquesta data i no se us cobrarà res."
 
 #. js-lingui-explicit-id
 #: src/emails/password-update-notify.email.tsx
@@ -134,10 +139,11 @@ msgstr "Si no feu res, posarem en pausa el vostre espai de treball i mantindrem 
 
 #. js-lingui-explicit-id
 #: src/emails/clean-suspended-workspace.email.tsx
-msgid "If you'd ever like to give Twenty another try, you can start a fresh workspace in minutes — we'd love to have you back."
-msgstr "Si mai voleu tornar a provar Twenty, podeu iniciar un espai de treball nou en pocs minuts — ens encantaria tenir-vos de nou."
+msgid "If you'd ever like to give Cybernetics another try, you can start a fresh workspace in minutes — we'd love to have you back."
+msgstr "Si mai voleu tornar a provar Cybernetics, podeu iniciar un espai de treball nou en pocs minuts — ens encantaria tenir-vos de nou."
 
 #. js-lingui-explicit-id
+#: src/components/WhatIsTwenty.js
 #: src/components/WhatIsTwenty.tsx
 msgid "It's a CRM, a software to help businesses manage their customer data and relationships efficiently."
 msgstr "És un CRM, un programari per ajudar les empreses a gestionar les seves dades de clients i relacions de manera eficient."
@@ -148,9 +154,10 @@ msgid "Its data has been removed and can no longer be recovered."
 msgstr "Les seves dades s'han suprimit i ja no es poden recuperar."
 
 #. js-lingui-explicit-id
+#: src/emails/send-invite-link.email.js
 #: src/emails/send-invite-link.email.tsx
-msgid "Join your team on Twenty"
-msgstr "Uneix-te al teu equip a Twenty"
+msgid "Join your team on Cybernetics"
+msgstr "Uneix-te al teu equip a Cybernetics"
 
 #. js-lingui-explicit-id
 #: src/emails/billing-subscription-renewing.email.tsx
@@ -158,7 +165,9 @@ msgid "Just so it's never a surprise, here's a heads up about your annual plan."
 msgstr "Perquè no sigui mai una sorpresa, aquí teniu un avís sobre el vostre pla anual."
 
 #. js-lingui-explicit-id
+#: src/emails/billing-subscription-renewing.email.js
 #: src/emails/billing-subscription-renewing.email.tsx
+#: src/emails/billing-trial-converting.email.js
 #: src/emails/billing-trial-converting.email.tsx
 msgid "Manage subscription"
 msgstr "Gestiona la subscripció"
@@ -169,6 +178,7 @@ msgid "No action is needed if you'd like to continue. If you'd rather not renew,
 msgstr "No cal fer res si voleu continuar. Si preferiu no renovar, podeu cancel·lar en qualsevol moment abans d'aquesta data."
 
 #. js-lingui-explicit-id
+#: src/emails/password-update-notify.email.js
 #: src/emails/password-update-notify.email.tsx
 msgid "Password updated"
 msgstr "Contrasenya actualitzada"
@@ -179,31 +189,25 @@ msgid "Reactivate it within the next {remainingDays} {dayOrDays} and you'll pick
 msgstr "Reactiveu-lo durant els propers {remainingDays} {dayOrDays} i podreu reprendre exactament on ho vau deixar, amb tots els registres, vistes i paràmetres al mateix lloc."
 
 #. js-lingui-explicit-id
+#: src/emails/warn-suspended-workspace.email.js
 #: src/emails/warn-suspended-workspace.email.tsx
 msgid "Reactivate workspace"
 msgstr "Reactiva l'espai de treball"
 
 #. js-lingui-explicit-id
-#: src/components/Footer.tsx
-msgid "Read Twenty's user guide"
-msgstr "Llegeix la guia de l'usuari de Twenty"
-
-#. js-lingui-explicit-id
+#: src/emails/password-reset-link.email.js
 #: src/emails/password-reset-link.email.tsx
 msgid "Reset"
 msgstr "Restableix"
 
 #. js-lingui-explicit-id
+#: src/emails/password-reset-link.email.js
 #: src/emails/password-reset-link.email.tsx
 msgid "Reset your password 🗝"
 msgstr "Restableix la teva contrasenya 🗝"
 
 #. js-lingui-explicit-id
-#: src/components/Footer.tsx
-msgid "San Francisco / Paris"
-msgstr "San Francisco / París"
-
-#. js-lingui-explicit-id
+#: src/emails/server-admin-access-changed.email.js
 #: src/emails/server-admin-access-changed.email.tsx
 msgid "Server administrator access changed"
 msgstr "S'ha canviat l'accés d'administrador del servidor"
@@ -229,21 +233,25 @@ msgid "serverAdminAccessChanged.warning"
 msgstr "serverAdminAccessChanged.warning"
 
 #. js-lingui-explicit-id
+#: src/emails/password-reset-link.email.js
 #: src/emails/password-reset-link.email.tsx
 msgid "Set"
 msgstr "Estableix"
 
 #. js-lingui-explicit-id
+#: src/emails/password-reset-link.email.js
 #: src/emails/password-reset-link.email.tsx
 msgid "Set your password 🗝"
 msgstr ""
 
 #. js-lingui-explicit-id
+#: src/emails/clean-suspended-workspace.email.js
 #: src/emails/clean-suspended-workspace.email.tsx
 msgid "Start a new workspace"
 msgstr "Inicia un espai de treball nou"
 
 #. js-lingui-explicit-id
+#: src/emails/test.email.js
 #: src/emails/test.email.tsx
 msgid "Test email"
 msgstr "Correu electrònic de prova"
@@ -264,40 +272,30 @@ msgid "To keep your workspace and everything you've built, add a payment method 
 msgstr "Per conservar el vostre espai de treball i tot el que hi heu creat, afegiu un mètode de pagament i trieu un pla."
 
 #. js-lingui-explicit-id
-#: src/components/Footer.tsx
-msgid "Twenty.com, Public Benefit Corporation"
-msgstr "Twenty.com, Corporació de Benefici Públic"
-
-#. js-lingui-explicit-id
-#: src/components/Footer.tsx
-msgid "User guide"
-msgstr "Guia de l'usuari"
-
-#. js-lingui-explicit-id
+#: src/emails/validate-approved-access-domain.email.js
+#: src/emails/validate-approved-access-domain.email.js
 #: src/emails/validate-approved-access-domain.email.tsx
 #: src/emails/validate-approved-access-domain.email.tsx
 msgid "Validate domain"
 msgstr "Valida el domini"
 
 #. js-lingui-explicit-id
+#: src/emails/send-email-verification-link.email.js
 #: src/emails/send-email-verification-link.email.tsx
 msgid "Verify Email"
 msgstr "Verifica el correu electrònic"
 
 #. js-lingui-explicit-id
+#: src/components/Footer.js
 #: src/components/Footer.tsx
-msgid "Visit Twenty's developer documentation"
-msgstr "Visita la documentació per a desenvolupadors de Twenty"
+msgid "Visit Cybernetics's GitHub repository"
+msgstr "Visita el repositori GitHub de Cybernetics"
 
 #. js-lingui-explicit-id
+#: src/components/Footer.js
 #: src/components/Footer.tsx
-msgid "Visit Twenty's GitHub repository"
-msgstr "Visita el repositori GitHub de Twenty"
-
-#. js-lingui-explicit-id
-#: src/components/Footer.tsx
-msgid "Visit Twenty's website"
-msgstr "Visita el lloc web de Twenty"
+msgid "Visit Cybernetics's website"
+msgstr "Visita el lloc web de Cybernetics"
 
 #. js-lingui-explicit-id
 #: src/emails/billing-trial-converting.email.tsx
@@ -305,14 +303,16 @@ msgid "We don't like surprise charges, so here's a friendly heads up."
 msgstr "No ens agraden els càrrecs per sorpresa, així que aquí teniu un avís amistós."
 
 #. js-lingui-explicit-id
+#: src/components/Footer.js
 #: src/components/Footer.tsx
 msgid "Website"
 msgstr "Lloc web"
 
 #. js-lingui-explicit-id
+#: src/components/WhatIsTwenty.js
 #: src/components/WhatIsTwenty.tsx
-msgid "What is Twenty?"
-msgstr "Què és Twenty?"
+msgid "What is Cybernetics?"
+msgstr "Què és Cybernetics?"
 
 #. js-lingui-explicit-id
 #: src/emails/billing-subscription-renewing.email.tsx
@@ -335,11 +335,13 @@ msgid "Your free trial of <0>{workspaceDisplayName}</0> ends on {formattedDate}.
 msgstr "La vostra prova gratuïta de <0>{workspaceDisplayName}</0> finalitza el {formattedDate}. Si no la cancel·leu abans, es carregarà a la targeta registrada l'import del vostre pla mensual."
 
 #. js-lingui-explicit-id
+#: src/emails/billing-subscription-renewing.email.js
 #: src/emails/billing-subscription-renewing.email.tsx
 msgid "Your plan renews soon"
 msgstr "El vostre pla es renovarà aviat"
 
 #. js-lingui-explicit-id
+#: src/emails/billing-trial-ending.email.js
 #: src/emails/billing-trial-ending.email.tsx
 msgid "Your trial is ending soon"
 msgstr "La vostra prova està a punt d'acabar"
@@ -350,11 +352,13 @@ msgid "Your workspace <0>{workspaceDisplayName}</0> has now been permanently del
 msgstr "El vostre espai de treball <0>{workspaceDisplayName}</0> s'ha suprimit de manera permanent — es va posar en pausa fa {daysSinceInactive} dies i no es va reactivar a temps."
 
 #. js-lingui-explicit-id
+#: src/emails/clean-suspended-workspace.email.js
 #: src/emails/clean-suspended-workspace.email.tsx
 msgid "Your workspace has been deleted"
 msgstr "El vostre espai de treball s'ha suprimit"
 
 #. js-lingui-explicit-id
+#: src/emails/warn-suspended-workspace.email.js
 #: src/emails/warn-suspended-workspace.email.tsx
 msgid "Your workspace is paused"
 msgstr "El vostre espai de treball està en pausa"

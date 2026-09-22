@@ -1,3 +1,4 @@
+// GraphQL input for revoking an API key by id.
 import { Field, InputType } from '@nestjs/graphql';
 
 import { IsNotEmpty, IsUUID } from 'class-validator';

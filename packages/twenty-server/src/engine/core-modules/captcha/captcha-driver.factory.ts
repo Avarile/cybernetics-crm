@@ -1,3 +1,5 @@
+// Builds and caches the active captcha driver (Google reCAPTCHA or Cloudflare
+// Turnstile) based on config, recreating it when the captcha config changes.
 import { Injectable } from '@nestjs/common';
 
 import { type CaptchaDriver } from 'src/engine/core-modules/captcha/drivers/interfaces/captcha-driver.interface';
@@ -21,6 +23,8 @@ export class CaptchaDriverFactory extends DriverFactoryBase<CaptchaDriver | null
     super(twentyConfigService, configGroupHashService);
   }
 
+  // Cache key combining the driver type and a hash of the captcha config
+  // group, so the driver is rebuilt whenever config changes.
   protected buildConfigKey(): string {
     const driver = this.twentyConfigService.get('CAPTCHA_DRIVER');
 
@@ -31,6 +35,7 @@ export class CaptchaDriverFactory extends DriverFactoryBase<CaptchaDriver | null
     return `${driver}|${this.configGroupHashService.computeHash(ConfigVariablesGroup.CAPTCHA_CONFIG)}`;
   }
 
+  // Instantiates the configured captcha driver, or null if captcha is disabled.
   protected createDriver(): CaptchaDriver | null {
     const driver = this.twentyConfigService.get('CAPTCHA_DRIVER');
     const siteKey = this.twentyConfigService.get('CAPTCHA_SITE_KEY');
@@ -69,6 +74,7 @@ export class CaptchaDriverFactory extends DriverFactoryBase<CaptchaDriver | null
     }
   }
 
+  // Returns the active driver, short-circuiting to null when no driver is configured.
   getCurrentDriver(): CaptchaDriver | null {
     const driver = this.twentyConfigService.get('CAPTCHA_DRIVER');
 

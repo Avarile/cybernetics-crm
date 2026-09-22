@@ -1,3 +1,5 @@
+// GraphQL output types for paginated event log query results.
+
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 
 import GraphQLJSON from 'graphql-type-json';

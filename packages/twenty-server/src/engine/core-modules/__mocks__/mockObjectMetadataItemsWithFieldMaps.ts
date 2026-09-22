@@ -1,3 +1,6 @@
+// Shared test fixtures: flat object/field metadata maps (in the
+// byUniversalIdentifier shape) for the same standard/custom objects, plus a
+// helper to build an ObjectMetadataInfo for workflow-related tests.
 import { FieldMetadataType } from 'twenty-shared/types';
 
 import { createEmptyFlatEntityMaps } from 'src/engine/metadata-modules/flat-entity/constant/create-empty-flat-entity-maps.constant';
@@ -248,6 +251,8 @@ export const mockObjectIdByNameSingular: Record<string, string> =
     {} as Record<string, string>,
   );
 
+// Builds an ObjectMetadataInfo for the named mock object, throwing if it's
+// not one of the fixture objects above.
 export const getMockObjectMetadataInfo = (
   nameSingular: string,
 ): ObjectMetadataInfo => {

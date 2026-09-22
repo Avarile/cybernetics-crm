@@ -18,11 +18,15 @@ import {
   createStandardPageLayoutWidgetFlatMetadata,
 } from 'src/engine/workspace-manager/twenty-standard-application/utils/page-layout-widget/create-standard-page-layout-widget-flat-metadata.util';
 
+// Builds the fixed set of demo widgets (welcome text, sample opportunity charts, an iframe) seeded
+// into every new workspace's "My First Dashboard", so new workspaces start with a populated example
 type DashboardWidgetBuilderArgs = Omit<
   CreateStandardPageLayoutWidgetArgs,
   'context'
 >;
 
+// Builds a record filter's config/universal payload pair from a plain filter description, generating
+// a single AND filter group to hold it
 const createFilterConfigs = (
   filters: Array<{
     type: string;
@@ -713,6 +717,7 @@ const createDealValueCreatedThisMonth = ({
   });
 };
 
+// Builds all fixed widgets for the seeded "My First Dashboard" page layout
 export const computeMyFirstDashboardWidgets = (
   args: DashboardWidgetBuilderArgs,
 ): FlatPageLayoutWidget[] => {

@@ -15,6 +15,9 @@ import { ConnectedAccountEntity } from 'src/engine/metadata-modules/connected-ac
 import { WebhookSubscriptionDriverFactory } from 'src/modules/connected-account/webhook-subscription-manager/services/webhook-subscription-driver-factory.service';
 import { type WebhookSubscriptionContext } from 'src/modules/connected-account/webhook-subscription-manager/types/webhook-subscription-driver.type';
 
+// Manages the lifecycle of a calendar channel's provider webhook
+// subscription: creating, renewing, and deleting it, and persisting the
+// resulting subscription state on the channel.
 @Injectable()
 export class CalendarWebhookSubscriptionService {
   constructor(
@@ -26,6 +29,8 @@ export class CalendarWebhookSubscriptionService {
     private readonly exceptionHandlerService: ExceptionHandlerService,
   ) {}
 
+  // Creates a webhook subscription for the channel (replacing any existing
+  // one first), skipping if the provider isn't supported or a subscription is already active.
   async createSubscription(
     calendarChannelId: string,
     workspaceId: string,
@@ -96,6 +101,7 @@ export class CalendarWebhookSubscriptionService {
     }
   }
 
+  // Renews the channel's existing webhook subscription before it expires.
   async renewSubscription(
     calendarChannel: CalendarChannelEntity,
   ): Promise<void> {
@@ -136,6 +142,7 @@ export class CalendarWebhookSubscriptionService {
     }
   }
 
+  // Deletes the channel's provider webhook subscription.
   async deleteSubscription(
     calendarChannelId: string,
     workspaceId: string,
@@ -172,6 +179,7 @@ export class CalendarWebhookSubscriptionService {
     }
   }
 
+  // Builds the driver-facing subscription context from a calendar channel entity.
   private toContext(
     calendarChannel: CalendarChannelEntity,
   ): WebhookSubscriptionContext {

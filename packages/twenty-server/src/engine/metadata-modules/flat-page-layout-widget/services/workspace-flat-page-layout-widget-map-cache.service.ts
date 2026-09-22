@@ -1,3 +1,6 @@
+// Builds and caches the per-workspace map of flat page layout widgets, used
+// by the workspace migration/metadata layer instead of querying entities directly.
+
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -43,6 +46,9 @@ export class WorkspaceFlatPageLayoutWidgetMapCacheService extends WorkspaceCache
     super();
   }
 
+  // Loads all page layout widgets for the workspace along with the related
+  // entities needed to resolve universal identifiers, converts each widget
+  // entity to its flat representation, and assembles the flat entity maps.
   async computeForCache(
     workspaceId: string,
   ): Promise<FlatPageLayoutWidgetMaps> {

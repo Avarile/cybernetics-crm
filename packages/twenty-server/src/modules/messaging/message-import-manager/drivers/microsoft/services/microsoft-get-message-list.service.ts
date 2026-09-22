@@ -1,3 +1,6 @@
+// Lists Microsoft Graph message ids to import for each of a channel's
+// folders, using Graph's delta query (paginated via $batch requests, 20
+// folders per batch) to get incremental adds/removals after the first sync.
 import { Injectable, Logger } from '@nestjs/common';
 
 import {
@@ -41,6 +44,8 @@ export class MicrosoftGetMessageListService {
     private readonly microsoftMessageListFetchErrorHandler: MicrosoftMessageListFetchErrorHandler,
   ) {}
 
+  // Processes folders to sync (per policy) in batches of up to 20 via
+  // Graph's $batch endpoint.
   public async getMessageLists({
     messageChannel,
     connectedAccount,
@@ -87,6 +92,8 @@ export class MicrosoftGetMessageListService {
     return results;
   }
 
+  // Issues one $batch request (one delta-query GET per folder) and, for
+  // each response, paginates through the remaining delta pages.
   private async getMessageListBatch(
     microsoftClient: Client,
     foldersBatch: FolderToProcess[],
@@ -142,6 +149,8 @@ export class MicrosoftGetMessageListService {
     return results;
   }
 
+  // Resumes from the folder's stored delta link if present, otherwise
+  // starts a fresh delta query for the folder.
   private buildInitialDeltaUrl(folder: FolderToProcess): string {
     if (isNonEmptyString(folder.syncCursor)) {
       return toRelativeGraphUrl(folder.syncCursor);
@@ -152,6 +161,9 @@ export class MicrosoftGetMessageListService {
     return `/me/mailfolders/${folderId}/messages/delta?$select=id`;
   }
 
+  // Walks all delta pages for a folder starting from the first page
+  // already fetched in the batch, splitting entries into added vs.
+  // removed ids, and returns the new delta link as the next sync cursor.
   private async iterateFolderPages(
     microsoftClient: Client,
     folder: FolderToProcess,

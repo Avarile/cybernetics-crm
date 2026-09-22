@@ -17,6 +17,9 @@ import { type CreateViewInput } from 'src/engine/metadata-modules/view/dtos/inpu
 import { type UniversalFlatViewGroup } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-view-group.type';
 import { type UniversalFlatView } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-view.type';
 
+// Builds a new flat view from a create input, resolving referenced field
+// metadata to universal identifiers, defaulting unset fields, and
+// computing any view groups implied by a mainGroupByFieldMetadataId.
 export const fromCreateViewInputToFlatViewToCreate = ({
   createViewInput: rawCreateViewInput,
   createdByUserWorkspaceId,

@@ -1,3 +1,7 @@
+// Repeatedly fetches a page of ids via `getterPaginated` and deletes them
+// via `deleter` until a page comes back empty. Note: always requests
+// offset 0, relying on each delete to shrink the result set so the next
+// page picks up the following rows.
 import { type WorkspaceEntityManager } from 'src/engine/twenty-orm/entity-manager/workspace-entity-manager';
 
 export const deleteUsingPagination = async (

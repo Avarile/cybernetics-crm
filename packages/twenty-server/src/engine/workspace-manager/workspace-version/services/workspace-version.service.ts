@@ -7,6 +7,8 @@ import { MoreThanOrEqual, QueryRunner, Repository } from 'typeorm';
 import { activationStatusIn } from 'src/engine/core-modules/workspace/utils/activation-status-in.util';
 import { WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.entity';
 
+// Queries provisioned workspaces, used by upgrade/version commands that need
+// to iterate over active workspaces in batches.
 @Injectable()
 export class WorkspaceVersionService {
   constructor(
@@ -14,6 +16,7 @@ export class WorkspaceVersionService {
     private readonly workspaceRepository: Repository<WorkspaceEntity>,
   ) {}
 
+  // Checks whether at least one workspace is currently provisioned.
   async hasProvisionedWorkspaces(): Promise<boolean> {
     return this.workspaceRepository.exists({
       where: {
@@ -24,6 +27,8 @@ export class WorkspaceVersionService {
     });
   }
 
+  // Fetches provisioned workspace ids in id order, optionally starting after
+  // a given id and capped at a limit, to support paginated iteration.
   async getProvisionedWorkspaceIds({
     startFromWorkspaceId,
     workspaceCountLimit,

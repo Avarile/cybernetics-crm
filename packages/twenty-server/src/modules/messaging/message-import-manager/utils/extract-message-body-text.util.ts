@@ -5,6 +5,9 @@ import { extractTextWithoutReplyQuotations } from 'src/modules/messaging/message
 import { normalizeMessageText } from 'src/modules/messaging/message-import-manager/utils/normalize-message-text.util';
 import { sanitizeString } from 'src/modules/messaging/message-import-manager/utils/sanitize-string.util';
 
+// Resolves a message's display text: prefers the plain-text body,
+// converting HTML to text otherwise, then strips quoted reply/forward
+// content and sanitizes/normalizes the result.
 export const extractMessageBodyText = ({
   text,
   html,

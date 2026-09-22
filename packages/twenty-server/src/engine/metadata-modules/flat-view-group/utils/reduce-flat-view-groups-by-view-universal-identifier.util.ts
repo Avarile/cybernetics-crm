@@ -10,6 +10,8 @@ type FlatViewGroupsByViewUniversalIdentifier = {
   highestViewGroupPositionByViewUniversalIdentifier: Record<string, number>;
 };
 
+// Reduces a flat list of view groups into a per-view record keyed by group id, along
+// with each view's highest existing group position (for computing the next position).
 export const reduceFlatViewGroupsByViewUniversalIdentifier = ({
   flatViewGroups,
 }: {

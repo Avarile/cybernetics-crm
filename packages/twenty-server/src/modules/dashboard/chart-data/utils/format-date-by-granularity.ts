@@ -5,6 +5,8 @@ import {
 } from 'twenty-shared/types';
 import { getNextPeriodStart, getPeriodStart } from 'twenty-shared/utils';
 
+// Formats a date as a chart axis label appropriate to its bucket
+// granularity (e.g. a week becomes a "Mon D - Mon D, YYYY" range).
 export const formatDateByGranularity = (
   plainDate: Temporal.PlainDate,
   granularity:

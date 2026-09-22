@@ -1,3 +1,4 @@
+// Zod schema validating a new IMAP/SMTP/CALDAV connection's parameters.
 import { EmailConnectionSecurity } from 'src/engine/core-modules/imap-smtp-caldav-connection/enums/email-connection-security.enum';
 import { plaintextStringSchema } from 'src/engine/core-modules/secret-encryption/branded-strings/plaintext-string.type';
 import { z } from 'zod';

@@ -1,3 +1,4 @@
+// GraphQL DTO for a single global search result record.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 import { IsNotEmpty, IsNumber, IsString, IsUUID } from 'class-validator';

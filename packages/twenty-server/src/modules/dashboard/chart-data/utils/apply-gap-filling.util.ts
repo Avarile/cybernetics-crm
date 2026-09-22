@@ -32,6 +32,9 @@ type ApplyGapFillingResult = {
   wasTruncated: boolean;
 };
 
+// Fills in missing date buckets and/or missing select options in group-by
+// results so charts show continuous axes instead of skipping empty
+// categories (unless the widget is configured to omit null values).
 export const applyGapFilling = ({
   data,
   primaryAxisGroupByField,

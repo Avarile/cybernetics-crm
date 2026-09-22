@@ -1,3 +1,5 @@
+// NestJS pipe that runs class-validator over resolver DTO arguments and
+// converts validation failures into a GraphQL UserInputError.
 import {
   type ArgumentMetadata,
   Injectable,
@@ -10,6 +12,8 @@ import { type ValidationError, validate } from 'class-validator';
 
 import { UserInputError } from 'src/engine/core-modules/graphql/utils/graphql-errors.util';
 
+// Runs class-validator's validate(), swallowing any unexpected throw into
+// an empty error list rather than crashing the request.
 const safeClassValidatorValidateWrapper = async (
   object: object,
 ): Promise<ValidationError[]> => {
@@ -22,6 +26,8 @@ const safeClassValidatorValidateWrapper = async (
 
 @Injectable()
 export class ResolverValidationPipe implements PipeTransform {
+  // Validates the incoming argument against its DTO class, throwing a
+  // UserInputError with joined constraint messages if validation fails.
   async transform(value: unknown, metadata: ArgumentMetadata) {
     const { metatype } = metadata;
 
@@ -43,12 +49,15 @@ export class ResolverValidationPipe implements PipeTransform {
   }
 
   // oxlint-disable-next-line typescript/no-explicit-any
+  // Skips validation for primitive/built-in argument types.
   private toValidate(metatype: Type<any>): boolean {
     const types: unknown[] = [String, Boolean, Number, Array, Object];
 
     return !types.includes(metatype);
   }
 
+  // Flattens class-validator errors (including nested children) into a
+  // single comma-separated message string.
   private formatErrorMessage(errors: ValidationError[]): string {
     const messages = errors.flatMap((error) => {
       if (error.constraints) {

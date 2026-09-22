@@ -9,6 +9,7 @@ import {
   generateChartDataExceptionMessage,
 } from 'src/modules/dashboard/chart-data/exceptions/chart-data.exception';
 
+// Looks up a field's metadata by id, throwing a ChartDataException if not found.
 export const getFieldMetadata = (
   fieldMetadataId: string,
   flatFieldMetadataMaps: FlatEntityMaps<FlatFieldMetadata>,

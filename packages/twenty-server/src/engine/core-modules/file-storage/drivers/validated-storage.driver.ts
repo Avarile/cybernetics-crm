@@ -4,6 +4,8 @@ import { type StorageDriver } from 'src/engine/core-modules/file-storage/drivers
 
 import { assertStoragePathIsSafe } from 'src/engine/core-modules/file-storage/utils/assert-storage-path-is-safe.util';
 
+// Decorates a storage driver, rejecting any path that escapes its intended
+// scope before delegating to the wrapped driver
 export class ValidatedStorageDriver implements StorageDriver {
   constructor(private readonly delegate: StorageDriver) {}
 

@@ -1,3 +1,6 @@
+// Computes the minimal set of database columns needed to build a record's
+// display identity (label + image), including composite sub-columns.
+
 import { compositeTypeDefinitions } from 'twenty-shared/types';
 import { isDefined } from 'twenty-shared/utils';
 
@@ -11,6 +14,9 @@ import { getEffectiveImageIdentifierFieldMetadataId } from 'src/engine/metadata-
 
 const ID_FIELD = 'id' as const;
 
+// Always selects id; adds the label identifier field's column(s), then
+// either avatarUrl (workspace member special case) or the effective image
+// identifier field's column(s).
 export const getMinimalSelectForRecordIdentifier = ({
   flatObjectMetadata,
   flatFieldMetadataMaps,

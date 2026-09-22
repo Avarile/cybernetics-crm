@@ -10,6 +10,7 @@ import { DashboardController } from 'src/modules/dashboard/controllers/dashboard
 import { DashboardResolver } from 'src/modules/dashboard/resolvers/dashboard.resolver';
 import { DashboardDuplicationService } from 'src/modules/dashboard/services/dashboard-duplication.service';
 
+// Wires up dashboard duplication (REST + GraphQL) and the chart data submodule.
 @Module({
   imports: [
     ActorModule,

@@ -7,6 +7,8 @@ import { ApplicationModule } from 'src/engine/core-modules/application/applicati
 import { WorkspaceCacheModule } from 'src/engine/workspace-cache/workspace-cache.module';
 import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace-migration/workspace-migration.module';
 
+// Registers the 2.15 workspace commands (migrate manual-trigger variables to
+// payload, sync calendar event record page) as providers for the upgrade runner.
 @Module({
   imports: [
     ApplicationModule,

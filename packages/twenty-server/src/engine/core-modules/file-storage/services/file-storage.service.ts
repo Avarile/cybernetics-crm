@@ -33,6 +33,9 @@ export type ResourceIdentifier = {
   resourcePath: string;
 };
 
+// Workspace-scoped file storage: resolves and validates storage paths under
+// {workspaceId}/{applicationId}/{fileFolder}/..., delegates bytes to the active
+// storage driver, and keeps the FileEntity row in sync
 @Injectable()
 export class FileStorageService {
   constructor(
@@ -42,6 +45,8 @@ export class FileStorageService {
     private readonly workspaceCacheService: WorkspaceCacheService,
   ) {}
 
+  // Resolves an application's id from its universal identifier, checking the
+  // cache first and falling back to the query runner's transaction when given
   private async resolveApplicationIdOrThrow({
     applicationUniversalIdentifier,
     workspaceId,
@@ -86,6 +91,7 @@ export class FileStorageService {
     );
   }
 
+  // Resolves an application's universal identifier from its id
   private async resolveApplicationUniversalIdentifierOrThrow({
     applicationId,
     workspaceId,
@@ -113,6 +119,8 @@ export class FileStorageService {
     return application.universalIdentifier;
   }
 
+  // Builds the on-storage and resource paths for a file/folder, and verifies the
+  // resulting storage path is confined to the workspace's application folder
   private buildStoragePathWithinWorkspaceOrThrow({
     workspaceId,
     applicationUniversalIdentifier,
@@ -142,6 +150,7 @@ export class FileStorageService {
     return { onStoragePath, resourcePath };
   }
 
+  // Validates a resource path against its file folder's rules and resolves its storage path
   private validateAndBuildFileStoragePathOrThrow(params: ResourceIdentifier): {
     onStorageFilePath: string;
     filePath: string;
@@ -167,6 +176,7 @@ export class FileStorageService {
     return { onStorageFilePath: onStoragePath, filePath: resourcePath };
   }
 
+  // Validates a folder path and resolves its storage path
   private validateAndBuildFolderStoragePathOrThrow(
     params: Omit<ResourceIdentifier, 'resourcePath'> & { folderPath: string },
   ): { onStorageFolderPath: string; folderPath: string } {
@@ -193,6 +203,7 @@ export class FileStorageService {
     };
   }
 
+  // Writes file bytes to storage and upserts the matching FileEntity row
   async writeFile({
     sourceFile,
     fileFolder,
@@ -306,6 +317,7 @@ export class FileStorageService {
     );
   }
 
+  // Streams file bytes directly to the storage driver without buffering in memory
   async writeFileStream(
     params: ResourceIdentifier & {
       stream: Readable;
@@ -323,6 +335,7 @@ export class FileStorageService {
     });
   }
 
+  // Returns the stored file's size, or null if it doesn't exist
   async getFileMetadata(
     params: ResourceIdentifier,
   ): Promise<{ size: number } | null> {
@@ -333,6 +346,7 @@ export class FileStorageService {
     return driver.getFileMetadata({ filePath: onStorageFilePath });
   }
 
+  // Signs a URL the client can upload directly to, bypassing the server
   async getPresignedUploadUrl(
     params: ResourceIdentifier & {
       contentType: string;
@@ -352,6 +366,7 @@ export class FileStorageService {
     });
   }
 
+  // Signs a URL the client can download directly from, bypassing the server
   async getPresignedUrl(
     params: ResourceIdentifier & {
       expiresInSeconds?: number;
@@ -395,6 +410,7 @@ export class FileStorageService {
     });
   }
 
+  // Deletes an application's FileEntity rows without touching storage bytes
   async deleteApplicationFileRows({
     applicationId,
     workspaceId,
@@ -411,6 +427,7 @@ export class FileStorageService {
     await fileRepository.delete(workspaceId, { applicationId });
   }
 
+  // Deletes an entire application's storage folder for a workspace
   async deleteApplicationFilesFromStorage({
     applicationUniversalIdentifier,
     workspaceId,
@@ -425,6 +442,7 @@ export class FileStorageService {
     });
   }
 
+  // Deletes a file's bytes from storage and its FileEntity row
   async deleteFile(
     params: ResourceIdentifier & { applicationId?: string },
   ): Promise<void> {
@@ -450,6 +468,7 @@ export class FileStorageService {
     });
   }
 
+  // Deletes a folder's bytes from storage and every FileEntity row under it
   async deleteFolder(
     params: Omit<ResourceIdentifier, 'resourcePath'> & { folderPath: string },
   ): Promise<void> {
@@ -483,6 +502,7 @@ export class FileStorageService {
     });
   }
 
+  // Deletes a file by its FileEntity id rather than by resource path
   async deleteByFileId({
     fileId,
     workspaceId,
@@ -526,6 +546,7 @@ export class FileStorageService {
     await driver.delete({ folderPath: workspaceId });
   }
 
+  // Copies files/folders by raw storage path, bypassing resource-path validation
   copyLegacy(params: {
     from: { folderPath: string; filename?: string };
     to: { folderPath: string; filename?: string };
@@ -535,6 +556,8 @@ export class FileStorageService {
     return driver.copy(params);
   }
 
+  // Copies a file or folder between two validated resource identifiers, detecting
+  // whether the source is a file or folder to call the driver correctly
   async copy({
     from,
     to,

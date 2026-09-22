@@ -17,6 +17,11 @@ import { isCallerOverridingEntity } from 'src/engine/metadata-modules/utils/is-c
 import { sanitizeOverridableEntityInput } from 'src/engine/metadata-modules/utils/sanitize-overridable-entity-input.util';
 import { mergeUpdateInExistingRecord } from 'src/utils/merge-update-in-existing-record.util';
 
+// Merges an update input into the existing flat command menu item,
+// throwing if it doesn't exist. When the caller doesn't own the item, the
+// changed editable properties are recorded as overrides instead of being
+// applied directly, and universal overrides/relation identifiers are
+// recomputed accordingly.
 export const fromUpdateCommandMenuItemInputToFlatCommandMenuItemToUpdateOrThrow =
   ({
     flatCommandMenuItemMaps,

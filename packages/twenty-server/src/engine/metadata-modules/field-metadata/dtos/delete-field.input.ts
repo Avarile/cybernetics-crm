@@ -1,3 +1,4 @@
+// GraphQL input identifying a single field to delete by id.
 import { Field, InputType } from '@nestjs/graphql';
 import { IsUUID } from 'class-validator';
 

@@ -1,3 +1,5 @@
+// Shapes for the files-field composite type across its input, stored, and
+// signed-for-download forms.
 export type FileInput = {
   fileId: string;
   label: string;

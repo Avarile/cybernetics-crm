@@ -1,7 +1,11 @@
+// Looks up an object metadata id by its singular or plural name.
+
 import { type FlatEntityMaps } from 'src/engine/metadata-modules/flat-entity/types/flat-entity-maps.type';
 import { type FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object-metadata/types/flat-object-metadata.type';
 import { buildObjectIdByNameMaps } from 'src/engine/metadata-modules/flat-object-metadata/utils/build-object-id-by-name-maps.util';
 
+// Returns the object id matching objectName against either the singular or
+// plural name map, or undefined if no object matches.
 export const getObjectMetadataIdByName = ({
   flatObjectMetadataMaps,
   objectName,

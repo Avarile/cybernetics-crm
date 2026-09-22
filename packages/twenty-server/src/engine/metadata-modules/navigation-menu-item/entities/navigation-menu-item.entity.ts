@@ -1,3 +1,7 @@
+// TypeORM entity for a user's navigation menu item: a folder, or a shortcut
+// to a record, view, page layout, or external link. A DB check constraint
+// enforces that the required target column is set for each type.
+
 import {
   Check,
   Column,

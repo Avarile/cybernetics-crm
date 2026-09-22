@@ -30,6 +30,8 @@ const TRANSIENT_AUTH_ERROR_CODES = new Set([
   'request_cannot_be_made',
 ]);
 
+// Maps an MSAL token refresh error to a typed refresh-access-token exception,
+// classifying transient vs. permanent auth failures.
 export const parseMsalError = (
   error: unknown,
 ): ConnectedAccountRefreshAccessTokenException => {

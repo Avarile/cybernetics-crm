@@ -1,3 +1,5 @@
+// Records a timeline activity on the matched person when a message
+// participant gets linked to them, so their timeline shows the message.
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -23,6 +25,8 @@ export class MessageParticipantListener {
     private readonly featureFlagService: FeatureFlagService,
   ) {}
 
+  // For each matched participant with a resolved person, upserts a
+  // "message.linked" timeline activity on that person.
   @OnCustomBatchEvent('messageParticipant_matched')
   public async handleMessageParticipantMatched(
     batchEvent: CustomWorkspaceEventBatch<{

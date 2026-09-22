@@ -46,6 +46,7 @@ const WORKFLOW_AUTOMATED_TRIGGER_PAGE_TABS = {
   },
 } as const satisfies Record<string, StandardPageLayoutTabConfig>;
 
+// Fixed record page layout (tabs and widgets) for the standard "workflowAutomatedTrigger" object
 export const STANDARD_WORKFLOW_AUTOMATED_TRIGGER_PAGE_LAYOUT_CONFIG = {
   name: 'Default Workflow Automated Trigger Layout',
   type: PageLayoutType.RECORD_PAGE,

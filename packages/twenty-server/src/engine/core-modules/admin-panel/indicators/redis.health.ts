@@ -1,3 +1,5 @@
+// Terminus health indicator parsing Redis INFO output (memory, clients,
+// stats) to report health, with state history kept for outage details.
 import { Injectable } from '@nestjs/common';
 import {
   type HealthIndicatorResult,
@@ -20,6 +22,8 @@ export class RedisHealthIndicator {
     private readonly healthIndicatorService: HealthIndicatorService,
   ) {}
 
+  // Fetches and parses Redis INFO sections to report memory/connection/
+  // performance/replication health; falls back to state history on failure.
   async isHealthy(): Promise<HealthIndicatorResult> {
     const indicator = this.healthIndicatorService.check('redis');
 

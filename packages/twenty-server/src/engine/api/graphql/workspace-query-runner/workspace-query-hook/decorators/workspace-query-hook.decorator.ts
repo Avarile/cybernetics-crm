@@ -1,3 +1,7 @@
+// Class decorator marking a provider as a workspace query hook (a
+// pre/post-processing step for a specific "<object>.<method>" resolver,
+// or "*.<method>" for all objects). Registers NestJS scope metadata plus
+// custom metadata the hook explorer scans for at startup.
 import { type Scope, SetMetadata } from '@nestjs/common';
 import { SCOPE_OPTIONS_METADATA } from '@nestjs/common/constants';
 
@@ -15,6 +19,8 @@ export interface WorkspaceQueryHookOptions {
   scope?: Scope;
 }
 
+// Tags the decorated provider class as a query hook for the given key
+// (defaulting to PRE_HOOK type when only a key string is passed).
 export function WorkspaceQueryHook(
   keyOrOptions: WorkspaceQueryHookKey | WorkspaceQueryHookOptions,
 ): ClassDecorator {

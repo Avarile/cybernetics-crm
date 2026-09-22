@@ -1,3 +1,4 @@
+// Queue processor that runs the recurring marketplace catalog sync job.
 import { Injectable, Logger } from '@nestjs/common';
 
 import { SentryCronMonitor } from 'src/engine/core-modules/cron/sentry-cron-monitor.decorator';
@@ -21,6 +22,7 @@ export class MarketplaceCatalogSyncCronJob {
     MarketplaceCatalogSyncCronJob.name,
     MARKETPLACE_CATALOG_SYNC_CRON_PATTERN,
   )
+  // Runs the marketplace catalog sync and logs success/failure.
   async handle(): Promise<void> {
     this.logger.log('Starting marketplace catalog sync...');
 

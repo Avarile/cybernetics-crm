@@ -6,6 +6,8 @@ import { CalendarEventImportManagerModule } from 'src/modules/calendar/calendar-
 import { CalendarEventParticipantManagerModule } from 'src/modules/calendar/calendar-event-participant-manager/calendar-event-participant-manager.module';
 import { CalendarCommonModule } from 'src/modules/calendar/common/calendar-common.module';
 
+// Aggregates all calendar sub-modules: blocklist filtering, event cleanup,
+// import/sync, participant matching, and shared calendar services.
 @Module({
   imports: [
     CalendarBlocklistManagerModule,

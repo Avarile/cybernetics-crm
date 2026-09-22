@@ -19,6 +19,8 @@ import { WorkspaceCacheStorageModule } from 'src/engine/workspace-cache-storage/
 
 import { WorkspaceCacheModule } from 'src/engine/workspace-cache/workspace-cache.module';
 
+// NestJS module wiring the MCP (Model Context Protocol) server endpoint:
+// auth guards, protocol handling, and tool execution/instruction services.
 @Module({
   imports: [
     ApiKeyModule,

@@ -1,5 +1,6 @@
 import { MessageQueue } from 'src/engine/core-modules/message-queue/message-queue.constants';
 
+// Default BullMQ job priority per queue (lower number = higher priority)
 export const MESSAGE_QUEUE_PRIORITY = {
   [MessageQueue.billingQueue]: 1,
   [MessageQueue.entityEventsToDbQueue]: 1,

@@ -1,3 +1,5 @@
+// Image extensions eligible for rehosting as an application/registration
+// asset.
 const ALLOWED_IMAGE_EXTENSIONS = new Set([
   '.png',
   '.jpg',
@@ -8,6 +10,7 @@ const ALLOWED_IMAGE_EXTENSIONS = new Set([
   '.avif',
 ]);
 
+// True when a file path's extension is an allowed image type.
 export const isImageFilePath = (filePath: string): boolean => {
   const lastDotIndex = filePath.lastIndexOf('.');
 

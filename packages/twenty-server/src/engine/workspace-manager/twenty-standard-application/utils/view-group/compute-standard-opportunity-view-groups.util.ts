@@ -4,6 +4,7 @@ import {
   type CreateStandardViewGroupArgs,
 } from 'src/engine/workspace-manager/twenty-standard-application/utils/view-group/create-standard-view-group-flat-metadata.util';
 
+// Builds the fixed set of standard view groups (kanban stage columns) for the "opportunity" object's views
 export const computeStandardOpportunityViewGroups = (
   args: Omit<CreateStandardViewGroupArgs<'opportunity'>, 'context'>,
 ): Record<string, FlatViewGroup> => {

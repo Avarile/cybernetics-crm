@@ -1,3 +1,5 @@
+// Fetches and caches the external models.dev catalog, exposing provider and
+// language-model suggestions used to help admins configure new AI providers.
 import { Injectable, Logger } from '@nestjs/common';
 
 import { inferAiSdkPackage } from 'twenty-shared/ai';
@@ -46,6 +48,7 @@ export class ModelsDevCatalogService {
   private cache: ModelsDevData | null = null;
   private cacheTimestamp = 0;
 
+  // Lists catalog providers that have at least one language model, sorted by model count.
   async getProviderSuggestions(): Promise<ModelsDevProviderSuggestion[]> {
     const data = await this.getCachedData();
 
@@ -69,6 +72,7 @@ export class ModelsDevCatalogService {
       .sort((a, b) => b.modelCount - a.modelCount);
   }
 
+  // Lists a provider's language models with cost/limit/capability suggestions from the catalog.
   async getModelSuggestions(
     providerType: string,
   ): Promise<ModelsDevModelSuggestion[]> {
@@ -102,6 +106,8 @@ export class ModelsDevCatalogService {
       }));
   }
 
+  // Returns the cached catalog if still fresh, otherwise refetches it,
+  // falling back to stale cached data (or null) if the fetch fails.
   private async getCachedData(): Promise<ModelsDevData | null> {
     const now = Date.now();
 
@@ -135,6 +141,7 @@ export class ModelsDevCatalogService {
     }
   }
 
+  // Excludes non-text-generation models (embeddings, TTS, image, etc.) by id pattern.
   private isLanguageModel(modelId: string): boolean {
     const id = modelId.toLowerCase();
 

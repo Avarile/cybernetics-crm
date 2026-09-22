@@ -10,6 +10,8 @@ import { parseFilterRestRequest } from 'src/engine/api/rest/input-request-parser
 import { AuthenticatedRequest } from 'src/engine/api/rest/types/authenticated-request';
 import { workspaceQueryRunnerRestApiExceptionHandler } from 'src/engine/api/rest/utils/workspace-query-runner-rest-api-exception-handler.util';
 
+// REST handler for PATCH /rest/restore/{objects} with a filter: bulk-
+// restores soft-deleted records matching the filter.
 @Injectable()
 export class RestApiRestoreManyHandler extends RestApiBaseHandler {
   constructor(
@@ -18,6 +20,8 @@ export class RestApiRestoreManyHandler extends RestApiBaseHandler {
     super();
   }
 
+  // Parses the request's filter/depth, runs the common restoreMany query
+  // runner, and formats the restored records as a REST response.
   async handle(request: AuthenticatedRequest): Promise<{
     data: {
       [x: string]: ObjectRecord[];

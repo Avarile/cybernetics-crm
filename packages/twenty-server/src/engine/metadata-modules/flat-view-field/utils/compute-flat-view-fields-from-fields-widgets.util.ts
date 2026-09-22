@@ -14,16 +14,21 @@ import { WidgetType } from 'src/engine/metadata-modules/page-layout-widget/enums
 import { type AllPageLayoutWidgetConfiguration } from 'src/engine/metadata-modules/page-layout-widget/types/all-page-layout-widget-configuration.type';
 import { type UniversalFlatViewField } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-view-field.type';
 
+// Identifies a newly created field that may need a corresponding view
+// field added to the views displaying its object.
 type FieldToCreateInfo = {
   objectMetadataUniversalIdentifier: string;
   fieldMetadataUniversalIdentifier: string;
 };
 
+// A view that should receive a new view field, and whether it should be
+// visible by default.
 type FieldViewTarget = {
   viewId: string;
   isVisible: boolean;
 };
 
+// Type guard narrowing a widget configuration to a FIELDS widget's config.
 const isFieldsWidgetConfiguration = (
   configuration: AllPageLayoutWidgetConfiguration,
 ): configuration is FieldsConfigurationDTO => {
@@ -33,6 +38,10 @@ const isFieldsWidgetConfiguration = (
   );
 };
 
+// Finds the views that should get a new view field for the given object:
+// active FIELDS-widget page layouts configured for it (using their
+// configured default visibility), plus the object's INDEX view (fields
+// hidden by default there), deduplicated by view id.
 const getFieldViewTargets = ({
   objectMetadataUniversalIdentifier,
   flatPageLayoutWidgetMaps,
@@ -93,6 +102,8 @@ const getFieldViewTargets = ({
   return targets;
 };
 
+// Finds the id of the view field group with the highest position in a
+// given view, so new view fields can be appended after it.
 const findLastViewFieldGroupId = ({
   viewId,
   flatViewFieldGroupMaps,
@@ -117,6 +128,8 @@ const findLastViewFieldGroupId = ({
   return lastGroup.id;
 };
 
+// Computes the next available position for a new view field within a
+// given view and (optional) view field group.
 const computeNextPosition = ({
   viewId,
   viewFieldGroupId,
@@ -150,6 +163,10 @@ const computeNextPosition = ({
   return maxPosition + 1;
 };
 
+// When new fields are added to an object, computes the view fields that
+// should be auto-created for them across that object's FIELDS-widget page
+// layouts and its INDEX view, appending each after the view's last field
+// group at the next available position and deduplicating per view/field.
 export const computeFlatViewFieldsFromFieldsWidgets = ({
   fieldsToCreate,
   flatPageLayoutWidgetMaps,

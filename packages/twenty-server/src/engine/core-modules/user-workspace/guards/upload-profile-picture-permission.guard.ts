@@ -1,3 +1,6 @@
+// GraphQL guard for uploading a workspace member's profile picture: allowed
+// during workspace creation, or for users with WORKSPACE_MEMBERS (edit
+// anyone) or PROFILE_INFORMATION (edit own) permission.
 import {
   Injectable,
   type CanActivate,
@@ -21,6 +24,8 @@ import { PermissionsService } from 'src/engine/metadata-modules/permissions/perm
 export class UploadProfilePicturePermissionGuard implements CanActivate {
   constructor(private readonly permissionsService: PermissionsService) {}
 
+  // Allows the request during workspace creation, or if the caller has
+  // WORKSPACE_MEMBERS or PROFILE_INFORMATION permission; otherwise throws.
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const gqlContext = GqlExecutionContext.create(context);
     const request = gqlContext.getContext().req;

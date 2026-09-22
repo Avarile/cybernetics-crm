@@ -5,6 +5,8 @@ import { MicrosoftWebhookSubscriptionDriver } from 'src/modules/connected-accoun
 import { WebhookSubscriptionDriverFactory } from 'src/modules/connected-account/webhook-subscription-manager/services/webhook-subscription-driver-factory.service';
 import { OAuth2ClientManagerModule } from 'src/modules/connected-account/oauth2-client-manager/oauth2-client-manager.module';
 
+// Exposes WebhookSubscriptionDriverFactory, wiring up the Google/Microsoft
+// webhook subscription drivers.
 @Module({
   imports: [OAuth2ClientManagerModule],
   providers: [

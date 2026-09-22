@@ -1,3 +1,6 @@
+// Determines whether an IP address falls in a private/internal/reserved
+// range (RFC1918, loopback, link-local, etc), handling IPv4 in any
+// encoding, IPv6, and IPv4-mapped IPv6 forms.
 import { BlockList } from 'net';
 
 const PRIVATE_RANGES = new BlockList();
@@ -97,6 +100,8 @@ const extractIpv4FromDottedMappedIpv6 = (addr: string): string | null => {
   return match ? match[1] : null;
 };
 
+// Checks whether an address (IPv4 in any encoding, IPv6, or IPv4-mapped
+// IPv6) falls within a known private/reserved range.
 export const isPrivateIp = (addr: string): boolean => {
   // IPv4-mapped IPv6 in hex form — the form Node.js URL parser produces.
   const hexMappedIpv4 = extractIpv4FromHexMappedIpv6(addr);

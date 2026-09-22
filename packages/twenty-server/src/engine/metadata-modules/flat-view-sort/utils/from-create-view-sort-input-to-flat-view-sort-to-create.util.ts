@@ -22,6 +22,9 @@ export const fromCreateViewSortInputToFlatViewSortToCreate = ({
 >): UniversalFlatViewSort & {
   id: string;
 } => {
+  // Builds a new universal flat view sort from a create input, generating an id when
+  // not provided, defaulting direction to ASC, and resolving field/view references to
+  // universal identifiers.
   const { viewId, fieldMetadataId, ...createViewSortInput } =
     trimAndRemoveDuplicatedWhitespacesFromObjectStringProperties(
       rawCreateViewSortInput,

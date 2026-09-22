@@ -1,3 +1,6 @@
+// TypeORM entity for a database index (system or custom) defined on an
+// object's fields, including uniqueness, type, and optional where clause.
+
 import {
   Column,
   CreateDateColumn,

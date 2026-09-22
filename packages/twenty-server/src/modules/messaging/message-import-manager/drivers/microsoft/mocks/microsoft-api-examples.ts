@@ -1,3 +1,5 @@
+// Test fixtures: sample Microsoft Graph API delta-link and batch-fetch
+// responses (plain text and HTML bodies), for testing message parsing.
 export const microsoftGraphWithMessagesDeltaLink = {
   '@odata.context':
     'https://graph.microsoft.com/beta/$metadata#Collection(message)',

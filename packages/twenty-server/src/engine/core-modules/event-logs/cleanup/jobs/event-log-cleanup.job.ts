@@ -1,5 +1,7 @@
 /* @license Enterprise */
 
+// Worker-queue job that performs event-log cleanup for a single workspace.
+
 import { Injectable, Logger } from '@nestjs/common';
 
 import { EventLogCleanupService } from 'src/engine/core-modules/event-logs/cleanup/services/event-log-cleanup.service';
@@ -21,6 +23,7 @@ export class EventLogCleanupJob {
     private readonly eventLogCleanupService: EventLogCleanupService,
   ) {}
 
+  // Deletes event logs older than the workspace's retention window.
   @Process(EventLogCleanupJob.name)
   async handle(data: EventLogCleanupJobData): Promise<void> {
     const { workspaceId, eventLogRetentionDays } = data;

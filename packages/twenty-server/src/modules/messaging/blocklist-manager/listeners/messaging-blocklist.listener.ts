@@ -1,3 +1,7 @@
+// Listens for create/update/delete events on the blocklist standard object
+// and enqueues the jobs that keep imported messages in sync with the
+// current blocklist (deleting newly-blocked messages, re-importing
+// unblocked ones).
 import { Injectable, Scope } from '@nestjs/common';
 
 import {
@@ -29,6 +33,7 @@ export class MessagingBlocklistListener {
     private readonly messageQueueService: MessageQueueService,
   ) {}
 
+  // New blocklist items: delete any already-imported messages matching them.
   @OnDatabaseBatchEvent('blocklist', DatabaseEventAction.CREATED)
   async handleCreatedEvent(
     payload: WorkspaceEventBatch<
@@ -41,6 +46,7 @@ export class MessagingBlocklistListener {
     );
   }
 
+  // Removed blocklist items: trigger re-import of previously-excluded messages.
   @OnDatabaseBatchEvent('blocklist', DatabaseEventAction.CREATED)
   async handleDeletedEvent(
     payload: WorkspaceEventBatch<
@@ -53,6 +59,8 @@ export class MessagingBlocklistListener {
     );
   }
 
+  // Updated blocklist items: run both deletion and re-import, since the
+  // handle may have changed in either direction.
   @OnDatabaseBatchEvent('blocklist', DatabaseEventAction.UPDATED)
   async handleUpdatedEvent(
     payload: WorkspaceEventBatch<

@@ -1,3 +1,6 @@
+// Resets a channel that previously failed with an unknown (non-permissions)
+// error back to an active, pending-fetch state, giving it another chance
+// to sync automatically.
 import { Scope } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -30,6 +33,9 @@ export class MessagingRelaunchFailedMessageChannelJob {
     private readonly messageChannelRepository: Repository<MessageChannelEntity>,
   ) {}
 
+  // No-ops unless the channel is still failed with FAILED_UNKNOWN;
+  // otherwise resets it to MESSAGE_LIST_FETCH_PENDING/ACTIVE with cleared
+  // throttle state.
   @Process(MessagingRelaunchFailedMessageChannelJob.name)
   async handle(data: MessagingRelaunchFailedMessageChannelJobData) {
     const { workspaceId, messageChannelId } = data;

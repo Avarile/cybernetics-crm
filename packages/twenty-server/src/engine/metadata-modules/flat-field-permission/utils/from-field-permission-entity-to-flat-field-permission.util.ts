@@ -3,6 +3,8 @@ import { type FlatFieldPermission } from 'src/engine/metadata-modules/flat-field
 import { type FromEntityToFlatEntityArgs } from 'src/engine/workspace-cache/types/from-entity-to-flat-entity-args.type';
 import { resolveManyToOneRelationIdsToUniversalIdentifiers } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/utils/resolve-many-to-one-relation-ids-to-universal-identifiers.util';
 
+// Converts a FieldPermissionEntity into its flat representation, resolving
+// many-to-one relation ids (role, object metadata, field metadata) to universal identifiers.
 export const fromFieldPermissionEntityToFlatFieldPermission = (
   args: FromEntityToFlatEntityArgs<'fieldPermission'>,
 ): FlatFieldPermission => {

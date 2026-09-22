@@ -6,6 +6,8 @@ import {
   createStandardAgentFlatMetadata,
 } from 'src/engine/workspace-manager/twenty-standard-application/utils/agent-metadata/create-standard-agent-flat-metadata.util';
 
+// Registry of builder functions, one per standard agent, that produce that agent's FlatAgent
+// content (label, description, prompt, model) via createStandardAgentFlatMetadata
 export const STANDARD_FLAT_AGENT_METADATA_BUILDERS_BY_AGENT_NAME = {
   helper: (args: Omit<CreateStandardAgentArgs, 'context'>) =>
     createStandardAgentFlatMetadata({

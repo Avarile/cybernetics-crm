@@ -1,3 +1,5 @@
+// Wires up the Stripe webhook controller together with the per-entity services
+// that translate incoming billing events into database updates
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

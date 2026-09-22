@@ -1,3 +1,5 @@
+// Factory helpers for building FlatObjectMetadata test fixtures with sane defaults,
+// used by the per-standard-object mocks in this directory.
 import { faker } from '@faker-js/faker';
 import { TWENTY_STANDARD_APPLICATION_UNIVERSAL_IDENTIFIER } from 'twenty-shared/application';
 
@@ -7,6 +9,8 @@ type FlatObjectMetadataOverrides = Required<
   Pick<FlatObjectMetadata, 'universalIdentifier'>
 > &
   Partial<FlatObjectMetadata>;
+
+// Builds a FlatObjectMetadata fixture, filling unset fields with random/default values.
 export const getFlatObjectMetadataMock = (
   overrides: FlatObjectMetadataOverrides,
 ): FlatObjectMetadata => {
@@ -65,6 +69,7 @@ export const getFlatObjectMetadataMock = (
   };
 };
 
+// Builds a FlatObjectMetadata fixture for a standard (system-owned) object.
 export const getStandardFlatObjectMetadataMock = (
   overrides: Omit<FlatObjectMetadataOverrides, 'isCustom' | 'isSystem'>,
 ) => {

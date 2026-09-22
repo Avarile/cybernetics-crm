@@ -20,6 +20,8 @@ import { resolveEffectiveEntityProperty } from 'src/engine/metadata-modules/util
 import { WorkspaceCacheService } from 'src/engine/workspace-cache/services/workspace-cache.service';
 import { type WorkspaceCacheKeyName } from 'src/engine/workspace-cache/types/workspace-cache-key.type';
 
+// Derives a metadata collection name (e.g. 'objectMetadata') from its flat-maps cache
+// key (e.g. 'flatObjectMetadataMaps'), or undefined if the key doesn't map to one.
 const flatMapsKeyToMetadataName = (
   flatMapsKey: string,
 ): AllMetadataName | undefined => {
@@ -32,6 +34,8 @@ const flatMapsKeyToMetadataName = (
     : undefined;
 };
 
+// Builds the lightweight bootstrap metadata payload (active object metadata, visible
+// views, and per-collection cache hashes) used to speed up initial app load.
 @Injectable()
 export class MinimalMetadataService {
   constructor(
@@ -40,6 +44,8 @@ export class MinimalMetadataService {
     private readonly i18nService: I18nService,
   ) {}
 
+  // Assembles active object metadata (with i18n-resolved labels), workspace/unlisted-to-user
+  // visible views, and collection cache hashes for the workspace.
   async getMinimalMetadata(
     workspaceId: string,
     userWorkspaceId?: string,

@@ -1,3 +1,4 @@
+// NestJS module wiring the event-log emitter service to the ingestion pipeline.
 import { Module } from '@nestjs/common';
 
 import { EventLogEmitterService } from 'src/engine/core-modules/event-logs/emit/event-log-emitter.service';

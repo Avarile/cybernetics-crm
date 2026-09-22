@@ -10,6 +10,9 @@ import {
   CommonQueryRunnerExceptionCode,
 } from 'src/engine/api/common/common-query-runners/errors/common-query-runner.exception';
 
+// Finds the id of the existing record (if any) that an incoming record
+// conflicts with, across all conflicting-field groups; throws if the
+// incoming record matches more than one distinct existing record.
 export const getMatchingRecordId = (
   record: Partial<ObjectRecord>,
   conflictingFieldGroups: ConflictingFieldGroup[],

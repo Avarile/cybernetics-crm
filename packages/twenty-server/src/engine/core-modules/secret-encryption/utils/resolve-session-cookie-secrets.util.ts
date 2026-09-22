@@ -7,9 +7,13 @@ import { type TwentyConfigService } from 'src/engine/core-modules/twenty-config/
 
 const SESSION_COOKIE_HMAC_PURPOSE = 'session-cookie';
 
+// Reproduces the pre-migration session secret derivation, kept only so
+// sessions signed before the HMAC key derivation change still validate
 const buildLegacySessionSecret = (appSecret: string) =>
   createHash('sha256').update(`${appSecret}SESSION_STORE_SECRET`).digest('hex');
 
+// Returns the ordered list of valid session cookie signing secrets (current key,
+// fallback key, then legacy secret) so cookie-session can verify against any of them
 export const resolveSessionCookieSecretsOrThrow = ({
   twentyConfigService,
 }: {

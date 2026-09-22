@@ -3,6 +3,9 @@ import { BadRequestException } from '@nestjs/common';
 import { type Request } from 'express';
 import { isDefined, isValidUuid } from 'twenty-shared/utils';
 
+// Parses a `/rest/...` request path into its target object name and
+// optional record id, handling the batch/restore/duplicates/groupBy/merge
+// path variants; throws on malformed paths or an invalid record id.
 export const parseCorePath = (
   request: Request,
 ): { object: string; id?: string } => {

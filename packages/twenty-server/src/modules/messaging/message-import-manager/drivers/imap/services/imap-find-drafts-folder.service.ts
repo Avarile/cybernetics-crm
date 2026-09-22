@@ -1,3 +1,5 @@
+// Locates the account's Drafts folder (by IMAP special-use flag, then by
+// name pattern), creating one named "Drafts" if neither is found.
 import { Injectable, Logger } from '@nestjs/common';
 
 import { type ImapFlow, type ListResponse } from 'imapflow';
@@ -14,6 +16,8 @@ type DraftsFolderResult = {
 export class ImapFindDraftsFolderService {
   private readonly logger = new Logger(ImapFindDraftsFolderService.name);
 
+  // Tries special-use flag, then name-pattern matching, then creates a new
+  // "Drafts" mailbox; returns null if all attempts fail.
   public async findOrCreateDraftsFolder(
     client: ImapFlow,
   ): Promise<DraftsFolderResult> {
@@ -42,6 +46,7 @@ export class ImapFindDraftsFolderService {
     }
   }
 
+  // Finds a folder flagged \Drafts per the IMAP special-use extension.
   private findDraftsFolderBySpecialUse(
     list: ListResponse[],
   ): DraftsFolderResult {
@@ -61,6 +66,7 @@ export class ImapFindDraftsFolderService {
     return null;
   }
 
+  // Finds a folder whose name matches the drafts standard-folder pattern.
   private findDraftsFolderByRegex(list: ListResponse[]): DraftsFolderResult {
     for (const folder of list) {
       if (getStandardFolderByRegex(folder.name) === StandardFolder.DRAFTS) {
@@ -78,6 +84,7 @@ export class ImapFindDraftsFolderService {
     return null;
   }
 
+  // Creates a new mailbox named "Drafts" as a last resort.
   private async createDraftsFolder(
     client: ImapFlow,
   ): Promise<DraftsFolderResult> {

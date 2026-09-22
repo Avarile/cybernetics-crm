@@ -35,6 +35,9 @@ type GetPieChartDataParams = {
   authContext: WorkspaceAuthContext;
 };
 
+// Resolves a pie chart widget's configuration into renderable chart data:
+// runs the group-by aggregate query, then formats it into slices, applying
+// sorting and the max-slices limit.
 @Injectable()
 export class PieChartDataService {
   constructor(
@@ -42,6 +45,8 @@ export class PieChartDataService {
     private readonly chartDataQueryService: ChartDataQueryService,
   ) {}
 
+  // Validates the configuration type, loads field/object metadata, runs the
+  // aggregate query, and transforms the results into pie slices.
   async getPieChartData({
     workspaceId,
     objectMetadataId,
@@ -148,6 +153,7 @@ export class PieChartDataService {
     }
   }
 
+  // Filters, sorts, and limits raw group-by results into pie chart slices.
   private transformToPieChartData({
     rawResults,
     groupByField,

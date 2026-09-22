@@ -61,6 +61,10 @@ type ComputeAndRunWorkspaceMigrationFromResolvedOperationsArgs = {
   dryRun?: boolean;
 } & FlatEntityMapsBundle;
 
+// Top-level entry point for the whole workspace migration pipeline: takes a set of desired entity
+// operations (create/update/delete), expands them with metadata side effects, resolves them into
+// "from"/"to" flat entity maps, builds and validates the migration, enriches it with pre-known ids,
+// and (unless dryRun) executes it via the runner and emits the resulting metadata events
 @Injectable()
 export class WorkspaceMigrationValidateBuildAndRunService {
   private readonly isDebugEnabled: boolean;
@@ -79,6 +83,9 @@ export class WorkspaceMigrationValidateBuildAndRunService {
     this.isDebugEnabled = logLevels.includes('debug');
   }
 
+  // Builds a workspace migration from explicit "from"/"to" flat entity maps, enriches its create
+  // actions with any pre-known ids, and (unless dryRun or there are no actions) runs it and emits the
+  // resulting metadata events
   public async validateBuildAndRunWorkspaceMigrationFromTo(
     args: WorkspaceMigrationOrchestratorBuildArgs & {
       idByUniversalIdentifierByMetadataName?: IdByUniversalIdentifierByMetadataName;
@@ -179,6 +186,8 @@ export class WorkspaceMigrationValidateBuildAndRunService {
     };
   }
 
+  // Entry point taking operations as an array-based matrix; transpiles it into the record form and
+  // delegates to validateBuildAndRunWorkspaceMigrationFromRecord (running the side-effect engine)
   public async validateBuildAndRunWorkspaceMigration({
     allFlatEntityOperationByMetadataName,
     workspaceId,
@@ -203,6 +212,8 @@ export class WorkspaceMigrationValidateBuildAndRunService {
     });
   }
 
+  // Entry point taking operations already in record form; runs them through the metadata side-effect
+  // engine before building and executing the migration
   public async validateBuildAndRunWorkspaceMigrationFromRecord(
     args: ValidateBuildAndRunWorkspaceMigrationFromRecordArgs,
   ): Promise<
@@ -224,6 +235,8 @@ export class WorkspaceMigrationValidateBuildAndRunService {
    * would inject engine-owned companions and collide on reserved identifiers.
    * See packages/twenty-server/docs/UPGRADE_COMMANDS.md.
    */
+  // Legacy entry point for upgrade commands authored before the side-effect engine: applies the given
+  // operation matrix literally, skipping expandWithSideEffects
   public async validateBuildAndRunLegacyWorkspaceMigration({
     allFlatEntityOperationByMetadataName,
     workspaceId,
@@ -249,6 +262,9 @@ export class WorkspaceMigrationValidateBuildAndRunService {
     });
   }
 
+  // Shared implementation behind the record-based entry points: loads the related flat entity maps
+  // needed to resolve the operations, optionally expands them with metadata side effects, then hands
+  // off to compute the from/to maps and run the migration
   private async validateBuildAndRunWorkspaceMigrationFromRecordInternal({
     allFlatEntityOperationRecordByMetadataName,
     workspaceId,
@@ -312,6 +328,8 @@ export class WorkspaceMigrationValidateBuildAndRunService {
     });
   }
 
+  // Resolves the final "from"/"to" flat entity maps and build options from the (already side-effect
+  // expanded) operations, then delegates to validateBuildAndRunWorkspaceMigrationFromTo
   private async computeAndRunWorkspaceMigrationFromResolvedOperations({
     allFlatEntityOperationRecordByMetadataName,
     workspaceId,

@@ -1,3 +1,6 @@
+// Background job that credits the onboarding install-apps reward and
+// installs each requested application for the workspace, tolerating
+// per-app failures without failing the whole job.
 import { Logger } from '@nestjs/common';
 
 import { isDefined } from 'twenty-shared/utils';
@@ -24,6 +27,7 @@ export class InstallOnboardingAppsJob {
   ) {}
 
   @Process(INSTALL_ONBOARDING_APPS_JOB_NAME)
+  // Credits the install-apps reward, then installs each app in sequence.
   async handle({
     workspaceId,
     universalIdentifiers,
@@ -38,6 +42,8 @@ export class InstallOnboardingAppsJob {
     }
   }
 
+  // Installs a single app by its registration's universal identifier,
+  // logging (not throwing) if the registration is missing or install fails.
   private async installApp({
     universalIdentifier,
     workspaceId,

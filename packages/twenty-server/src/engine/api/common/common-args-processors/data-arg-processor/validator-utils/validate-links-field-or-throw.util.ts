@@ -9,6 +9,9 @@ import {
 } from 'src/engine/api/common/common-query-runners/errors/common-query-runner.exception';
 import { type LinksFieldGraphQLInput } from 'src/engine/core-modules/record-transformer/utils/transform-links-value.util';
 
+// Validates a links composite field input, checking each subfield and
+// rejecting unknown subfields; throws a CommonQueryRunnerException on any
+// violation.
 export const validateLinksFieldOrThrow = (
   value: unknown,
   fieldName: string,

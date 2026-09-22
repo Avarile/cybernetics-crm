@@ -1,3 +1,6 @@
+// Converts an UpdateLogicFunctionFromSourceInput into the flat logic
+// function record to persist, marking the build stale when source code changed.
+
 import { isDefined } from 'twenty-shared/utils';
 
 import { FLAT_LOGIC_FUNCTION_EDITABLE_PROPERTIES } from 'src/engine/metadata-modules/logic-function/constants/flat-logic-function-editable-properties.constant';
@@ -5,6 +8,8 @@ import { type UpdateLogicFunctionFromSourceInput } from 'src/engine/metadata-mod
 import { type FlatLogicFunction } from 'src/engine/metadata-modules/logic-function/types/flat-logic-function.type';
 import { mergeUpdateInExistingRecord } from 'src/utils/merge-update-in-existing-record.util';
 
+// Merges the editable property updates into the existing record; if new
+// source code was provided, forces isBuildUpToDate to false so a rebuild runs.
 export const fromUpdateLogicFunctionFromSourceInputToFlatLogicFunctionToUpdate =
   ({
     updateLogicFunctionFromSourceInput,

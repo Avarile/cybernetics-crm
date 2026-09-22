@@ -1,3 +1,6 @@
+// GraphQL/REST DTOs describing the public runtime configuration served to
+// the frontend: enabled auth providers, billing/support/captcha settings,
+// available AI models, feature flags, and maintenance mode state.
 import {
   Field,
   GraphQLISODateTime,
@@ -251,6 +254,7 @@ export class ClientConfigMaintenanceMode {
   link?: string;
 }
 
+// Top-level public configuration payload served to the frontend on load.
 @ObjectType()
 export class ClientConfig {
   @Field(() => String, { nullable: true })

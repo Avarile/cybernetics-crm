@@ -42,9 +42,12 @@ import { WorkspaceMigrationRunnerRestApiExceptionFilter } from 'src/engine/works
   FlatEntityMapsRestApiExceptionFilter,
   WorkspaceMigrationRunnerRestApiExceptionFilter,
 )
+// REST API for page layout tabs (GraphQL exposes the same operations via
+// PageLayoutTabResolver).
 export class PageLayoutTabController {
   constructor(private readonly pageLayoutTabService: PageLayoutTabService) {}
 
+  // Lists tabs for a page layout; requires a pageLayoutId query param.
   @Get()
   @UseGuards(NoPermissionGuard)
   async findMany(
@@ -66,6 +69,7 @@ export class PageLayoutTabController {
     });
   }
 
+  // Fetches a single page layout tab by id, throwing not-found if absent.
   @Get(':id')
   @UseGuards(NoPermissionGuard)
   async findOne(
@@ -78,6 +82,7 @@ export class PageLayoutTabController {
     });
   }
 
+  // Creates a new page layout tab.
   @Post()
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.LAYOUTS))
   async create(
@@ -90,6 +95,7 @@ export class PageLayoutTabController {
     });
   }
 
+  // Updates a page layout tab's fields.
   @Patch(':id')
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.LAYOUTS))
   async update(
@@ -104,6 +110,7 @@ export class PageLayoutTabController {
     });
   }
 
+  // Permanently destroys a page layout tab.
   @Delete(':id')
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.LAYOUTS))
   async destroy(

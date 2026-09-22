@@ -5,6 +5,7 @@ import { IsBoolean, IsNotEmpty, IsUUID, ValidateNested } from 'class-validator';
 
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';
 
+// Inputs for toggling a message folder's (or several folders') sync status.
 @InputType()
 export class UpdateMessageFolderInputUpdates {
   @IsBoolean()

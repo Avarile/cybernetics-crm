@@ -8,6 +8,7 @@ import {
   PROCESS_METADATA,
 } from 'src/engine/core-modules/message-queue/message-queue.constants';
 
+// Reads @Processor/@Process decorator metadata off classes and methods
 @Injectable()
 export class MessageQueueMetadataAccessor {
   constructor(private readonly reflector: Reflector) {}

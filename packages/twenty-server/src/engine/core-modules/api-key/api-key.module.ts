@@ -1,3 +1,5 @@
+// Wires up API key persistence, role assignment, GraphQL resolver and the
+// REST controller used to mint/revoke workspace API keys.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

@@ -1,3 +1,6 @@
+// GraphQL object type exposing a custom or system index's metadata
+// (name, uniqueness, type, where clause) to the API.
+
 import {
   Field,
   HideField,

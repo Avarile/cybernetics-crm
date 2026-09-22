@@ -33,6 +33,7 @@ export class FileCorePictureResolver {
     private readonly fileCorePictureService: FileCorePictureService,
   ) {}
 
+  // Uploads a new workspace logo, replacing the previous one if set.
   @Mutation(() => FileWithSignedUrlDTO)
   @UseGuards(
     WorkspaceAuthGuard,
@@ -55,6 +56,7 @@ export class FileCorePictureResolver {
     });
   }
 
+  // Uploads a profile picture for the calling workspace member.
   @Mutation(() => FileWithSignedUrlDTO)
   @UseGuards(WorkspaceAuthGuard, UploadProfilePicturePermissionGuard)
   async uploadWorkspaceMemberProfilePicture(

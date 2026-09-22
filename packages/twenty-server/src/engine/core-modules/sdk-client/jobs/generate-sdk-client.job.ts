@@ -1,3 +1,4 @@
+// Background job that (re)generates and stores an application's SDK client archive.
 import { Processor } from 'src/engine/core-modules/message-queue/decorators/processor.decorator';
 import { MessageQueue } from 'src/engine/core-modules/message-queue/message-queue.constants';
 import { Process } from 'src/engine/core-modules/message-queue/decorators/process.decorator';
@@ -14,6 +15,7 @@ export class GenerateSdkClientJob {
   ) {}
 
   @Process(GENERATE_SDK_CLIENT_JOB_NAME)
+  // Regenerates the SDK client for the given application.
   async handle(data: GenerateSdkClientJobData): Promise<void> {
     await this.sdkClientGenerationService.generateSdkClientForApplication({
       workspaceId: data.workspaceId,

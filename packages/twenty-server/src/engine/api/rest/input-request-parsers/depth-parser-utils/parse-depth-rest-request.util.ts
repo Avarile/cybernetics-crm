@@ -6,6 +6,8 @@ import {
 import { type Depth } from 'src/engine/api/rest/input-request-parsers/types/depth.type';
 import { type AuthenticatedRequest } from 'src/engine/api/rest/types/authenticated-request';
 
+// Parses the `?depth=` REST query param, defaulting to 0; throws if it's
+// not one of the allowed depth values (0 or 1).
 export const parseDepthRestRequest = (request: AuthenticatedRequest): Depth => {
   if (!request.query.depth) {
     return 0;

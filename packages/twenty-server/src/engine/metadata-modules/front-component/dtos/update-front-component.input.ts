@@ -11,6 +11,7 @@ import {
 
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';
 
+// Partial set of front component fields that can be updated.
 @InputType()
 export class UpdateFrontComponentInputUpdates {
   @IsOptional()
@@ -29,6 +30,7 @@ export class UpdateFrontComponentInputUpdates {
   builtComponentChecksum?: string;
 }
 
+// GraphQL input for updating an existing front component by id.
 @InputType()
 export class UpdateFrontComponentInput {
   @IsUUID()

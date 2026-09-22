@@ -9,6 +9,9 @@ import {
   CommonQueryRunnerExceptionCode,
 } from 'src/engine/api/common/common-query-runners/errors/common-query-runner.exception';
 
+// Validates a currency composite field input, checking amountMicros and
+// currencyCode subfields and rejecting unknown subfields; throws a
+// CommonQueryRunnerException on any violation.
 export const validateCurrencyFieldOrThrow = (
   value: unknown,
   fieldName: string,

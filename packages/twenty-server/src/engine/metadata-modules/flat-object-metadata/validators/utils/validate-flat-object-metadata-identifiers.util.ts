@@ -1,3 +1,6 @@
+// Validates that an object's declared label and image identifier fields
+// exist and are of a compatible field type.
+
 import { msg } from '@lingui/core/macro';
 import {
   isDefined,
@@ -12,6 +15,8 @@ import { type UniversalFlatEntityMaps } from 'src/engine/workspace-manager/works
 import { type UniversalFlatFieldMetadata } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-field-metadata.type';
 import { type UniversalFlatObjectMetadata } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-object-metadata.type';
 
+// Checks the label identifier field resolves and is a label-identifier- and
+// searchable-compatible type, and that the image identifier field resolves.
 export const validateFlatObjectMetadataIdentifiers = ({
   universalFlatObjectMetadata,
   universalFlatFieldMetadataMaps,

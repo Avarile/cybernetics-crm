@@ -1,5 +1,6 @@
 import { isNonEmptyString } from '@sniptt/guards';
 
+// Builds a Lambda resource name from a prefix, optional namespace, and checksum.
 export const buildLambdaResourceName = ({
   resourceNamePrefix,
   namespace,

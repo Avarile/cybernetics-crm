@@ -1,3 +1,5 @@
+// Converts a manifest-declared object permission into the universal flat
+// entity shape used to build workspace migrations.
 import { type ObjectPermissionManifest } from 'twenty-shared/application';
 import { type UniversalFlatObjectPermission } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-object-permission.type';
 

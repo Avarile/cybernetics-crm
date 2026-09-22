@@ -1,3 +1,6 @@
+// Builds the `createMany` GraphQL mutation resolver for an object:
+// delegates the actual insert logic to CommonCreateManyQueryRunnerService
+// and formats the resulting records back into GraphQL shape.
 import { Injectable } from '@nestjs/common';
 
 import graphqlFields from 'graphql-fields';
@@ -24,6 +27,9 @@ export class CreateManyResolverFactory implements WorkspaceResolverBuilderFactor
     private readonly commonCreateManyQueryRunnerService: CommonCreateManyQueryRunnerService,
   ) {}
 
+  // Returns a resolver function that creates the given records and
+  // formats each one for the GraphQL response, converting query-runner
+  // errors into GraphQL-facing exceptions.
   create(
     context: WorkspaceSchemaBuilderContext,
   ): Resolver<CreateManyResolverArgs> {

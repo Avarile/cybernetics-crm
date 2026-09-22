@@ -24,6 +24,8 @@ import {
 
 @Injectable()
 @Catch(ViewGroupException, WorkspaceMigrationBuilderException)
+// Maps ViewGroupException and WorkspaceMigrationBuilderException to the
+// appropriate HTTP status/response for the REST API.
 export class ViewGroupRestApiExceptionFilter implements ExceptionFilter {
   constructor(
     private readonly httpExceptionHandlerService: HttpExceptionHandlerService,

@@ -1,3 +1,4 @@
+// GraphQL resolver for per-user maintenance-mode banner dismissal state.
 import { UseFilters, UseGuards, UsePipes } from '@nestjs/common';
 import { Mutation, Query } from '@nestjs/graphql';
 
@@ -24,6 +25,8 @@ export class ClientConfigResolver {
 
   @Query(() => Boolean)
   @UseGuards(NoPermissionGuard)
+  // Returns whether the current user has already dismissed the maintenance
+  // mode banner for this workspace.
   async isMaintenanceModeBannerDismissed(
     @AuthUser() user: AuthContextUser,
     @AuthWorkspace() workspace: WorkspaceEntity,
@@ -36,6 +39,7 @@ export class ClientConfigResolver {
 
   @Mutation(() => Boolean)
   @UseGuards(NoPermissionGuard)
+  // Records that the current user dismissed the maintenance mode banner.
   async dismissMaintenanceModeBanner(
     @AuthUser() user: AuthContextUser,
     @AuthWorkspace() workspace: WorkspaceEntity,

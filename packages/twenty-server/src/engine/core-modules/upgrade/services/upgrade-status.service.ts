@@ -51,6 +51,8 @@ export type InstanceAndAllWorkspacesUpgradeStatus = {
   computedAt: Date;
 };
 
+// Classifies a cursor's health relative to the last expected command: failed
+// status wins, otherwise behind if it hasn't reached the last step, else up to date
 const deriveHealth = (
   migration: { name: string; status: UpgradeMigrationStatus },
   lastExpectedCommandName: string | null,
@@ -69,6 +71,8 @@ const deriveHealth = (
   return UpgradeHealthEnum.UP_TO_DATE;
 };
 
+// Computes and caches upgrade health for the instance and every provisioned
+// workspace, by comparing each one's last migration cursor to the full sequence
 @Injectable()
 export class UpgradeStatusService {
   private readonly logger = new Logger(UpgradeStatusService.name);
@@ -82,6 +86,8 @@ export class UpgradeStatusService {
     private readonly coreEntityCacheService: CoreEntityCacheService,
   ) {}
 
+  // Compares the instance's last attempted command to the sequence's last
+  // instance step to derive its health
   async getInstanceStatus(): Promise<InstanceUpgradeStatus> {
     const migration =
       await this.upgradeMigrationService.getLastAttemptedInstanceCommand();
@@ -100,6 +106,8 @@ export class UpgradeStatusService {
     );
   }
 
+  // Computes each provisioned (optionally filtered) workspace's health relative
+  // to the last step of the whole sequence
   async getWorkspaceStatuses(
     filterWorkspaceIds?: string[],
   ): Promise<WorkspaceUpgradeStatus[]> {
@@ -139,6 +147,9 @@ export class UpgradeStatusService {
     );
   }
 
+  // Returns the highest version a workspace has fully completed: its cursor's
+  // version if it finished that version's last step, otherwise the version
+  // before wherever its cursor currently sits
   async getWorkspaceCompletedVersion(
     workspaceId: string,
   ): Promise<string | null> {
@@ -187,6 +198,8 @@ export class UpgradeStatusService {
     return null;
   }
 
+  // Returns the cached aggregate status if present, otherwise recomputes and
+  // caches it; the instance status itself is always computed fresh
   async getInstanceAndAllWorkspacesStatus(): Promise<InstanceAndAllWorkspacesUpgradeStatus> {
     const computedAt = await this.upgradeStatusCacheService.getComputedAt();
 
@@ -226,6 +239,8 @@ export class UpgradeStatusService {
     };
   }
 
+  // Recomputes the aggregate status from scratch across every workspace and
+  // writes the result to the cache
   async refreshInstanceAndAllWorkspacesStatus(): Promise<InstanceAndAllWorkspacesUpgradeStatus> {
     this.logger.log('Recomputing upgrade status for all workspaces');
 
@@ -271,10 +286,13 @@ export class UpgradeStatusService {
     };
   }
 
+  // Clears the cached aggregate status, forcing the next read to recompute it
   async invalidateInstanceAndAllWorkspacesStatus(): Promise<void> {
     await this.upgradeStatusCacheService.invalidate();
   }
 
+  // Builds a status object from a migration cursor, inferring its version and
+  // deriving health relative to the expected last command
   private async buildCursorStatus(
     migration: LatestUpgradeCommand | null,
     lastExpectedCommandName: string | null,
@@ -304,6 +322,7 @@ export class UpgradeStatusService {
     };
   }
 
+  // Loads provisioned workspaces (optionally filtered to specific ids), id/name only
   private async loadProvisionedWorkspaces(
     workspaceIds?: string[],
   ): Promise<Pick<WorkspaceEntity, 'id' | 'displayName'>[]> {
@@ -321,6 +340,7 @@ export class UpgradeStatusService {
     });
   }
 
+  // Resolves display names for a set of workspace ids via the core entity cache
   private async loadWorkspaceNamesById(
     workspaceIds: string[],
   ): Promise<Map<string, string | null>> {
@@ -345,6 +365,7 @@ export class UpgradeStatusService {
     return namesById;
   }
 
+  // Pairs workspace ids with their resolved display names
   private toWorkspaceRefs(
     workspaceIds: string[],
     workspaceNamesById: Map<string, string | null>,

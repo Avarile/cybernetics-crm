@@ -1,3 +1,6 @@
+// Intercepts navigation menu item resolver errors and maps them to GraphQL
+// API errors via the shared exception handler.
+
 import {
   type CallHandler,
   type ExecutionContext,
@@ -11,6 +14,7 @@ import { navigationMenuItemGraphqlApiExceptionHandler } from 'src/engine/metadat
 
 @Injectable()
 export class NavigationMenuItemGraphqlApiExceptionInterceptor implements NestInterceptor {
+  // Routes any error from the handler chain through the exception mapper.
   intercept(
     _context: ExecutionContext,
     next: CallHandler,

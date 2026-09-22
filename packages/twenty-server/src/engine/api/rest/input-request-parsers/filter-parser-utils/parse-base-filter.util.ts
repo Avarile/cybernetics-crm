@@ -1,5 +1,6 @@
 import { BadRequestException } from '@nestjs/common';
 
+// Comparator keywords accepted in a REST filter expression's [brackets].
 export enum FilterComparators {
   eq = 'eq',
   neq = 'neq',
@@ -20,6 +21,9 @@ export enum FilterComparators {
   // iregex = 'iregex',
 }
 
+// Parses a single leaf filter expression (e.g. "price[gte]:10") into its
+// field path, comparator, and raw value; throws on malformed syntax or an
+// unrecognized comparator.
 export const parseBaseFilter = (
   baseFilter: string,
 ): {

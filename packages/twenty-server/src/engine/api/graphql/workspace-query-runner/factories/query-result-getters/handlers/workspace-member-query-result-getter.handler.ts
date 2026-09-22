@@ -1,3 +1,6 @@
+// Post-processes a WorkspaceMember query result to replace its stored
+// avatar file path with a signed, time-limited URL (or clear it if the
+// underlying file id can't be extracted).
 import { FileFolder } from 'twenty-shared/types';
 import { isDefined } from 'twenty-shared/utils';
 
@@ -10,6 +13,8 @@ import { type WorkspaceMemberWorkspaceEntity } from 'src/modules/workspace-membe
 export class WorkspaceMemberQueryResultGetterHandler implements QueryResultGetterHandlerInterface {
   constructor(private readonly fileUrlService: FileUrlService) {}
 
+  // Signs the workspace member's avatar URL, or blanks it out if the
+  // file id can't be resolved from the stored URL.
   async handle(
     workspaceMember: WorkspaceMemberWorkspaceEntity,
     workspaceId: string,

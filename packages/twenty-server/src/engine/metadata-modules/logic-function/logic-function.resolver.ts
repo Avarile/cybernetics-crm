@@ -1,3 +1,6 @@
+// GraphQL resolver exposing logic function CRUD, execution, source-code
+// access, and a log-streaming subscription for the CLI/UI.
+
 import { UseFilters, UseGuards, UsePipes } from '@nestjs/common';
 import { Args, Mutation, Query, Subscription } from '@nestjs/graphql';
 
@@ -46,6 +49,7 @@ export class LogicFunctionResolver {
     private readonly eventLogLiveService: EventLogLiveService,
   ) {}
 
+  // Looks up a single logic function by id from the flat entity cache.
   @Query(() => LogicFunctionDTO)
   async findOneLogicFunction(
     @Args('input') { id }: LogicFunctionIdInput,
@@ -71,6 +75,7 @@ export class LogicFunctionResolver {
     }
   }
 
+  // Lists all non-deleted logic functions in the workspace.
   @Query(() => [LogicFunctionDTO])
   async findManyLogicFunctions(
     @AuthWorkspace() { id: workspaceId }: WorkspaceEntity,
@@ -98,6 +103,7 @@ export class LogicFunctionResolver {
     }
   }
 
+  // Returns the npm packages available to a logic function's application.
   @Query(() => graphqlTypeJson)
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.WORKFLOWS))
   async getAvailablePackages(
@@ -137,6 +143,7 @@ export class LogicFunctionResolver {
     }
   }
 
+  // Deletes a logic function and its associated source.
   @Mutation(() => LogicFunctionDTO)
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.WORKFLOWS))
   async deleteOneLogicFunction(
@@ -153,6 +160,7 @@ export class LogicFunctionResolver {
     }
   }
 
+  // Creates a logic function from source code.
   @Mutation(() => LogicFunctionDTO)
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.WORKFLOWS))
   async createOneLogicFunction(
@@ -169,6 +177,7 @@ export class LogicFunctionResolver {
     }
   }
 
+  // Invokes a logic function with the given payload and returns its result.
   @Mutation(() => LogicFunctionExecutionResultDTO)
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.WORKFLOWS))
   async executeOneLogicFunction(
@@ -186,6 +195,7 @@ export class LogicFunctionResolver {
     }
   }
 
+  // Returns the raw source code of a logic function.
   @Query(() => String, { nullable: true })
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.WORKFLOWS))
   async getLogicFunctionSourceCode(
@@ -202,6 +212,7 @@ export class LogicFunctionResolver {
     }
   }
 
+  // Updates a logic function's source and/or trigger settings.
   @Mutation(() => Boolean)
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.WORKFLOWS))
   async updateOneLogicFunction(
@@ -255,6 +266,9 @@ export class LogicFunctionResolver {
       );
     },
   })
+  // Streams live execution logs for logic functions matching the input
+  // filter, marking the workspace as watched so the executor keeps
+  // publishing while a subscriber is connected.
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.WORKFLOWS))
   async logicFunctionLogs(
     @Args('input') _: LogicFunctionLogsInput,

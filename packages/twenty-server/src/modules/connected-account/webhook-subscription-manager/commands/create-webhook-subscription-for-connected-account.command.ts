@@ -34,6 +34,9 @@ const WEBHOOK_CAPABLE_PROVIDERS = [
   description:
     'Enqueue webhook subscription creation for existing Google/Microsoft channels still on polling, staggered to avoid provider rate limiting',
 })
+// One-off backfill command: finds Google/Microsoft channels still relying on
+// polling (no active webhook subscription) and enqueues staggered subscription
+// creation jobs for them, to avoid bursting provider rate limits.
 export class CreateWebhookSubscriptionForConnectedAccountCommand extends ProvisionedWorkspaceCommandRunner {
   private enqueueCursorMs = 0;
 
@@ -49,6 +52,8 @@ export class CreateWebhookSubscriptionForConnectedAccountCommand extends Provisi
     super(workspaceIteratorService);
   }
 
+  // Finds and enqueues webhook subscription backfill jobs for both message
+  // and calendar channels in the given workspace.
   override async runOnWorkspace({
     workspaceId,
     options,
@@ -80,6 +85,8 @@ export class CreateWebhookSubscriptionForConnectedAccountCommand extends Provisi
     );
   }
 
+  // Finds sync-enabled channels on a webhook-capable provider that don't
+  // already have an active webhook subscription.
   private async findEligibleChannelIds<
     TChannel extends MessageChannelEntity | CalendarChannelEntity,
   >(repository: Repository<TChannel>, workspaceId: string): Promise<string[]> {
@@ -101,6 +108,8 @@ export class CreateWebhookSubscriptionForConnectedAccountCommand extends Provisi
     return rows.map((row) => row.id);
   }
 
+  // Enqueues a subscription-creation job per channel, spacing each one out
+  // by a fixed delay to avoid a rate-limit burst against the provider.
   private async enqueueChannels(
     channelType: WebhookSubscriptionChannelType,
     channelIds: string[],

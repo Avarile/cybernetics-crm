@@ -20,6 +20,9 @@ export type GeneratedMigrationResult = {
   className: string;
 };
 
+// Generates the source for a new instance command file by diffing the live TypeORM
+// entity schema against the database (via TypeORM's schema builder) and rendering
+// the resulting up/down SQL into a fast or slow instance-command class template.
 @Injectable()
 export class InstanceCommandGenerationService {
   constructor(
@@ -27,6 +30,8 @@ export class InstanceCommandGenerationService {
     private readonly dataSource: DataSource,
   ) {}
 
+  // Builds the schema diff, renders it into a fast or slow command file template, and
+  // returns the file name/content/class name. Returns null if there's no schema change.
   async generateInstanceCommand({
     migrationName,
     version,
@@ -100,6 +105,7 @@ export class InstanceCommandGenerationService {
     return query.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
   }
 
+  // Renders a FastInstanceCommand class (schema-only up/down, no data migration).
   private buildFastMigrationFileContent({
     className,
     version,
@@ -131,6 +137,8 @@ ${downStatements.join('\n')}
 `;
   }
 
+  // Renders a SlowInstanceCommand class with a runDataMigration stub (for the
+  // backfill step) plus the schema up/down, left for the author to fill in.
   private buildSlowMigrationFileContent({
     className,
     version,

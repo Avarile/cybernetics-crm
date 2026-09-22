@@ -21,6 +21,9 @@ import { addFlatEntityToFlatEntityMapsThroughMutationOrThrow } from 'src/engine/
 
 @Injectable()
 @WorkspaceCache('flatCommandMenuItemMaps')
+// Computes and caches the workspace's command menu items in their flat
+// (denormalized) form, keyed by both id and universal identifier, for use
+// during metadata diffing and migration building.
 export class WorkspaceFlatCommandMenuItemMapCacheService extends WorkspaceCacheProvider<FlatCommandMenuItemMaps> {
   constructor(
     @InjectWorkspaceScopedRepository(CommandMenuItemEntity)
@@ -37,6 +40,9 @@ export class WorkspaceFlatCommandMenuItemMapCacheService extends WorkspaceCacheP
     super();
   }
 
+  // Loads all command menu items and their related entities (application,
+  // object metadata, front component, page layout), then flattens each
+  // item by resolving its foreign keys to universal identifiers.
   async computeForCache(workspaceId: string): Promise<FlatCommandMenuItemMaps> {
     const [
       commandMenuItems,

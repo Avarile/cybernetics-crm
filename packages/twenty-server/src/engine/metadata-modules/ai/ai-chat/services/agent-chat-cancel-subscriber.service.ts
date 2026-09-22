@@ -16,6 +16,8 @@ export class AgentChatCancelSubscriberService implements OnModuleDestroy {
 
   constructor(private readonly redisClientService: RedisClientService) {}
 
+  // Lazily creates the shared subscriber connection and dispatches incoming
+  // cancel messages to the registered callback, unsubscribing once fired.
   private ensureSubscriber(): Redis {
     if (!this.subscriber) {
       this.subscriber = this.redisClientService.getClient().duplicate();
@@ -33,11 +35,14 @@ export class AgentChatCancelSubscriberService implements OnModuleDestroy {
     return this.subscriber;
   }
 
+  // Registers a callback to run when the given cancel channel fires.
   async subscribe(channel: string, onCancel: () => void): Promise<void> {
     this.callbacks.set(channel, onCancel);
     await this.ensureSubscriber().subscribe(channel);
   }
 
+  // Removes a channel's callback and unsubscribes from it, e.g. once a
+  // stream completes without being cancelled.
   async unsubscribe(channel: string): Promise<void> {
     this.callbacks.delete(channel);
     await this.subscriber?.unsubscribe(channel).catch(() => {});

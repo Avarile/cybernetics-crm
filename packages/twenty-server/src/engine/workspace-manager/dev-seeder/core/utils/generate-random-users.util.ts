@@ -1,3 +1,6 @@
+// Deterministically generates a large batch of fake users/workspace members
+// (for the Apple seed workspace) used to populate dev environments with
+// realistic-looking volume.
 import { SEED_APPLE_WORKSPACE_ID } from 'src/engine/workspace-manager/dev-seeder/core/constants/seeder-workspaces.constant';
 
 export type RandomUserData = {
@@ -436,12 +439,16 @@ const LAST_NAMES = [
 
 const COLOR_SCHEMES = ['Light', 'Dark', 'System'];
 
+// Deterministic pseudo-random number in [0, 1) based on a numeric seed, so
+// generated data is stable across seeding runs.
 function seededRandom(seed: number): number {
   const x = Math.sin(seed) * 10000;
 
   return x - Math.floor(x);
 }
 
+// Generates 1000 deterministic fake users, their user-workspace links, and
+// workspace member records, all attached to the Apple seed workspace.
 export function generateRandomUsers(): {
   users: RandomUserData[];
   userWorkspaces: RandomUserWorkspaceData[];

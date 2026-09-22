@@ -1,3 +1,4 @@
+// GraphQL DTO for a paginated page of queue jobs, with retention config.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 import { QueueJobDTO } from 'src/engine/core-modules/admin-panel/dtos/queue-job.dto';

@@ -1,3 +1,7 @@
+// Implements navigation menu item CRUD (single and batch), access checks,
+// and record identifier resolution, persisting changes through the
+// workspace migration pipeline.
+
 import { Injectable } from '@nestjs/common';
 
 import { isDefined } from 'twenty-shared/utils';
@@ -41,6 +45,8 @@ export class NavigationMenuItemService {
     private readonly navigationMenuItemRecordIdentifierService: NavigationMenuItemRecordIdentifierService,
   ) {}
 
+  // Lists navigation menu items filtered by scope (workspace-wide vs the
+  // caller's own), folder, and type, sorted by position.
   async findAll({
     workspaceId,
     userWorkspaceId,
@@ -93,6 +99,7 @@ export class NavigationMenuItemService {
     return bounded.map(fromFlatNavigationMenuItemToNavigationMenuItemDto);
   }
 
+  // Looks up a navigation menu item by id, returning null if not found.
   async findById({
     id,
     workspaceId,
@@ -122,6 +129,7 @@ export class NavigationMenuItemService {
     );
   }
 
+  // Same as findById but throws NAVIGATION_MENU_ITEM_NOT_FOUND if missing.
   async findByIdOrThrow({
     id,
     workspaceId,
@@ -141,6 +149,7 @@ export class NavigationMenuItemService {
     return navigationMenuItem;
   }
 
+  // Creates a single navigation menu item via createMany.
   async create({
     input,
     workspaceId,
@@ -174,6 +183,9 @@ export class NavigationMenuItemService {
     return created;
   }
 
+  // Checks access for each input, then creates folders before other items
+  // (so children can reference a folder created earlier in the same batch),
+  // running everything through the workspace migration pipeline.
   async createMany({
     inputs,
     workspaceId,
@@ -313,6 +325,7 @@ export class NavigationMenuItemService {
     );
   }
 
+  // Updates a single navigation menu item via updateMany.
   async update({
     input,
     workspaceId,
@@ -348,6 +361,8 @@ export class NavigationMenuItemService {
     return updated;
   }
 
+  // Checks access and builds the update for each item, then applies them
+  // together through the workspace migration pipeline.
   async updateMany({
     inputs,
     workspaceId,
@@ -459,6 +474,7 @@ export class NavigationMenuItemService {
     );
   }
 
+  // Deletes a single navigation menu item via deleteMany.
   async delete({
     id,
     workspaceId,
@@ -492,6 +508,9 @@ export class NavigationMenuItemService {
     return deleted;
   }
 
+  // Deduplicates the requested ids, checks access for each, and expands
+  // FOLDER deletions to include their children before running the batch
+  // through the workspace migration pipeline.
   async deleteMany({
     ids,
     workspaceId,
@@ -621,6 +640,8 @@ export class NavigationMenuItemService {
     });
   }
 
+  // Resolves the display identifier of a menu item's target record,
+  // returning null instead of throwing if the caller lacks permission.
   async findTargetRecord({
     targetRecordId,
     targetObjectMetadataId,

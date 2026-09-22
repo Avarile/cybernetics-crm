@@ -3,6 +3,8 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { DatabaseEventAction } from 'src/engine/api/graphql/graphql-query-runner/enums/database-event-action';
 import { ObjectRecordEventPropertiesDTO } from 'src/engine/subscriptions/dtos/object-record-event-properties.dto';
 
+// A single record create/update/delete event delivered over an event
+// stream subscription.
 @ObjectType('ObjectRecordEvent')
 export class ObjectRecordEventDTO {
   @Field(() => DatabaseEventAction)

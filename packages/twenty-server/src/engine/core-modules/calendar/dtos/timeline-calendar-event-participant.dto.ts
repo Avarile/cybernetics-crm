@@ -1,3 +1,5 @@
+// GraphQL DTO for a participant on a timeline calendar event, linked to
+// either a CRM person or a workspace member.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';

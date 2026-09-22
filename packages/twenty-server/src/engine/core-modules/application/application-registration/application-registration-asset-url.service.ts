@@ -22,6 +22,7 @@ type AssetSourceFields = Pick<
 export class ApplicationRegistrationAssetUrlService {
   constructor(private readonly twentyConfigService: TwentyConfigService) {}
 
+  // Builds the display URL for a registration's logo.
   buildLogoUrl(
     registration: AssetSourceFields &
       Pick<ApplicationRegistrationEntity, 'logo' | 'logoFileId'>,
@@ -33,6 +34,9 @@ export class ApplicationRegistrationAssetUrlService {
     });
   }
 
+  // Builds display URLs for a registration's gallery images, falling back
+  // to the deprecated screenshots column or manifest paths when
+  // galleryImages hasn't been backfilled yet.
   buildGalleryImageUrls(
     registration: AssetSourceFields &
       Pick<
@@ -53,6 +57,8 @@ export class ApplicationRegistrationAssetUrlService {
       .filter(isDefined);
   }
 
+  // Builds gallery entries (with no fileId) from the legacy screenshots
+  // column or the manifest, for registrations not yet backfilled.
   private toGalleryImageFallbackEntries(
     registration: Pick<
       ApplicationRegistrationEntity,
@@ -66,6 +72,9 @@ export class ApplicationRegistrationAssetUrlService {
     return paths.map((path) => ({ path, fileId: null }));
   }
 
+  // Resolves a single asset's display URL: server-storage URL when a
+  // fileId is present, the path itself when already absolute, the
+  // registry CDN URL for not-yet-rehosted NPM assets, or null.
   private resolveAssetUrl({
     fileId,
     path,

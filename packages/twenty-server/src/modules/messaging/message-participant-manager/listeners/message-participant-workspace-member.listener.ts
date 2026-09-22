@@ -1,3 +1,6 @@
+// Listens for workspace member create/update events and enqueues message
+// participant matching whenever a member's email (userEmail) is set or
+// changes, so message participants can be linked to that member.
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -31,6 +34,9 @@ export class MessageParticipantWorkspaceMemberListener {
     private readonly workspaceRepository: Repository<WorkspaceEntity>,
   ) {}
 
+  // Only for active workspaces (this runs during workspace provisioning
+  // too, before the messaging queue is safe to use): enqueues matching
+  // for each newly created member that has an email set.
   @OnDatabaseBatchEvent('workspaceMember', DatabaseEventAction.CREATED)
   async handleCreatedEvent(
     payload: WorkspaceEventBatch<
@@ -67,6 +73,7 @@ export class MessageParticipantWorkspaceMemberListener {
     }
   }
 
+  // Enqueues matching for each member whose userEmail field changed.
   @OnDatabaseBatchEvent('workspaceMember', DatabaseEventAction.UPDATED)
   async handleUpdatedEvent(
     payload: WorkspaceEventBatch<

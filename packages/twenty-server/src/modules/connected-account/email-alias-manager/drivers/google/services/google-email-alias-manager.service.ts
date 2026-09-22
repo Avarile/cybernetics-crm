@@ -13,6 +13,7 @@ export class GoogleEmailAliasManagerService {
     private readonly gmailEmailAliasErrorHandlerService: GmailEmailAliasErrorHandlerService,
   ) {}
 
+  // Lists the account's Gmail "send as" aliases, excluding the primary address.
   public async getHandleAliases(connectedAccount: ConnectedAccountEntity) {
     const oAuth2Client = await this.googleOAuth2ClientProvider.getClient(
       connectedAccount.id,

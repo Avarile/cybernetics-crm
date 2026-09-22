@@ -1,3 +1,4 @@
+// Builds the BullMQ job scheduler key from a job name and optional job id
 export const getJobKey = ({
   jobName,
   jobId,

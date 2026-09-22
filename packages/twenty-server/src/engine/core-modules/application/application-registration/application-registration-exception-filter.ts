@@ -1,3 +1,5 @@
+// Maps ApplicationRegistrationException codes to the appropriate GraphQL
+// error types for consistent API error responses.
 import { Catch, ExceptionFilter } from '@nestjs/common';
 
 import {
@@ -12,6 +14,8 @@ import {
 
 @Catch(ApplicationRegistrationException)
 export class ApplicationRegistrationExceptionFilter implements ExceptionFilter {
+  // Translates an ApplicationRegistrationException's code into the
+  // matching GraphQL error class and throws it.
   catch(exception: ApplicationRegistrationException) {
     switch (exception.code) {
       case ApplicationRegistrationExceptionCode.APPLICATION_REGISTRATION_NOT_FOUND:

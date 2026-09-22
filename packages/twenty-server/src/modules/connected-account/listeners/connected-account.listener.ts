@@ -13,6 +13,8 @@ import { buildSystemAuthContext } from 'src/engine/twenty-orm/utils/build-system
 import { CustomWorkspaceEventBatch } from 'src/engine/workspace-event-emitter/types/custom-workspace-batch-event.type';
 import { AccountsToReconnectService } from 'src/modules/connected-account/services/accounts-to-reconnect.service';
 
+// When a connected account is deleted, removes it from the "accounts to
+// reconnect" prompt list so it stops being surfaced to the user.
 @Injectable()
 export class ConnectedAccountListener {
   constructor(

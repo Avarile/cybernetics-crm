@@ -8,6 +8,8 @@ import { DatabaseGaugeService } from 'src/database/typeorm/database-gauge.servic
 import { MetricsModule } from 'src/engine/core-modules/metrics/metrics.module';
 import { installUpgradeAwareRepositoryProxy } from 'src/engine/twenty-orm/upgrade-aware/install-upgrade-aware-repository-proxy';
 
+// Registers the core (non-workspace) TypeORM data source, wrapping its repositories
+// with the upgrade-aware proxy and exposing the database-up metrics gauge.
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({

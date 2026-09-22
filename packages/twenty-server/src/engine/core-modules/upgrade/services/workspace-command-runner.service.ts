@@ -19,6 +19,8 @@ export type RunWorkspaceCommandsArgs = {
   workspaceCommands: WorkspaceCommandEntry[];
 };
 
+// Runs a workspace's pending upgrade commands in order, recording each one's
+// outcome, and invalidates the cached upgrade status once done
 @Injectable()
 export class WorkspaceCommandRunnerService {
   private readonly logger = new Logger(WorkspaceCommandRunnerService.name);
@@ -29,6 +31,8 @@ export class WorkspaceCommandRunnerService {
     private readonly upgradeStatusService: UpgradeStatusService,
   ) {}
 
+  // Runs every pending command for a workspace in order, stopping at the first
+  // failure, then invalidates the upgrade-status cache unless this is a dry run
   async runWorkspaceCommands({
     iteratorContext,
     options,
@@ -83,6 +87,7 @@ export class WorkspaceCommandRunnerService {
     }
   }
 
+  // Invalidates the upgrade-status cache, logging rather than throwing on failure
   private async safeInvalidateWorkspace(workspaceId: string): Promise<void> {
     try {
       await this.upgradeStatusService.invalidateInstanceAndAllWorkspacesStatus();
@@ -103,6 +108,8 @@ export class WorkspaceCommandRunnerService {
     }
   }
 
+  // Runs one workspace command and records its completion or failure (unless
+  // dry-running), rethrowing on error so the caller can stop the batch
   private async runSingleWorkspaceCommandOrThrow({
     workspaceCommandEntry,
     workspaceId,

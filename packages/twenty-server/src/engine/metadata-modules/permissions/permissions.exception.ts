@@ -4,6 +4,7 @@ import { assertUnreachable } from 'twenty-shared/utils';
 
 import { CustomException } from 'src/utils/custom-exception';
 
+// Error codes for the broad range of permission/role failures across the permissions system.
 export enum PermissionsExceptionCode {
   PERMISSION_DENIED = 'PERMISSION_DENIED',
   ADMIN_ROLE_NOT_FOUND = 'ADMIN_ROLE_NOT_FOUND',
@@ -54,6 +55,7 @@ export enum PermissionsExceptionCode {
   ROLE_BELONGS_TO_ANOTHER_APPLICATION = 'ROLE_BELONGS_TO_ANOTHER_APPLICATION',
 }
 
+// Maps an exception code to the message shown to the end user.
 const getPermissionsExceptionUserFriendlyMessage = (
   code: PermissionsExceptionCode,
 ) => {
@@ -157,6 +159,7 @@ const getPermissionsExceptionUserFriendlyMessage = (
   }
 };
 
+// Domain exception for permissions/role failures, carrying a user-friendly message by default.
 export class PermissionsException extends CustomException<PermissionsExceptionCode> {
   constructor(
     message: string,
@@ -170,6 +173,7 @@ export class PermissionsException extends CustomException<PermissionsExceptionCo
   }
 }
 
+// Internal (non-localized) error messages paired with the exception codes above.
 export enum PermissionsExceptionMessage {
   PERMISSION_DENIED = 'Entity performing the request does not have permission',
   USER_WORKSPACE_NOT_FOUND = 'User workspace not found',

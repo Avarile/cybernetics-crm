@@ -31,6 +31,9 @@ import { WorkspaceMigrationValidateBuildAndRunService } from 'src/engine/workspa
 import { DashboardSyncService } from 'src/modules/dashboard-sync/services/dashboard-sync.service';
 
 @Injectable()
+// CRUD for page layout tabs, backed by the flat entity maps and applied
+// through validated workspace migrations, keeping linked dashboards'
+// updatedAt in sync so tab changes are reflected in dashboard caching.
 export class PageLayoutTabService {
   constructor(
     private readonly workspaceMigrationValidateBuildAndRunService: WorkspaceMigrationValidateBuildAndRunService,
@@ -39,6 +42,8 @@ export class PageLayoutTabService {
     private readonly dashboardSyncService: DashboardSyncService,
   ) {}
 
+  // Returns all active tabs of a page layout, ordered by position, with
+  // their widgets reconstructed and attached.
   async findByPageLayoutId({
     workspaceId,
     pageLayoutId,
@@ -65,6 +70,8 @@ export class PageLayoutTabService {
       );
   }
 
+  // Finds a single active page layout tab by id, with its widgets
+  // reconstructed and attached, throwing if it doesn't exist.
   async findByIdOrThrow({
     id,
     workspaceId,
@@ -98,6 +105,7 @@ export class PageLayoutTabService {
     );
   }
 
+  // Loads the flat tab and widget maps needed to build tab DTOs.
   private async getPageLayoutTabFlatEntityMaps(workspaceId: string): Promise<{
     flatPageLayoutTabMaps: FlatPageLayoutTabMaps;
     flatPageLayoutWidgetMaps: FlatPageLayoutWidgetMaps;
@@ -110,6 +118,8 @@ export class PageLayoutTabService {
     );
   }
 
+  // Creates a new page layout tab via a validated workspace migration,
+  // then updates linked dashboards' updatedAt to reflect the change.
   async create({
     createPageLayoutTabInput,
     workspaceId,
@@ -202,6 +212,9 @@ export class PageLayoutTabService {
     return fromFlatPageLayoutTabToPageLayoutTabDto(createdTab);
   }
 
+  // Applies partial updates to an existing page layout tab via a
+  // validated workspace migration, then updates linked dashboards'
+  // updatedAt to reflect the change.
   async update({
     id,
     workspaceId,
@@ -285,6 +298,9 @@ export class PageLayoutTabService {
     return fromFlatPageLayoutTabToPageLayoutTabDto(updatedTab);
   }
 
+  // Permanently removes a page layout tab via a validated workspace
+  // migration, then updates linked dashboards' updatedAt to reflect the
+  // removal.
   async destroy({
     id,
     workspaceId,

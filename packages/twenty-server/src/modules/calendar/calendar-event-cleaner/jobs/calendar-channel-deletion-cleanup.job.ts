@@ -14,6 +14,8 @@ export type CalendarChannelDeletionCleanupJobData = {
   queueName: MessageQueue.calendarQueue,
   scope: Scope.REQUEST,
 })
+// Removes the calendar channel's event associations and prunes any calendar
+// events left with no remaining channel association.
 export class CalendarChannelDeletionCleanupJob {
   private readonly logger = new Logger(CalendarChannelDeletionCleanupJob.name);
 

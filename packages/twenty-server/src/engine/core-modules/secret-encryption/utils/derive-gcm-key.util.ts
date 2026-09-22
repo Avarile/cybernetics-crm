@@ -8,6 +8,8 @@ import {
 
 const ZERO_SALT = Buffer.alloc(32);
 
+// Derives a per-workspace (or instance-wide) AES-GCM key from the raw key via
+// HKDF, so a leaked key for one workspace can't decrypt another's data
 export const deriveGcmKey = ({
   rawKey,
   workspaceId,

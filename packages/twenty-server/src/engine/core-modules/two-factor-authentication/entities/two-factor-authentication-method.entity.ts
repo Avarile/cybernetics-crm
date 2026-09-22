@@ -18,6 +18,8 @@ import { OTPStatus } from 'src/engine/core-modules/two-factor-authentication/str
 import { UserWorkspaceEntity } from 'src/engine/core-modules/user-workspace/user-workspace.entity';
 import type { WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.entity';
 
+// A workspace member's enrolled 2FA method (currently TOTP); the secret must
+// always be stored encrypted, enforced by the DB check constraint below
 @Index(['userWorkspaceId', 'strategy'], { unique: true })
 @Entity({ name: 'twoFactorAuthenticationMethod', schema: 'core' })
 @Check(

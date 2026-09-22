@@ -1,3 +1,6 @@
+// Terminus health indicator reporting BullMQ worker/queue health (active
+// workers, job counts, failure rates) used by both the health dashboard and
+// per-queue metrics endpoints.
 import { Injectable, Logger } from '@nestjs/common';
 import {
   type HealthIndicatorResult,
@@ -22,6 +25,7 @@ export class WorkerHealthIndicator {
     private readonly healthIndicatorService: HealthIndicatorService,
   ) {}
 
+  // Reports overall worker health as up only if at least one queue has active workers.
   async isHealthy(): Promise<HealthIndicatorResult> {
     const indicator = this.healthIndicatorService.check('worker');
 
@@ -48,6 +52,8 @@ export class WorkerHealthIndicator {
     }
   }
 
+  // Fetches worker count, job counts and (optionally, over `pointsNeeded`
+  // buckets) completed/failed metrics for a single queue.
   async getQueueDetails(
     queueName: MessageQueue,
     options?: {

@@ -1,3 +1,7 @@
+// Resolves and validates a relation-nested orderBy entry against the
+// group-by fields (a relation field can only be ordered by if it also
+// appears in the groupBy criteria), returning the matched group-by field
+// and nested field metadata, or {} if there's nothing to order by.
 import { isObject } from 'class-validator';
 import { type ObjectRecordOrderByForRelationField } from 'twenty-shared/types';
 import { isDefined } from 'twenty-shared/utils';
@@ -15,6 +19,9 @@ import { type FlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-m
 import { buildFieldMapsFromFlatObjectMetadata } from 'src/engine/metadata-modules/flat-field-metadata/utils/build-field-maps-from-flat-object-metadata.util';
 import { type FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object-metadata/types/flat-object-metadata.type';
 
+// Extracts the nested field/value being ordered by on a relation, then
+// checks it against groupByFields, throwing UserInputError on malformed
+// input or when the field isn't part of the group-by criteria.
 export const prepareForOrderByRelationFieldParsing = ({
   orderByArg,
   fieldMetadata,

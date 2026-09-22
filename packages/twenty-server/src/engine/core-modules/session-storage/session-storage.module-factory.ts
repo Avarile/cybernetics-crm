@@ -1,3 +1,5 @@
+// Builds express-session configuration backed by a Redis store, used for
+// server-side session cookies (e.g. SSO/OAuth flows).
 import { Logger } from '@nestjs/common';
 
 import RedisStore from 'connect-redis';
@@ -13,6 +15,8 @@ const sessionStorageLogger = new Logger('SessionStorage');
 
 const REDIS_PING_INTERVAL_MS = 60_000;
 
+// Builds express-session options with secure cookie defaults and a Redis-
+// backed session store, throwing if REDIS_URL isn't configured.
 export const getSessionStorageOptions = (
   twentyConfigService: TwentyConfigService,
 ): session.SessionOptions => {

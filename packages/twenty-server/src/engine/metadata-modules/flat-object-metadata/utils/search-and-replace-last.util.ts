@@ -1,3 +1,5 @@
+// Replaces the last occurrence of `search` in `source` with `replace`,
+// returning `source` unchanged if `search` isn't found.
 export const searchAndReplaceLast = ({
   replace,
   search,

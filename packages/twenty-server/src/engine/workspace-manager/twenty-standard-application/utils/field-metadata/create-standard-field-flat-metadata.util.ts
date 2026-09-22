@@ -16,6 +16,7 @@ import { type StandardBuilderArgs } from 'src/engine/workspace-manager/twenty-st
 
 type WithRequiredId<T> = T & { id: string };
 
+// Arguments accepted by createStandardFieldFlatMetadata: the target object, the field's content, and the shared builder context
 export type CreateStandardFieldArgs<
   O extends AllStandardObjectName,
   T extends FieldMetadataType,
@@ -40,6 +41,9 @@ export type CreateStandardFieldArgs<
   };
 };
 
+// Builds a single non-relation standard field's FlatFieldMetadata, resolving its id and universal
+// identifier from the standard object's fixed definitions and filling in the remaining relation/view
+// association fields as empty
 export const createStandardFieldFlatMetadata = <
   O extends AllStandardObjectName,
   T extends FieldMetadataType,

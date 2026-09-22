@@ -1,3 +1,5 @@
+// Provider-agnostic shape import drivers normalize raw calendar events/participants
+// into before they're persisted as workspace records.
 export type FetchedCalendarEventParticipant = {
   displayName: string;
   responseStatus: string;

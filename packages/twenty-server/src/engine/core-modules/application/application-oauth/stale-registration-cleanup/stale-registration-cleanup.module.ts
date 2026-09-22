@@ -1,3 +1,5 @@
+// Wires the recurring cron job that cleans up stale OAuth-only application
+// registrations.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

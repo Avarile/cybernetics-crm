@@ -1,3 +1,6 @@
+// Validates that a widget's configuration type is present and is one of the
+// recognized graph types, narrowing the configuration on success.
+
 import { msg, t } from '@lingui/core/macro';
 import { isDefined } from 'twenty-shared/utils';
 
@@ -7,6 +10,9 @@ import { type AllGraphWidgetConfigurationType } from 'src/engine/metadata-module
 import { PageLayoutWidgetExceptionCode } from 'src/engine/metadata-modules/page-layout-widget/exceptions/page-layout-widget.exception';
 import { type UniversalFlatPageLayoutWidget } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-page-layout-widget.type';
 
+// Returns a fail result with errors if configurationType is missing or not
+// a recognized graph type, otherwise a success result carrying the narrowed
+// graph configuration.
 export const validateGraphConfigurationType = ({
   universalConfiguration,
   widgetTitle,

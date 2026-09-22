@@ -15,6 +15,7 @@ import { BarChartDataService } from 'src/modules/dashboard/chart-data/services/b
 @UseFilters(ChartDataGraphqlApiExceptionFilter)
 @UseGuards(WorkspaceAuthGuard)
 @UsePipes(ResolverValidationPipe)
+// GraphQL query for computing a bar chart widget's data from its configuration.
 export class BarChartDataResolver {
   constructor(private readonly barChartDataService: BarChartDataService) {}
 

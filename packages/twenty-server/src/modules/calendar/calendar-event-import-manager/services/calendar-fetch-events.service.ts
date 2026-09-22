@@ -19,6 +19,8 @@ import { type CalendarChannelEventAssociationWorkspaceEntity } from 'src/modules
 import { type ConnectedAccountEntity } from 'src/engine/metadata-modules/connected-account/entities/connected-account.entity';
 import { CalendarChannelEntity } from 'src/engine/metadata-modules/calendar-channel/entities/calendar-channel.entity';
 
+// Fetches the changed/deleted event id list for a calendar channel, deletes
+// associations for cancelled events, and queues remaining ids for import.
 @Injectable()
 export class CalendarFetchEventsService {
   private readonly logger = new Logger(CalendarFetchEventsService.name);

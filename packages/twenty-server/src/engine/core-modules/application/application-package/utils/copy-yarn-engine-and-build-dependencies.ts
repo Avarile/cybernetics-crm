@@ -7,6 +7,9 @@ import { YARN_ENGINE_DIRNAME } from 'src/engine/core-modules/application/applica
 
 const execFilePromise = promisify(execFile);
 
+// Copies the bundled Yarn engine into the build directory, runs `yarn
+// workspaces focus --all --production` to install only production
+// dependencies, then strips everything except the resulting node_modules.
 export const copyYarnEngineAndBuildDependencies = async (
   buildDirectory: string,
 ) => {

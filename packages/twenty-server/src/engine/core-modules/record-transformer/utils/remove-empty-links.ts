@@ -1,3 +1,4 @@
+// Filters and validates a LINKS field's primary/secondary link entries.
 import { isNonEmptyString } from '@sniptt/guards';
 import { isDefined, isValidUrl } from 'twenty-shared/utils';
 import { type LinkMetadataNullable } from 'twenty-shared/types';
@@ -7,6 +8,8 @@ import {
   RecordTransformerExceptionCode,
 } from 'src/engine/core-modules/record-transformer/record-transformer.exception';
 
+// Filters out links with an empty URL, validates the remaining ones, and
+// splits them back into a primary link plus secondary links.
 export const removeEmptyLinks = ({
   primaryLinkUrl,
   secondaryLinks,

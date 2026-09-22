@@ -18,6 +18,9 @@ export type DefaultApplicationPackageFields = {
   yarnLockContent: string;
 };
 
+// Reads the bundled seed package.json/yarn.lock and returns the default
+// application package fields (checksums, available packages, raw file
+// contents) used when no custom dependencies are declared.
 export const getDefaultApplicationPackageFields =
   async (): Promise<DefaultApplicationPackageFields> => {
     const [packageJsonContent, yarnLockContent] = await Promise.all([

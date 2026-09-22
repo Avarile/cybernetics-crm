@@ -12,6 +12,8 @@ import { RegisteredWorkspaceCommand } from 'src/engine/core-modules/upgrade/deco
 import { WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.entity';
 import { DataSourceEntity } from 'src/engine/metadata-modules/data-source/data-source.entity';
 
+// Workspace command (1.21.0): sets workspace.databaseSchema from the workspace's
+// latest dataSource row, for workspaces where it hasn't been backfilled yet.
 @RegisteredWorkspaceCommand('1.21.0', 1775500003000)
 @Command({
   name: 'upgrade:1-21:backfill-datasource-to-workspace',
@@ -29,6 +31,8 @@ export class BackfillDatasourceToWorkspaceCommand extends ProvisionedWorkspaceCo
     super(workspaceIteratorService);
   }
 
+  // Looks up the workspace's most recent dataSource row and copies its schema
+  // into workspace.databaseSchema, throwing if no valid dataSource exists.
   override async runOnWorkspace({
     workspaceId,
     options,

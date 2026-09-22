@@ -1,5 +1,7 @@
 /* @license Enterprise */
 
+// REST endpoint used by applications (via an APPLICATION_ACCESS JWT) to
+// report usage they want billed to the workspace's credit balance.
 import {
   Body,
   Controller,
@@ -39,6 +41,7 @@ export class AppBillingController {
     private readonly twentyConfigService: TwentyConfigService,
   ) {}
 
+  // Validates the caller and throttle, then forwards the charge as a usage event.
   @Post('charge')
   @HttpCode(HttpStatus.NO_CONTENT)
   @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))

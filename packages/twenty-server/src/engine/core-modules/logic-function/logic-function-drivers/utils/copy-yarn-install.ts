@@ -12,6 +12,7 @@ const YARN_INSTALL_FILE_PATH = resolve(
   ),
 );
 
+// Copies the yarn-install Lambda handler and yarn engine assets into a build directory.
 export const copyYarnInstall = async (buildDirectory: string) => {
   await fs.mkdir(buildDirectory, { recursive: true });
 

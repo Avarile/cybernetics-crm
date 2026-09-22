@@ -16,6 +16,8 @@ export type CleanWorkspaceDeletionWarningUserVarsJobData = {
   workspaceId: string;
 };
 
+// Clears the "deletion warning sent" user var for every member of a
+// workspace, e.g. once the workspace is no longer scheduled for deletion.
 @Processor({
   queueName: MessageQueue.workspaceQueue,
   scope: Scope.REQUEST,
@@ -32,6 +34,8 @@ export class CleanWorkspaceDeletionWarningUserVarsJob {
     private readonly workspaceRepository: Repository<WorkspaceEntity>,
   ) {}
 
+  // Deletes the deletion-warning user var for each member of the workspace,
+  // processed in chunks to limit concurrency.
   @Process(CleanWorkspaceDeletionWarningUserVarsJob.name)
   async handle(
     data: CleanWorkspaceDeletionWarningUserVarsJobData,

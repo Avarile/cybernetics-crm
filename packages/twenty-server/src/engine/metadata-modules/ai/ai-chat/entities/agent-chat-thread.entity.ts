@@ -1,3 +1,5 @@
+// Core-schema entity for a single AI chat conversation: its turns/messages,
+// running token/credit usage totals, and in-flight stream/question state.
 import {
   Column,
   CreateDateColumn,

@@ -1,3 +1,5 @@
+// Exception type and error codes for object metadata operations.
+
 import { type MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { assertUnreachable } from 'twenty-shared/utils';
@@ -17,6 +19,7 @@ export enum ObjectMetadataExceptionCode {
   NAME_CONFLICT = 'NAME_CONFLICT',
 }
 
+// Maps each exception code to its default user-facing message.
 const getObjectMetadataExceptionUserFriendlyMessage = (
   code: ObjectMetadataExceptionCode,
 ) => {

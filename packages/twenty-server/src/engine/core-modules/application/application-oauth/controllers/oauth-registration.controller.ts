@@ -1,3 +1,6 @@
+// Implements RFC 7591 OAuth 2.0 Dynamic Client Registration and RFC 7592
+// client read-back. Registered clients are always public (no client secret
+// issued) and are stored as OAUTH_ONLY application registrations.
 import {
   Body,
   Controller,
@@ -50,6 +53,9 @@ export class OAuthRegistrationController {
     private readonly throttlerService: ThrottlerService,
   ) {}
 
+  // Registers a new public OAuth client (rate-limited), validating redirect
+  // URIs, grant/response types, and auth method, then persists it as an
+  // OAUTH_ONLY application registration with a generated client id.
   @Post('register')
   @HttpCode(201)
   @UseGuards(PublicEndpointGuard, NoPermissionGuard)
@@ -179,6 +185,7 @@ export class OAuthRegistrationController {
 
   // RFC 7592 read-back. No registration_access_token is issued; the client_id
   // is an unguessable UUID and the fields returned are already public.
+  // Reads back a previously registered client's public metadata by id.
   @Get('register/:clientId')
   @UseGuards(PublicEndpointGuard, NoPermissionGuard)
   async readRegistration(
@@ -219,6 +226,8 @@ export class OAuthRegistrationController {
     };
   }
 
+  // Throttles registration attempts per IP, returning an RFC-shaped error
+  // body when the limit is exceeded.
   private async applyRateLimit(
     req: Request,
   ): Promise<{ error: string; error_description: string } | null> {

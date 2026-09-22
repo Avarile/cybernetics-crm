@@ -1,3 +1,5 @@
+// Service that re-checks DNS validation status for the workspace custom
+// domain or public domain matching a hostname reported by Cloudflare.
 import { Injectable } from '@nestjs/common';
 
 import { isDefined } from 'twenty-shared/utils';
@@ -14,6 +16,8 @@ export class DnsCloudflareService {
     private readonly workspaceDomainsService: WorkspaceDomainsService,
   ) {}
 
+  // Looks up the hostname as a workspace custom domain and/or a public
+  // domain, and re-validates DNS records for whichever match(es).
   async checkHostname(hostname: string) {
     const workspace =
       await this.workspaceDomainsService.findByCustomDomain(hostname);

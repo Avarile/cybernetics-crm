@@ -1,4 +1,6 @@
 /* oxlint-disable no-console */
+// Temporarily replaces global console methods to capture log output during a
+// local function execution, restoring the originals on release.
 export class ConsoleListener {
   private readonly originalConsole;
 
@@ -13,6 +15,7 @@ export class ConsoleListener {
   }
 
   // oxlint-disable-next-line typescript/no-explicit-any
+  // Replaces console methods with a callback capturing their type/args.
   intercept(callback: (type: string, message: any[]) => void) {
     Object.keys(this.originalConsole).forEach((method) => {
       // @ts-expect-error legacy noImplicitAny
@@ -23,6 +26,7 @@ export class ConsoleListener {
     });
   }
 
+  // Restores the original console methods.
   release() {
     Object.keys(this.originalConsole).forEach((method) => {
       // @ts-expect-error legacy noImplicitAny

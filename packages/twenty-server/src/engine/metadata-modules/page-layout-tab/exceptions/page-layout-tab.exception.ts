@@ -4,6 +4,8 @@ import { assertUnreachable } from 'twenty-shared/utils';
 
 import { CustomException } from 'src/utils/custom-exception';
 
+// Exception thrown by the page layout tab module for missing records or
+// invalid input.
 export enum PageLayoutTabExceptionCode {
   PAGE_LAYOUT_TAB_NOT_FOUND = 'PAGE_LAYOUT_TAB_NOT_FOUND',
   INVALID_PAGE_LAYOUT_TAB_DATA = 'INVALID_PAGE_LAYOUT_TAB_DATA',
@@ -17,6 +19,7 @@ export enum PageLayoutTabExceptionMessageKey {
   PAGE_LAYOUT_TAB_NOT_DELETED = 'PAGE_LAYOUT_TAB_NOT_DELETED',
 }
 
+// Maps an exception code to the localized message shown to end users.
 const getPageLayoutTabExceptionUserFriendlyMessage = (
   code: PageLayoutTabExceptionCode,
 ) => {
@@ -44,6 +47,8 @@ export class PageLayoutTabException extends CustomException<PageLayoutTabExcepti
   }
 }
 
+// Builds the internal (developer-facing) exception message for a given
+// error key, optionally including the offending record's id.
 export const generatePageLayoutTabExceptionMessage = (
   key: PageLayoutTabExceptionMessageKey,
   value?: string,

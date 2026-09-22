@@ -1,3 +1,7 @@
+// CRUD and manifest-driven sync for application registration variables:
+// values are encrypted at rest and returned obfuscated (masked for
+// secrets, decrypted for non-secret), and variable schemas are
+// reconciled against a manifest's declared serverVariables on each sync.
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -30,6 +34,8 @@ export class ApplicationRegistrationVariableService {
     private readonly encryptionService: SecretEncryptionService,
   ) {}
 
+  // Returns a registration's variables with values obfuscated, scoped to
+  // the owning workspace.
   async findVariablesWithObfuscatedValues(
     applicationRegistrationId: string,
     workspaceId: string,
@@ -44,6 +50,8 @@ export class ApplicationRegistrationVariableService {
     );
   }
 
+  // Same as findVariablesWithObfuscatedValues, without workspace scoping
+  // (admin use).
   async findVariablesWithObfuscatedValuesGlobal(
     applicationRegistrationId: string,
   ): Promise<ApplicationRegistrationVariableDTO[]> {
@@ -55,6 +63,8 @@ export class ApplicationRegistrationVariableService {
     return variables.map((variable) => this.toObfuscatedDTO(variable));
   }
 
+  // Creates a new variable for a registration owned by the workspace,
+  // encrypting its value.
   async createVariable(
     input: CreateApplicationRegistrationVariableInput,
     workspaceId: string,
@@ -77,6 +87,7 @@ export class ApplicationRegistrationVariableService {
     return this.variableRepository.save(variable);
   }
 
+  // Updates a variable, scoped to the workspace owning its registration.
   async updateVariable(
     input: UpdateApplicationRegistrationVariableInput,
     workspaceId: string,
@@ -91,6 +102,7 @@ export class ApplicationRegistrationVariableService {
     return this.applyVariableUpdate(input);
   }
 
+  // Same as updateVariable, without workspace ownership scoping (admin use).
   async updateVariableGlobal(
     input: UpdateApplicationRegistrationVariableInput,
   ): Promise<ApplicationRegistrationVariableDTO> {
@@ -101,6 +113,7 @@ export class ApplicationRegistrationVariableService {
     return this.toObfuscatedDTO(entity);
   }
 
+  // Deletes a variable, scoped to the workspace owning its registration.
   async deleteVariable(id: string, workspaceId: string): Promise<boolean> {
     const variable = await this.findVariableOrThrow(id);
 
@@ -171,6 +184,10 @@ export class ApplicationRegistrationVariableService {
     }
   }
 
+  // Batch-computes, for each registration id, whether all its required
+  // variables are filled and any server-route-triggered logic function is
+  // installed on the owning workspace (a route function that isn't
+  // installed there can never actually run).
   async isConfiguredBatch(
     applicationRegistrationIds: string[],
   ): Promise<Map<string, boolean>> {
@@ -221,6 +238,8 @@ export class ApplicationRegistrationVariableService {
     return result;
   }
 
+  // True unless the registration declares a server-route logic function
+  // that isn't installed on its owning workspace.
   private isServerRouteConfigured(
     registration: ApplicationRegistrationEntity | undefined,
     isInstalledOnOwnerWorkspace: boolean,
@@ -239,6 +258,7 @@ export class ApplicationRegistrationVariableService {
     );
   }
 
+  // Looks up a variable by id, throwing if not found.
   private async findVariableOrThrow(
     id: string,
   ): Promise<ApplicationRegistrationVariableEntity> {
@@ -256,6 +276,8 @@ export class ApplicationRegistrationVariableService {
     return variable;
   }
 
+  // Applies a variable's value/description update, re-encrypting a new
+  // value or clearing it when resetValue is set.
   private async applyVariableUpdate(
     input: UpdateApplicationRegistrationVariableInput,
   ): Promise<ApplicationRegistrationVariableEntity> {
@@ -284,6 +306,8 @@ export class ApplicationRegistrationVariableService {
     return this.variableRepository.findOneOrFail({ where: { id } });
   }
 
+  // Maps a variable entity to its DTO, masking secret values and
+  // decrypting non-secret ones for display.
   private toObfuscatedDTO(
     variable: ApplicationRegistrationVariableEntity,
   ): ApplicationRegistrationVariableDTO {
@@ -301,6 +325,8 @@ export class ApplicationRegistrationVariableService {
     };
   }
 
+  // Throws unless the registration exists and is owned by the given
+  // workspace.
   private async assertRegistrationOwnedByWorkspace(
     registrationId: string,
     workspaceId: string,

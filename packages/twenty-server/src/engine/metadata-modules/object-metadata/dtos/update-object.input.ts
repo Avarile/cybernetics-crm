@@ -1,3 +1,5 @@
+// GraphQL input for updating an object's editable metadata.
+
 import { Field, InputType } from '@nestjs/graphql';
 
 import { Type } from 'class-transformer';

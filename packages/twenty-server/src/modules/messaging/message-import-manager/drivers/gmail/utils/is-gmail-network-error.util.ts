@@ -1,3 +1,5 @@
+// Type guard: true when the error carries a recognized low-level network
+// error code (connection reset, timeout, DNS failure, etc.).
 import { type GaxiosError } from 'gaxios';
 
 import { MessageNetworkExceptionCode } from 'src/modules/messaging/message-import-manager/drivers/exceptions/message-network.exception';

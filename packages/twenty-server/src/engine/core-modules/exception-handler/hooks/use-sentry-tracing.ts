@@ -8,6 +8,8 @@ import { type OperationDefinitionNode, Kind, print } from 'graphql';
 
 import { type GraphQLContext } from 'src/engine/api/graphql/graphql-config/graphql-config.service';
 
+// GraphQL Yoga/Envelop plugin that tags the current Sentry scope with the
+// operation name/type, user, and document for each executed operation
 export const useSentryTracing = <
   PluginContext extends GraphQLContext,
 >(): Plugin<PluginContext> => {

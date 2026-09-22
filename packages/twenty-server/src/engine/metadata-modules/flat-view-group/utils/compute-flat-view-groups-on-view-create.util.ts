@@ -15,6 +15,9 @@ type ComputeFlatViewGroupsOnViewCreateArgs = {
   mainGroupByFieldMetadataId: string;
 } & Pick<AllFlatEntityMaps, 'flatFieldMetadataMaps'>;
 
+// Derives the initial view groups for a new view from its "group by" field's options:
+// one group per option (capped visible count), plus an extra group for null/empty values
+// when the field is nullable.
 export const computeFlatViewGroupsOnViewCreate = ({
   flatViewToCreateUniversalIdentifier,
   mainGroupByFieldMetadataId,

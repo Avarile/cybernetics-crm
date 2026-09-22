@@ -12,6 +12,9 @@ import { WorkspaceMetadataVersionModule } from 'src/engine/metadata-modules/work
 import { WorkspaceCacheModule } from 'src/engine/workspace-cache/workspace-cache.module';
 import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace-migration/workspace-migration.module';
 
+// Registers the 2.10 workspace commands (move demoted standard fields, rename
+// conflicting custom fields, add inactive generic standard fields, sync call
+// recording standard objects) as providers for the upgrade runner.
 @Module({
   imports: [
     ApplicationModule,

@@ -8,6 +8,8 @@ type FindAllFlatRoleTargetOfArgs = {
   targetMetadataForeignKey: RoleTargetForeignKeyProperties;
   targetId: string;
 } & Pick<AllFlatEntityMaps, 'flatRoleTargetMaps'>;
+
+// Finds the flat role target whose given foreign key (user workspace, API key or agent) matches the target id.
 export const findFlatRoleTargetFromForeignKey = ({
   flatRoleTargetMaps,
   targetMetadataForeignKey,

@@ -1,5 +1,7 @@
 import { isAbsolute, normalize, sep } from 'path';
 
+// Whether filePath is a non-empty relative path with no null bytes, backslashes,
+// or ".." traversal segments
 export const isSafeRelativePath = (filePath: string): boolean => {
   if (filePath.length === 0) {
     return false;

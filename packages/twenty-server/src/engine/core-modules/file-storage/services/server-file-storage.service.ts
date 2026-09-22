@@ -24,6 +24,8 @@ export type ServerResourceIdentifier = {
   resourcePath: string;
 };
 
+// Storage for server-owned files (workspaceId IS NULL), scoped under a fixed
+// server prefix and keyed by application registration id rather than a workspace
 @Injectable()
 export class ServerFileStorageService {
   private readonly logger = new Logger(ServerFileStorageService.name);
@@ -35,6 +37,8 @@ export class ServerFileStorageService {
     private readonly serverFileRepository: Repository<FileEntity>,
   ) {}
 
+  // Validates the resource path and resolves both its DB path and storage path
+  // under the server prefix, verifying it stays within server scope
   private validateAndBuildServerFileStoragePathOrThrow({
     fileFolder,
     applicationRegistrationId,
@@ -71,6 +75,7 @@ export class ServerFileStorageService {
     return { onStorageFilePath, filePath };
   }
 
+  // Writes a server file's bytes and upserts its FileEntity row
   async writeServerFile({
     fileFolder,
     applicationRegistrationId,
@@ -119,6 +124,7 @@ export class ServerFileStorageService {
     });
   }
 
+  // Reads a server file's bytes as a stream, along with its stored mime type
   async readServerFile({
     fileFolder,
     applicationRegistrationId,
@@ -154,6 +160,7 @@ export class ServerFileStorageService {
     return { stream, mimeType: serverFile.mimeType };
   }
 
+  // Looks up a server file's FileEntity row without touching storage
   async findServerFile({
     fileFolder,
     applicationRegistrationId,
@@ -189,6 +196,7 @@ export class ServerFileStorageService {
     return driver.checkFileExists({ filePath: onStorageFilePath });
   }
 
+  // Deletes a server file's bytes (best-effort) and its FileEntity row
   async deleteServerFile({
     fileFolder,
     applicationRegistrationId,
@@ -209,6 +217,7 @@ export class ServerFileStorageService {
     });
   }
 
+  // Deletes every server file (bytes and rows) belonging to an application registration
   async deleteByApplicationRegistrationId(
     applicationRegistrationId: string,
   ): Promise<void> {
@@ -233,6 +242,8 @@ export class ServerFileStorageService {
     return join(SERVER_FILE_STORAGE_PREFIX, serverFile.path);
   }
 
+  // Deletes storage bytes for a server file, logging rather than throwing on failure
+  // so a storage error doesn't block the corresponding row deletion
   private async deleteServerFileBytesBestEffort(
     onStorageFilePath: string,
   ): Promise<void> {

@@ -1,3 +1,6 @@
+// Test helper: builds a real GaxiosError with a fully-shaped mock Response,
+// so Gmail error-handling code under test can rely on gaxios's own error
+// parsing behaving as it would against a real HTTP response.
 import { GaxiosError, type GaxiosResponse } from 'gaxios';
 
 const MOCK_URL = new URL('https://gmail.googleapis.com/mocks');

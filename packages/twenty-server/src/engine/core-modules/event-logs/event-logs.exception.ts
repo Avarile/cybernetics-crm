@@ -1,5 +1,7 @@
 /* @license Enterprise */
 
+// Exception type for event-log/audit-log access errors (missing ClickHouse
+// config, missing Enterprise entitlement), with per-code friendly messages.
 import { type MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { assertUnreachable } from 'twenty-shared/utils';
@@ -24,6 +26,8 @@ const getEventLogsExceptionUserFriendlyMessage = (
   }
 };
 
+// Exception thrown by event-log services, defaulting to a friendly message
+// derived from the exception code.
 export class EventLogsException extends CustomException<EventLogsExceptionCode> {
   constructor(
     message: string,

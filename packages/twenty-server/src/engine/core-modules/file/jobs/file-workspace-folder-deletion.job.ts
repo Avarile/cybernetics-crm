@@ -1,3 +1,4 @@
+// Queue processor deleting a workspace's entire file storage folder (e.g. on workspace deletion).
 import { FileService } from 'src/engine/core-modules/file/services/file.service';
 import { Process } from 'src/engine/core-modules/message-queue/decorators/process.decorator';
 import { Processor } from 'src/engine/core-modules/message-queue/decorators/processor.decorator';
@@ -12,6 +13,7 @@ export class FileWorkspaceFolderDeletionJob {
   constructor(private readonly fileService: FileService) {}
 
   @Process(FileWorkspaceFolderDeletionJob.name)
+  // Deletes the workspace's file storage folder, throwing a descriptive error on failure.
   async handle(data: FileWorkspaceFolderDeletionJobData): Promise<void> {
     const { workspaceId } = data;
 

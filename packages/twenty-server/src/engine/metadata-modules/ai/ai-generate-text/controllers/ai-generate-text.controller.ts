@@ -1,3 +1,5 @@
+// REST controller for one-off text generation calls outside of chat/agent
+// execution, billed the same way as other AI usage.
 import { Body, Controller, Post, UseFilters, UseGuards } from '@nestjs/common';
 
 import { generateText } from 'ai';
@@ -36,6 +38,7 @@ export class AiGenerateTextController {
     private readonly billingUsageService: BillingUsageService,
   ) {}
 
+  // Runs a single generateText call against the resolved model and bills its usage.
   @Post('generate-text')
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.AI))
   async handleGenerateText(

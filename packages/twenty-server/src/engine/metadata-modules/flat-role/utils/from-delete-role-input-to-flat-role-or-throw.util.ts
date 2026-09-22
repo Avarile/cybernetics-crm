@@ -9,6 +9,7 @@ import {
   PermissionsExceptionCode,
 } from 'src/engine/metadata-modules/permissions/permissions.exception';
 
+// Looks up the flat role targeted for deletion, throwing if it doesn't exist.
 export const fromDeleteRoleInputToFlatRoleOrThrow = ({
   flatRoleMaps,
   roleId,

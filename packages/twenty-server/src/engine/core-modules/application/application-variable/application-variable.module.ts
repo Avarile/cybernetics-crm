@@ -1,3 +1,5 @@
+// Wires the service, resolver, and per-workspace cache for installed
+// applications' runtime configuration variables.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

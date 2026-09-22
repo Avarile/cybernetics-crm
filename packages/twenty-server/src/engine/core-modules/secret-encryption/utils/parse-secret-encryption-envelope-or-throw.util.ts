@@ -9,6 +9,8 @@ import {
 } from 'src/engine/core-modules/secret-encryption/exceptions/secret-encryption.exception';
 import { type ParsedSecretEncryptionEnvelope } from 'src/engine/core-modules/secret-encryption/types/secret-encryption-envelope.type';
 
+// Parses an envelope string, returning version:null for non-enc: values and
+// throwing on a malformed or unrecognized enc: envelope
 export const parseSecretEncryptionEnvelopeOrThrow = ({
   value,
 }: {

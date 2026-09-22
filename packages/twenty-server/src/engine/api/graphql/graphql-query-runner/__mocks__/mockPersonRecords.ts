@@ -1,3 +1,4 @@
+// Test fixture: a sample "person" record matching mockPersonObjectMetadata.
 import { type ObjectRecord } from 'twenty-shared/types';
 
 export const mockPersonRecords: Partial<ObjectRecord>[] = [

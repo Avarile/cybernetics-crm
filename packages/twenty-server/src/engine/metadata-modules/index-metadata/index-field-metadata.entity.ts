@@ -1,3 +1,7 @@
+// TypeORM entity joining an IndexMetadataEntity to a FieldMetadataEntity,
+// recording the field's position within the index and optional composite
+// sub-field target.
+
 import {
   Column,
   CreateDateColumn,

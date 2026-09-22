@@ -1,3 +1,6 @@
+// Core persistence and lifecycle service for AI chat: threads, messages
+// (including queued/pending-question handling), and workspace-event
+// broadcasts of thread state changes to subscribed clients.
 import { Injectable, Logger } from '@nestjs/common';
 
 import {
@@ -37,6 +40,7 @@ import { AiChatFileAttachment } from 'src/engine/metadata-modules/ai/ai-chat/typ
 import { AgentTitleGenerationService } from './agent-title-generation.service';
 import { AgentChatThreadDTO } from '../dtos/agent-chat-thread.dto';
 
+// Shapes a thread entity into the display-precision payload sent in workspace broadcasts.
 const serializeThreadForBroadcast = (
   thread: AgentChatThreadEntity,
   lastMessageAt: Date | null,
@@ -77,6 +81,7 @@ export class AgentChatService {
     private readonly codeInterpreterService: CodeInterpreterService,
   ) {}
 
+  // Creates a new thread for the user and broadcasts its creation.
   async createThread({
     userWorkspaceId,
     workspaceId,
@@ -106,6 +111,7 @@ export class AgentChatService {
     return savedThread;
   }
 
+  // Fetches a thread owned by the user, throwing if not found.
   async getThreadById({
     threadId,
     userWorkspaceId,
@@ -132,6 +138,8 @@ export class AgentChatService {
     return thread;
   }
 
+  // Lists the user's threads ordered by most recent message (nulls last),
+  // falling back to last-updated for threads with no messages yet.
   async getThreadsForUser({
     userWorkspaceId,
     workspaceId,
@@ -178,6 +186,7 @@ export class AgentChatService {
     });
   }
 
+  // Returns the timestamp of the thread's most recent message, if any.
   async getLastMessageAtForThread({
     threadId,
     workspaceId,
@@ -197,6 +206,8 @@ export class AgentChatService {
     return result?.last_message_at ?? null;
   }
 
+  // Persists a message (creating a new turn if none is given) along with its
+  // parts, finalizing any dangling tool-call parts first.
   async addMessage({
     threadId,
     uiMessage,
@@ -266,6 +277,8 @@ export class AgentChatService {
     } as AgentMessageEntity;
   }
 
+  // Upserts the assistant message row and replaces its parts wholesale, used
+  // for both streaming checkpoints and the final persist.
   async upsertAssistantMessage({
     id,
     threadId,
@@ -307,6 +320,7 @@ export class AgentChatService {
     }
   }
 
+  // Finds the most recently sent (non-queued) user message in a thread.
   async findLatestSentUserMessage({
     threadId,
     workspaceId,
@@ -325,6 +339,7 @@ export class AgentChatService {
     });
   }
 
+  // Deletes assistant messages belonging to a turn, used when retrying a failed turn.
   async deleteAssistantMessagesForTurn({
     turnId,
     workspaceId,
@@ -338,6 +353,7 @@ export class AgentChatService {
     });
   }
 
+  // Checks whether a message with the given id already exists.
   async hasMessageById({
     id,
     workspaceId,
@@ -353,6 +369,7 @@ export class AgentChatService {
     return isDefined(existingMessage);
   }
 
+  // Lists a thread's messages with parts, after verifying the caller owns the thread.
   async getMessagesForThread({
     threadId,
     userWorkspaceId,
@@ -373,6 +390,8 @@ export class AgentChatService {
     });
   }
 
+  // Persists a message in QUEUED status (with text and valid file attachment
+  // parts) for later promotion, when the thread is busy or awaiting an answer.
   async queueMessage({
     threadId,
     text,
@@ -449,6 +468,7 @@ export class AgentChatService {
     } as AgentMessageEntity;
   }
 
+  // True if the thread has any queued messages.
   async hasQueuedMessages({
     threadId,
     workspaceId,
@@ -462,6 +482,7 @@ export class AgentChatService {
     });
   }
 
+  // Lists a thread's queued messages in submission order.
   async getQueuedMessages({
     threadId,
     workspaceId,
@@ -479,6 +500,7 @@ export class AgentChatService {
     });
   }
 
+  // Finds a single queued message by id.
   async findQueuedMessage({
     messageId,
     workspaceId,
@@ -491,6 +513,7 @@ export class AgentChatService {
     });
   }
 
+  // Deletes a queued message, returning whether one was actually removed.
   async deleteQueuedMessage({
     messageId,
     workspaceId,
@@ -506,6 +529,8 @@ export class AgentChatService {
     return (result.affected ?? 0) > 0;
   }
 
+  // Promotes a queued message to SENT under a new turn; rolls back the turn
+  // if the message was no longer queued (e.g. already promoted or deleted).
   async promoteQueuedMessage({
     messageId,
     threadId,
@@ -541,6 +566,9 @@ export class AgentChatService {
     return savedTurnId;
   }
 
+  // Validates and records the user's answers to a pending ask_questions tool
+  // call, claiming the thread's active stream slot so the turn can resume;
+  // returns enough state to roll back if resuming fails to enqueue.
   async resolvePendingQuestion({
     threadId,
     messageId,
@@ -639,6 +667,8 @@ export class AgentChatService {
     };
   }
 
+  // Undoes resolvePendingQuestion's state changes when resuming the turn
+  // failed to enqueue, restoring the question as pending.
   async restorePendingQuestion({
     threadId,
     messageId,
@@ -669,6 +699,8 @@ export class AgentChatService {
       .catch(() => {});
   }
 
+  // Validates that each answer references a real question/option and
+  // respects the question's single vs multi-select constraint.
   private validateQuestionAnswers(
     answers: AskQuestionAnswer[],
     questions: AskQuestionItem[],
@@ -707,6 +739,7 @@ export class AgentChatService {
     }
   }
 
+  // Sets a thread's title and broadcasts the change.
   async updateThreadTitle({
     threadId,
     userWorkspaceId,
@@ -751,6 +784,8 @@ export class AgentChatService {
     return updated;
   }
 
+  // Soft-deletes the thread, clears its active stream, broadcasts the change,
+  // and releases its code interpreter sandbox.
   async archiveThread({
     threadId,
     userWorkspaceId,
@@ -792,6 +827,7 @@ export class AgentChatService {
     return thread;
   }
 
+  // Clears a thread's soft-delete and broadcasts the change.
   async unarchiveThread({
     threadId,
     userWorkspaceId,
@@ -828,6 +864,8 @@ export class AgentChatService {
     return thread;
   }
 
+  // Permanently deletes a thread, broadcasts the deletion, and releases its
+  // code interpreter sandbox.
   async hardDeleteThread({
     threadId,
     userWorkspaceId,
@@ -879,6 +917,8 @@ export class AgentChatService {
     this.releaseThreadSandboxBestEffort(workspaceId, threadId);
   }
 
+  // Fire-and-forget release of a thread's code interpreter sandbox; failures
+  // are logged, not thrown, since this isn't on the critical delete path.
   private releaseThreadSandboxBestEffort(
     workspaceId: string,
     threadId: string,
@@ -894,6 +934,7 @@ export class AgentChatService {
       );
   }
 
+  // Broadcasts that a thread's lastMessageAt changed (e.g. after queuing a message).
   async notifyThreadActivityUpdated({
     threadId,
     userWorkspaceId,
@@ -916,6 +957,7 @@ export class AgentChatService {
     );
   }
 
+  // Broadcasts that a thread's usage/token/credit totals changed.
   async notifyThreadUsageUpdated({
     threadId,
     userWorkspaceId,
@@ -945,6 +987,8 @@ export class AgentChatService {
     );
   }
 
+  // Shared helper that emits an 'updated' workspace event for a thread,
+  // resolving lastMessageAt fresh since it isn't a stored column.
   private async broadcastThreadUpdated(
     thread: AgentChatThreadEntity,
     updatedFields: (keyof AgentChatThreadDTO)[],
@@ -972,6 +1016,8 @@ export class AgentChatService {
     });
   }
 
+  // Generates and saves a thread title from its first message, if the thread
+  // doesn't already have one; broadcasts the change on success.
   async generateTitleIfNeeded({
     threadId,
     messageContent,

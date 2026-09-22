@@ -7,6 +7,9 @@ import {
 import { isFunctionDefaultValue } from 'src/engine/metadata-modules/field-metadata/utils/is-function-default-value.util';
 import { serializeFunctionDefaultValue } from 'src/engine/metadata-modules/field-metadata/utils/serialize-function-default-value.util';
 
+// Serializes a field's default value into the SQL-literal/expression string
+// stored on the column definition, by value kind (function, string, number,
+// boolean, date, array, object).
 export const serializeDefaultValue = (
   defaultValue?: FieldMetadataDefaultValueForAnyType,
 ) => {

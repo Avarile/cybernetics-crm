@@ -1,3 +1,5 @@
+// NestJS module exposing FeatureFlagService for reading/toggling
+// per-workspace feature flags.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

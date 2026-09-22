@@ -50,6 +50,9 @@ import { ViewGroupEntity } from 'src/engine/metadata-modules/view-group/entities
 import { ViewSortEntity } from 'src/engine/metadata-modules/view-sort/entities/view-sort.entity';
 import { ViewEntity } from 'src/engine/metadata-modules/view/entities/view.entity';
 
+// CLI command that finds workspace-scoped records whose workspaceId no longer
+// points at an existing workspace (e.g. left behind by an incomplete workspace
+// deletion) and, unless --dry-run, deletes them in dependency order (children first).
 type DeletionResult = {
   entityName: string;
   success: boolean;
@@ -130,6 +133,8 @@ export class ListOrphanedWorkspaceEntitiesCommand extends MigrationCommandRunner
     super();
   }
 
+  // Deletes the given record ids from `entity` in fixed-size batches, logging and
+  // continuing past per-chunk failures rather than aborting the whole run.
   private async deleteInChunks({
     entity,
     entityName,
@@ -180,6 +185,9 @@ export class ListOrphanedWorkspaceEntitiesCommand extends MigrationCommandRunner
     return totalDeleted;
   }
 
+  // Like deleteInChunks, but for FieldMetadata: keeps a relation field and its
+  // paired relationTargetFieldMetadata together in the same chunk so a delete never
+  // splits a relation pair across two batches.
   private async deleteFieldMetadataInChunks(ids: string[]): Promise<number> {
     const CHUNK_SIZE = 50;
     let totalDeleted = 0;
@@ -251,6 +259,9 @@ export class ListOrphanedWorkspaceEntitiesCommand extends MigrationCommandRunner
     return totalDeleted;
   }
 
+  // Scans every workspace-related entity for orphaned rows (workspaceId set but no
+  // matching workspace, including soft-deleted workspaces), reports them, and deletes
+  // them per-entity unless --dry-run was passed.
   override async runMigrationCommand(
     _passedParams: string[],
     options: MigrationCommandOptions,

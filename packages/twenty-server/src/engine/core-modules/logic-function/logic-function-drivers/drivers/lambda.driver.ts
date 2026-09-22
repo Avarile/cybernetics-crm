@@ -45,6 +45,7 @@ export {
   type YarnInstallLambdaResult,
 } from 'src/engine/core-modules/logic-function/logic-function-drivers/drivers/lambda/types/lambda-driver.type';
 
+// Executes logic functions on AWS Lambda: builds/caches the executor, invokes it, and normalizes results/timeouts/errors
 export class LambdaDriver implements LogicFunctionDriver {
   private readonly logger = new Logger(LambdaDriver.name);
 
@@ -78,6 +79,7 @@ export class LambdaDriver implements LogicFunctionDriver {
     );
   }
 
+  // Transpiles source via the builder Lambda
   async transpile({
     sourceCode,
     sourceFileName,
@@ -92,10 +94,12 @@ export class LambdaDriver implements LogicFunctionDriver {
     return { builtCode };
   }
 
+  // Deletes the Lambda executor function backing this logic function
   async delete(flatLogicFunction: FlatLogicFunction): Promise<void> {
     await this.executorManager.delete(flatLogicFunction);
   }
 
+  // Deletes the SDK layer created for an application (called when an application is uninstalled)
   async deleteApplicationResources({
     workspaceId,
     applicationUniversalIdentifier,
@@ -109,18 +113,22 @@ export class LambdaDriver implements LogicFunctionDriver {
     });
   }
 
+  // Installs a prebuilt bundle onto the Lambda executor so it can run in PREBUILT mode
   async installPrebuiltBundle(
     params: LogicFunctionInstallPrebuiltBundleParams,
   ): Promise<void> {
     await this.executorManager.installPrebuiltBundle(params);
   }
 
+  // Returns the checksum tag of the currently installed prebuilt bundle, if any
   async getInstalledBundleChecksum(
     flatLogicFunction: FlatLogicFunction,
   ): Promise<string | null> {
     return this.executorManager.getInstalledBundleChecksum(flatLogicFunction);
   }
 
+  // Builds/ensures the executor exists, then invokes it with the given payload, capturing timing and
+  // distinguishing user-level invoke timeouts (returned as a result) from platform errors (thrown)
   async execute({
     flatLogicFunction,
     flatApplication,

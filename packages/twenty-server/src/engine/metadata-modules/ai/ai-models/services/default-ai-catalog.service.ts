@@ -1,3 +1,5 @@
+// Provides the base AI provider/model catalog, loaded from bundled JSON by
+// default or overridden by an admin-uploaded catalog file in storage.
 import { Injectable, Logger, type OnModuleInit } from '@nestjs/common';
 
 import { FileStorageDriverFactory } from 'src/engine/core-modules/file-storage/file-storage-driver.factory';
@@ -20,6 +22,8 @@ export class DefaultAiCatalogService implements OnModuleInit {
     private readonly fileStorageDriverFactory: FileStorageDriverFactory,
   ) {}
 
+  // Loads the catalog override from storage if configured, falling back to
+  // the built-in bundled catalog on any failure.
   async onModuleInit(): Promise<void> {
     const catalogPath = this.twentyConfigService.get('AI_CATALOG_STORAGE_PATH');
 
@@ -44,10 +48,12 @@ export class DefaultAiCatalogService implements OnModuleInit {
     }
   }
 
+  // Returns a defensive copy of the loaded catalog.
   getDefaultAiCatalog(): AiProvidersConfig {
     return structuredClone(this.catalog);
   }
 
+  // Reads and validates the catalog JSON file from the configured file storage path.
   private async fetchCatalog(filePath: string): Promise<AiProvidersConfig> {
     const driver = this.fileStorageDriverFactory.getCurrentDriver();
     const stream = await driver.readFile({ filePath });

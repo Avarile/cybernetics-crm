@@ -10,6 +10,9 @@ import type { FlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-m
 import { validateAndTransformValueOrThrow } from './validate-and-transform-value-or-throw.util';
 import { validateOperatorForFieldTypeOrThrow } from './validate-operator-for-field-type-or-throw.util';
 
+// Validates that a field's filter value is an object with exactly one
+// operator, checks the operator is allowed for the field's type, and
+// validates/transforms the operator's value.
 export const validateAndTransformOperatorAndValue = (
   fieldName: string,
   filterValue: Record<string, unknown>,

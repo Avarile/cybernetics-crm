@@ -1,5 +1,9 @@
 /* @license Enterprise */
 
+// Service managing the enterprise license lifecycle: verifying the signed
+// ENTERPRISE_KEY JWT, refreshing/caching a short-lived validity token issued
+// by the enterprise licensing API, reporting seat counts, and exposing
+// billing portal/checkout links.
 import { Injectable, Logger, type OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -64,11 +68,13 @@ export class EnterprisePlanService implements OnModuleInit {
     private readonly workspaceRepository: Repository<WorkspaceEntity>,
   ) {}
 
+  // Loads the enterprise key and any stored validity token into memory at startup.
   async onModuleInit() {
     this.refreshKeyPayload();
     await this.loadValidityToken();
   }
 
+  // Re-reads ENTERPRISE_KEY from config and re-verifies/caches its JWT payload.
   private refreshKeyPayload(): void {
     const enterpriseKey = this.twentyConfigService.get('ENTERPRISE_KEY');
 
@@ -83,6 +89,8 @@ export class EnterprisePlanService implements OnModuleInit {
     this.cachedKeyPayload = payload;
   }
 
+  // Loads the current validity token from the DB (preferred) or config
+  // fallback, verifies it, and caches its payload if valid.
   private async loadValidityToken(): Promise<void> {
     try {
       const dbToken = await this.appTokenRepository.findOne({
@@ -120,6 +128,8 @@ export class EnterprisePlanService implements OnModuleInit {
     }
   }
 
+  // Revokes any previously stored validity token and persists the new one,
+  // inside a transaction so there's never more than one active token.
   private async saveNewValidityTokenToDb(token: string): Promise<void> {
     const payload = this.verifyJwt<EnterpriseValidityPayload>(token);
 
@@ -151,11 +161,13 @@ export class EnterprisePlanService implements OnModuleInit {
     );
   }
 
+  // Returns whether ENTERPRISE_KEY is currently set to a validly signed JWT.
   hasValidSignedEnterpriseKey(): boolean {
     this.refreshKeyPayload();
     return isDefined(this.cachedKeyPayload);
   }
 
+  // Returns whether the cached validity token is present and unexpired.
   hasValidEnterpriseValidityToken(): boolean {
     if (isDefined(this.cachedValidityPayload)) {
       const now = Math.floor(Date.now() / 1000);
@@ -166,14 +178,19 @@ export class EnterprisePlanService implements OnModuleInit {
     return false;
   }
 
+  // Whether the instance currently has a valid enterprise license.
   isValid(): boolean {
     return this.hasValidEnterpriseValidityToken();
   }
 
+  // Returns whether `key` is a validly signed enterprise key JWT (does not
+  // check server binding or remote validity).
   isValidEnterpriseKeyFormat(key: string): boolean {
     return this.verifyJwt<EnterpriseKeyPayload>(key) !== null;
   }
 
+  // Refreshes the cached key/validity payloads and returns a summary of the
+  // current license's validity, licensee, expiry and subscription id.
   async getLicenseInfo(): Promise<EnterpriseLicenseInfo> {
     this.refreshKeyPayload();
     await this.loadValidityToken();
@@ -197,6 +214,8 @@ export class EnterprisePlanService implements OnModuleInit {
     };
   }
 
+  // Persists a new ENTERPRISE_KEY value, translating a disabled DB-config
+  // error into a clearer enterprise-specific message.
   async setEnterpriseKey(enterpriseKey: string): Promise<void> {
     try {
       await this.twentyConfigService.set('ENTERPRISE_KEY', enterpriseKey);
@@ -216,10 +235,14 @@ export class EnterprisePlanService implements OnModuleInit {
     }
   }
 
+  // Returns the rejection code from the most recent refreshValidityToken
+  // call, if the enterprise API rejected it (e.g. server binding conflict).
   getLastRefreshRejectionCode(): string | null {
     return this.lastRefreshRejectionCode;
   }
 
+  // Clears the cached and stored validity token, used when this server has
+  // been definitively displaced by another server holding the same key.
   private async revokeStoredValidityToken(): Promise<void> {
     this.cachedValidityPayload = null;
 
@@ -240,6 +263,10 @@ export class EnterprisePlanService implements OnModuleInit {
     }
   }
 
+  // Calls the enterprise API to validate the current key and instance
+  // metadata, storing a new validity token on success. Handles rate
+  // limiting and server-binding rejections, revoking the stored token only
+  // when this server has been definitively displaced by another.
   async refreshValidityToken(): Promise<boolean> {
     this.lastRefreshRejectionCode = null;
 
@@ -337,6 +364,7 @@ export class EnterprisePlanService implements OnModuleInit {
     }
   }
 
+  // Reports the workspace's active seat count to the enterprise API.
   async reportSeats(seatCount: number): Promise<boolean> {
     const enterpriseKey = this.twentyConfigService.get('ENTERPRISE_KEY');
 
@@ -380,6 +408,8 @@ export class EnterprisePlanService implements OnModuleInit {
     }
   }
 
+  // Asks the enterprise API to release this server's binding to the key so
+  // it can be re-activated on a different server.
   async releaseServerBinding(): Promise<boolean> {
     const enterpriseKey = this.twentyConfigService.get('ENTERPRISE_KEY');
 
@@ -441,6 +471,8 @@ export class EnterprisePlanService implements OnModuleInit {
     }
   }
 
+  // Fetches the enterprise subscription's billing status from the API,
+  // merging in locally-known licensee/expiry details.
   async getSubscriptionStatus(): Promise<{
     status: string;
     licensee: string | null;
@@ -497,6 +529,7 @@ export class EnterprisePlanService implements OnModuleInit {
     }
   }
 
+  // Returns a billing-portal URL for the current key, if one is configured.
   async getPortalUrl(returnUrl?: string): Promise<string | null> {
     const apiUrl = this.twentyConfigService.get('ENTERPRISE_API_URL');
 
@@ -514,6 +547,7 @@ export class EnterprisePlanService implements OnModuleInit {
     return null;
   }
 
+  // Requests a billing-portal URL from the enterprise API for the given key.
   private async requestPortalUrlWithKey(
     apiUrl: string,
     enterpriseKey: string,
@@ -548,6 +582,8 @@ export class EnterprisePlanService implements OnModuleInit {
     }
   }
 
+  // Requests a checkout URL from the enterprise API to start a new
+  // subscription with the given billing interval and seat count.
   async getCheckoutUrl(
     billingInterval: 'monthly' | 'yearly' = 'monthly',
     seatCount: number,
@@ -587,6 +623,8 @@ export class EnterprisePlanService implements OnModuleInit {
     }
   }
 
+  // Returns the configured SERVER_ID, generating and persisting a new one if
+  // none is set yet.
   async getOrCreateServerId(): Promise<string | null> {
     const existingServerId = this.twentyConfigService.get('SERVER_ID');
 
@@ -609,6 +647,8 @@ export class EnterprisePlanService implements OnModuleInit {
     }
   }
 
+  // Collects instance identity and usage metadata sent with every enterprise
+  // API call (server id, version, counts, admin contact, etc).
   private async gatherInstanceMetadata(): Promise<EnterpriseInstanceMetadata> {
     return {
       serverId: await this.getOrCreateServerId(),
@@ -634,6 +674,7 @@ export class EnterprisePlanService implements OnModuleInit {
     };
   }
 
+  // Runs a count query, returning null instead of throwing on failure.
   private async safeCount(
     countFn: () => Promise<number>,
   ): Promise<number | null> {
@@ -644,6 +685,8 @@ export class EnterprisePlanService implements OnModuleInit {
     }
   }
 
+  // Returns the earliest-created active user's email, used as a best-effort
+  // admin contact for the enterprise API.
   private async getAdminContactEmail(): Promise<string | null> {
     try {
       const user = await this.userRepository.findOne({
@@ -660,6 +703,7 @@ export class EnterprisePlanService implements OnModuleInit {
 
   // In development and Jest integration tests, tries both keys so production keys
   // work locally
+  // Returns which public key(s) to try when verifying a JWT signature.
   private getPublicKeysToTry(): string[] {
     const nodeEnv = this.twentyConfigService.get('NODE_ENV');
 
@@ -673,6 +717,8 @@ export class EnterprisePlanService implements OnModuleInit {
     return [ENTERPRISE_JWT_PUBLIC_KEY];
   }
 
+  // Manually verifies an RS256-signed JWT against the known public key(s)
+  // and returns its decoded payload, or null if malformed/invalid/unsigned.
   private verifyJwt<T extends Record<string, unknown>>(
     token: string,
   ): T | null {

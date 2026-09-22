@@ -10,8 +10,11 @@ import { FileEntity } from 'src/engine/core-modules/file/entities/file.entity';
 import { TwentyConfigModule } from 'src/engine/core-modules/twenty-config/twenty-config.module';
 import { provideWorkspaceScopedRepository } from 'src/engine/twenty-orm/workspace-scoped-repository/provide-workspace-scoped-repository';
 import { WorkspaceCacheModule } from 'src/engine/workspace-cache/workspace-cache.module';
+// Registers the file storage driver factory and services globally, with an
+// exception filter mapping storage errors to GraphQL errors
 @Global()
 export class FileStorageModule {
+  // Builds the dynamic module wiring storage services and the app-level exception filter
   static forRoot(): DynamicModule {
     return {
       module: FileStorageModule,

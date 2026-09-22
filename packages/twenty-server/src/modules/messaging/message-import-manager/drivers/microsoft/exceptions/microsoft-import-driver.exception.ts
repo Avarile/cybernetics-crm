@@ -1,3 +1,5 @@
+// Exception type thrown by the Microsoft Graph import driver, carrying an
+// HTTP-like status code and a user-facing translated message.
 import { type MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 

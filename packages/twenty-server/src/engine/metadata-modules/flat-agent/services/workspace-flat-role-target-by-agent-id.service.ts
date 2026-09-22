@@ -16,6 +16,8 @@ import { WorkspaceScopedRepository } from 'src/engine/twenty-orm/workspace-scope
 import { WorkspaceCache } from 'src/engine/workspace-cache/decorators/workspace-cache.decorator';
 import { createIdToUniversalIdentifierMap } from 'src/engine/workspace-cache/utils/create-id-to-universal-identifier-map.util';
 
+// Builds and caches a map from agent id to that agent's flat role target,
+// letting other services look up an agent's assigned role without a fresh query.
 @Injectable()
 @WorkspaceCache('flatRoleTargetByAgentIdMaps')
 export class WorkspaceFlatRoleTargetByAgentIdService extends WorkspaceCacheProvider<FlatRoleTargetByAgentIdMaps> {
@@ -30,6 +32,8 @@ export class WorkspaceFlatRoleTargetByAgentIdService extends WorkspaceCacheProvi
     super();
   }
 
+  // Loads role targets that reference an agent, along with application and role
+  // universal identifiers, and indexes the resulting flat role targets by agent id.
   async computeForCache(
     workspaceId: string,
   ): Promise<FlatRoleTargetByAgentIdMaps> {

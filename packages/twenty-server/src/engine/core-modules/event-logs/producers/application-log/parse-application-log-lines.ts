@@ -1,3 +1,5 @@
+// Parses raw stdout/stderr log text from logic function execution into
+// structured, timestamp/level/message log lines.
 import { type ParsedLogLine } from 'src/engine/core-modules/event-logs/producers/application-log/parsed-log-line.type';
 import { stripAnsiEscapes } from 'src/engine/core-modules/event-logs/producers/application-log/strip-ansi-escapes.util';
 
@@ -5,6 +7,8 @@ import { stripAnsiEscapes } from 'src/engine/core-modules/event-logs/producers/a
 const LOG_LINE_REGEX =
   /^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z)\s+(INFO|ERROR|WARN|DEBUG)\s+(.*)$/;
 
+// Splits raw log text into lines, parsing the `<timestamp> <LEVEL> <message>`
+// format when present and falling back to INFO/now for unstructured lines.
 export const parseApplicationLogLines = (rawLogs: string): ParsedLogLine[] => {
   if (!rawLogs) {
     return [];

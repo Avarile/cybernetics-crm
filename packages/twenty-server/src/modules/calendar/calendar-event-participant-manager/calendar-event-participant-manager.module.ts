@@ -21,6 +21,8 @@ import { CalendarEventParticipantService } from 'src/modules/calendar/calendar-e
 import { ContactCreationManagerModule } from 'src/modules/contact-creation-manager/contact-creation-manager.module';
 import { MatchParticipantModule } from 'src/modules/match-participant/match-participant.module';
 
+// Keeps calendar event participants in sync with matching people/workspace
+// members, upserts them on import, and records related timeline activity.
 @Module({
   imports: [
     WorkspaceDataSourceModule,

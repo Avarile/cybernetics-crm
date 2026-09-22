@@ -1,3 +1,5 @@
+// Converts a manifest-declared logic function into the universal flat
+// entity shape used to build workspace migrations.
 import { parse } from 'path';
 
 import { type LogicFunctionManifest } from 'twenty-shared/application';

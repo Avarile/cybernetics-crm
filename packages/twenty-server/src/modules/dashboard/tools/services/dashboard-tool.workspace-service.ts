@@ -19,6 +19,8 @@ import { createListDashboardsTool } from 'src/modules/dashboard/tools/list-dashb
 import { type DashboardToolDependencies } from 'src/modules/dashboard/tools/types/dashboard-tool-dependencies.type';
 import { createUpdateDashboardWidgetTool } from 'src/modules/dashboard/tools/update-dashboard-widget.tool';
 
+// Builds the set of AI agent tools for managing dashboards (create, list,
+// get, add tab, add/update/delete widget), sharing one dependency bag across them.
 @Injectable()
 export class DashboardToolWorkspaceService {
   private readonly deps: DashboardToolDependencies;
@@ -43,6 +45,8 @@ export class DashboardToolWorkspaceService {
     };
   }
 
+  // Instantiates every dashboard tool bound to this workspace and returns
+  // them as a ToolSet keyed by tool name.
   generateDashboardTools(
     workspaceId: string,
     _rolePermissionConfig: RolePermissionConfig,

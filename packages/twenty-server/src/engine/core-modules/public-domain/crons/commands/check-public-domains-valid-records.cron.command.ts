@@ -1,3 +1,4 @@
+// CLI command that registers the recurring public-domain DNS validation cron job.
 import { Command, CommandRunner } from 'nest-commander';
 
 import { InjectMessageQueue } from 'src/engine/core-modules/message-queue/decorators/message-queue.decorator';
@@ -21,6 +22,7 @@ export class CheckPublicDomainsValidRecordsCronCommand extends CommandRunner {
     super();
   }
 
+  // Schedules the CheckPublicDomainsValidRecordsCronJob to repeat hourly.
   async run(): Promise<void> {
     await this.messageQueueService.addCron<undefined>({
       jobName: CheckPublicDomainsValidRecordsCronJob.name,

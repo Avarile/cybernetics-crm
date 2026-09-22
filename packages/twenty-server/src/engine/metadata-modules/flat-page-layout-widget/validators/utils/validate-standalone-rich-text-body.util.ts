@@ -1,3 +1,6 @@
+// Validates that a standalone rich text widget's body is present and is a
+// non-array object.
+
 import { msg, t } from '@lingui/core/macro';
 import { isDefined } from 'twenty-shared/utils';
 

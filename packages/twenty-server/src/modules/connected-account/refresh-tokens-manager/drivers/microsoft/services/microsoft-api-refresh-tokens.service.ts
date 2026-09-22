@@ -11,6 +11,7 @@ import {
 import { parseMsalError } from 'src/modules/connected-account/refresh-tokens-manager/drivers/microsoft/utils/parse-msal-error.util';
 import type { ConnectedAccountPlaintextTokens } from 'src/modules/connected-account/refresh-tokens-manager/services/connected-account-refresh-tokens.service';
 
+// Exchanges a Microsoft refresh token for a new access token via MSAL.
 @Injectable()
 export class MicrosoftAPIRefreshAccessTokenService {
   constructor(private readonly config: TwentyConfigService) {}
@@ -53,6 +54,8 @@ export class MicrosoftAPIRefreshAccessTokenService {
     }
   }
 
+  // MSAL doesn't return the rotated refresh token directly; pull it back out
+  // of its internal token cache after the exchange.
   private extractRefreshTokenFromCache(
     msalClient: ConfidentialClientApplication,
   ): PlaintextString {

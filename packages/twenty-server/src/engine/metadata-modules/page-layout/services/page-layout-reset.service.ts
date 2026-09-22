@@ -44,6 +44,11 @@ import { WorkspaceMigrationValidateBuildAndRunService } from 'src/engine/workspa
 import { DashboardSyncService } from 'src/modules/dashboard-sync/services/dashboard-sync.service';
 
 @Injectable()
+// Resets standard-app page layouts, tabs, and FIELDS widgets back to
+// their default definitions, discarding workspace overrides and any
+// custom (non-standard-app) children created underneath them — including
+// the view fields/groups a FIELDS widget's view had accumulated, and
+// destroying views that become orphaned as a result.
 export class PageLayoutResetService {
   private readonly logger = new Logger(PageLayoutResetService.name);
 
@@ -55,6 +60,10 @@ export class PageLayoutResetService {
     private readonly viewService: ViewService,
   ) {}
 
+  // Clears overrides on a single standard-app FIELDS widget, resetting
+  // its layout and cascading the reset to its view's fields/groups.
+  // Rejects resetting a custom (workspace-owned, non-system-side-effect)
+  // widget, since there's no standard definition to fall back to.
   async resetPageLayoutWidgetToDefault({
     id,
     workspaceId,
@@ -209,6 +218,10 @@ export class PageLayoutResetService {
     return fromFlatPageLayoutWidgetToPageLayoutWidgetDto(updatedWidget);
   }
 
+  // Clears overrides on a single standard-app tab and cascades the reset
+  // to all its widgets (and their FIELDS views), hard-deleting any custom
+  // widgets and destroying resulting orphaned views. Rejects resetting a
+  // custom tab.
   async resetPageLayoutTabToDefault({
     id,
     workspaceId,
@@ -357,6 +370,10 @@ export class PageLayoutResetService {
     return fromFlatPageLayoutTabToPageLayoutTabDto(updatedTab);
   }
 
+  // Clears overrides on a whole standard-app page layout and cascades the
+  // reset through every tab and widget beneath it, hard-deleting custom
+  // (non-standard) tabs/widgets and destroying orphaned views. Rejects
+  // resetting a custom page layout.
   async resetPageLayoutToDefault({
     id,
     workspaceId,
@@ -554,6 +571,10 @@ export class PageLayoutResetService {
     );
   }
 
+  // Splits a tab's widgets into reset-vs-hard-delete based on ownership,
+  // computes each reset FIELDS widget's cascading view field/group reset
+  // operations, and collects the ids of views left with no widget
+  // referencing them (to be destroyed afterward).
   private computeTabChildResetOperations({
     tabId,
     flatPageLayoutWidgetMaps,
@@ -659,6 +680,8 @@ export class PageLayoutResetService {
     };
   }
 
+  // Extracts the view ids referenced by a set of deleted FIELDS widgets,
+  // as candidates for cleanup.
   private collectOrphanedViewIdsFromDeletedWidgets(
     widgets: FlatPageLayoutWidget[],
   ): string[] {
@@ -683,6 +706,8 @@ export class PageLayoutResetService {
     return viewIds;
   }
 
+  // Best-effort destroys each given view, logging (rather than throwing)
+  // on failure so a single bad view doesn't block the overall reset.
   private async destroyOrphanedFieldsWidgetViews({
     viewIds,
     workspaceId,
@@ -704,6 +729,8 @@ export class PageLayoutResetService {
     }
   }
 
+  // Splits a FIELDS widget's view field groups and view fields into
+  // reset-vs-hard-delete operations based on ownership.
   private computeFieldsWidgetChildResetOperations({
     viewId,
     flatViewFieldGroupMaps,

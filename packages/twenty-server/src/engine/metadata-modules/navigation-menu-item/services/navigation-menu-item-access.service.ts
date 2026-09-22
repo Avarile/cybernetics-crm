@@ -1,3 +1,7 @@
+// Enforces who can create/update/delete navigation menu items: workspace-
+// level items require the LAYOUTS permission, user-level items can only be
+// managed by the authenticated user who owns them.
+
 import { Injectable } from '@nestjs/common';
 
 import { msg } from '@lingui/core/macro';
@@ -19,6 +23,8 @@ import { PermissionsService } from 'src/engine/metadata-modules/permissions/perm
 export class NavigationMenuItemAccessService {
   constructor(private readonly permissionsService: PermissionsService) {}
 
+  // For workspace-level items (no inputUserWorkspaceId), requires the
+  // LAYOUTS permission; for user-level items, requires an authenticated user.
   async canUserCreateNavigationMenuItem({
     userWorkspaceId,
     workspaceId,
@@ -65,6 +71,8 @@ export class NavigationMenuItemAccessService {
     return true;
   }
 
+  // For workspace-level items, requires the LAYOUTS permission; for
+  // user-level items, requires the caller to be the item's owner.
   async canUserUpdateNavigationMenuItem({
     userWorkspaceId,
     workspaceId,
@@ -118,6 +126,8 @@ export class NavigationMenuItemAccessService {
     return true;
   }
 
+  // For workspace-level items, requires the LAYOUTS permission; for
+  // user-level items, requires the caller to be the item's owner.
   async canUserDeleteNavigationMenuItem({
     userWorkspaceId,
     workspaceId,

@@ -1,3 +1,4 @@
+// Seed data for sample dev-seeded messages.
 import { MESSAGE_THREAD_DATA_SEED_IDS } from 'src/engine/workspace-manager/dev-seeder/data/constants/message-thread-data-seeds.constant';
 
 type MessageDataSeed = {

@@ -20,6 +20,8 @@ type StandardObjectViewIds<O extends AllStandardObjectName> = {
   };
 };
 
+// Pre-generated ids (objects, fields, views and their views/groups/field-groups) that standard field
+// and view builders reference so every standard entity gets a stable id within a single build run
 export type StandardObjectMetadataRelatedEntityIds = {
   [O in AllStandardObjectName]: {
     id: string;
@@ -28,6 +30,7 @@ export type StandardObjectMetadataRelatedEntityIds = {
   };
 };
 
+// Generates fresh ids for a single standard object's views and each view's fields/groups/field-groups
 const computeStandardViewObjectIds = <O extends AllStandardObjectName>({
   objectName,
 }: {
@@ -126,6 +129,8 @@ const computeStandardViewObjectIds = <O extends AllStandardObjectName>({
 };
 
 // TODO remove once we have refactored the builder to iterate over universalIdentifier only
+// Generates a fresh id for every standard object, field, view, and nested view entity, for use as a
+// consistent id source across all standard field/view builders in a single build run
 export const getStandardObjectMetadataRelatedEntityIds =
   (): StandardObjectMetadataRelatedEntityIds => {
     const result = {} as StandardObjectMetadataRelatedEntityIds;

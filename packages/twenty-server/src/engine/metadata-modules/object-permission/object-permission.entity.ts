@@ -15,6 +15,7 @@ import { ObjectMetadataEntity } from 'src/engine/metadata-modules/object-metadat
 import { RoleEntity } from 'src/engine/metadata-modules/role/role.entity';
 import { SyncableEntity } from 'src/engine/workspace-manager/types/syncable-entity.interface';
 
+// A role's record-level (read/update/soft-delete/destroy) permission overrides on an object.
 @Entity('objectPermission')
 @Unique('IDX_OBJECT_PERMISSION_OBJECT_METADATA_ID_ROLE_ID_UNIQUE', [
   'objectMetadataId',

@@ -4,6 +4,8 @@ import { WorkspaceIteratorModule } from 'src/database/commands/command-runners/w
 import { UpgradeCommand } from 'src/database/commands/upgrade-version-command/upgrade.command';
 import { UpgradeModule } from 'src/engine/core-modules/upgrade/upgrade.module';
 
+// Registers the `upgrade` CLI command and its dependencies (upgrade sequencing,
+// workspace iteration).
 @Module({
   imports: [UpgradeModule, WorkspaceIteratorModule],
   providers: [UpgradeCommand],

@@ -1,7 +1,10 @@
+// CLI script: drops every database schema except the ones the app depends on being
+// preserved (public, metric_helpers, user_management, and Postgres system schemas).
 import { rawDataSource } from 'src/database/typeorm/raw/raw.datasource';
 
 import { performQuery } from './setup-db-utils';
 
+// Fetches all droppable schemas and drops them in batches of 10, in parallel per batch.
 async function dropSchemasSequentially() {
   try {
     await rawDataSource.initialize();

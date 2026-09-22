@@ -9,6 +9,8 @@ import { MicrosoftEmailAliasManagerService } from 'src/modules/connected-account
 import { EmailAliasManagerService } from 'src/modules/connected-account/email-alias-manager/services/email-alias-manager.service';
 import { OAuth2ClientManagerModule } from 'src/modules/connected-account/oauth2-client-manager/oauth2-client-manager.module';
 
+// Wires up the per-provider email alias lookups behind the shared
+// EmailAliasManagerService.
 @Module({
   imports: [
     OAuth2ClientManagerModule,

@@ -17,6 +17,8 @@ import { WorkspaceCache } from 'src/engine/workspace-cache/decorators/workspace-
 import { createIdToUniversalIdentifierMap } from 'src/engine/workspace-cache/utils/create-id-to-universal-identifier-map.util';
 import { addFlatEntityToFlatEntityMapsThroughMutationOrThrow } from 'src/engine/workspace-manager/workspace-migration/utils/add-flat-entity-to-flat-entity-maps-through-mutation-or-throw.util';
 
+// Builds and caches the workspace's flat-role-target maps by loading role target
+// entities and resolving their application and role ids to universal identifiers.
 @Injectable()
 @WorkspaceCache('flatRoleTargetMaps')
 export class WorkspaceFlatRoleTargetMapCacheService extends WorkspaceCacheProvider<FlatRoleTargetMaps> {
@@ -31,6 +33,8 @@ export class WorkspaceFlatRoleTargetMapCacheService extends WorkspaceCacheProvid
     super();
   }
 
+  // Loads all role targets and related applications/roles for the workspace, then
+  // assembles them into flat-role-target maps.
   async computeForCache(workspaceId: string): Promise<FlatRoleTargetMaps> {
     const [roleTargets, applications, roles] = await Promise.all([
       this.roleTargetRepository.find(workspaceId, {

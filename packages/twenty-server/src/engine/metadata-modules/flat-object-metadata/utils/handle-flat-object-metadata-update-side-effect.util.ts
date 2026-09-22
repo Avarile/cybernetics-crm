@@ -1,3 +1,7 @@
+// Computes the cascading side effects of an object metadata update: renaming
+// morph relation fields/indexes, recomputing indexes and view field
+// identifiers, and creating search fields when identifiers change.
+
 import { type FromTo } from 'twenty-shared/types';
 import { isDefined } from 'twenty-shared/utils';
 
@@ -34,6 +38,9 @@ type HandleFlatObjectMetadataUpdateSideEffectArgs = FromTo<
     | 'flatSearchFieldMetadataMaps'
   >;
 
+// Compares the from/to object metadata and, depending on which fields
+// changed (names, label identifier), triggers the relevant recompute/rename
+// helpers and merges their resulting side effects into a single result.
 export const handleFlatObjectMetadataUpdateSideEffect = ({
   flatIndexMaps,
   flatFieldMetadataMaps,

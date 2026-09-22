@@ -12,6 +12,7 @@ import {
 } from 'src/engine/metadata-modules/view-filter-group/exceptions/view-filter-group.exception';
 import { type UniversalFlatViewFilterGroup } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-view-filter-group.type';
 
+// Looks up the flat view filter group targeted for permanent destruction, throwing if it doesn't exist.
 export const fromDestroyViewFilterGroupInputToFlatViewFilterGroupOrThrow = ({
   destroyViewFilterGroupInput,
   flatViewFilterGroupMaps,

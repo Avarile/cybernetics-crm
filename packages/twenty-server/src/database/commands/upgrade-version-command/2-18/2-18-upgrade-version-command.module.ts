@@ -10,6 +10,8 @@ import { WorkspaceCacheModule } from 'src/engine/workspace-cache/workspace-cache
 import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace-migration/workspace-migration.module';
 import { WorkspaceMigrationRunnerModule } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-runner/workspace-migration-runner.module';
 
+// Registers the 2.18 workspace commands (add message is-draft field, normalize
+// legacy index names, recompute search vectors) as providers for the upgrade runner.
 @Module({
   imports: [
     ApplicationModule,

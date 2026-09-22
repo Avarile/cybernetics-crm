@@ -48,12 +48,15 @@ type VersionBundle = {
   workspaceCommands: RegisteredWorkspaceCommand[];
 };
 
+// Fallback bundle returned for a version with no registered commands
 const buildEmptyVersionBundle = (): VersionBundle => ({
   fastInstanceCommands: [],
   slowInstanceCommands: [],
   workspaceCommands: [],
 });
 
+// Discovers every @RegisteredInstanceCommand/@RegisteredWorkspaceCommand provider
+// at startup, groups and sorts them by version, and validates the registry is consistent
 @Injectable()
 export class UpgradeCommandRegistryService implements OnModuleInit {
   private readonly logger = new Logger(UpgradeCommandRegistryService.name);
@@ -65,6 +68,8 @@ export class UpgradeCommandRegistryService implements OnModuleInit {
 
   constructor(private readonly discoveryService: DiscoveryService) {}
 
+  // Builds the per-version command bundles from discovered providers, sorts each
+  // bundle by timestamp, then runs consistency validations across the registry
   onModuleInit(): void {
     for (const version of TWENTY_ALL_VERSIONS) {
       this.bundlesByVersion.set(version, {
@@ -182,10 +187,12 @@ export class UpgradeCommandRegistryService implements OnModuleInit {
     }
   }
 
+  // Returns the registered commands for a version, or an empty bundle if none
   getBundleForVersion(version: TwentyAllVersion): VersionBundle {
     return this.bundlesByVersion.get(version) ?? buildEmptyVersionBundle();
   }
 
+  // Returns the most recently timestamped workspace command for a version
   getLastWorkspaceCommandForVersion(
     version: TwentyAllVersion,
   ): RegisteredWorkspaceCommand | undefined {
@@ -194,18 +201,21 @@ export class UpgradeCommandRegistryService implements OnModuleInit {
     return bundle.workspaceCommands[bundle.workspaceCommands.length - 1];
   }
 
+  // All fast instance commands across the versions a cross-upgrade may span
   getCrossUpgradeSupportedFastInstanceCommands(): RegisteredFastInstanceCommand[] {
     return TWENTY_CROSS_UPGRADE_SUPPORTED_VERSIONS.flatMap(
       (version) => this.getBundleForVersion(version).fastInstanceCommands,
     );
   }
 
+  // All slow instance commands across the versions a cross-upgrade may span
   getCrossUpgradeSupportedSlowInstanceCommands(): RegisteredSlowInstanceCommand[] {
     return TWENTY_CROSS_UPGRADE_SUPPORTED_VERSIONS.flatMap(
       (version) => this.getBundleForVersion(version).slowInstanceCommands,
     );
   }
 
+  // Builds a command's unique registry name from its version, class name, and timestamp
   private computeCommandName(
     version: TwentyAllVersion,
     className: string,
@@ -214,6 +224,8 @@ export class UpgradeCommandRegistryService implements OnModuleInit {
     return `${version}_${className}_${timestamp}`;
   }
 
+  // Throws if any version has duplicate timestamps or duplicate command names
+  // within or across its command kinds
   private validateNoDuplicates(): void {
     for (const [version, bundle] of this.bundlesByVersion) {
       this.validateNoTimestampDuplicatesWithinKind(
@@ -252,6 +264,7 @@ export class UpgradeCommandRegistryService implements OnModuleInit {
     }
   }
 
+  // Throws if no cross-upgrade-supported version registers any workspace command
   private validateAtLeastOneVersionBundleHasWorkspaceCommands(): void {
     let hasWorkspaceCommands = false;
 
@@ -270,6 +283,7 @@ export class UpgradeCommandRegistryService implements OnModuleInit {
     }
   }
 
+  // Throws if two commands of the same kind in a version share a timestamp
   private validateNoTimestampDuplicatesWithinKind(
     version: TwentyAllVersion,
     kind: 'fast-instance' | 'slow-instance' | 'workspace',
@@ -291,6 +305,8 @@ export class UpgradeCommandRegistryService implements OnModuleInit {
     }
   }
 
+  // Throws if a version appears more than once across the previous/current/next
+  // version constants, which would indicate a misconfigured release
   private validateNoVersionDuplicatesAcrossConstants(): void {
     const allVersions = [
       ...TWENTY_PREVIOUS_VERSIONS,
@@ -311,6 +327,8 @@ export class UpgradeCommandRegistryService implements OnModuleInit {
     }
   }
 
+  // Throws if TWENTY_PREVIOUS_VERSIONS is empty, since at least one prior
+  // version is expected before the current one
   private validatePreviousVersionsNotEmpty(): void {
     if ((TWENTY_PREVIOUS_VERSIONS as readonly string[]).length === 0) {
       throw new Error(

@@ -1,3 +1,4 @@
+// Seed data for a sample dev-seeded API key.
 type ApiKeyDataSeed = {
   id: string;
   name: string;

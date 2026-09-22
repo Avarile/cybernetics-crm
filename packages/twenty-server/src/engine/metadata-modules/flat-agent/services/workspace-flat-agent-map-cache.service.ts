@@ -16,6 +16,8 @@ import { WorkspaceCache } from 'src/engine/workspace-cache/decorators/workspace-
 import { createIdToUniversalIdentifierMap } from 'src/engine/workspace-cache/utils/create-id-to-universal-identifier-map.util';
 import { addFlatEntityToFlatEntityMapsThroughMutationOrThrow } from 'src/engine/workspace-manager/workspace-migration/utils/add-flat-entity-to-flat-entity-maps-through-mutation-or-throw.util';
 
+// Builds and caches the workspace's flat-agent maps by loading agent entities
+// and resolving each agent's application id to its universal identifier.
 @Injectable()
 @WorkspaceCache('flatAgentMaps')
 export class WorkspaceFlatAgentMapCacheService extends WorkspaceCacheProvider<FlatAgentMaps> {
@@ -28,6 +30,8 @@ export class WorkspaceFlatAgentMapCacheService extends WorkspaceCacheProvider<Fl
     super();
   }
 
+  // Loads all agents (including soft-deleted) and application universal identifiers
+  // for the workspace, then assembles them into flat-agent maps.
   async computeForCache(workspaceId: string): Promise<FlatAgentMaps> {
     const [agents, applications] = await Promise.all([
       this.agentRepository.find(workspaceId, {

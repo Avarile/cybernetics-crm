@@ -1,3 +1,5 @@
+// GraphQL mutations for the two-step direct upload flow: request an upload
+// target, then confirm the upload completed.
 import { UseFilters, UseGuards, UsePipes } from '@nestjs/common';
 import { Args, Mutation } from '@nestjs/graphql';
 
@@ -24,6 +26,7 @@ export class FileUploadResolver {
 
   @Mutation(() => FileUploadTargetDTO)
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.UPLOAD_FILE))
+  // Creates a pending file record and returns where/how to upload its bytes.
   async createFileUpload(
     @AuthWorkspace()
     { id: workspaceId }: WorkspaceEntity,
@@ -54,6 +57,7 @@ export class FileUploadResolver {
 
   @Mutation(() => FileWithSignedUrlDTO)
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.UPLOAD_FILE))
+  // Confirms a previously created file upload and returns its signed URL.
   async completeFileUpload(
     @AuthWorkspace()
     { id: workspaceId }: WorkspaceEntity,

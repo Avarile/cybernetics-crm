@@ -11,6 +11,8 @@ import { CustomWorkspaceEventBatch } from 'src/engine/workspace-event-emitter/ty
 import { CalendarWebhookSubscriptionService } from 'src/modules/connected-account/webhook-subscription-manager/services/calendar-webhook-subscription.service';
 import { MessagingWebhookSubscriptionService } from 'src/modules/connected-account/webhook-subscription-manager/services/messaging-webhook-subscription.service';
 
+// Cleans up the provider webhook subscription when a message or calendar
+// channel is deleted, so Twenty stops paying for/receiving notifications on it.
 @Injectable()
 export class WebhookSubscriptionChannelDeletedListener {
   constructor(
@@ -36,6 +38,7 @@ export class WebhookSubscriptionChannelDeletedListener {
     }
   }
 
+  // Deletes the provider webhook subscription for a deleted calendar channel.
   @OnCustomBatchEvent(CALENDAR_CHANNEL_DELETED_EVENT)
   async handleCalendarChannelDeleted(
     batchEvent: CustomWorkspaceEventBatch<CalendarChannelDeletedEvent>,

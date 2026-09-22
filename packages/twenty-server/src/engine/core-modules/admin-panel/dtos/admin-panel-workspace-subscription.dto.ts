@@ -4,6 +4,7 @@ import { AdminPanelWorkspaceSubscriptionItemDTO } from 'src/engine/core-modules/
 import { SubscriptionInterval } from 'src/engine/core-modules/billing/enums/billing-subscription-interval.enum';
 import { SubscriptionStatus } from 'src/engine/core-modules/billing/enums/billing-subscription-status.enum';
 
+// Stripe subscription details for a workspace, as surfaced to admins
 @ObjectType('AdminPanelWorkspaceSubscription')
 export class AdminPanelWorkspaceSubscriptionDTO {
   @Field(() => String)

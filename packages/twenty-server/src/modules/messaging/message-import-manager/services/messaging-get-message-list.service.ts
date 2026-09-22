@@ -1,3 +1,5 @@
+// Dispatches message-list fetching to the driver matching the channel's
+// connected account provider (Gmail, Microsoft, or IMAP).
 import { Injectable } from '@nestjs/common';
 
 import { ConnectedAccountProvider } from 'twenty-shared/types';
@@ -22,6 +24,8 @@ export class MessagingGetMessageListService {
     private readonly imapGetMessageListService: ImapGetMessageListService,
   ) {}
 
+  // Routes to the provider-specific message list service, or throws
+  // PROVIDER_NOT_SUPPORTED for an unrecognized provider.
   public async getMessageLists(
     messageChannel: MessageChannelEntity,
     messageFolders: MessageFolder[],

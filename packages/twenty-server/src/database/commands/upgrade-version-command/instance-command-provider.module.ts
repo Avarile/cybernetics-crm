@@ -6,6 +6,8 @@ import { SecretEncryptionModule } from 'src/engine/core-modules/secret-encryptio
 import { SimpleSecretEncryptionUtil } from 'src/engine/core-modules/two-factor-authentication/utils/simple-secret-encryption.util';
 import { ConnectedAccountTokenEncryptionModule } from 'src/engine/metadata-modules/connected-account/services/connected-account-token-encryption.module';
 
+// Registers every instance command (from instance-commands.constant.ts) as a Nest
+// provider, plus the modules some of those commands' constructors depend on.
 @Module({
   imports: [
     ConnectedAccountTokenEncryptionModule,

@@ -1,3 +1,6 @@
+// Wires up navigation menu item CRUD, access control, record identifier
+// resolution, and cascade-deletion handling with their required modules.
+
 import { Module } from '@nestjs/common';
 
 import { ApplicationModule } from 'src/engine/core-modules/application/application.module';
@@ -44,4 +47,6 @@ import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace
     NavigationMenuItemToolWorkspaceService,
   ],
 })
+// Provides navigation menu item CRUD, record identifier resolution, and
+// tool integration services to other modules.
 export class NavigationMenuItemModule {}

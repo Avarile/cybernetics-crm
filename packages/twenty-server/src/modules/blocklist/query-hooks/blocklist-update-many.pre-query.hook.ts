@@ -10,6 +10,8 @@ import {
 import { WorkspaceQueryHook } from 'src/engine/api/graphql/workspace-query-runner/workspace-query-hook/decorators/workspace-query-hook.decorator';
 import { type BlocklistItem } from 'src/modules/blocklist/blocklist-validation-manager/services/blocklist-validation.service';
 
+// Bulk-updating blocklist entries is unsupported; this hook always rejects
+// `blocklist.updateMany` requests.
 @WorkspaceQueryHook(`blocklist.updateMany`)
 export class BlocklistUpdateManyPreQueryHook implements WorkspacePreQueryHookInstance {
   constructor() {}

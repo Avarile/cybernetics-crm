@@ -11,6 +11,8 @@ export enum CalendarEventParticipantResponseStatus {
   ACCEPTED = 'ACCEPTED',
 }
 
+// Standard object: an attendee/organizer of a calendar event, optionally
+// matched to a person or workspace member.
 export class CalendarEventParticipantWorkspaceEntity extends BaseWorkspaceEntity {
   handle: string | null;
   displayName: string | null;

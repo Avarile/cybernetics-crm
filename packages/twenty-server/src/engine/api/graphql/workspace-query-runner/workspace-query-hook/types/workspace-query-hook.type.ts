@@ -1,3 +1,5 @@
+// Maps each CRUD resolver method name to its corresponding args type,
+// so a pre-hook's payload is correctly typed for the method it hooks into.
 import {
   type CreateManyResolverArgs,
   type CreateOneResolverArgs,

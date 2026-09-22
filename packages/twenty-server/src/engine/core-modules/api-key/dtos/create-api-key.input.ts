@@ -1,3 +1,4 @@
+// GraphQL input for creating a new API key with a name, expiry, and role.
 import { Field, InputType } from '@nestjs/graphql';
 
 import {

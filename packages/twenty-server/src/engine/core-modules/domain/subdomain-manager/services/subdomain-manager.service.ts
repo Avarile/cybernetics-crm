@@ -25,6 +25,7 @@ const MAX_NUMBERED_SUFFIX_ATTEMPTS = 50;
 const MAX_RANDOM_FALLBACK_ATTEMPTS = 10;
 const SUBDOMAIN_SUGGESTIONS_COUNT = 3;
 
+// Generates, validates, and checks availability of workspace subdomains
 @Injectable()
 export class SubdomainManagerService {
   constructor(
@@ -33,6 +34,8 @@ export class SubdomainManagerService {
     private readonly twentyConfigService: TwentyConfigService,
   ) {}
 
+  // Derives a subdomain from the user's email or workspace name, falling back
+  // to a random one, then finds an available variant of it
   async generateSubdomain({
     userEmail,
     workspaceDisplayName,
@@ -47,6 +50,8 @@ export class SubdomainManagerService {
     return this.findAvailableSubdomain(extractedSubdomain ?? '');
   }
 
+  // Suggests a display name and available subdomain derived from the user's email,
+  // for prefilling the workspace creation form
   async getWorkspaceCreationDefaults(
     email?: string,
   ): Promise<WorkspaceCreationDefaultsDTO> {
@@ -62,12 +67,15 @@ export class SubdomainManagerService {
     };
   }
 
+  // Returns a single available subdomain close to the desired one
   async findAvailableSubdomain(desired: string): Promise<string> {
     const [availableSubdomain] = await this.findAvailableSubdomains(desired, 1);
 
     return availableSubdomain;
   }
 
+  // Derives a base slug from the desired subdomain (or generates a random one if
+  // invalid), then returns up to `count` available candidates derived from it
   async findAvailableSubdomains(
     desired: string,
     count: number,
@@ -93,6 +101,7 @@ export class SubdomainManagerService {
     return availableSubdomains.slice(0, count);
   }
 
+  // Builds a candidate list: the base, numbered suffix variants, then random fallbacks
   private buildSubdomainCandidates(base: string): string[] {
     const numberedCandidates = Array.from(
       { length: MAX_NUMBERED_SUFFIX_ATTEMPTS - 1 },
@@ -107,6 +116,8 @@ export class SubdomainManagerService {
     return [...new Set([base, ...numberedCandidates, ...randomCandidates])];
   }
 
+  // Filters candidates down to those that are syntactically valid, not the
+  // default subdomain, and not already taken by an existing (or deleted) workspace
   private async filterFreeToUseSubdomains(
     candidates: string[],
   ): Promise<string[]> {
@@ -136,6 +147,7 @@ export class SubdomainManagerService {
     );
   }
 
+  // Reports whether a requested subdomain is valid/available, with alternate suggestions
   async getSubdomainAvailability(
     subdomain: string,
   ): Promise<SubdomainAvailabilityDTO> {
@@ -159,6 +171,7 @@ export class SubdomainManagerService {
     };
   }
 
+  // Whether no workspace (including soft-deleted ones) already uses this subdomain
   async isSubdomainAvailable(subdomain: string) {
     const existingWorkspace = await this.workspaceRepository.findOne({
       where: { subdomain: subdomain },
@@ -168,6 +181,7 @@ export class SubdomainManagerService {
     return !existingWorkspace;
   }
 
+  // Throws if the subdomain is invalid, already taken, or reserved as the default
   async validateSubdomainOrThrow(subdomain: string) {
     const isValid = isSubdomainValid(subdomain);
 
@@ -191,6 +205,7 @@ export class SubdomainManagerService {
     }
   }
 
+  // Whether the subdomain is valid, not the default subdomain, and unclaimed
   private async isSubdomainFreeToUse(subdomain: string): Promise<boolean> {
     return (
       isSubdomainValid(subdomain) &&
@@ -199,6 +214,7 @@ export class SubdomainManagerService {
     );
   }
 
+  // Appends "-N" to base, trimming the base as needed to respect the max subdomain length
   private appendNumberedSuffix(base: string, suffix: number): string {
     const suffixPart = `-${suffix}`;
     const maxBaseLength = SUBDOMAIN_MAX_LENGTH - suffixPart.length;

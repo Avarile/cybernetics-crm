@@ -1,3 +1,7 @@
+// Wires up the logic function resolver, source-build services, and flat
+// entity map cache with the modules needed for execution, permissions, and
+// migrations.
+
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
@@ -52,4 +56,6 @@ import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace
     LogicFunctionFromSourceHelperService,
   ],
 })
+// Provides logic function create/update-from-source services to other
+// modules that need to programmatically manage logic functions.
 export class LogicFunctionModule {}

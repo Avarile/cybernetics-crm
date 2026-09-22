@@ -6,6 +6,8 @@ import {
 import { ApplicationRegistrationSourceType } from 'src/engine/core-modules/application/application-registration/enums/application-registration-source-type.enum';
 import { type ApplicationEntity } from 'src/engine/core-modules/application/application.entity';
 
+// Fixed registration record for the built-in "standard" application (the base object/field/view set)
+// that every workspace is seeded with.
 // description is owned by the frontend (translated) — see getStandardApplicationDescription.
 export const TWENTY_STANDARD_APPLICATION = {
   universalIdentifier: TWENTY_STANDARD_APPLICATION_UNIVERSAL_IDENTIFIER,

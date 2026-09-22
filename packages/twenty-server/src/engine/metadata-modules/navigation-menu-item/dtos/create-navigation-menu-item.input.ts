@@ -1,3 +1,6 @@
+// GraphQL input for creating a navigation menu item (a pinned record, view,
+// or folder shortcut in a user's sidebar navigation).
+
 import { Field, InputType } from '@nestjs/graphql';
 
 import {

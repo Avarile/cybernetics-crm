@@ -9,6 +9,8 @@ import { DashboardDestroyManyPreQueryHook } from 'src/modules/dashboard/query-ho
 import { DashboardDestroyOnePreQueryHook } from 'src/modules/dashboard/query-hooks/dashboard-destroy-one.pre-query.hook';
 import { DashboardToPageLayoutSyncService } from 'src/modules/dashboard/services/dashboard-to-page-layout-sync.service';
 
+// Registers the pre-query hooks that keep a dashboard's backing page layout
+// in sync as dashboards are created/destroyed.
 @Module({
   imports: [PageLayoutModule, PageLayoutTabModule, TwentyORMModule],
   providers: [

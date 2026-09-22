@@ -1,3 +1,5 @@
+// Wires together the marketplace catalog sync, query, caching, and
+// resolver services.
 import { Module } from '@nestjs/common';
 
 import { CoreEntityCacheModule } from 'src/engine/core-entity-cache/core-entity-cache.module';

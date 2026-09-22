@@ -1,3 +1,5 @@
+// NestJS module wiring the Cloudflare webhook controller/service used to
+// react to custom hostname verification events.
 import { Module } from '@nestjs/common';
 
 import { DnsCloudflareController } from 'src/engine/core-modules/cloudflare/controllers/dns-cloudflare.controller';

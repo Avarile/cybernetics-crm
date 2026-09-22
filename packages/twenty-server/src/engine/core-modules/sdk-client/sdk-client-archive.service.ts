@@ -1,3 +1,5 @@
+// Reads and extracts an application's generated SDK client zip archive from
+// file storage, regenerating it on the fly if it's missing.
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -35,6 +37,8 @@ export class SdkClientArchiveService {
     private readonly sdkClientGenerationService: SdkClientGenerationService,
   ) {}
 
+  // Downloads the application's SDK client archive and extracts it into
+  // `targetPackagePath`, clearing any existing contents first.
   async downloadAndExtractToPackage({
     workspaceId,
     applicationId,
@@ -61,6 +65,7 @@ export class SdkClientArchiveService {
     await directory.extract({ path: targetPackagePath });
   }
 
+  // Downloads the application's SDK client archive as a raw buffer.
   async downloadArchiveBuffer({
     workspaceId,
     applicationId,
@@ -77,6 +82,8 @@ export class SdkClientArchiveService {
     });
   }
 
+  // Extracts a single compiled module file (e.g. `dist/core.mjs`) from the
+  // application's SDK client archive.
   async getClientModuleFromArchive({
     workspaceId,
     applicationId,
@@ -113,6 +120,8 @@ export class SdkClientArchiveService {
     return entry.buffer();
   }
 
+  // Clears the application's "SDK layer stale" flag and invalidates the
+  // cached application metadata so clients see the update.
   async markSdkLayerFresh({
     applicationId,
     workspaceId,
@@ -130,6 +139,8 @@ export class SdkClientArchiveService {
     ]);
   }
 
+  // Reads the archive from file storage, or generates it on the fly (and
+  // logs a warning) if it hasn't been generated yet.
   private async downloadArchiveBufferOrGenerate({
     workspaceId,
     applicationId,

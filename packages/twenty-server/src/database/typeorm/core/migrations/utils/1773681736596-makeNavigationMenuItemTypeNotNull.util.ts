@@ -1,5 +1,8 @@
 import { type QueryRunner } from 'typeorm';
 
+// SQL for a legacy TypeORM migration: makes navigationMenuItem.type required and
+// rebuilds the check constraint tying each type to its required companion field
+// (FOLDER/OBJECT/VIEW/RECORD/LINK).
 export const makeNavigationMenuItemTypeNotNullQueries = async (
   queryRunner: QueryRunner,
 ): Promise<void> => {

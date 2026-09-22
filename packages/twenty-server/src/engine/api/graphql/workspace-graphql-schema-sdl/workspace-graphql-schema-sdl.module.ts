@@ -1,3 +1,5 @@
+// Wires up the service that produces (and caches) a workspace's GraphQL
+// SDL, along with the schema builder and metadata cache modules it needs.
 import { Module } from '@nestjs/common';
 
 import { ScalarsExplorerService } from 'src/engine/api/graphql/services/scalars-explorer.service';

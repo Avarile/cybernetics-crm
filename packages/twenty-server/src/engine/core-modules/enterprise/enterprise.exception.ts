@@ -1,5 +1,7 @@
 /* @license Enterprise */
 
+// Exception type and user-facing messages for enterprise licensing errors
+// (invalid/bound keys, rate limiting, server-binding conflicts).
 import { type MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { assertUnreachable } from 'twenty-shared/utils';

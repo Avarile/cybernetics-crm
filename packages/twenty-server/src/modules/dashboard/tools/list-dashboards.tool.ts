@@ -16,6 +16,7 @@ const listDashboardsSchema = z.object({
     .describe('Maximum number of dashboards to return (default: 20, max: 100)'),
 });
 
+// AI agent tool: lists dashboards in the workspace, ordered by position.
 export const createListDashboardsTool = (
   deps: Pick<DashboardToolDependencies, 'globalWorkspaceOrmManager'>,
   context: DashboardToolContext,

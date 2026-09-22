@@ -32,6 +32,9 @@ import { WorkspaceMigrationBuilderException } from 'src/engine/workspace-manager
 import { WorkspaceMigrationValidateBuildAndRunService } from 'src/engine/workspace-manager/workspace-migration/services/workspace-migration-validate-build-and-run-service';
 
 @Injectable()
+// Deep-copies a page layout (its tabs and their widgets) into a new page
+// layout owned by the workspace's custom application, all created in a
+// single validated workspace migration.
 export class PageLayoutDuplicationService {
   constructor(
     private readonly workspaceMigrationValidateBuildAndRunService: WorkspaceMigrationValidateBuildAndRunService,
@@ -39,6 +42,8 @@ export class PageLayoutDuplicationService {
     private readonly applicationService: ApplicationService,
   ) {}
 
+  // Duplicates a page layout (with all its tabs and widgets) into a new
+  // one, remapping tab/widget ids so the copy is fully independent.
   async duplicate({
     pageLayoutId,
     workspaceId,
@@ -177,6 +182,8 @@ export class PageLayoutDuplicationService {
     );
   }
 
+  // Loads all flat entity maps needed to read and duplicate a page layout
+  // and its widget-referenced entities.
   private async getPageLayoutFlatEntityMaps(workspaceId: string) {
     return this.workspaceManyOrAllFlatEntityMapsCacheService.getOrRecomputeManyOrAllFlatEntityMaps(
       {
@@ -195,6 +202,8 @@ export class PageLayoutDuplicationService {
     );
   }
 
+  // Finds the source page layout to duplicate, throwing if it doesn't
+  // exist or is deleted.
   private findOriginalLayoutOrThrow(
     pageLayoutId: string,
     flatPageLayoutMaps: FlatPageLayoutMaps,
@@ -217,6 +226,8 @@ export class PageLayoutDuplicationService {
     return flatLayout;
   }
 
+  // Collects the source layout's active tabs (ordered by position) along
+  // with each tab's active widgets.
   private getOriginalTabsWithWidgets(
     originalFlatLayout: FlatPageLayout,
     flatPageLayoutTabMaps: FlatPageLayoutTabMaps,
@@ -252,6 +263,8 @@ export class PageLayoutDuplicationService {
     }));
   }
 
+  // Builds new flat tabs mirroring the originals under the new page
+  // layout, tracking an original-to-new tab id mapping for widget reuse.
   private createDuplicatedTabs({
     originalTabs,
     newPageLayoutId,
@@ -291,6 +304,8 @@ export class PageLayoutDuplicationService {
     return { newFlatTabs, originalTabIdToNewTabIdMap };
   }
 
+  // Builds new flat widgets mirroring each original tab's widgets,
+  // reattached to their corresponding newly created tabs.
   private createDuplicatedWidgets({
     originalTabsWithWidgets,
     originalTabIdToNewTabIdMap,

@@ -1,3 +1,4 @@
+// GraphQL args for logging a track event tied to a specific object record.
 import { ArgsType, Field } from '@nestjs/graphql';
 
 import {

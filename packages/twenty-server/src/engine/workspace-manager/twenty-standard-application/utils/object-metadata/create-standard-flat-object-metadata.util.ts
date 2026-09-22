@@ -9,6 +9,8 @@ import {
   createStandardObjectFlatMetadata,
 } from 'src/engine/workspace-manager/twenty-standard-application/utils/object-metadata/create-standard-object-flat-metadata.util';
 
+// Registry of builder functions, one per standard object, each producing that object's fixed
+// FlatObjectMetadata content (labels, icon, identifier fields) via createStandardObjectFlatMetadata
 export const STANDARD_FLAT_OBJECT_METADATA_BUILDERS_BY_OBJECT_NAME = {
   attachment: ({
     now,

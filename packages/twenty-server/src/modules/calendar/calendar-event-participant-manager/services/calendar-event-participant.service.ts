@@ -41,6 +41,9 @@ export class CalendarEventParticipantService {
     private readonly messageQueueService: MessageQueueService,
   ) {}
 
+  // Reconciles calendar event participants for a batch of events: deletes
+  // participants no longer present, updates changed ones, inserts new ones,
+  // optionally queues contact creation, then matches them to people/members.
   public async upsertAndDeleteCalendarEventParticipants({
     participantsToCreate,
     participantsToUpdate,

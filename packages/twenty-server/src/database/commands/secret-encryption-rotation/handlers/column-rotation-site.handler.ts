@@ -28,6 +28,11 @@ export type ColumnRotationSiteConfig<Entity extends EntityWithId> = {
   extraWhere?: Partial<Entity>;
 };
 
+// Generic rotation handler for a "plain" encrypted string column: covers most
+// registry entries that don't need a bespoke handler. Decrypts each row with the
+// old key and re-encrypts with the current one, in id-ordered batches, using an
+// optimistic-concurrency UPDATE (matches on the original ciphertext) so a
+// concurrent write to the same row is skipped rather than clobbered.
 export class ColumnRotationSiteHandler<
   Entity extends EntityWithId = EntityWithId,
 > extends SecretEncryptionRotationHandler {
@@ -40,6 +45,7 @@ export class ColumnRotationSiteHandler<
     super();
   }
 
+  // Counts rows whose encrypted column isn't already on the current key.
   async countRemaining({
     currentEncryptionKeyId,
   }: Pick<
@@ -58,6 +64,7 @@ export class ColumnRotationSiteHandler<
       .getCount();
   }
 
+  // Pages through not-yet-rotated rows by id and rotates each one.
   async rotate({
     siteName,
     currentEncryptionKeyId,
@@ -103,6 +110,8 @@ export class ColumnRotationSiteHandler<
     return outcome;
   }
 
+  // Decrypts and re-encrypts a single row's value, skipping empty values and
+  // erroring on values that aren't a valid versioned envelope.
   private async rotateRow({
     siteName,
     row,
@@ -165,6 +174,7 @@ export class ColumnRotationSiteHandler<
     }
   }
 
+  // Applies the site's configured extraWhere filter (if any) to a query builder.
   private applyExtraWhere(
     qb: SelectQueryBuilder<Entity>,
   ): SelectQueryBuilder<Entity> {

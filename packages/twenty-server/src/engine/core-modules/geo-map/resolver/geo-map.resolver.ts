@@ -1,3 +1,5 @@
+// GraphQL resolver exposing address autocomplete and place-details queries
+// backed by the Google Maps Places API.
 import { UseGuards } from '@nestjs/common';
 import { Args, Query } from '@nestjs/graphql';
 
@@ -14,6 +16,7 @@ export class GeoMapResolver {
   constructor(private readonly geoMapService: GeoMapService) {}
 
   @Query(() => [AutocompleteResultDTO])
+  // Returns address autocomplete suggestions for a partial address string.
   async getAutoCompleteAddress(
     @Args('address') address: string,
     @Args('token') token: string,
@@ -29,6 +32,7 @@ export class GeoMapResolver {
   }
 
   @Query(() => PlaceDetailsResultDTO)
+  // Resolves a selected place id into its structured address fields.
   async getAddressDetails(
     @Args('placeId') placeId: string,
     @Args('token') token: string,

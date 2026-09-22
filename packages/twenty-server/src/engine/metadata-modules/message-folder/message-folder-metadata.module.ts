@@ -10,6 +10,8 @@ import { MessageFolderMetadataService } from 'src/engine/metadata-modules/messag
 import { MessageFolderResolver } from 'src/engine/metadata-modules/message-folder/resolvers/message-folder.resolver';
 import { PermissionsModule } from 'src/engine/metadata-modules/permissions/permissions.module';
 
+// Wires up message-folder CRUD/sync-status resolvers and services, depending on message
+// channel and connected account metadata to verify folder ownership.
 @Module({
   imports: [
     TypeOrmModule.forFeature([MessageFolderEntity]),

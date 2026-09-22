@@ -66,6 +66,9 @@ const MCP_PRELOADED_TOOL_ANNOTATIONS: Record<string, McpToolAnnotations> = {
   search_help_center: MCP_OPEN_WORLD_READ_ONLY_TOOL_ANNOTATIONS,
 };
 
+// Attaches MCP tool annotations to preloaded tools, throwing if a
+// preloaded tool has no configured annotations (every exposed tool must
+// declare its read-only/open-world/destructive hints).
 const annotatePreloadedMcpTools = (toolSet: ToolSet): ToolSet =>
   Object.fromEntries(
     Object.entries(toolSet).map(([name, toolDefinition]) => {
@@ -85,6 +88,10 @@ const annotatePreloadedMcpTools = (toolSet: ToolSet): ToolSet =>
     }),
   );
 
+// Core MCP JSON-RPC dispatcher: handles the initialize/ping/list handshake
+// methods directly and routes tools/list and tools/call to the tool
+// registry, after resolving the caller's role and building their
+// workspace-scoped tool set.
 @Injectable()
 export class McpProtocolService {
   constructor(
@@ -98,6 +105,8 @@ export class McpProtocolService {
     private readonly workspaceCacheService: WorkspaceCacheService,
   ) {}
 
+  // Builds the MCP "initialize" response: protocol version, declared
+  // capabilities, server info, and workspace-specific instructions.
   async handleInitialize(requestId: string | number, workspaceId: string) {
     const instructions =
       await this.mcpInstructionBuilderService.buildInstructions(workspaceId);
@@ -116,6 +125,9 @@ export class McpProtocolService {
     });
   }
 
+  // Resolves the permission role to run tools under: the API key's role
+  // for API-key auth, otherwise the user's workspace role; throws if
+  // neither is resolvable.
   async getRoleId(
     workspaceId: string,
     userWorkspaceId?: string,
@@ -147,6 +159,9 @@ export class McpProtocolService {
     return roleId;
   }
 
+  // Builds the actor metadata (name, workspace member) attributed to
+  // records created/modified via MCP tool calls: the API key's name, the
+  // calling workspace member's name, or a generic "Agent" fallback.
   private async buildActorContext(
     workspaceId: string,
     userId?: string,
@@ -191,6 +206,9 @@ export class McpProtocolService {
     return actorContext;
   }
 
+  // Assembles the full tool set exposed to an MCP client: preloaded
+  // tools plus the fixed set of catalog/execute/skill/metadata tools,
+  // each annotated with its MCP hints.
   private async buildMcpToolSet(
     workspace: FlatWorkspace,
     roleId: string,
@@ -279,7 +297,11 @@ export class McpProtocolService {
     };
   }
 
-  // Returns null for JSON-RPC notifications (no id), which require no response body
+  // Main JSON-RPC method dispatcher: handles initialize/ping/prompts-list/
+  // resources-list directly, rejects unknown methods, and for tools/list
+  // and tools/call resolves the caller's role and tool set before
+  // delegating to McpToolExecutorService. Returns null for JSON-RPC
+  // notifications (no id), which require no response body.
   async handleMCPCoreQuery(
     { id, method, params }: JsonRpc,
     {

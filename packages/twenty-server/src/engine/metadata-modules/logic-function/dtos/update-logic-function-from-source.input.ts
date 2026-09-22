@@ -1,3 +1,5 @@
+// GraphQL input for updating a logic function's source and settings.
+
 import { Field, InputType } from '@nestjs/graphql';
 
 import { Type } from 'class-transformer';

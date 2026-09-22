@@ -1,3 +1,5 @@
+// Maps ApplicationVariableEntityException codes to the appropriate
+// GraphQL error types for consistent API error responses.
 import { Catch, ExceptionFilter } from '@nestjs/common';
 
 import { assertUnreachable } from 'twenty-shared/utils';
@@ -13,6 +15,8 @@ import {
 
 @Catch(ApplicationVariableEntityException)
 export class ApplicationVariableEntityExceptionFilter implements ExceptionFilter {
+  // Translates an ApplicationVariableEntityException's code into the
+  // matching GraphQL error class and throws it.
   catch(exception: ApplicationVariableEntityException) {
     switch (exception.code) {
       case ApplicationVariableEntityExceptionCode.APPLICATION_VARIABLE_NOT_FOUND:

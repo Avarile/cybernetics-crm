@@ -1,3 +1,6 @@
+// Fills in a flat index's deterministic name without regenerating its
+// universal identifier (unlike generateDeterministicFlatIndexMetadataOrThrow).
+
 import { computeFlatIndexNameOrThrow } from 'src/engine/metadata-modules/index-metadata/utils/compute-flat-index-name.util';
 import { type UniversalFlatFieldMetadata } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-field-metadata.type';
 import { type UniversalFlatIndexMetadata } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-index-metadata.type';
@@ -9,6 +12,7 @@ export type GenerateFlatIndexArgs = {
   flatIndex: Omit<UniversalFlatIndexMetadata, 'name'>;
 };
 
+// Computes and attaches the deterministic name for the given index.
 export const generateFlatIndexMetadataWithNameOrThrow = ({
   flatObjectMetadata,
   objectFlatFieldMetadatas,

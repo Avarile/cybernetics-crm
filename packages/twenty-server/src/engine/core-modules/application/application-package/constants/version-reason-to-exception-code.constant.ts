@@ -1,3 +1,5 @@
+// Maps version validation failure reasons to the corresponding exception
+// codes for the install flow and, separately, the registration flow.
 import { type VersionValidationFailureReason } from 'src/engine/core-modules/application/application-package/application-version-validation.service';
 import { ApplicationRegistrationExceptionCode } from 'src/engine/core-modules/application/application-registration/application-registration.exception';
 import { ApplicationExceptionCode } from 'src/engine/core-modules/application/application.exception';

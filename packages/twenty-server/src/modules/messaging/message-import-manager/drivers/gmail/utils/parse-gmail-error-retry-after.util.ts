@@ -1,6 +1,8 @@
 const RETRY_AFTER_REGEX =
   /Retry after (\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z)/i;
 
+// Extracts a "Retry after <ISO timestamp>" hint from a Gmail error
+// message; returns undefined if absent, unparseable, or already past.
 export const parseGmailErrorRetryAfter = (
   message: string,
 ): Date | undefined => {

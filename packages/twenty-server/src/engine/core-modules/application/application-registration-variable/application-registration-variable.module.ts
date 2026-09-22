@@ -1,3 +1,5 @@
+// Wires the service managing application registration variables (server
+// config declared by an app's manifest).
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

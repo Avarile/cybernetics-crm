@@ -1,3 +1,7 @@
+// Logic function driver that transpiles and runs functions locally: esbuild
+// for transpilation, and a sandboxed child process (via
+// LocalChildProcessRunnerService) for execution, backed by local dependency/
+// SDK layers on disk. Used outside of Lambda-based deployments.
 import { promises as fs } from 'fs';
 import { dirname, join } from 'path';
 
@@ -52,6 +56,7 @@ export class LocalDriver implements LogicFunctionDriver {
     );
   }
 
+  // Bundles the given source code with esbuild into ESM output.
   async transpile({
     sourceCode,
     sourceFileName,
@@ -92,18 +97,23 @@ export class LocalDriver implements LogicFunctionDriver {
 
   async deleteApplicationResources(): Promise<void> {}
 
+  // Installs a precompiled bundle locally, delegating to the prebuilt-bundle service.
   async installPrebuiltBundle(
     params: LogicFunctionInstallPrebuiltBundleParams,
   ): Promise<void> {
     await this.prebuiltBundle.installPrebuiltBundle(params);
   }
 
+  // Returns the checksum of the locally installed prebuilt bundle, if any.
   async getInstalledBundleChecksum(
     flatLogicFunction: FlatLogicFunction,
   ): Promise<string | null> {
     return this.prebuiltBundle.getInstalledBundleChecksum(flatLogicFunction);
   }
 
+  // Runs a logic function in a sandboxed child process: ensures dep/SDK
+  // layers exist, assembles node_modules, resolves the code to run (prebuilt
+  // bundle or freshly built), and captures logs/result from the child.
   async execute({
     flatLogicFunction,
     flatApplication,

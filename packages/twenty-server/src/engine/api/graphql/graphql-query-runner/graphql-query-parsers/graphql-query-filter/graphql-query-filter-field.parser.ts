@@ -7,6 +7,10 @@ import {
 import { compositeTypeDefinitions, RelationType } from 'twenty-shared/types';
 import { capitalize, isDefined } from 'twenty-shared/utils';
 
+// Parses a single filter field (scalar, composite, or many-to-one
+// relation) into SQL WHERE fragments, enforcing field-level read
+// permissions and relation-nesting depth limits, and recursing into a
+// new GraphqlQueryFilterConditionParser for relation sub-filters.
 import { MAX_RELATION_FILTER_DEPTH } from 'src/engine/api/common/common-args-processors/filter-arg-processor/constants/max-relation-filter-depth.constant';
 import { type ObjectRecordFilter } from 'src/engine/api/graphql/workspace-query-builder/interfaces/object-record.interface';
 import {
@@ -62,6 +66,9 @@ export class GraphqlQueryFilterFieldParser {
     this.fieldIdByJoinColumnName = fieldMaps.fieldIdByJoinColumnName;
   }
 
+  // Resolves the field being filtered, checks read permissions on it,
+  // then routes to relation, composite, or plain scalar handling
+  // depending on the field's type.
   public parse(
     queryBuilder: WhereExpressionBuilder,
     outerQueryBuilder: WorkspaceSelectQueryBuilder<ObjectLiteral>,
@@ -151,6 +158,9 @@ export class GraphqlQueryFilterFieldParser {
     }
   }
 
+  // Handles filtering through a many-to-one relation: enforces the max
+  // nesting depth, resolves the related object, joins it into the query,
+  // and recursively parses the nested filter against the related object.
   private parseRelationSubFilter(
     queryBuilder: WhereExpressionBuilder,
     outerQueryBuilder: WorkspaceSelectQueryBuilder<ObjectLiteral>,
@@ -230,6 +240,9 @@ export class GraphqlQueryFilterFieldParser {
     }
   }
 
+  // Filters a composite field (e.g. address, currency) by expanding
+  // each requested sub-property into its own WHERE condition on the
+  // composite's underlying column(s).
   private parseCompositeFieldForFilter(
     queryBuilder: WhereExpressionBuilder,
     fieldMetadata: FlatFieldMetadata,

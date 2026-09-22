@@ -1,3 +1,7 @@
+// Service implementing custom index create/delete: validates the requested
+// fields and index type, builds the flat index metadata, and runs it through
+// the workspace migration pipeline.
+
 import { Injectable } from '@nestjs/common';
 
 import { msg } from '@lingui/core/macro';
@@ -33,6 +37,10 @@ export class IndexMetadataService {
     private readonly applicationService: ApplicationService,
   ) {}
 
+  // Validates the requested fields (no duplicates, belong to the object,
+  // composite sub-field rules, index-type compatibility, uniqueness
+  // conflicts, per-object custom index limit), then builds and runs the
+  // migration to create the index, returning the recomputed flat entity.
   async createOne({
     createIndexInput,
     workspaceId,
@@ -309,6 +317,8 @@ export class IndexMetadataService {
     return createdFlatIndexMetadata;
   }
 
+  // Finds the index, rejects deletion of system indexes, then builds and
+  // runs the migration to delete it.
   async deleteOne({
     id,
     workspaceId,

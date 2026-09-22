@@ -1,3 +1,5 @@
+// GraphQL type for a BullMQ queue's job counts and failure rate, with
+// optional raw completed/failed data series for graphing.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()

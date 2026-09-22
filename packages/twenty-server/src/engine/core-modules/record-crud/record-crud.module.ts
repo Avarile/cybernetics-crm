@@ -1,3 +1,6 @@
+// NestJS module wiring together the record CRUD services (create, update,
+// delete, find, group-by, upsert) exposed to workflows and AI tools.
+
 import { Module } from '@nestjs/common';
 
 import { CoreCommonApiModule } from 'src/engine/api/common/core-common-api.module';

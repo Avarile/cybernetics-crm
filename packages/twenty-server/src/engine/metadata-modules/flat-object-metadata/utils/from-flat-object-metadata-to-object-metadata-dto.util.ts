@@ -1,6 +1,8 @@
 import { type FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object-metadata/types/flat-object-metadata.type';
 import { type ObjectMetadataDTO } from 'src/engine/metadata-modules/object-metadata/dtos/object-metadata.dto';
 
+// Maps a FlatObjectMetadata to the GraphQL ObjectMetadataDTO shape, converting
+// timestamps to Date objects and nullable fields to undefined for the API.
 export const fromFlatObjectMetadataToObjectMetadataDto = (
   flatObjectMetadata: FlatObjectMetadata,
 ): ObjectMetadataDTO => {

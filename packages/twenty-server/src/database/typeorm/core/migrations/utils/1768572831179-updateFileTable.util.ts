@@ -1,5 +1,7 @@
 import { type QueryRunner } from 'typeorm';
 
+// SQL for a legacy TypeORM migration: reshapes the core "file" table — drops
+// name/fullPath/type columns and adds applicationId/path/updatedAt/deletedAt/isStaticAsset.
 export const updateFileTableQueries = async (
   queryRunner: QueryRunner,
 ): Promise<void> => {

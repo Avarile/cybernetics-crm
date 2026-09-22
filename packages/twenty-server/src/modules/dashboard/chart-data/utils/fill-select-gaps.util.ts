@@ -8,6 +8,8 @@ type FillSelectGapsParams = {
   selectOptions: FieldMetadataOption[] | null | undefined;
 };
 
+// Inserts zero-value entries for select options with no matching group-by
+// result, so the chart shows every option even when its count is zero.
 export const fillSelectGaps = ({
   data,
   selectOptions,
@@ -51,6 +53,8 @@ type FillSelectGapsTwoDimensionalParams = {
   selectOptions: FieldMetadataOption[] | null | undefined;
 };
 
+// Same as fillSelectGaps, but fills the full cross product of select options
+// and the distinct secondary-dimension values seen in the data.
 export const fillSelectGapsTwoDimensional = ({
   data,
   selectOptions,

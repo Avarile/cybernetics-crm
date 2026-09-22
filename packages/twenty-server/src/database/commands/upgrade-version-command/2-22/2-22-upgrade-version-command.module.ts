@@ -11,6 +11,9 @@ import { SecureHttpClientModule } from 'src/engine/core-modules/secure-http-clie
 import { WorkspaceCacheModule } from 'src/engine/workspace-cache/workspace-cache.module';
 import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace-migration/workspace-migration.module';
 
+// Registers the 2.22 workspace commands (company/person image-identifier
+// backfill, person avatar URL-to-file migration, workflow-version core soft-ref
+// field + link backfill) as providers for the upgrade runner.
 @Module({
   imports: [
     ApplicationModule,

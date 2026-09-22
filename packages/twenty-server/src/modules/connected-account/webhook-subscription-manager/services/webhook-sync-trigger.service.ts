@@ -21,6 +21,9 @@ import {
   type MessagingMessageListFetchJobData,
 } from 'src/modules/messaging/message-import-manager/jobs/messaging-message-list-fetch.job';
 
+// Kicks off an immediate sync in response to a provider webhook
+// notification, atomically claiming the channel (only if still pending) so
+// concurrent notifications don't double-schedule a fetch.
 @Injectable()
 export class WebhookSyncTriggerService {
   constructor(
@@ -34,6 +37,8 @@ export class WebhookSyncTriggerService {
     private readonly calendarChannelRepository: Repository<CalendarChannelEntity>,
   ) {}
 
+  // Claims a pending message channel and queues its message list fetch;
+  // reverts the claim if enqueuing fails.
   async triggerMessagingSync(
     messageChannelId: string,
     workspaceId: string,
@@ -80,6 +85,8 @@ export class WebhookSyncTriggerService {
     }
   }
 
+  // Claims a pending calendar channel and queues its event list fetch;
+  // reverts the claim if enqueuing fails.
   async triggerCalendarSync(
     calendarChannelId: string,
     workspaceId: string,

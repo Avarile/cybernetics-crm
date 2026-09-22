@@ -1,3 +1,4 @@
+// GraphQL type for a single BullMQ queue's health status and metrics.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 import { WorkerQueueMetrics } from 'src/engine/core-modules/admin-panel/types/worker-queue-metrics.type';

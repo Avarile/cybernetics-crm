@@ -11,6 +11,8 @@ import { RegisteredWorkspaceCommand } from 'src/engine/core-modules/upgrade/deco
 const EDIT_RECORD_PAGE_LAYOUT_UNIVERSAL_IDENTIFIER =
   'd9794c67-1799-424f-8871-5ea771dd4a6d';
 
+// Workspace command (1.21.0): renames the "Edit Page Layout" command menu item's
+// label/shortLabel to "Edit Layout" via a direct SQL UPDATE.
 @RegisteredWorkspaceCommand('1.21.0', 1775500009000)
 @Command({
   name: 'upgrade:1-21:update-edit-layout-command-menu-item-label',
@@ -25,6 +27,8 @@ export class UpdateEditLayoutCommandMenuItemLabelCommand extends ProvisionedWork
     super(workspaceIteratorService);
   }
 
+  // Updates the label/shortLabel for this workspace's Edit Page Layout item if
+  // they don't already match "Edit Layout", inside a transaction.
   override async runOnWorkspace({
     workspaceId,
     options,

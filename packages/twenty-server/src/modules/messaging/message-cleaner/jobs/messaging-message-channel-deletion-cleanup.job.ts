@@ -1,3 +1,5 @@
+// Runs after a message channel is deleted: removes its message channel
+// message associations, then cleans up any orphaned messages/threads.
 import { Logger, Scope } from '@nestjs/common';
 
 import { Process } from 'src/engine/core-modules/message-queue/decorators/process.decorator';
@@ -23,6 +25,7 @@ export class MessagingMessageChannelDeletionCleanupJob {
     private readonly messageCleanerService: MessagingMessageCleanerService,
   ) {}
 
+  // Deletes the channel's message associations, then cleans up orphans.
   @Process(MessagingMessageChannelDeletionCleanupJob.name)
   async handle(
     data: MessagingMessageChannelDeletionCleanupJobData,

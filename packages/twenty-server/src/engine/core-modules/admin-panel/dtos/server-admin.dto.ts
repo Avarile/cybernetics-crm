@@ -1,3 +1,5 @@
+// GraphQL DTO for a user with server-admin access, including granted
+// admin-panel/impersonation permissions.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';

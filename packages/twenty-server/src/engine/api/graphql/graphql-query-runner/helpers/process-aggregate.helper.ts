@@ -1,3 +1,7 @@
+// Builds and inspects the raw SQL expressions used for aggregate
+// queries (sum/count/avg/etc. and empty/non-empty/unique-value counts),
+// including the special-cased COUNT/PERCENTAGE expressions that guard
+// against division by zero.
 import { AggregateOperations } from 'twenty-shared/types';
 import { isDefined } from 'twenty-shared/utils';
 
@@ -6,6 +10,8 @@ import { type WorkspaceSelectQueryBuilder } from 'src/engine/twenty-orm/reposito
 import { formatColumnNamesFromCompositeFieldAndSubfields } from 'src/engine/twenty-orm/utils/format-column-names-from-composite-field-and-subfield.util';
 
 export class ProcessAggregateHelper {
+  // Replaces the query builder's SELECT with one aggregate expression per
+  // requested aggregated field, aliased by field name.
   public static addSelectedAggregatedFieldsQueriesToQueryBuilder = ({
     selectedAggregatedFields,
     queryBuilder,
@@ -34,6 +40,9 @@ export class ProcessAggregateHelper {
     }
   };
 
+  // Reverse-engineers the underlying column name(s) referenced by a
+  // previously built aggregate SQL expression (handling CONCAT'd
+  // composite-field expressions and plain table.column references).
   public static extractColumnNamesFromAggregateExpression = (
     selection: string,
   ): string[] | null => {
@@ -84,6 +93,10 @@ export class ProcessAggregateHelper {
     return null;
   };
 
+  // Builds the raw SQL aggregate expression for a field (concatenating
+  // composite sub-columns first if needed), special-casing the
+  // empty/not-empty/unique/percentage/boolean-count operations to guard
+  // against COUNT(*) = 0 and to treat empty-string as NULL.
   public static getAggregateExpression = (
     aggregatedField: AggregationField,
     objectMetadataNameSingular: string,

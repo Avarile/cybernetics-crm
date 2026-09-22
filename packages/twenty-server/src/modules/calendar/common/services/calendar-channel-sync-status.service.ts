@@ -19,6 +19,9 @@ import { GlobalWorkspaceOrmManager } from 'src/engine/twenty-orm/global-workspac
 import { buildSystemAuthContext } from 'src/engine/twenty-orm/utils/build-system-auth-context.util';
 import { AccountsToReconnectService } from 'src/modules/connected-account/services/accounts-to-reconnect.service';
 import { AccountsToReconnectKeys } from 'src/modules/connected-account/types/accounts-to-reconnect-key-value.type';
+// Central place for transitioning a calendar channel's sync stage/status
+// (pending/ongoing/completed/failed) and related bookkeeping (cache, metrics,
+// reconnect prompts) as it moves through the sync pipeline.
 @Injectable()
 export class CalendarChannelSyncStatusService {
   constructor(
@@ -35,6 +38,7 @@ export class CalendarChannelSyncStatusService {
     private readonly metricsService: MetricsService,
   ) {}
 
+  // Marks channels ready for their next event list fetch.
   public async markAsCalendarEventListFetchPending(
     calendarChannelIds: string[],
     workspaceId: string,
@@ -64,6 +68,7 @@ export class CalendarChannelSyncStatusService {
     );
   }
 
+  // Marks channels as actively fetching their event list.
   public async markAsCalendarEventListFetchOngoing(
     calendarChannelIds: string[],
     workspaceId: string,
@@ -91,6 +96,8 @@ export class CalendarChannelSyncStatusService {
     );
   }
 
+  // Clears the sync cursor/throttle state and cached pending events, forcing
+  // a full re-sync starting from a fresh event list fetch.
   public async resetAndMarkAsCalendarEventListFetchPending(
     calendarChannelIds: string[],
     workspaceId: string,
@@ -128,6 +135,7 @@ export class CalendarChannelSyncStatusService {
     );
   }
 
+  // Clears the sync stage start timestamp (used when unsticking a stale sync).
   public async resetSyncStageStartedAt(
     calendarChannelIds: string[],
     workspaceId: string,
@@ -152,6 +160,7 @@ export class CalendarChannelSyncStatusService {
     );
   }
 
+  // Marks channels ready for their next events import batch.
   public async markAsCalendarEventsImportPending(
     calendarChannelIds: string[],
     workspaceId: string,
@@ -180,6 +189,7 @@ export class CalendarChannelSyncStatusService {
     );
   }
 
+  // Marks channels as actively importing events.
   public async markAsCalendarEventsImportOngoing(
     calendarChannelIds: string[],
     workspaceId: string,
@@ -206,6 +216,9 @@ export class CalendarChannelSyncStatusService {
     );
   }
 
+  // Marks a full sync cycle complete: resets throttle/failure state, records
+  // the synced timestamp, restarts at list-fetch-pending for the next cycle,
+  // and increments the active-sync metric.
   public async markAsCalendarEventSyncCompleted(
     calendarChannelIds: string[],
     workspaceId: string,
@@ -245,6 +258,8 @@ export class CalendarChannelSyncStatusService {
     });
   }
 
+  // Marks channels permanently failed (unknown cause) and drops their pending
+  // import queue so a later resync starts clean.
   public async markAsFailedUnknownAndFlushCalendarEventsToImport(
     calendarChannelIds: string[],
     workspaceId: string,
@@ -281,6 +296,8 @@ export class CalendarChannelSyncStatusService {
     });
   }
 
+  // Marks channels failed due to insufficient permissions, flags the
+  // connected account as auth-failed, and queues it for reconnect prompting.
   public async markAsFailedInsufficientPermissionsAndFlushCalendarEventsToImport(
     calendarChannelIds: string[],
     workspaceId: string,
@@ -339,6 +356,8 @@ export class CalendarChannelSyncStatusService {
     });
   }
 
+  // Resolves each channel's owning user and queues their connected account
+  // to be surfaced for reconnection due to insufficient permissions.
   private async addToAccountsToReconnect(
     calendarChannelIds: string[],
     workspaceId: string,

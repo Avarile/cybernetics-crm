@@ -1,3 +1,6 @@
+// Fetches the list of Gmail message ids to import for a message channel:
+// either a full search (first sync, honoring folder exclusions) or an
+// incremental diff via account history (subsequent syncs).
 import { Injectable, Logger } from '@nestjs/common';
 
 import { isNonEmptyString } from '@sniptt/guards';
@@ -28,6 +31,9 @@ export class GmailGetMessageListService {
     private readonly gmailMessageListFetchErrorHandler: GmailMessageListFetchErrorHandler,
   ) {}
 
+  // Performs a full search (no sync cursor yet) for message ids excluded
+  // per folder policy, paginating through all results, then fetches the
+  // first message to seed the next sync cursor (Gmail's historyId).
   async getMessageListWithoutCursor(
     connectedAccount: Pick<
       ConnectedAccountEntity,
@@ -139,6 +145,9 @@ export class GmailGetMessageListService {
     ];
   }
 
+  // Entry point: returns [] if using SELECTED_FOLDERS policy with nothing
+  // marked synced; otherwise does a full search when there's no existing
+  // sync cursor, or an incremental history-based fetch otherwise.
   public async getMessageLists({
     messageChannel,
     connectedAccount,

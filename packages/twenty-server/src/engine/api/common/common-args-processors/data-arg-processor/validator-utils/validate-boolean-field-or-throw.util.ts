@@ -8,6 +8,8 @@ import {
   CommonQueryRunnerExceptionCode,
 } from 'src/engine/api/common/common-query-runners/errors/common-query-runner.exception';
 
+// Validates that a boolean field input is a boolean or null; throws
+// otherwise.
 export const validateBooleanFieldOrThrow = (
   value: unknown,
   fieldName: string,

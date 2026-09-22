@@ -1,3 +1,4 @@
+// GraphQL DTO for a queue's completed/failed job metrics over a time range.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 import { QueueMetricsSeriesDTO } from 'src/engine/core-modules/admin-panel/dtos/queue-metrics-series.dto';

@@ -1,3 +1,5 @@
+// CLI command (dev/test only) that generates an admin-scoped API key for a
+// workspace and prints the resulting token for local testing.
 import { Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -76,6 +78,8 @@ export class GenerateApiKeyCommand extends CommandRunner {
     return days;
   }
 
+  // Restricted to dev/test environments; creates the key under the
+  // workspace's Admin role and outputs the signed token.
   async run(
     _passedParams: string[],
     options: GenerateApiKeyCommandOptions,

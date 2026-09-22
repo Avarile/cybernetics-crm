@@ -3,6 +3,7 @@ import uniqBy from 'lodash.uniqby';
 
 import { type Contact } from 'src/modules/contact-creation-manager/types/contact.type';
 
+// Deduplicates contacts by handle (case-insensitive).
 export function getUniqueContactsAndHandles(contacts: Contact[]): {
   uniqueContacts: Contact[];
   uniqueHandles: string[];

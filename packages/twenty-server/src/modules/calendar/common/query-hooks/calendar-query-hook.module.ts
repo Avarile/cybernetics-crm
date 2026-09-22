@@ -8,6 +8,7 @@ import { CalendarEventFindManyPostQueryHook } from 'src/modules/calendar/common/
 import { CalendarEventFindOnePostQueryHook } from 'src/modules/calendar/common/query-hooks/calendar-event/calendar-event-find-one.post-query.hook';
 import { ApplyCalendarEventsVisibilityRestrictionsService } from 'src/modules/calendar/common/query-hooks/calendar-event/services/apply-calendar-events-visibility-restrictions.service';
 
+// Registers the post-query hooks that enforce calendar event visibility restrictions.
 @Module({
   imports: [
     TypeOrmModule.forFeature([

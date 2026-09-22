@@ -1,3 +1,6 @@
+// Display label and icon for the default relation fields (notes, tasks,
+// attachments, timeline activities) auto-added to every custom object.
+
 import { type MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 

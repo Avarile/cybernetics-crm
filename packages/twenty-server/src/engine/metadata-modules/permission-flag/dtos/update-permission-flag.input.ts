@@ -16,6 +16,7 @@ import {
   type PermissionFlagPermissionType,
 } from 'src/engine/metadata-modules/permission-flag/constants/permission-flag-permission-type.constant';
 
+// Editable fields for a permission flag update.
 @InputType()
 export class UpdatePermissionFlagInputUpdates {
   @IsOptional()
@@ -39,6 +40,7 @@ export class UpdatePermissionFlagInputUpdates {
   permissionType?: PermissionFlagPermissionType;
 }
 
+// Input for updating a permission flag definition by id.
 @InputType()
 export class UpdatePermissionFlagInput {
   @IsUUID()

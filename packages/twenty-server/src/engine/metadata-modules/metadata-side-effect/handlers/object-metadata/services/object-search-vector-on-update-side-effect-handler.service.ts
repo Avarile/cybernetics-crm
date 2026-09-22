@@ -1,3 +1,7 @@
+// Side effect: when a searchable object's label identifier changes to a new
+// searchable field, additively provisions the searchFieldMetadata row that
+// indexes it, without removing existing search rows.
+
 import { Injectable } from '@nestjs/common';
 
 import { getFieldUniversalIdentifier } from 'twenty-shared/application';
@@ -22,6 +26,9 @@ export class ObjectSearchVectorOnUpdateSideEffectHandlerService extends Metadata
       'When a searchable object is relabeled onto a new searchable field, provision the searchFieldMetadata row that indexes it. Relabeling is additive: existing search rows (e.g. the provisioned name row) are preserved so the previous label identifier stays searchable. Mirrors the API update path so a manifest re-sync that changes the label identifier reaches search parity.',
   },
 ) {
+  // No-ops unless the object is searchable and its label identifier changed
+  // to a new, searchable, non-id field not already indexed; otherwise builds
+  // the new search field row appended after existing ones.
   buildSideEffects({
     flatEntity: updatedFlatObjectMetadata,
     allFlatEntityOperationRecordByMetadataName,
@@ -146,6 +153,7 @@ export class ObjectSearchVectorOnUpdateSideEffectHandlerService extends Metadata
     };
   }
 
+  // Resolves a field's type, checking pending create operations first.
   private resolveFieldType({
     fieldMetadataUniversalIdentifier,
     allFlatEntityOperationRecordByMetadataName,

@@ -11,6 +11,8 @@ import { WorkspaceMigrationBuilderException } from 'src/engine/workspace-manager
 
 @Catch(ViewGroupException, WorkspaceMigrationBuilderException)
 @Injectable()
+// Catches ViewGroupException and WorkspaceMigrationBuilderException and
+// converts them into the appropriate GraphQL API error type.
 export class ViewGroupGraphqlApiExceptionFilter implements ExceptionFilter {
   catch(
     exception: ViewGroupException | WorkspaceMigrationBuilderException,

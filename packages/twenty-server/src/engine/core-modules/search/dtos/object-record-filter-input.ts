@@ -1,3 +1,5 @@
+// GraphQL input types for filtering global search results by common record
+// fields (id, timestamps), with boolean and/or/not composition.
 import {
   Field,
   GraphQLISODateTime,

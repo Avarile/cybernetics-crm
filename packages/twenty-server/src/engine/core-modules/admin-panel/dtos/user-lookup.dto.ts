@@ -1,3 +1,5 @@
+// GraphQL DTOs for admin user-lookup results: the matched user and the
+// workspaces they belong to, with per-workspace member/feature-flag details.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 import { WorkspaceActivationStatus } from 'twenty-shared/workspace';

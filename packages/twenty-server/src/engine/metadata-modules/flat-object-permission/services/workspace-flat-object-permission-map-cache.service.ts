@@ -17,6 +17,8 @@ import { WorkspaceCacheProvider } from 'src/engine/workspace-cache/interfaces/wo
 import { createIdToUniversalIdentifierMap } from 'src/engine/workspace-cache/utils/create-id-to-universal-identifier-map.util';
 import { addFlatEntityToFlatEntityMapsThroughMutationOrThrow } from 'src/engine/workspace-manager/workspace-migration/utils/add-flat-entity-to-flat-entity-maps-through-mutation-or-throw.util';
 
+// Builds and caches the workspace's flat-object-permission maps by loading object permission
+// entities and resolving their application, role and object metadata ids to universal identifiers.
 @Injectable()
 @WorkspaceCache('flatObjectPermissionMaps')
 export class WorkspaceFlatObjectPermissionMapCacheService extends WorkspaceCacheProvider<FlatObjectPermissionMaps> {
@@ -33,6 +35,8 @@ export class WorkspaceFlatObjectPermissionMapCacheService extends WorkspaceCache
     super();
   }
 
+  // Loads all object permissions plus related applications, roles and object metadata
+  // for the workspace, then assembles them into flat-object-permission maps.
   async computeForCache(
     workspaceId: string,
   ): Promise<FlatObjectPermissionMaps> {

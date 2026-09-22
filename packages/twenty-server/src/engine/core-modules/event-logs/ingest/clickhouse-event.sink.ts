@@ -1,3 +1,4 @@
+// Event sink writing batched envelopes into ClickHouse, grouped by target table.
 import { Injectable } from '@nestjs/common';
 
 import { ClickHouseService } from 'src/database/clickHouse/clickHouse.service';
@@ -8,6 +9,7 @@ import { type WorkspaceEventEnvelope } from 'src/engine/core-modules/event-logs/
 export class ClickHouseEventSink implements EventSink {
   constructor(private readonly clickHouseService: ClickHouseService) {}
 
+  // Groups events by target table and bulk-inserts each group into ClickHouse.
   async write(events: WorkspaceEventEnvelope[]): Promise<void> {
     if (events.length === 0 || !this.clickHouseService.getMainClient()) {
       return;

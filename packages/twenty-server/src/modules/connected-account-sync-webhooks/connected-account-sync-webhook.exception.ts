@@ -24,6 +24,8 @@ const getConnectedAccountSyncWebhookExceptionUserFriendlyMessage = (
   }
 };
 
+// Thrown when an inbound provider webhook (Google/Microsoft) can't be
+// processed: missing body, malformed payload, or failed signature/token verification.
 export class ConnectedAccountSyncWebhookException extends CustomException<ConnectedAccountSyncWebhookExceptionCode> {
   constructor(
     message: string,

@@ -1,3 +1,5 @@
+// NestJS module wiring the logic-function execution service and its
+// dependencies (throttling, tokens, billing usage, events, subscriptions).
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

@@ -1,3 +1,7 @@
+// Service deciding whether an impersonation attempt is authorized: whether
+// it's server-level (across workspaces, requiring server impersonation
+// rights and, outside dev, 2FA) or workspace-level (requiring the
+// IMPERSONATE permission and, for admin targets, admin privileges).
 import { Injectable } from '@nestjs/common';
 
 import { PermissionFlagType } from 'twenty-shared/constants';
@@ -34,6 +38,8 @@ export class ImpersonationAuthorizationService {
     private readonly twentyConfigService: TwentyConfigService,
   ) {}
 
+  // Impersonation is "server" level when crossing workspace boundaries,
+  // otherwise "workspace" level (same-workspace impersonation).
   getImpersonationLevel(
     impersonatorUserWorkspace: UserWorkspaceEntity,
     targetUserWorkspace: UserWorkspaceEntity,
@@ -44,6 +50,11 @@ export class ImpersonationAuthorizationService {
       : 'workspace';
   }
 
+  // Determines the impersonation level, then applies the matching rules:
+  // for server-level, checks the impersonator's server-wide right and the
+  // target workspace's opt-in, plus 2FA when required outside development;
+  // for workspace-level, checks the IMPERSONATE permission and blocks
+  // non-admins from impersonating admin targets.
   async checkImpersonationAuthorization(
     impersonatorUserWorkspace: UserWorkspaceEntity,
     targetUserWorkspace: UserWorkspaceEntity,
@@ -96,12 +107,15 @@ export class ImpersonationAuthorizationService {
     return { allowed: true, level };
   }
 
+  // 2FA is required for server-level impersonation everywhere except development.
   private isTwoFactorRequiredForServerLevelImpersonation(): boolean {
     return (
       this.twentyConfigService.get('NODE_ENV') !== NodeEnvironment.DEVELOPMENT
     );
   }
 
+  // Returns why 2FA blocks the impersonator (not provisioned vs not
+  // verified), or undefined if their 2FA is satisfied.
   private getServerLevelTwoFactorDenialReason(
     impersonatorUserWorkspace: UserWorkspaceEntity,
   ): ImpersonationDenialReason | undefined {

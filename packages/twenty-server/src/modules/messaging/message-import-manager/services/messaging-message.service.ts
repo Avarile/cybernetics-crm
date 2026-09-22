@@ -1,3 +1,10 @@
+// Persists a batch of parsed messages within a caller-provided transaction:
+// dedupes against existing messages by header id, resolves each message to
+// its thread (matching an existing thread by external thread id across
+// this or other channels, or starting a new one, and merging messages
+// that share a thread external id within the same batch), creates the
+// missing message/thread/association rows, and updates each thread's
+// subject to that of its most recently received message.
 import { Injectable, Logger } from '@nestjs/common';
 
 import { isDefined } from 'twenty-shared/utils';
@@ -45,6 +52,11 @@ export class MessagingMessageService {
     private readonly globalWorkspaceOrmManager: GlobalWorkspaceOrmManager,
   ) {}
 
+  // Builds a per-message accumulator (existing message/thread/association
+  // found in DB, or what to create) via the enrich* helpers below, then
+  // batch-inserts new threads/messages/associations and updates thread
+  // subjects, returning id maps callers use to build participants etc.
+  // against the now-persisted rows.
   public async saveMessagesWithinTransaction(
     messages: MessageWithParticipants[],
     messageChannelId: string,
@@ -331,6 +343,7 @@ export class MessagingMessageService {
     );
   }
 
+  // Matches each incoming message to an existing DB message by header id.
   private async enrichMessageAccumulatorWithExistingMessages(
     messages: MessageWithParticipants[],
     messageAccumulatorMap: Map<string, MessageAccumulator>,
@@ -353,6 +366,11 @@ export class MessagingMessageService {
     }
   }
 
+  // Resolves each message's existing thread id, if any, from either its
+  // own existing DB message or another association already referencing
+  // the same external thread id (i.e. a thread seen on another channel);
+  // logs a warning if both sources disagree, which would indicate the
+  // same external thread got split across two internal threads.
   private async enrichMessageAccumulatorWithExistingMessageThreadIds(
     messages: MessageWithParticipants[],
     messageAccumulatorMap: Map<string, MessageAccumulator>,
@@ -426,6 +444,8 @@ export class MessagingMessageService {
     }
   }
 
+  // For messages that already exist in DB, finds their existing
+  // association on this channel, if any (so it isn't recreated).
   private async enrichMessageAccumulatorWithExistingMessageChannelMessageAssociations(
     messages: MessageWithParticipants[],
     messageAccumulatorMap: Map<string, MessageAccumulator>,
@@ -458,6 +478,9 @@ export class MessagingMessageService {
     }
   }
 
+  // For messages still without a resolved thread, reuses the thread of an
+  // earlier message in this same batch sharing the same external thread
+  // id, or otherwise allocates a new thread to create.
   private async enrichMessageAccumulatorWithMessageThreadToCreate(
     messages: MessageWithParticipants[],
     messageAccumulatorMap: Map<string, MessageAccumulator>,

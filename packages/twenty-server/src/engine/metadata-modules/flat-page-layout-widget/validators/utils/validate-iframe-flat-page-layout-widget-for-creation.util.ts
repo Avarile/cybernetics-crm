@@ -1,3 +1,5 @@
+// Validates an IFRAME-type page layout widget's configuration on creation.
+
 import { msg, t } from '@lingui/core/macro';
 import { isDefined } from 'twenty-shared/utils';
 
@@ -7,6 +9,7 @@ import { validateIframeConfigurationType } from 'src/engine/metadata-modules/fla
 import { validateIframeUrl } from 'src/engine/metadata-modules/flat-page-layout-widget/validators/utils/validate-iframe-url.util';
 import { PageLayoutWidgetExceptionCode } from 'src/engine/metadata-modules/page-layout-widget/exceptions/page-layout-widget.exception';
 
+// Requires configuration, validates its type, then validates the URL field.
 export const validateIframeFlatPageLayoutWidgetForCreation = (
   args: ValidateFlatPageLayoutWidgetTypeSpecificitiesForCreationArgs,
 ): FlatPageLayoutWidgetValidationError[] => {

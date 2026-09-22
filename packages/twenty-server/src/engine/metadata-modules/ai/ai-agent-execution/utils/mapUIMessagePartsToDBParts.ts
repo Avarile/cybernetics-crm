@@ -1,3 +1,5 @@
+// Converts AI SDK UI message parts into rows persistable as
+// AgentMessagePartEntity, dropping purely transient/streaming part types.
 import { getToolName, isToolUIPart } from 'ai';
 import {
   isExtendedFileUIPart,

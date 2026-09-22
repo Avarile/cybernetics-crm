@@ -11,6 +11,9 @@ import { FieldMetadataModule } from 'src/engine/metadata-modules/field-metadata/
 import { WorkspaceCacheModule } from 'src/engine/workspace-cache/workspace-cache.module';
 import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace-migration/workspace-migration.module';
 
+// Registers the 2.9 workspace commands (migrate AI model preferences, add workflow
+// run step logs field, backfill fields-widget default visibility) as providers for
+// the upgrade runner.
 @Module({
   imports: [
     TypeOrmModule.forFeature([KeyValuePairEntity]),

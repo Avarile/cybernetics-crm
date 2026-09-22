@@ -4,6 +4,8 @@ import { type QueryResultFieldValue } from 'src/engine/api/graphql/workspace-que
 import { type IConnection } from 'src/engine/api/graphql/workspace-query-runner/interfaces/connection.interface';
 import { type IEdge } from 'src/engine/api/graphql/workspace-query-runner/interfaces/edge.interface';
 
+// Type guard: true if a resolver's result value is a Relay connection
+// (has an `edges` array), as opposed to a plain record or record array.
 export const isQueryResultFieldValueAConnection = (
   result: QueryResultFieldValue,
 ): result is IConnection<ObjectRecord, IEdge<ObjectRecord>> => {

@@ -1,3 +1,5 @@
+// NestJS module wiring the controller and services that generate and serve
+// per-application SDK client archives/modules.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CoreGraphQLApiModule } from 'src/engine/api/graphql/core-graphql-api.module';

@@ -1,3 +1,6 @@
+// Side effect: creates the backing UNIQUE index when a unique scalar field
+// is created.
+
 import { Injectable } from '@nestjs/common';
 
 import { isDefined } from 'twenty-shared/utils';
@@ -23,6 +26,9 @@ export class FieldUniqueBackingIndexOnCreateSideEffectHandlerService extends Met
       'When a unique scalar field is created, generate the single-field UNIQUE index that enforces its uniqueness constraint at the database level.',
   },
 ) {
+  // Skips non-unique, relation/morph-relation, and primary-key fields (no
+  // backing index needed); otherwise resolves the parent object and
+  // generates the deterministic unique index to create.
   buildSideEffects({
     flatEntity: flatFieldMetadata,
     allFlatEntityOperationRecordByMetadataName,

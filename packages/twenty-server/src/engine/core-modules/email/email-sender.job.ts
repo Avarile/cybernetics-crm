@@ -1,3 +1,5 @@
+// Background job processor that actually dispatches a queued email via the
+// configured driver.
 import { SendMailOptions } from 'nodemailer';
 
 import { EmailSenderService } from 'src/engine/core-modules/email/email-sender.service';
@@ -10,6 +12,7 @@ export class EmailSenderJob {
   constructor(private readonly emailSenderService: EmailSenderService) {}
 
   @Process(EmailSenderJob.name)
+  // Sends the queued email through EmailSenderService.
   async handle(data: SendMailOptions): Promise<void> {
     await this.emailSenderService.send(data);
   }

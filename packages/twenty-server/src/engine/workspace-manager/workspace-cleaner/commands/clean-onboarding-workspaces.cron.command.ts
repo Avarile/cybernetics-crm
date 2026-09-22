@@ -6,6 +6,8 @@ import { MessageQueueService } from 'src/engine/core-modules/message-queue/servi
 import { cleanOnboardingWorkspacesCronPattern } from 'src/engine/workspace-manager/workspace-cleaner/crons/clean-onboarding-workspaces.cron.pattern';
 import { CleanOnboardingWorkspacesJob } from 'src/engine/workspace-manager/workspace-cleaner/crons/clean-onboarding-workspaces.job';
 
+// CLI command that registers the recurring cron job cleaning onboarding
+// workspaces (run once at deploy/bootstrap time to schedule the repeat job).
 @Command({
   name: 'cron:clean-onboarding-workspaces',
   description: 'Starts a cron job to clean onboarding workspaces',
@@ -18,6 +20,7 @@ export class CleanOnboardingWorkspacesCronCommand extends CommandRunner {
     super();
   }
 
+  // Adds the repeating cron job to the queue.
   async run(): Promise<void> {
     await this.messageQueueService.addCron<undefined>({
       jobName: CleanOnboardingWorkspacesJob.name,

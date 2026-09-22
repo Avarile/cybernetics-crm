@@ -1,3 +1,6 @@
+// Backs sliding-window event counting (e.g. sync job outcomes) by storing
+// event ids into fixed 15s cache buckets and summing sets across the
+// buckets covering a requested time window.
 import { Injectable } from '@nestjs/common';
 
 import { InjectCacheStorage } from 'src/engine/core-modules/cache-storage/decorators/cache-storage.decorator';
@@ -24,6 +27,7 @@ export class MetricsCacheService {
     this.healthCacheTtl = this.healthMetricsTimeWindowInMinutes * 60000 * 2;
   }
 
+  // Rounds a timestamp down to the start of its 15s bucket.
   private getCacheBucketStartTimestamp(timestamp: number): number {
     return (
       Math.floor(timestamp / CACHE_BUCKET_DURATION_MS) *
@@ -31,6 +35,7 @@ export class MetricsCacheService {
     );
   }
 
+  // Builds the cache key for `key`'s bucket containing `timestamp` (or now).
   private getCacheKeyWithTimestamp(key: string, timestamp?: number): string {
     const currentIntervalTimestamp =
       timestamp ?? this.getCacheBucketStartTimestamp(Date.now());
@@ -38,6 +43,7 @@ export class MetricsCacheService {
     return `${key}:${currentIntervalTimestamp}`;
   }
 
+  // Returns the start timestamps of the last N buckets ending at `date`.
   private getLastCacheBucketStartTimestampsFromDate(
     cacheBucketsCount: number,
     date: number,
@@ -50,6 +56,7 @@ export class MetricsCacheService {
     );
   }
 
+  // Adds event ids to the current time bucket's set for `key`.
   async updateCounter(key: MetricsKeys, items: string[]) {
     return await this.cacheStorage.setAdd(
       this.getCacheKeyWithTimestamp(key),
@@ -58,6 +65,8 @@ export class MetricsCacheService {
     );
   }
 
+  // Sums the distinct event count for `key` across the buckets covering the
+  // requested time window (which must be a multiple of the bucket duration).
   async computeCount({
     key,
     timeWindowInSeconds = this.healthMetricsTimeWindowInMinutes * 60,
@@ -81,6 +90,7 @@ export class MetricsCacheService {
     return await this.cacheStorage.countAllSetMembers(cacheKeys);
   }
 
+  // Builds the list of bucket cache keys covering the requested window.
   computeTimeStampedCacheKeys(
     key: string,
     cacheBucketsCount: number,

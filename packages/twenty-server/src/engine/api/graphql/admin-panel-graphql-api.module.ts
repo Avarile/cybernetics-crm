@@ -1,3 +1,7 @@
+// Wires up the admin-panel GraphQL endpoint (used for internal/admin
+// tooling) as a separate GraphQL Yoga driver instance, scoped by
+// 'admin' via adminPanelModuleFactory so its resolvers stay isolated
+// from the core and metadata GraphQL APIs.
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 
@@ -15,6 +19,9 @@ import { TwentyConfigService } from 'src/engine/core-modules/twenty-config/twent
 import { DataloaderModule } from 'src/engine/dataloaders/dataloader.module';
 import { DataloaderService } from 'src/engine/dataloaders/dataloader.service';
 
+// Registers the GraphQL Yoga driver for the admin-panel API (scoped
+// resolvers under `resolverSchemaScope: 'admin'`), configured via
+// adminPanelModuleFactory.
 @Module({
   imports: [
     GraphQLModule.forRootAsync<YogaDriverConfig>({

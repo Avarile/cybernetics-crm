@@ -12,6 +12,7 @@ export enum TwoFactorAuthenticationExceptionCode {
   MALFORMED_DATABASE_OBJECT = 'MALFORMED_DATABASE_OBJECT',
 }
 
+// Maps a two-factor authentication exception code to its user-facing message
 const getTwoFactorAuthenticationExceptionUserFriendlyMessage = (
   code: TwoFactorAuthenticationExceptionCode,
 ) => {
@@ -31,6 +32,7 @@ const getTwoFactorAuthenticationExceptionUserFriendlyMessage = (
   }
 };
 
+// Exception thrown by two-factor authentication provisioning and verification
 export class TwoFactorAuthenticationException extends CustomException<TwoFactorAuthenticationExceptionCode> {
   constructor(
     message: string,

@@ -1,3 +1,4 @@
+// REST body for the OAuth token revocation endpoint (RFC 7009).
 import { IsOptional, IsString, MaxLength } from 'class-validator';
 
 export class OAuthRevokeInput {

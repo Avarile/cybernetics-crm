@@ -1,5 +1,6 @@
 import { registerEnumType } from '@nestjs/graphql';
 
+// Selectable time windows for aggregating queue metrics charts in the admin panel
 export enum QueueMetricsTimeRange {
   SevenDays = '7D',
   OneDay = '1D',

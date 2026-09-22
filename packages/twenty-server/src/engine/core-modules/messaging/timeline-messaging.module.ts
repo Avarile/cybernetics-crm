@@ -1,3 +1,5 @@
+// NestJS module wiring the resolver/services that surface a record's related
+// message threads in the CRM timeline.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

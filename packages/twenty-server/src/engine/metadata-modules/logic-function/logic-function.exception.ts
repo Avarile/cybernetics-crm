@@ -1,3 +1,6 @@
+// Exception type and error codes for logic function operations (create,
+// build, execute).
+
 import { type MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { assertUnreachable } from 'twenty-shared/utils';
@@ -22,6 +25,7 @@ export enum LogicFunctionExceptionCode {
   LOGIC_FUNCTION_PREBUILT_BUNDLE_NOT_INSTALLED = 'LOGIC_FUNCTION_PREBUILT_BUNDLE_NOT_INSTALLED',
 }
 
+// Maps each exception code to its default user-facing message.
 const getLogicFunctionExceptionUserFriendlyMessage = (
   code: LogicFunctionExceptionCode,
 ) => {

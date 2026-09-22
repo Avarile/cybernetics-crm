@@ -17,6 +17,8 @@ export type FieldTypeAndNameMetadata = {
   type: SearchableFieldType;
 };
 
+// Builds the SQL `to_tsvector(...)` expression that concatenates and
+// normalizes all searchable fields into a single tsvector for indexing.
 export const getTsVectorColumnExpressionFromFields = (
   fieldsUsedForSearch: FieldTypeAndNameMetadata[],
 ): string => {
@@ -31,6 +33,9 @@ export const getTsVectorColumnExpressionFromFields = (
   return `to_tsvector('simple', ${concatenatedExpression})`;
 };
 
+// Returns the SQL column expressions for a single field, expanding composite
+// fields (phones, links, emails, etc.) into their individually normalized
+// subfield expressions.
 const getColumnExpressionsFromField = (
   fieldMetadataTypeAndName: FieldTypeAndNameMetadata,
 ): string[] => {
@@ -111,6 +116,8 @@ const getColumnExpressionsFromField = (
   return [getColumnExpression(columnName, fieldMetadataTypeAndName.type)];
 };
 
+// Wraps a single column in a COALESCE/unaccent expression, with special
+// handling for emails (also indexes the domain) and UUIDs (cast to text).
 const getColumnExpression = (
   columnName: string,
   fieldType: FieldMetadataType,

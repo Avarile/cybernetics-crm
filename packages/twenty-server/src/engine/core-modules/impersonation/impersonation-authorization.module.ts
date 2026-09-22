@@ -1,3 +1,5 @@
+// NestJS module exposing ImpersonationAuthorizationService, which decides
+// whether a user is allowed to impersonate another.
 import { Module } from '@nestjs/common';
 
 import { ImpersonationAuthorizationService } from 'src/engine/core-modules/impersonation/services/impersonation-authorization.service';

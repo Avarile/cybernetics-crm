@@ -1,3 +1,7 @@
+// Service with the raw queries backing the message timeline: paginated
+// threads for a set of people, each thread's participants, and each
+// thread's visibility (derived from its message channels' sharing settings
+// and whether the current user owns the connected account).
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -31,6 +35,8 @@ export class TimelineMessagingService {
     private readonly fileUrlService: FileUrlService,
   ) {}
 
+  // Fetches a page of message threads (ordered by most recent message)
+  // involving any of the given person ids, along with the total count.
   public async getAndCountMessageThreads(
     personIds: string[],
     workspaceId: string,
@@ -118,6 +124,8 @@ export class TimelineMessagingService {
     );
   }
 
+  // Loads the "from" participants for each thread, one per distinct handle,
+  // ordered chronologically, resolving avatar URLs and grouping by thread id.
   public async getThreadParticipantsByThreadId(
     messageThreadIds: string[],
     workspaceId: string,
@@ -231,6 +239,9 @@ export class TimelineMessagingService {
     );
   }
 
+  // Computes each thread's visibility as the most permissive visibility
+  // across the message channels it appears in, treating a channel as fully
+  // shared when the current user owns its connected account.
   public async getThreadVisibilityByThreadId(
     messageThreadIds: string[],
     workspaceMemberId: string,

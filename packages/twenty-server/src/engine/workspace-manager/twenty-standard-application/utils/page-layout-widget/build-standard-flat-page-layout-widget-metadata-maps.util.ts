@@ -86,6 +86,8 @@ const RECORD_PAGE_FIELDS_VIEW_NAME_BY_OBJECT: Partial<
   workflowVersion: 'workflowVersionRecordPageFields',
 };
 
+// Resolves a record page widget's configuration payload by widget type: FIELDS/FIELD widgets resolve
+// their target view/field ids, other widget types get a bare configuration-type-only payload
 const buildRecordPageWidgetConfigurations = ({
   widgetType,
   layoutObjectName,
@@ -136,6 +138,8 @@ const buildRecordPageWidgetConfigurations = ({
   };
 };
 
+// Builds a FIELDS widget's configuration, resolving the object's dedicated "record page fields" view
+// id/universal identifier if that object declares one, else falls back to no view (show all fields)
 const buildFieldsWidgetConfiguration = ({
   objectName,
   standardObjectMetadataRelatedEntityIds,
@@ -201,6 +205,8 @@ const buildFieldsWidgetConfiguration = ({
   };
 };
 
+// Builds a single FIELD widget's configuration, resolving the target field's id from its fixed
+// universal identifier
 const buildFieldWidgetConfiguration = ({
   objectName,
   standardObjectMetadataRelatedEntityIds,
@@ -242,6 +248,8 @@ const buildFieldWidgetConfiguration = ({
   };
 };
 
+// Builds every widget across all standard record page layouts, resolving each widget's target
+// object/field and configuration payload
 const computeRecordPageWidgets = ({
   now,
   workspaceId,
@@ -327,6 +335,9 @@ const computeRecordPageWidgets = ({
   return allWidgets;
 };
 
+// Builds every standard page layout widget (the dashboard's fixed widgets plus every record page's
+// widgets) and assembles them into a single FlatEntityMaps, used as the "target" state when seeding
+// or syncing a workspace's standard page layout widgets
 export const buildStandardFlatPageLayoutWidgetMetadataMaps = (
   args: BuildStandardFlatPageLayoutWidgetMetadataMapsArgs,
 ): FlatEntityMaps<FlatPageLayoutWidget> => {

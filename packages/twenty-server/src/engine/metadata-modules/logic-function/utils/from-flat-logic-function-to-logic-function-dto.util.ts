@@ -1,6 +1,9 @@
+// Converts a flat logic function into its GraphQL DTO representation.
+
 import { type LogicFunctionDTO } from 'src/engine/metadata-modules/logic-function/dtos/logic-function.dto';
 import { type FlatLogicFunction } from 'src/engine/metadata-modules/logic-function/types/flat-logic-function.type';
 
+// Maps each flat field to its DTO field, converting date strings to Date.
 export const fromFlatLogicFunctionToLogicFunctionDto = ({
   flatLogicFunction,
 }: {

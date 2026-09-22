@@ -10,6 +10,7 @@ import { ConnectedAccountMetadataModule } from 'src/engine/metadata-modules/conn
 import { PermissionsModule } from 'src/engine/metadata-modules/permissions/permissions.module';
 import { WorkspaceEventEmitterModule } from 'src/engine/workspace-event-emitter/workspace-event-emitter.module';
 
+// Wires up the calendar channel metadata service, resolver, and GraphQL exception handling.
 @Module({
   imports: [
     TypeOrmModule.forFeature([CalendarChannelEntity]),

@@ -1,3 +1,6 @@
+// Marks a resolver class as belonging to the 'metadata' GraphQL schema
+// scope (object/field metadata API), by tagging it with metadata read
+// at schema-build time.
 import { applyDecorators, SetMetadata } from '@nestjs/common';
 import { Resolver } from '@nestjs/graphql';
 

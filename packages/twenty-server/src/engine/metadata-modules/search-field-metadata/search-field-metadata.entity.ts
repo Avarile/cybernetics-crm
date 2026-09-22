@@ -19,6 +19,8 @@ import { FieldMetadataEntity } from 'src/engine/metadata-modules/field-metadata/
 import { ObjectMetadataEntity } from 'src/engine/metadata-modules/object-metadata/object-metadata.entity';
 import { SyncableEntity } from 'src/engine/workspace-manager/types/syncable-entity.interface';
 
+// Links a searchable field on an object to the system TS_VECTOR field that indexes it,
+// with a position determining its weight/order in the combined search vector.
 @Entity({ name: 'searchFieldMetadata', schema: 'core' })
 @WasIntroducedInUpgrade({
   upgradeCommandName:

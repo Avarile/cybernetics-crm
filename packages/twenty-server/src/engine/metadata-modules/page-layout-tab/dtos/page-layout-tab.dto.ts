@@ -15,6 +15,8 @@ registerEnumType(PageLayoutTabLayoutMode, {
   name: 'PageLayoutTabLayoutMode',
 });
 
+// GraphQL representation of a page layout tab: one tab of a page layout,
+// its display order, icon, grid/other layout mode, and widgets.
 @ObjectType('PageLayoutTab')
 export class PageLayoutTabDTO {
   @Field(() => UUIDScalarType)

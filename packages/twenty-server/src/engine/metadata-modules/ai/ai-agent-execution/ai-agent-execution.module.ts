@@ -1,3 +1,5 @@
+// NestJS module wiring up agent turn/message execution: entities, resolvers,
+// and the services that run an agent turn and resolve its actor context.
 import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

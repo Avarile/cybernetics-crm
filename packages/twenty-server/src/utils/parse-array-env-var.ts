@@ -1,3 +1,5 @@
+// Parses a comma-separated env var into a list of known enum-like values,
+// dropping any unrecognized entries and falling back to defaults when empty/unset.
 export const parseArrayEnvVar = <T>(
   envVar: string | undefined,
   expectedValues: T[],

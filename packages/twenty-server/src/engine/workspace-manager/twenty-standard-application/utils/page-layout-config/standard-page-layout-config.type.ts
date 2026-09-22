@@ -8,6 +8,8 @@ import {
 import { type WidgetType } from 'src/engine/metadata-modules/page-layout-widget/enums/widget-type.enum';
 import { type PageLayoutType } from 'src/engine/metadata-modules/page-layout/enums/page-layout-type.enum';
 
+// Shapes describing a standard page layout config and its record-page-specific variant (where
+// widget type/gridPosition/title become required, since every record page widget must define them)
 export type StandardPageLayoutWidgetConfig = {
   universalIdentifier: string;
   title?: string;

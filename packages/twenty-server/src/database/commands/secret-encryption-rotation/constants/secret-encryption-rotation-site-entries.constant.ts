@@ -10,6 +10,12 @@ import { type ExtractEncryptedColumns } from 'src/engine/core-modules/secret-enc
 import { TwoFactorAuthenticationMethodEntity } from 'src/engine/core-modules/two-factor-authentication/entities/two-factor-authentication-method.entity';
 import { ConnectedAccountEntity } from 'src/engine/metadata-modules/connected-account/entities/connected-account.entity';
 
+// Central registry of every "secret encryption rotation site" — a table/column
+// (or, for untyped sites, an ad-hoc query) whose values are versioned-encrypted
+// and need rotating onto a new ENCRYPTION_KEY. Each typed entry declares which
+// entity/column pair it covers, whether it's workspace-scoped (affects the crypto
+// context), and an optional dedicated handler for columns that aren't a simple
+// scalar encrypted string (e.g. JSON blobs with nested secrets).
 type DedicatedRotationHandlerClass = Type<SecretEncryptionRotationHandler>;
 
 type ColumnRotationSiteMetadata<E extends Type<unknown>> = {

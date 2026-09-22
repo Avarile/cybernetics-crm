@@ -1,6 +1,7 @@
 import { filterOutBlocklistedEvents } from 'src/modules/calendar/calendar-event-import-manager/utils/filter-out-blocklisted-events.util';
 import { type FetchedCalendarEvent } from 'src/modules/calendar/common/types/fetched-calendar-event';
 
+// Removes blocklisted events, then splits the remainder into cancelled vs. active.
 export const filterEventsAndReturnCancelledEvents = (
   calendarChannelHandles: string[],
   events: FetchedCalendarEvent[],

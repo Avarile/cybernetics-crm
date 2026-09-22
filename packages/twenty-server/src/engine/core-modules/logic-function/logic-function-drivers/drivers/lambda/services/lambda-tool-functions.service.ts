@@ -1,3 +1,6 @@
+// Manages the shared "tool" Lambdas used to build logic functions: a
+// TypeScript transpiler Lambda and a yarn-install-for-layer Lambda, both
+// backed by a common dependency layer, created lazily on first use.
 import * as fs from 'fs/promises';
 import { join } from 'path';
 
@@ -59,6 +62,7 @@ export class LambdaToolFunctionsService {
     private readonly awsClient: LambdaAwsClientService,
   ) {}
 
+  // Invokes the builder Lambda to transpile logic function source code.
   async transpile(
     params: Omit<BuilderLambdaPayload, 'action'>,
   ): Promise<BuilderLambdaResult> {
@@ -118,6 +122,7 @@ export class LambdaToolFunctionsService {
     return { builtCode: parsedResult.builtCode };
   }
 
+  // Invokes the yarn-install Lambda to build and publish a dependency layer.
   async runYarnInstallCreateLayer(
     params: Omit<YarnInstallLambdaPayload, 'action'>,
   ): Promise<YarnInstallLambdaResult> {
@@ -167,6 +172,7 @@ export class LambdaToolFunctionsService {
     return parsedResult;
   }
 
+  // Returns the ARN of the shared common-dependencies layer, publishing it if missing.
   async ensureCommonLayerExists(): Promise<string> {
     const commonLayerName = await this.getCommonLayerName();
     const existingArn =
@@ -210,6 +216,7 @@ export class LambdaToolFunctionsService {
     }
   }
 
+  // Creates the yarn-install tool Lambda if it doesn't already exist.
   private async ensureYarnInstallLambdaExists(): Promise<void> {
     const yarnInstallFunctionName = await this.getYarnInstallFunctionName();
     const lambdaClient = await this.awsClient.getLambdaClient();
@@ -259,6 +266,7 @@ export class LambdaToolFunctionsService {
     await this.awsClient.waitFunctionActive(yarnInstallFunctionName);
   }
 
+  // Creates the builder (transpiler) tool Lambda if it doesn't already exist.
   private async ensureBuilderLambdaExists(): Promise<void> {
     const builderFunctionName = await this.getBuilderFunctionName();
     const lambdaClient = await this.awsClient.getLambdaClient();
@@ -308,6 +316,7 @@ export class LambdaToolFunctionsService {
     await this.awsClient.waitFunctionActive(builderFunctionName);
   }
 
+  // Computes and caches the common layer's content-hashed name.
   private async getCommonLayerName(): Promise<string> {
     if (isDefined(this.commonLayerName)) {
       return this.commonLayerName;
@@ -333,6 +342,7 @@ export class LambdaToolFunctionsService {
     return this.commonLayerName;
   }
 
+  // Computes and caches the yarn-install Lambda's content-hashed name.
   private async getYarnInstallFunctionName(): Promise<string> {
     if (isDefined(this.yarnInstallFunctionName)) {
       return this.yarnInstallFunctionName;
@@ -352,6 +362,7 @@ export class LambdaToolFunctionsService {
     return this.yarnInstallFunctionName;
   }
 
+  // Computes and caches the builder Lambda's content-hashed name.
   private async getBuilderFunctionName(): Promise<string> {
     if (isDefined(this.builderFunctionName)) {
       return this.builderFunctionName;

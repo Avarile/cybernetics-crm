@@ -11,6 +11,8 @@ import {
   PermissionsExceptionCode,
 } from 'src/engine/metadata-modules/permissions/permissions.exception';
 
+// Maps a PermissionsException code to the appropriate GraphQL error type (forbidden,
+// not-found, invalid input, or a plain rethrow for internal errors).
 export const permissionGraphqlApiExceptionHandler = (
   error: PermissionsException,
 ) => {

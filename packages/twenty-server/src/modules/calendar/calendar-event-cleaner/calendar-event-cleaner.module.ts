@@ -8,6 +8,8 @@ import { CalendarEventCleanerCalendarChannelListener } from 'src/modules/calenda
 import { CalendarEventCleanerConnectedAccountListener } from 'src/modules/calendar/calendar-event-cleaner/listeners/calendar-event-cleaner-connected-account.listener';
 import { CalendarEventCleanerService } from 'src/modules/calendar/calendar-event-cleaner/services/calendar-event-cleaner.service';
 
+// Handles cleanup of calendar events/associations when calendar channels or
+// connected accounts are deleted.
 @Module({
   imports: [FeatureFlagModule],
   providers: [

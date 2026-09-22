@@ -4,6 +4,8 @@ import { assertUnreachable } from 'twenty-shared/utils';
 
 import { CustomException } from 'src/utils/custom-exception';
 
+// Exception thrown by the view field module for missing records, invalid
+// input, or duplicate field/view combinations.
 export class ViewFieldException extends CustomException<ViewFieldExceptionCode> {
   constructor(
     message: string,
@@ -33,6 +35,8 @@ export enum ViewFieldExceptionMessageKey {
   VIEW_FIELD_ALREADY_EXISTS = 'VIEW_FIELD_ALREADY_EXISTS',
 }
 
+// Builds the internal (developer-facing) exception message for a given
+// error key, optionally including the offending record's id.
 export const generateViewFieldExceptionMessage = (
   key: ViewFieldExceptionMessageKey,
   id?: string,
@@ -57,6 +61,7 @@ export const generateViewFieldExceptionMessage = (
   }
 };
 
+// Builds the localized, user-facing message for a given error key.
 export const generateViewFieldUserFriendlyExceptionMessage = (
   key: ViewFieldExceptionMessageKey,
 ): MessageDescriptor | undefined => {

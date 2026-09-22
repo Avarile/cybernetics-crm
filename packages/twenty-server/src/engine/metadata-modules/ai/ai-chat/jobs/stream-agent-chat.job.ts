@@ -1,3 +1,7 @@
+// Queue job that drives one streaming AI chat turn end to end: claims the
+// thread's active stream, runs chat execution, checkpoints/persists the
+// assistant message as it streams, publishes events to subscribers, and
+// records final usage/credits on completion, error, or abort.
 import { Logger, Scope } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -73,6 +77,8 @@ export class StreamAgentChatJob {
     private readonly metricsService: MetricsService,
   ) {}
 
+  // Verifies this job still owns the thread's active stream claim, then runs
+  // and publishes the stream, recording metrics and persisting any error on failure.
   @Process(STREAM_AGENT_CHAT_JOB_NAME)
   async handle(
     data: StreamAgentChatJobData,
@@ -225,6 +231,8 @@ export class StreamAgentChatJob {
     }
   }
 
+  // Persists the user message (unless resuming an existing turn) and kicks
+  // off title generation in parallel with building/publishing the response stream.
   private async executeStream(
     data: StreamAgentChatJobData,
     workspace: WorkspaceEntity,
@@ -267,6 +275,10 @@ export class StreamAgentChatJob {
     });
   }
 
+  // Runs the model stream, tees it into a publish branch (forwarded to
+  // subscribers as it arrives) and a checkpoint branch (periodically persisted
+  // to the DB for resume/catch-up), then finalizes the assistant message and
+  // thread totals once the stream completes, errors, or is aborted.
   private async buildAndPublishStream({
     workspace,
     data,
@@ -550,6 +562,8 @@ export class StreamAgentChatJob {
     });
   }
 
+  // Derives per-chunk message metadata: tracks conversation size and cache
+  // creation tokens on each step, and computes final usage/cost on stream finish.
   private computeMessageMetadata({
     part,
     modelConfig,
@@ -638,6 +652,8 @@ export class StreamAgentChatJob {
     return undefined;
   }
 
+  // Persists the final assistant message (or a pending-question marker),
+  // accumulates the thread's usage totals, and emits completion metrics.
   private async handleStreamFinish({
     assistantMessageId,
     streamId,
@@ -771,6 +787,8 @@ export class StreamAgentChatJob {
     });
   }
 
+  // Logs diagnostics when a turn ends without any assistant text, classifying
+  // the likely cause (cancellation, stream error, out of credits, or empty completion).
   private logAssistantTurnWithoutText({
     responseMessage,
     isAborted,

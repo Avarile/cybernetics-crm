@@ -118,7 +118,9 @@ type RecordSeedConfig = {
   recordSeeds: Record<string, unknown>[];
 };
 
-// Organize seeds into dependency batches for parallel insertion
+// Groups the sample record seeds into ordered batches so entities within a
+// batch (no dependency on each other) can be inserted in parallel, while
+// batches run sequentially to respect foreign key dependencies.
 const getRecordSeedsBatches = (
   workspaceId: string,
   attachmentSeeds: RecordSeedConfig['recordSeeds'],
@@ -262,6 +264,9 @@ const getRecordSeedsBatches = (
   return [batch1, batch2, batch3, batch4, batch5, batch6];
 };
 
+// Seeds sample workspace records (companies, people, notes, tasks, etc.),
+// timeline activities, attachment files, and prefilled workflows/command
+// menu items into a dev-seeded workspace.
 @Injectable()
 export class DevSeederDataService {
   constructor(
@@ -275,6 +280,9 @@ export class DevSeederDataService {
     private readonly workspaceMigrationValidateBuildAndRunService: WorkspaceMigrationValidateBuildAndRunService,
   ) {}
 
+  // Seeds sample records in dependency-ordered batches, plus (in non-light
+  // mode) timeline activities and attachment files, then prefills the
+  // sample workflows and their command menu items.
   public async seed({
     schemaName,
     workspaceId,
@@ -353,6 +361,8 @@ export class DevSeederDataService {
     });
   }
 
+  // Inserts each batch's record seeds in parallel (skipping custom-object
+  // tables in light mode), sequentially across batches.
   private async seedRecordsInBatches({
     entityManager,
     schemaName,
@@ -407,6 +417,7 @@ export class DevSeederDataService {
     }
   }
 
+  // Bulk-inserts the given record seeds into a table, ignoring conflicts.
   private async seedRecords({
     entityManager,
     schemaName,
@@ -431,6 +442,9 @@ export class DevSeederDataService {
       .execute();
   }
 
+  // Reads the bundled sample attachment files and writes them to file
+  // storage under the seeded attachment ids so seeded attachment records
+  // point at real files.
   private async seedAttachmentFiles(
     workspaceId: string,
     entityManager: WorkspaceEntityManager,

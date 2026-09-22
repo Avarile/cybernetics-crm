@@ -13,6 +13,7 @@ import { RoleEntity } from 'src/engine/metadata-modules/role/role.entity';
 import { WorkspaceCacheModule } from 'src/engine/workspace-cache/workspace-cache.module';
 import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace-migration/workspace-migration.module';
 
+// Wires up the object- and field-level permission services and their required dependencies.
 @Module({
   imports: [
     TypeOrmModule.forFeature([

@@ -38,12 +38,15 @@ import { WorkspaceMigrationGraphqlApiExceptionInterceptor } from 'src/engine/wor
 @UseFilters(PageLayoutGraphqlApiExceptionFilter)
 @UseGuards(WorkspaceAuthGuard)
 @UsePipes(ResolverValidationPipe)
+// GraphQL resolver exposing CRUD operations for page layout tabs.
 export class PageLayoutTabResolver {
   constructor(
     private readonly pageLayoutTabService: PageLayoutTabService,
     private readonly i18nService: I18nService,
   ) {}
 
+  // Resolves the tab's display title, translating the standard label (or
+  // override) via the owning application's i18n catalog.
   @ResolveField(() => String)
   async title(
     @Parent() tab: PageLayoutTabDTO,
@@ -74,6 +77,7 @@ export class PageLayoutTabResolver {
     });
   }
 
+  // Lists tabs belonging to a page layout.
   @Query(() => [PageLayoutTabDTO])
   @UseGuards(NoPermissionGuard)
   async getPageLayoutTabs(
@@ -86,6 +90,7 @@ export class PageLayoutTabResolver {
     });
   }
 
+  // Fetches a single page layout tab by id.
   @Query(() => PageLayoutTabDTO)
   @UseGuards(NoPermissionGuard)
   async getPageLayoutTab(
@@ -98,6 +103,7 @@ export class PageLayoutTabResolver {
     });
   }
 
+  // Creates a new page layout tab.
   @Mutation(() => PageLayoutTabDTO)
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.LAYOUTS))
   async createPageLayoutTab(
@@ -110,6 +116,7 @@ export class PageLayoutTabResolver {
     });
   }
 
+  // Updates a page layout tab's fields.
   @Mutation(() => PageLayoutTabDTO)
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.LAYOUTS))
   async updatePageLayoutTab(
@@ -124,6 +131,7 @@ export class PageLayoutTabResolver {
     });
   }
 
+  // Permanently destroys a page layout tab.
   @Mutation(() => Boolean)
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.LAYOUTS))
   async destroyPageLayoutTab(

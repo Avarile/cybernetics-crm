@@ -1,3 +1,6 @@
+// Central registry of all CRUD resolver factories, grouped into the
+// query vs. mutation method names used to split queries/mutations when
+// building each workspace's GraphQL schema.
 import { DestroyManyResolverFactory } from 'src/engine/api/graphql/workspace-resolver-builder/factories/destroy-many-resolver.factory';
 import { DestroyOneResolverFactory } from 'src/engine/api/graphql/workspace-resolver-builder/factories/destroy-one-resolver.factory';
 import { GroupByResolverFactory } from 'src/engine/api/graphql/workspace-resolver-builder/factories/group-by-resolver.factory';

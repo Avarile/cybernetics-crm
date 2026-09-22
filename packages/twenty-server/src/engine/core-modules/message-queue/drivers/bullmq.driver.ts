@@ -36,6 +36,8 @@ export type BullMQDriverOptions = QueueOptions;
 
 const V4_LENGTH = 36;
 
+// Redis-backed message queue driver built on BullMQ: manages per-queue Queue/Worker
+// pairs, job metrics, cron scheduling, and graceful shutdown draining
 export class BullMQDriver
   implements MessageQueueDriver, OnModuleDestroy, OnModuleInit
 {
@@ -58,6 +60,7 @@ export class BullMQDriver
     private twentyConfigService: TwentyConfigService,
   ) {}
 
+  // Registers a gauge reporting each queue's waiting job count
   onModuleInit() {
     this.metricsService.createMultiObservableGauge({
       metricName: 'twenty_queue_jobs_waiting_total',
@@ -89,10 +92,12 @@ export class BullMQDriver
     });
   }
 
+  // Creates the BullMQ Queue for a message queue name
   register(queueName: MessageQueue): void {
     this.queueMap[queueName] = new Queue(queueName, this.options);
   }
 
+  // Closes every worker (draining per its bounded-shutdown setting) then every queue
   async onModuleDestroy() {
     const workers = Object.entries(this.workerMap) as [MessageQueue, Worker][];
     const queues = Object.values(this.queueMap);
@@ -134,6 +139,8 @@ export class BullMQDriver
     this.logger.log('Message queue shutdown complete');
   }
 
+  // Closes a worker, and if configured for bounded drain, force-cancels remaining
+  // jobs once the shutdown drain timeout elapses
   private async closeWorker(
     queueName: MessageQueue,
     worker: Worker,
@@ -162,6 +169,8 @@ export class BullMQDriver
     }
   }
 
+  // Starts a BullMQ Worker for the queue, wrapping each job in a Sentry isolation
+  // scope, recording latency/completion/failure metrics, and logging timing
   work<T>(
     queueName: MessageQueue,
     handler: (job: MessageQueueJob<T>) => Promise<void>,
@@ -252,6 +261,7 @@ export class BullMQDriver
     });
   }
 
+  // Registers or updates a repeating job on the queue's job scheduler
   async addCron<T>({
     queueName,
     jobName,
@@ -295,6 +305,7 @@ export class BullMQDriver
     );
   }
 
+  // Unregisters a repeating job from the queue's job scheduler
   async removeCron({
     queueName,
     jobName,
@@ -309,6 +320,8 @@ export class BullMQDriver
     );
   }
 
+  // Enqueues a job, skipping it if a waiting job with the same options.id already
+  // exists so only one instance of a deduplicated job is ever queued at once
   async add<T>(
     queueName: MessageQueue,
     jobName: string,

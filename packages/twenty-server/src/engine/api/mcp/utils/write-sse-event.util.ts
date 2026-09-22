@@ -1,5 +1,7 @@
 import { type Response } from 'express';
 
+// Writes one Server-Sent Events "message" frame with a JSON-encoded
+// payload to the response stream.
 export const writeSseEvent = (
   response: Response,
   data: Record<string, unknown>,

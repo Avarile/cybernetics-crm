@@ -31,6 +31,8 @@ import { InjectWorkspaceScopedRepository } from 'src/engine/twenty-orm/workspace
 import { WorkspaceScopedRepository } from 'src/engine/twenty-orm/workspace-scoped-repository/workspace-scoped-repository';
 import { fetchImageWithTypeFromUrl } from 'src/utils/image';
 
+// Handles upload, copy and deletion of "core pictures" (workspace logos and
+// workspace member profile pictures) in file storage.
 @Injectable()
 export class FileCorePictureService {
   private readonly logger = new Logger(FileCorePictureService.name);
@@ -47,6 +49,8 @@ export class FileCorePictureService {
     private readonly secureHttpClientService: SecureHttpClientService,
   ) {}
 
+  // Looks up the workspace's custom application identifier, used to scope
+  // core picture storage paths.
   private async findCustomApplicationUniversalIdentifier(
     workspaceId: string,
   ): Promise<string> {
@@ -66,6 +70,8 @@ export class FileCorePictureService {
     return workspace.workspaceCustomApplicationId;
   }
 
+  // Extracts the file extension, generates a new file id, and writes the
+  // image to storage under FileFolder.CorePicture.
   private async uploadCorePicture({
     file,
     filename,
@@ -105,6 +111,8 @@ export class FileCorePictureService {
     return savedFile;
   }
 
+  // Uploads a new workspace logo, updates the workspace record, and deletes
+  // the previous logo file if one existed.
   async uploadWorkspacePicture({
     file,
     filename,
@@ -143,6 +151,8 @@ export class FileCorePictureService {
     };
   }
 
+  // Validates that the caller may set a logo on a workspace still in the
+  // pending-creation flow, before that workspace has an authenticated owner.
   async getPendingWorkspaceForLogoUploadOrThrow({
     userId,
     workspaceId,
@@ -172,6 +182,7 @@ export class FileCorePictureService {
     return workspace;
   }
 
+  // Uploads a profile picture for a workspace member.
   async uploadWorkspaceMemberProfilePicture({
     file,
     filename,
@@ -205,6 +216,8 @@ export class FileCorePictureService {
     };
   }
 
+  // Deletes a core picture file from storage after verifying it belongs to
+  // the given workspace's CorePicture folder.
   async deleteCorePicture({
     fileId,
     workspaceId,
@@ -230,6 +243,8 @@ export class FileCorePictureService {
     });
   }
 
+  // Fetches an image from an external URL, returning undefined instead of
+  // throwing on failure so callers can treat it as a best-effort step.
   private async fetchImageBufferFromUrl(
     imageUrl: string,
   ): Promise<{ buffer: Buffer; extension: string } | undefined> {
@@ -249,6 +264,8 @@ export class FileCorePictureService {
     }
   }
 
+  // Downloads an image from a URL and uploads it as a workspace member's
+  // profile picture, e.g. syncing an avatar from an SSO provider.
   async uploadWorkspaceMemberProfilePictureFromUrl({
     imageUrl,
     workspaceId,
@@ -275,6 +292,8 @@ export class FileCorePictureService {
     });
   }
 
+  // Downloads an image from a URL and uploads it as the workspace logo, e.g.
+  // seeding a logo from a marketplace application registration.
   async uploadWorkspaceLogoFromUrl({
     imageUrl,
     workspaceId,
@@ -301,6 +320,8 @@ export class FileCorePictureService {
     });
   }
 
+  // Copies a profile picture file from one workspace to another, e.g. when
+  // duplicating a workspace or provisioning a new one from a template.
   async copyWorkspaceMemberProfilePicture({
     sourceWorkspaceId,
     sourceFileId,

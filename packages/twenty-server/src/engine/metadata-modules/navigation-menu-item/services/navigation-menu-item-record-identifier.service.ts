@@ -1,3 +1,7 @@
+// Resolves a navigation menu item's target record into a lightweight
+// display identity (label and image), running a minimal-column query under
+// the caller's permission context so unauthorized access surfaces as null.
+
 import { Injectable } from '@nestjs/common';
 
 import { isDefined } from 'twenty-shared/utils';
@@ -26,6 +30,9 @@ export class NavigationMenuItemRecordIdentifierService {
     private readonly twentyConfigService: TwentyConfigService,
   ) {}
 
+  // Selects only the columns needed for the label/image identifiers, runs
+  // the query within the caller's workspace permission context, and formats
+  // the result into a RecordIdentifierDTO, or null if not found/authorized.
   async resolveRecordIdentifier({
     targetRecordId,
     targetObjectMetadataId,

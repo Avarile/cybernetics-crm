@@ -7,6 +7,8 @@ import {
   CommonQueryRunnerExceptionCode,
 } from 'src/engine/api/common/common-query-runners/errors/common-query-runner.exception';
 
+// Validates a manually-overridden position value: must be a finite number
+// (not NaN or +/-Infinity); throws a CommonQueryRunnerException otherwise.
 export const validateOverriddenPositionFieldOrThrow = (
   value: unknown,
   fieldName: string,

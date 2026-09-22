@@ -13,6 +13,8 @@ import {
 import { type UniversalFlatViewSort } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-view-sort.type';
 import { findFlatEntityByIdInFlatEntityMaps } from 'src/engine/metadata-modules/flat-entity/utils/find-flat-entity-by-id-in-flat-entity-maps.util';
 
+// Looks up the flat view sort targeted for soft deletion and returns it with
+// deletedAt set, throwing if it doesn't exist.
 export const fromDeleteViewSortInputToFlatViewSortOrThrow = ({
   deleteViewSortInput: rawDeleteViewSortInput,
   flatViewSortMaps,

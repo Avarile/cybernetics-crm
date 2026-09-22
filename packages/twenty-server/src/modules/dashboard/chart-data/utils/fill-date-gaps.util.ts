@@ -18,6 +18,9 @@ type FillDateGapsParams = {
   isDescOrder?: boolean;
 };
 
+// Inserts zero-value entries for missing dates in a single-dimension date
+// range so the chart shows a continuous axis; caps the range at the max
+// bar/point count and reports whether it was truncated.
 export const fillDateGaps = ({
   data,
   dateGranularity,
@@ -94,6 +97,8 @@ type FillDateGapsTwoDimensionalParams = {
   isDescOrder?: boolean;
 };
 
+// Same as fillDateGaps, but fills the full cross product of dates and the
+// distinct secondary-dimension values seen in the data.
 export const fillDateGapsTwoDimensional = ({
   data,
   dateGranularity,

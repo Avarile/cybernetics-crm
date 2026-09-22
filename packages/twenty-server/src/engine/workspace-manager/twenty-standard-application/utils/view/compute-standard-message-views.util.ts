@@ -6,6 +6,7 @@ import {
   type CreateStandardViewArgs,
 } from 'src/engine/workspace-manager/twenty-standard-application/utils/view/create-standard-view-flat-metadata.util';
 
+// Builds the fixed set of standard views for the "message" object
 export const computeStandardMessageViews = (
   args: Omit<CreateStandardViewArgs<'message'>, 'context'>,
 ): Record<string, FlatView> => {

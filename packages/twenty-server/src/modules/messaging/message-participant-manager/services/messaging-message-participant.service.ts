@@ -1,3 +1,6 @@
+// Persists message participants (deduping against ones already saved for
+// the same message) and matches the newly-created ones to a person or
+// workspace member.
 import { Injectable } from '@nestjs/common';
 
 import { In } from 'typeorm';
@@ -16,6 +19,9 @@ export class MessagingMessageParticipantService {
     private readonly matchParticipantService: MatchParticipantService<MessageParticipantWorkspaceEntity>,
   ) {}
 
+  // Inserts participants not already saved (matched by message id, handle,
+  // display name and role) and matches the inserted rows to people/
+  // workspace members.
   public async saveMessageParticipants(
     participants: ParticipantWithMessageId[],
     workspaceId: string,

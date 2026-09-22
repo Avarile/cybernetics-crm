@@ -10,6 +10,7 @@ import {
 import { type TwoFactorAuthenticationMethodEntity } from './entities/two-factor-authentication-method.entity';
 import { OTPStatus } from './strategies/otp/otp.constants';
 
+// Throws unless a 2FA method is defined
 const assertIsDefinedOrThrow = (
   twoFactorAuthenticationMethod:
     | TwoFactorAuthenticationMethodEntity
@@ -25,6 +26,7 @@ const assertIsDefinedOrThrow = (
   }
 };
 
+// Whether the user has any 2FA methods at all
 const areTwoFactorAuthenticationMethodsDefined = (
   twoFactorAuthenticationMethods:
     | TwoFactorAuthenticationMethodEntity[]
@@ -37,6 +39,7 @@ const areTwoFactorAuthenticationMethodsDefined = (
   );
 };
 
+// Whether at least one of the user's 2FA methods has completed verification
 const isAnyTwoFactorAuthenticationMethodVerified = (
   twoFactorAuthenticationMethods: TwoFactorAuthenticationMethodEntity[],
 ) => {
@@ -47,6 +50,7 @@ const isAnyTwoFactorAuthenticationMethodVerified = (
   );
 };
 
+// Namespaced helpers for validating a user's collection of 2FA methods
 export const twoFactorAuthenticationMethodsValidator: {
   assertIsDefinedOrThrow: typeof assertIsDefinedOrThrow;
   areDefined: typeof areTwoFactorAuthenticationMethodsDefined;

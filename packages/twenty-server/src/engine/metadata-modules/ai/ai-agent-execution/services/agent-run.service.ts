@@ -1,3 +1,5 @@
+// Service backing the `runAgent` mutation: resolves an agent and its
+// application by universal identifier, then executes it as a one-off run.
 import { Injectable, NotFoundException } from '@nestjs/common';
 
 import {
@@ -23,6 +25,8 @@ export class AgentRunService {
     private readonly agentRepository: WorkspaceScopedRepository<AgentEntity>,
   ) {}
 
+  // Resolves the target agent and its application, then runs it once with
+  // the given prompt, translating a credits-exhausted result into an error.
   async run({
     workspace,
     requestUserWorkspaceId,

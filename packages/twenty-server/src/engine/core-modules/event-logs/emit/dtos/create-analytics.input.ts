@@ -1,3 +1,5 @@
+// GraphQL args for submitting a pageview or track analytics event, plus
+// type guards distinguishing the two input shapes.
 import { ArgsType, Field, registerEnumType } from '@nestjs/graphql';
 
 import { IsEnum, IsObject, IsOptional, IsString } from 'class-validator';
@@ -37,12 +39,14 @@ export class CreateAnalyticsInputV2 {
   properties?: PageviewProperties | Record<string, unknown>;
 }
 
+// Narrows a CreateAnalyticsInputV2 to the pageview variant (requires `name`).
 export function isPageviewAnalyticsInput(
   input: CreateAnalyticsInputV2,
 ): input is CreateAnalyticsInputV2 & { name: string } {
   return input.type === 'pageview' && !!input.name;
 }
 
+// Narrows a CreateAnalyticsInputV2 to the track variant (requires `event`).
 export function isTrackAnalyticsInput(
   input: CreateAnalyticsInputV2,
 ): input is CreateAnalyticsInputV2 & { event: TrackEventName } {

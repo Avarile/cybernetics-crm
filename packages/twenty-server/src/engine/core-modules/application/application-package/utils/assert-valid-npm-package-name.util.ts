@@ -8,6 +8,8 @@ import {
 const NPM_PACKAGE_NAME_REGEX =
   /^(@[a-z0-9-~][a-z0-9-._~]*\/)?[a-z0-9-~][a-z0-9-._~]*$/;
 
+// Throws unless the given string is a valid (non-path-traversing) npm
+// package name.
 export const assertValidNpmPackageName = (name: string): void => {
   if (!NPM_PACKAGE_NAME_REGEX.test(name) || name.includes('..')) {
     throw new ApplicationException(

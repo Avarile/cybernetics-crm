@@ -20,6 +20,8 @@ import { FlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-metada
 import { FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object-metadata/types/flat-object-metadata.type';
 import { assertMutationNotOnRemoteObject } from 'src/engine/metadata-modules/object-metadata/utils/assert-mutation-not-on-remote-object.util';
 
+// Handles createOne by delegating to CommonCreateManyQueryRunnerService
+// with a single-record batch.
 @Injectable()
 export class CommonCreateOneQueryRunnerService extends CommonBaseQueryRunnerService<
   CreateOneQueryArgs,
@@ -33,6 +35,8 @@ export class CommonCreateOneQueryRunnerService extends CommonBaseQueryRunnerServ
 
   protected readonly operationName = CommonQueryNames.CREATE_ONE;
 
+  // Wraps the single record into a one-element createMany call and unwraps
+  // the result.
   async run(
     args: CommonExtendedInput<CreateManyQueryArgs>,
     queryRunnerContext: CommonExtendedQueryRunnerContext,
@@ -48,6 +52,8 @@ export class CommonCreateOneQueryRunnerService extends CommonBaseQueryRunnerServ
     return result[0];
   }
 
+  // Runs the single input record through the data-arg-processor,
+  // backfilling position unless this is an upsert.
   async computeArgs(
     args: CommonInput<CreateOneQueryArgs>,
     queryRunnerContext: CommonBaseQueryRunnerContext,
@@ -74,6 +80,7 @@ export class CommonCreateOneQueryRunnerService extends CommonBaseQueryRunnerServ
     };
   }
 
+  // Runs the created record through the common result-getter pipeline.
   async processQueryResult(
     queryResult: ObjectRecord,
     flatObjectMetadata: FlatObjectMetadata,
@@ -90,6 +97,8 @@ export class CommonCreateOneQueryRunnerService extends CommonBaseQueryRunnerServ
     );
   }
 
+  // Rejects mutations on remote objects and ensures a client-provided id
+  // is a valid UUID.
   async validate(
     args: CommonInput<CreateOneQueryArgs>,
     queryRunnerContext: CommonBaseQueryRunnerContext,

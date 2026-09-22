@@ -1,5 +1,7 @@
 /* @license Enterprise */
 
+// Registers observability gauges reporting subscription health metrics
+// (how many workspaces are subscribed, whether the newest workspace has one).
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -28,6 +30,7 @@ export class BillingGaugeService implements OnModuleInit {
     private readonly billingSubscriptionRepository: Repository<BillingSubscriptionEntity>,
   ) {}
 
+  // Registers the two billing observability gauges on startup.
   onModuleInit() {
     this.metricsService.createObservableGauge({
       metricName: 'twenty_billing_subscribed_workspaces_total',
@@ -53,6 +56,7 @@ export class BillingGaugeService implements OnModuleInit {
     });
   }
 
+  // Counts non-deleted billing subscriptions; 0 when billing is disabled.
   private async getSubscribedWorkspacesCount(): Promise<number> {
     const isBillingEnabled = this.twentyConfigService.get('IS_BILLING_ENABLED');
 
@@ -71,6 +75,8 @@ export class BillingGaugeService implements OnModuleInit {
     }
   }
 
+  // Sanity check: verifies the most recently created (and settled) workspace
+  // has a billing subscription, surfacing sync issues via the gauge value.
   private async lastWorkspaceHasSubscription(): Promise<number> {
     const isBillingEnabled = this.twentyConfigService.get('IS_BILLING_ENABLED');
 

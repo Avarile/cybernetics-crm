@@ -44,6 +44,8 @@ import { FlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-metada
 import { buildFieldMapsFromFlatObjectMetadata } from 'src/engine/metadata-modules/flat-field-metadata/utils/build-field-maps-from-flat-object-metadata.util';
 import { FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object-metadata/types/flat-object-metadata.type';
 
+// Handles findMany: the main paginated/filtered/sorted/aggregated list
+// query, supporting both offset and cursor-based pagination.
 @Injectable()
 export class CommonFindManyQueryRunnerService extends CommonBaseQueryRunnerService<
   FindManyQueryArgs,
@@ -52,6 +54,9 @@ export class CommonFindManyQueryRunnerService extends CommonBaseQueryRunnerServi
   protected readonly operationName = CommonQueryNames.FIND_MANY;
   protected readonly isReadOnly = true;
 
+  // Builds and executes the filtered/ordered/paginated query (translating
+  // a cursor into an extra filter when present), computes aggregates and
+  // page info, and hydrates any requested nested relations.
   async run(
     args: CommonExtendedInput<FindManyQueryArgs>,
     queryRunnerContext: CommonExtendedQueryRunnerContext,
@@ -229,6 +234,8 @@ export class CommonFindManyQueryRunnerService extends CommonBaseQueryRunnerServi
     };
   }
 
+  // Normalizes orderBy and validates/transforms the filter against
+  // object/field metadata.
   async computeArgs(
     args: CommonInput<FindManyQueryArgs>,
     queryRunnerContext: CommonBaseQueryRunnerContext,
@@ -253,6 +260,7 @@ export class CommonFindManyQueryRunnerService extends CommonBaseQueryRunnerServi
     };
   }
 
+  // Runs the fetched records through the common result-getter pipeline.
   async processQueryResult(
     queryResult: CommonFindManyOutput,
     flatObjectMetadata: FlatObjectMetadata,
@@ -275,6 +283,8 @@ export class CommonFindManyQueryRunnerService extends CommonBaseQueryRunnerServi
     };
   }
 
+  // Rejects mutually-exclusive pagination arg combinations (first/last,
+  // before/after, before/first, after/last) and negative first/last values.
   async validate(
     args: CommonInput<FindManyQueryArgs>,
     _queryRunnerContext: CommonBaseQueryRunnerContext,
@@ -323,6 +333,8 @@ export class CommonFindManyQueryRunnerService extends CommonBaseQueryRunnerServi
     }
   }
 
+  // Extends the base complexity score by the number of relation fields
+  // referenced in orderBy, since those require extra joins.
   protected override computeQueryComplexity(
     selectedFieldsResult: CommonSelectedFieldsResult,
     args: CommonExtendedInput<FindManyQueryArgs>,

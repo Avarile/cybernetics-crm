@@ -13,6 +13,7 @@ import {
 
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';
 
+// Partial set of view group fields that can be updated.
 @InputType()
 class UpdateViewGroupInputUpdates {
   @IsOptional()
@@ -36,6 +37,7 @@ class UpdateViewGroupInputUpdates {
   position?: number;
 }
 
+// GraphQL/REST input for updating an existing view group by id.
 @InputType()
 export class UpdateViewGroupInput {
   @IsUUID()

@@ -1,3 +1,7 @@
+// Refreshes an app connection provider's OAuth access token using the
+// connected account's stored refresh token, classifying 4xx token-endpoint
+// failures (the user must reconnect) apart from transient network/5xx
+// errors.
 import { Injectable, Logger } from '@nestjs/common';
 
 import { isDefined } from 'twenty-shared/utils';
@@ -25,6 +29,9 @@ export class AppOAuthRefreshAccessTokenService {
     private readonly secureHttpClientService: SecureHttpClientService,
   ) {}
 
+  // Exchanges the connected account's refresh token for a new access
+  // token (and refresh token, if rotated) via the provider's token
+  // endpoint.
   async refreshTokens(
     connectedAccount: ConnectedAccountEntity,
     refreshToken: PlaintextString,
@@ -77,6 +84,8 @@ export class AppOAuthRefreshAccessTokenService {
     }
   }
 
+  // Looks up the OAuth connection provider and its client credentials,
+  // wrapping any lookup failure into a PROVIDER_NOT_SUPPORTED exception.
   private async resolveProvider(connectionProviderId: string) {
     try {
       const provider =

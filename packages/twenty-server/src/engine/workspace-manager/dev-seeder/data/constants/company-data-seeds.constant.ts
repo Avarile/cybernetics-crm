@@ -1,3 +1,5 @@
+// Large fixture list of sample companies used to populate dev-seeded
+// workspaces.
 import { WORKSPACE_MEMBER_DATA_SEED_IDS } from 'src/engine/workspace-manager/dev-seeder/data/constants/workspace-member-data-seeds.constant';
 
 type CompanyDataSeed = {

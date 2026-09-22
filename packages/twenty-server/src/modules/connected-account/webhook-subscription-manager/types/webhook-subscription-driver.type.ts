@@ -14,6 +14,7 @@ export type WebhookSubscriptionContext = {
   clientState: string;
 };
 
+// Contract each provider-specific driver implements to manage webhook subscriptions.
 export type WebhookSubscriptionDriver = {
   createSubscription(
     connectedAccountId: string,

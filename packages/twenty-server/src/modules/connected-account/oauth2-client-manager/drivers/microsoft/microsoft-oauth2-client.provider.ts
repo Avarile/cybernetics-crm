@@ -15,6 +15,8 @@ import { ConnectedAccountTokenEncryptionService } from 'src/engine/metadata-modu
 import { MicrosoftOAuth2ClientAuthProvider } from 'src/modules/connected-account/oauth2-client-manager/drivers/microsoft/microsoft-oauth2-client-auth-provider';
 import { ConnectedAccountRefreshTokensService } from 'src/modules/connected-account/refresh-tokens-manager/services/connected-account-refresh-tokens.service';
 
+// Builds an authenticated Microsoft Graph client for a connected account by
+// decrypting its stored access token.
 @Injectable()
 export class MicrosoftOAuth2ClientProvider {
   constructor(

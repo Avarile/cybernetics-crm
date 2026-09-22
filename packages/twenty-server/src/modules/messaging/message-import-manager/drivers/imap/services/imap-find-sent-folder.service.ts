@@ -24,6 +24,8 @@ type SentFolderResult = {
 export class ImapFindSentFolderService {
   private readonly logger = new Logger(ImapFindSentFolderService.name);
 
+  // Tries the special-use \Sent flag first, falling back to regex-matched
+  // candidate folder names; returns null (inbox-only import) if none found.
   public async findSentFolder(client: ImapFlow): Promise<SentFolderResult> {
     try {
       const list = await client.list();
@@ -62,6 +64,9 @@ export class ImapFindSentFolderService {
     }
   }
 
+  // Uses the special-use \Sent flag, but only accepts the folder if it's
+  // non-empty — an empty special-use folder is treated as unreliable and
+  // the search falls through to regex candidates instead.
   private async findSentFolderBySpecialUse(
     client: ImapFlow,
     list: ListResponse[],
@@ -95,6 +100,8 @@ export class ImapFindSentFolderService {
     return null;
   }
 
+  // Picks the first regex-matched candidate with messages in it, or falls
+  // back to the first candidate overall if none have messages.
   private async findSentFolderByRegexCandidates(
     client: ImapFlow,
     list: ListResponse[],
@@ -135,6 +142,7 @@ export class ImapFindSentFolderService {
     return null;
   }
 
+  // Returns a folder's message count via STATUS, or 0 on error.
   private async getFolderMessageCount(
     client: ImapFlow,
     folderPath: string,

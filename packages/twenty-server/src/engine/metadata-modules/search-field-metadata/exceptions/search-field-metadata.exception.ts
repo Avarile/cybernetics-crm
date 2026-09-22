@@ -1,3 +1,4 @@
+// Error codes for invalid search-field-metadata operations and references.
 export enum SearchFieldMetadataExceptionCode {
   SEARCH_FIELD_METADATA_NOT_FOUND = 'SEARCH_FIELD_METADATA_NOT_FOUND',
   INVALID_SEARCH_FIELD_METADATA_DATA = 'INVALID_SEARCH_FIELD_METADATA_DATA',

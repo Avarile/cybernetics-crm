@@ -5,6 +5,8 @@ import { type FlatApplication } from 'src/engine/core-modules/application/types/
 import { type CreateSkillInput } from 'src/engine/metadata-modules/skill/dtos/create-skill.input';
 import { type UniversalFlatSkill } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-skill.type';
 
+// Builds a new universal flat skill from a create-skill input, generating an id when
+// not provided and marking it custom/active.
 export const fromCreateSkillInputToUniversalFlatSkillToCreate = ({
   createSkillInput,
   flatApplication,

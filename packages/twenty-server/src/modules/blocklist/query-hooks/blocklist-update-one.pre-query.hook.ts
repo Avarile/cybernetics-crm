@@ -15,6 +15,8 @@ import {
   BlocklistValidationService,
 } from 'src/modules/blocklist/blocklist-validation-manager/services/blocklist-validation.service';
 
+// Runs before `blocklist.updateOne`; validates ownership and uniqueness of
+// the updated handle before the mutation is executed.
 @WorkspaceQueryHook(`blocklist.updateOne`)
 export class BlocklistUpdateOnePreQueryHook implements WorkspacePreQueryHookInstance {
   constructor(

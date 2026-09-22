@@ -1,3 +1,6 @@
+// Facade service that delegates captcha token validation to the currently
+// configured driver, treating captcha as disabled (always valid) when no
+// driver is configured.
 import { Injectable } from '@nestjs/common';
 
 import { CaptchaDriverFactory } from 'src/engine/core-modules/captcha/captcha-driver.factory';
@@ -8,6 +11,8 @@ import { type CaptchaValidateResult } from 'src/engine/core-modules/captcha/inte
 export class CaptchaService implements CaptchaDriver {
   constructor(private readonly captchaDriverFactory: CaptchaDriverFactory) {}
 
+  // Validates a captcha token against the active driver, or succeeds
+  // unconditionally if captcha is disabled.
   async validate(token: string): Promise<CaptchaValidateResult> {
     const driver = this.captchaDriverFactory.getCurrentDriver();
 

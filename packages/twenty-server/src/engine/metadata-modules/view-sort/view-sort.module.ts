@@ -15,6 +15,8 @@ import { WorkspaceCacheStorageModule } from 'src/engine/workspace-cache-storage/
 import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace-migration/workspace-migration.module';
 import { WorkspaceManyOrAllFlatEntityMapsCacheModule } from 'src/engine/metadata-modules/flat-entity/services/workspace-many-or-all-flat-entity-maps-cache.module';
 
+// Wires up the view sort CRUD service, its REST controller, GraphQL
+// resolver, and AI tool factory.
 @Module({
   imports: [
     TypeOrmModule.forFeature([ViewSortEntity, ViewEntity]),

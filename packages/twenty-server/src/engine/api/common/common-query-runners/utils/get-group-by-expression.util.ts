@@ -20,6 +20,10 @@ import { isGroupByRelationField } from 'src/engine/api/common/common-query-runne
 
 const VALID_IANA_TIMEZONES = new Set(IANA_TIME_ZONES);
 
+// Builds the SQL expression for one groupBy dimension: a plain column
+// reference (or UNNEST for array-unnest grouping), or, for date fields,
+// the appropriate DATE_TRUNC/TO_CHAR expression for the requested
+// granularity (validating time zone when the granularity needs one).
 export const getGroupByExpression = ({
   groupByField,
   columnNameWithQuotes,

@@ -1,3 +1,7 @@
+// Builds the OpenAPI `components.schemas`/`components.parameters` entries:
+// per-object schemas (create/update/response variants) derived from field
+// metadata for the core API, and hand-written schemas for metadata
+// resources (object, field, webhook, view, etc) for the metadata API.
 import { type OpenAPIV3_1 } from 'openapi-types';
 import {
   type FieldMetadataDefaultValue,
@@ -42,6 +46,8 @@ type Properties = {
 
 type OpenApiExample = Record<string, FieldMetadataDefaultValue>;
 
+// Builds an example payload for a schema by generating sample values for
+// required fields and a few common displayable field types.
 const getSchemaComponentsExample = (
   item: FlatObjectMetadata,
   flatFieldMetadatas: FlatFieldMetadata[],
@@ -91,6 +97,8 @@ const getSchemaComponentsExample = (
   }, {});
 };
 
+// Builds schema properties for an object's relation/morph-relation fields,
+// referencing the related object's response schema.
 const getSchemaComponentsRelationProperties = (
   flatFieldMetadatas: FlatFieldMetadata[],
   flatObjectMetadataMaps: Pick<
@@ -168,6 +176,8 @@ const getSchemaComponentsRelationProperties = (
   }, {} as Properties);
 };
 
+// Returns the names of fields that are non-nullable and have no default
+// value, i.e. must be supplied on create.
 const getRequiredFields = (
   flatFieldMetadatas: FlatFieldMetadata[],
 ): string[] => {
@@ -182,6 +192,8 @@ const getRequiredFields = (
   }, [] as string[]);
 };
 
+// Builds one object's schema variant (create/update/response), adding
+// relation properties and an example/required-fields as appropriate.
 const computeSchemaComponent = ({
   item,
   flatFieldMetadatas,
@@ -243,6 +255,7 @@ const computeSchemaComponent = ({
   return result;
 };
 
+// Builds the create/update/response schema variants for every workspace object.
 export const computeSchemaComponents = (
   flatObjectMetadataItems: FlatObjectMetadata[],
   flatObjectMetadataMaps: Pick<
@@ -292,6 +305,8 @@ export const computeSchemaComponents = (
   );
 };
 
+// Builds the shared named query/path parameter definitions referenced via
+// $ref across all generated paths.
 export const computeParameterComponents = (
   fromMetadata = false,
 ): Record<string, OpenAPIV3_1.ParameterObject> => {
@@ -313,6 +328,9 @@ export const computeParameterComponents = (
   };
 };
 
+// Hand-builds the create/update/response schemas for each metadata resource
+// type (object, field, webhook, apiKey, view and its sub-resources, page
+// layout and its sub-resources), since these aren't derived from field metadata.
 export const computeMetadataSchemaComponents = (
   metadataSchema: { nameSingular: string; namePlural: string }[],
 ): Record<string, OpenAPIV3_1.SchemaObject> => {

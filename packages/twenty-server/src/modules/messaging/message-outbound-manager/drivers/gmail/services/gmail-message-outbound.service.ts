@@ -1,3 +1,6 @@
+// MessageOutboundDriver for Gmail: composes and sends via the Gmail API,
+// supports creating/sending/deleting drafts, and cleans up the source
+// draft after sending it.
 import { Injectable, Logger } from '@nestjs/common';
 
 import { isNonEmptyString } from '@sniptt/guards';
@@ -23,6 +26,8 @@ export class GmailMessageOutboundService implements MessageOutboundDriver {
     private readonly googleOAuth2ClientProvider: GoogleOAuth2ClientProvider,
   ) {}
 
+  // Composes and sends the message via Gmail, optionally continuing an
+  // existing thread.
   async sendMessage(
     sendMessageInput: SendMessageInput,
     connectedAccount: ConnectedAccountEntity,
@@ -47,6 +52,7 @@ export class GmailMessageOutboundService implements MessageOutboundDriver {
     };
   }
 
+  // Composes and saves the message as a Gmail draft (no send).
   async createDraft(
     sendMessageInput: SendMessageInput,
     connectedAccount: ConnectedAccountEntity,
@@ -69,6 +75,8 @@ export class GmailMessageOutboundService implements MessageOutboundDriver {
     });
   }
 
+  // Sends the message, then best-effort deletes the source draft
+  // (logging rather than failing the send if cleanup fails).
   async sendDraft(
     draftExternalId: string,
     sendMessageInput: SendMessageInput,
@@ -90,6 +98,7 @@ export class GmailMessageOutboundService implements MessageOutboundDriver {
     return sendResult;
   }
 
+  // Finds and deletes the Gmail draft wrapping the given message id.
   private async deleteDraftByMessageId(
     connectedAccount: ConnectedAccountEntity,
     messageId: string,
@@ -113,6 +122,8 @@ export class GmailMessageOutboundService implements MessageOutboundDriver {
     );
   }
 
+  // Gmail has no "get draft by message id" endpoint, so pages through all
+  // drafts to find the one wrapping the given message.
   private async findDraftIdByMessageId(
     gmailClient: gmail_v1.Gmail,
     messageId: string,
@@ -141,6 +152,10 @@ export class GmailMessageOutboundService implements MessageOutboundDriver {
     return undefined;
   }
 
+  // Looks up the account's own email/display name via Gmail/People APIs,
+  // builds a MIME message with MailComposer (keeping Bcc, which
+  // MailComposer strips by default), and base64url-encodes it for the
+  // Gmail API.
   private async composeGmailMessage(
     connectedAccount: ConnectedAccountEntity,
     sendMessageInput: SendMessageInput,

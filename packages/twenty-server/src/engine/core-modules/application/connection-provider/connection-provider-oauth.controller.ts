@@ -1,3 +1,7 @@
+// Public REST endpoints for the connection provider OAuth flow: starts the
+// authorization redirect (authenticated via a transient token rather than
+// a session cookie) and handles the provider's callback, redirecting back
+// into the workspace's settings UI on success or an error page on failure.
 import { Controller, Get, Logger, Query, Res, UseGuards } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -155,6 +159,9 @@ export class ConnectionProviderOAuthController {
     }
   }
 
+  // Completes the OAuth flow after the provider redirects back with a
+  // code/state, then redirects the browser into the workspace's app
+  // settings (or a caller-specified location).
   @Get('callback')
   async callback(
     @Query('code') code: string,
@@ -223,6 +230,7 @@ export class ConnectionProviderOAuthController {
     }
   }
 
+  // Redirects to the workspace's error page, capturing the exception.
   private redirectToError(
     res: Response,
     error: unknown,

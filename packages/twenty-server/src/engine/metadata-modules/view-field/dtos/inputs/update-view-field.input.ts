@@ -14,6 +14,7 @@ import { AggregateOperations } from 'twenty-shared/types';
 
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';
 
+// Partial set of view field fields that can be updated.
 @InputType()
 class UpdateViewFieldInputUpdates {
   @IsOptional()
@@ -42,6 +43,7 @@ class UpdateViewFieldInputUpdates {
   viewFieldGroupId?: string | null;
 }
 
+// GraphQL/REST input for updating an existing view field by id.
 @InputType()
 export class UpdateViewFieldInput {
   @IsUUID()

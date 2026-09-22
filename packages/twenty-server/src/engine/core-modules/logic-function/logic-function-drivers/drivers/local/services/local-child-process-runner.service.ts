@@ -1,3 +1,6 @@
+// Assembles a function's node_modules from the local deps/SDK layers, writes
+// a bootstrap runner script, and executes it in a sandboxed child process
+// with an enforced timeout, collecting its stdout/stderr/result.
 import { promises as fs } from 'fs';
 import { spawn } from 'node:child_process';
 import { join } from 'path';
@@ -57,6 +60,8 @@ export class LocalChildProcessRunnerService {
     );
   }
 
+  // Writes a small CJS script that imports the built ESM bundle and invokes
+  // its handler, relaying the payload/result over IPC (or stdio as fallback).
   async writeBootstrapRunner({
     dir,
     builtFileAbsPath,
@@ -125,6 +130,8 @@ export class LocalChildProcessRunnerService {
     return runnerPath;
   }
 
+  // Spawns the bootstrap runner as a child process with the given env/
+  // payload, enforcing timeoutMs and resolving with its outcome and captured output.
   runChildWithEnv(options: {
     runnerPath: string;
     env: Record<string, string>;

@@ -1,3 +1,5 @@
+// Converts a message's stored parts into ordered UI message parts, dropping
+// any part types that have no UI representation.
 import { type ExtendedUIMessagePart } from 'twenty-shared/ai';
 
 import { type AgentMessagePartEntity } from 'src/engine/metadata-modules/ai/ai-agent-execution/entities/agent-message-part.entity';

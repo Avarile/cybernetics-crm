@@ -9,6 +9,7 @@ import { IsDateString, IsNotEmpty, IsNumber, IsUUID } from 'class-validator';
 
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';
 
+// GraphQL representation of a field's contribution to an object's full-text search vector.
 @ObjectType('SearchField')
 @Authorize({
   // oxlint-disable-next-line typescript/no-explicit-any

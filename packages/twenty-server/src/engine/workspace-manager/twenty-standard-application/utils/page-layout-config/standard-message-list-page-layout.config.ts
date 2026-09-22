@@ -44,6 +44,7 @@ const MESSAGE_LIST_PAGE_TABS = {
   },
 } as const satisfies Record<string, StandardPageLayoutTabConfig>;
 
+// Fixed record page layout (tabs and widgets) for the standard "messageList" object
 export const STANDARD_MESSAGE_LIST_PAGE_LAYOUT_CONFIG = {
   name: 'Default List Layout',
   type: PageLayoutType.RECORD_PAGE,

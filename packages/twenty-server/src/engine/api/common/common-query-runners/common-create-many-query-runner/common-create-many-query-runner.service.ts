@@ -43,6 +43,9 @@ import { GlobalWorkspaceDataSource } from 'src/engine/twenty-orm/global-workspac
 import { WorkspaceRepository } from 'src/engine/twenty-orm/repository/workspace.repository';
 import { RolePermissionConfig } from 'src/engine/twenty-orm/types/role-permission-config';
 
+// Handles createMany, including upsert-on-conflict semantics (matching
+// existing records via unique indexes and updating them instead of
+// inserting duplicates).
 @Injectable()
 export class CommonCreateManyQueryRunnerService extends CommonBaseQueryRunnerService<
   CreateManyQueryArgs,
@@ -54,6 +57,8 @@ export class CommonCreateManyQueryRunnerService extends CommonBaseQueryRunnerSer
     super();
   }
 
+  // Inserts (or upserts) the records, re-fetches them with the requested
+  // fields, and hydrates any requested nested relations.
   async run(
     args: CommonExtendedInput<CreateManyQueryArgs>,
     queryRunnerContext: CommonExtendedQueryRunnerContext,
@@ -120,6 +125,8 @@ export class CommonCreateManyQueryRunnerService extends CommonBaseQueryRunnerSer
     return upsertedRecords;
   }
 
+  // Hydrates nested relation fields on the created/upserted records when
+  // the caller selected any, bounding per-parent fetches at QUERY_MAX_RECORDS.
   private async processNestedRelationsIfNeeded({
     args,
     records,
@@ -160,6 +167,8 @@ export class CommonCreateManyQueryRunnerService extends CommonBaseQueryRunnerSer
     });
   }
 
+  // Runs each input record through the data-arg-processor, backfilling
+  // position unless this is an upsert.
   async computeArgs(
     args: CommonInput<CreateManyQueryArgs>,
     queryRunnerContext: CommonBaseQueryRunnerContext,
@@ -184,6 +193,8 @@ export class CommonCreateManyQueryRunnerService extends CommonBaseQueryRunnerSer
     };
   }
 
+  // Rejects mutations on remote objects and ensures any client-provided
+  // record ids are valid UUIDs.
   async validate(
     args: CommonInput<CreateManyQueryArgs>,
     queryRunnerContext: CommonBaseQueryRunnerContext,
@@ -199,6 +210,8 @@ export class CommonCreateManyQueryRunnerService extends CommonBaseQueryRunnerSer
     });
   }
 
+  // Plain insert for non-upsert calls, otherwise delegates to
+  // performUpsertOperation to split records into inserts vs. updates.
   private async insertOrUpsertRecords({
     repository,
     flatObjectMetadata,
@@ -242,6 +255,9 @@ export class CommonCreateManyQueryRunnerService extends CommonBaseQueryRunnerSer
     });
   }
 
+  // Finds existing records that conflict with incoming ones on unique
+  // indexes, splits input into updates vs. inserts, backfills position on
+  // the inserts, and applies both, merging results into one InsertResult.
   private async performUpsertOperation({
     repository,
     flatObjectMetadata,
@@ -322,6 +338,8 @@ export class CommonCreateManyQueryRunnerService extends CommonBaseQueryRunnerSer
     return result;
   }
 
+  // Assigns a position value to records that will be inserted (skipped
+  // when there are none).
   private async backfillPositionForInserts({
     recordsToInsert,
     flatObjectMetadata,
@@ -354,6 +372,8 @@ export class CommonCreateManyQueryRunnerService extends CommonBaseQueryRunnerSer
     });
   }
 
+  // Fetches (including soft-deleted) records matching any of the
+  // conflicting-field where conditions, restricted to selectable columns.
   private async findExistingRecords({
     repository,
     flatObjectMetadata,
@@ -404,6 +424,8 @@ export class CommonCreateManyQueryRunnerService extends CommonBaseQueryRunnerSer
       .getMany()) as PartialObjectRecordWithId[];
   }
 
+  // Updates the matched (conflicting) records, clearing deletedAt to
+  // revive any soft-deleted matches, and appends their ids to `result`.
   private async processRecordsToUpdate({
     partialRecordsToUpdate,
     repository,
@@ -445,6 +467,7 @@ export class CommonCreateManyQueryRunnerService extends CommonBaseQueryRunnerSer
     );
   }
 
+  // Inserts the non-conflicting records and appends the results to `result`.
   private async processRecordsToInsert({
     recordsToInsert,
     repository,
@@ -469,6 +492,8 @@ export class CommonCreateManyQueryRunnerService extends CommonBaseQueryRunnerSer
     }
   }
 
+  // Re-fetches the inserted/updated records with the caller's requested
+  // fields, preserving the original insert/update order.
   private async fetchUpsertedRecords({
     objectRecords,
     flatObjectMetadata,
@@ -518,6 +543,8 @@ export class CommonCreateManyQueryRunnerService extends CommonBaseQueryRunnerSer
     return upsertedRecords as ObjectRecord[];
   }
 
+  // Runs the created/upserted records through the common result-getter
+  // pipeline (e.g. computed/derived fields).
   async processQueryResult(
     queryResult: ObjectRecord[],
     flatObjectMetadata: FlatObjectMetadata,
@@ -534,6 +561,8 @@ export class CommonCreateManyQueryRunnerService extends CommonBaseQueryRunnerSer
     );
   }
 
+  // Strips the createdBy field from a record being updated (as part of an
+  // upsert) so an existing record's original creator isn't overwritten.
   private getRecordWithoutCreatedBy(
     record: PartialObjectRecordWithId,
     flatObjectMetadata: FlatObjectMetadata,

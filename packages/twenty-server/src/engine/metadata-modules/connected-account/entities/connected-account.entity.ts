@@ -22,6 +22,7 @@ import { type CalendarChannelEntity } from 'src/engine/metadata-modules/calendar
 import { type MessageChannelEntity } from 'src/engine/metadata-modules/message-channel/entities/message-channel.entity';
 import { WorkspaceRelatedEntity } from 'src/engine/workspace-manager/types/workspace-related-entity';
 
+// 'user' = private to the connecting member; 'workspace' = shared with all.
 export type ConnectedAccountVisibility = 'user' | 'workspace';
 
 @Entity({ name: 'connectedAccount', schema: 'core' })
@@ -43,6 +44,9 @@ export type ConnectedAccountVisibility = 'user' | 'workspace';
     `AND (("connectionParameters"->'CALDAV'->>'password') IS NULL OR ("connectionParameters"->'CALDAV'->>'password') LIKE 'enc:v2:%')` +
     `)`,
 )
+// TypeORM entity for a connected email/calendar account (OAuth-based app
+// connection or IMAP/SMTP/CalDAV credentials). DB check constraints
+// enforce that stored tokens and passwords are always encrypted.
 export class ConnectedAccountEntity extends WorkspaceRelatedEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;

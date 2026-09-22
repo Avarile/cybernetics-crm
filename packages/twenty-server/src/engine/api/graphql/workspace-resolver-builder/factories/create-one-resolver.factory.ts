@@ -1,3 +1,6 @@
+// Builds the `createOne` GraphQL mutation resolver for an object:
+// delegates to CommonCreateOneQueryRunnerService and formats the created
+// record back into GraphQL shape.
 import { Injectable } from '@nestjs/common';
 
 import graphqlFields from 'graphql-fields';
@@ -23,6 +26,8 @@ export class CreateOneResolverFactory implements WorkspaceResolverBuilderFactory
     private readonly commonCreateOneQueryRunnerService: CommonCreateOneQueryRunnerService,
   ) {}
 
+  // Returns a resolver function that creates the given record and
+  // formats it for the GraphQL response.
   create(
     context: WorkspaceSchemaBuilderContext,
   ): Resolver<CreateOneResolverArgs> {

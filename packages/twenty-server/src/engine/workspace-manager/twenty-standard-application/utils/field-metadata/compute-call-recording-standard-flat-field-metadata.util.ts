@@ -17,6 +17,7 @@ import { createStandardRelationFieldFlatMetadata } from 'src/engine/workspace-ma
 import { CallRecordingRequestStatus } from 'src/modules/call-recording/common/enums/call-recording-request-status.enum';
 import { CallRecordingStatus } from 'src/modules/call-recording/common/enums/call-recording-status.enum';
 
+// Builds the fixed set of standard fields for the "callRecording" object
 export const buildCallRecordingStandardFlatFieldMetadatas = ({
   now,
   objectName,

@@ -1,3 +1,6 @@
+// Orchestrates starting, retrying, resuming, and queue-flushing of AI chat
+// streams: claims a thread's single active-stream slot, enqueues the
+// streaming queue job, and reaps stale claims left by crashed workers.
 import { Injectable, Logger } from '@nestjs/common';
 
 import { generateId } from 'ai';
@@ -68,6 +71,8 @@ export class AgentChatStreamingService {
     private readonly metricsService: MetricsService,
   ) {}
 
+  // If the thread's active stream has no live heartbeat, clears the claim,
+  // records an interrupted-stream error, and notifies subscribers.
   async reapDeadStream({
     thread,
     workspaceId,
@@ -124,6 +129,8 @@ export class AgentChatStreamingService {
     return interruptedError;
   }
 
+  // Atomically claims the thread's active-stream slot (only if free and any
+  // extra `where` condition matches), marking the claim's heartbeat on success.
   private async tryClaimStream({
     threadId,
     workspaceId,
@@ -150,6 +157,9 @@ export class AgentChatStreamingService {
     return true;
   }
 
+  // Starts a new chat turn: if the thread is free (and has no backlog),
+  // saves the user message and enqueues the streaming job; otherwise queues
+  // the message for later and flushes the backlog if one already existed.
   async streamAgentChat({
     threadId,
     userWorkspaceId,
@@ -294,6 +304,8 @@ export class AgentChatStreamingService {
     }
   }
 
+  // Re-runs the thread's most recent failed turn: claims the stream, wipes
+  // the prior assistant messages for that turn, and re-enqueues it.
   async retryLastFailedTurn({
     threadId,
     userWorkspaceId,
@@ -422,6 +434,8 @@ export class AgentChatStreamingService {
     }
   }
 
+  // Re-enqueues the streaming job to resume an already-claimed stream (e.g.
+  // after the user answers a pending question).
   async enqueueResumeStream({
     threadId,
     userWorkspaceId,
@@ -469,6 +483,8 @@ export class AgentChatStreamingService {
     );
   }
 
+  // Promotes and starts streaming the thread's next queued message, if the
+  // thread is idle and has no pending question; drops empty queued messages instead.
   async flushNextQueuedMessage(
     threadId: string,
     userWorkspaceId: string,
@@ -607,6 +623,8 @@ export class AgentChatStreamingService {
     }
   }
 
+  // Clears a thread's active-stream claim (best-effort), optionally
+  // restoring other fields such as the prior lastStreamError.
   private async releaseStreamClaim(
     threadId: string,
     workspaceId: string,
@@ -626,6 +644,8 @@ export class AgentChatStreamingService {
       });
   }
 
+  // Loads a thread's non-queued messages as AI SDK UI messages, signing
+  // fresh URLs for any file parts.
   private async loadMessagesFromDB(
     threadId: string,
     userWorkspaceId: string,
@@ -668,6 +688,8 @@ export class AgentChatStreamingService {
     );
   }
 
+  // Converts file attachment inputs into file message parts, keeping only
+  // attachments that resolve to a real, previously-uploaded chat file.
   private async buildFilePartsFromAttachments(
     fileAttachments: AiChatFileAttachment[] | undefined,
     workspaceId: string,

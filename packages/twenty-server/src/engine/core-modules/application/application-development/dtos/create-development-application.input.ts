@@ -1,3 +1,4 @@
+// GraphQL args for creating a local development application.
 import { ArgsType, Field } from '@nestjs/graphql';
 
 @ArgsType()

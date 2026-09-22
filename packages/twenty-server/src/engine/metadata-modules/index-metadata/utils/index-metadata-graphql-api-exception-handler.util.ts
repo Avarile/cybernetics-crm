@@ -1,3 +1,6 @@
+// Maps index metadata exceptions (and workspace migration builder
+// exceptions) to the appropriate GraphQL error type for the API layer.
+
 import { assertUnreachable } from 'twenty-shared/utils';
 
 import {
@@ -14,6 +17,9 @@ import {
 import { WorkspaceMigrationBuilderException } from 'src/engine/workspace-manager/workspace-migration/exceptions/workspace-migration-builder-exception';
 import { workspaceMigrationBuilderGraphqlApiExceptionHandler } from 'src/engine/workspace-manager/workspace-migration/interceptors/utils/workspace-migration-builder-graphql-api-exception-handler.util';
 
+// Delegates migration builder errors to their own handler; otherwise maps
+// each IndexMetadataExceptionCode to a specific GraphQL error, or rethrows
+// unrecognized errors unchanged.
 export const indexMetadataGraphqlApiExceptionHandler = (error: Error) => {
   if (error instanceof WorkspaceMigrationBuilderException) {
     return workspaceMigrationBuilderGraphqlApiExceptionHandler(error);

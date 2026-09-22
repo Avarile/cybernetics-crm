@@ -21,9 +21,12 @@ import { UpdateViewGroupPermissionGuard } from 'src/engine/metadata-modules/view
 @MetadataResolver(() => ViewGroupDTO)
 @UseFilters(ViewGroupGraphqlApiExceptionFilter)
 @UseGuards(WorkspaceAuthGuard)
+// GraphQL resolver exposing CRUD operations for view groups, including
+// batch create/update.
 export class ViewGroupResolver {
   constructor(private readonly viewGroupService: ViewGroupService) {}
 
+  // Lists view groups in the workspace, optionally filtered to one view.
   @Query(() => [ViewGroupDTO])
   @UseGuards(NoPermissionGuard)
   async getViewGroups(
@@ -38,6 +41,7 @@ export class ViewGroupResolver {
     return this.viewGroupService.findByWorkspaceId(workspace.id);
   }
 
+  // Fetches a single view group by id.
   @Query(() => ViewGroupDTO, { nullable: true })
   @UseGuards(NoPermissionGuard)
   async getViewGroup(
@@ -47,6 +51,7 @@ export class ViewGroupResolver {
     return this.viewGroupService.findById(id, workspace.id);
   }
 
+  // Creates a single new view group.
   @Mutation(() => ViewGroupDTO)
   @UseGuards(CreateViewGroupPermissionGuard)
   async createViewGroup(
@@ -59,6 +64,7 @@ export class ViewGroupResolver {
     });
   }
 
+  // Creates multiple view groups in one migration.
   @Mutation(() => [ViewGroupDTO])
   @UseGuards(CreateViewGroupPermissionGuard)
   async createManyViewGroups(
@@ -72,6 +78,7 @@ export class ViewGroupResolver {
     });
   }
 
+  // Updates a single view group.
   @Mutation(() => ViewGroupDTO)
   @UseGuards(UpdateViewGroupPermissionGuard)
   async updateViewGroup(
@@ -84,6 +91,7 @@ export class ViewGroupResolver {
     });
   }
 
+  // Updates multiple view groups in one migration.
   @Mutation(() => [ViewGroupDTO])
   @UseGuards(UpdateViewGroupPermissionGuard)
   async updateManyViewGroups(
@@ -97,6 +105,7 @@ export class ViewGroupResolver {
     });
   }
 
+  // Soft-deletes a view group.
   @Mutation(() => ViewGroupDTO)
   @UseGuards(DeleteViewGroupPermissionGuard)
   async deleteViewGroup(
@@ -109,6 +118,7 @@ export class ViewGroupResolver {
     });
   }
 
+  // Permanently destroys a view group.
   @Mutation(() => ViewGroupDTO)
   @UseGuards(DestroyViewGroupPermissionGuard)
   async destroyViewGroup(

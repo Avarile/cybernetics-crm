@@ -1,3 +1,8 @@
+// Base class and factory for metadata side effect handlers: each handler
+// implements buildSideEffects for a specific (operation, metadataName) pair
+// and is tagged with discoverable metadata via the MetadataSideEffectHandler
+// decorator-style factory.
+
 import { SetMetadata } from '@nestjs/common';
 
 import { type AllMetadataName } from 'twenty-shared/metadata';
@@ -17,6 +22,8 @@ export type BuildSideEffectsArgs<P extends AllMetadataName> = {
   context: MetadataSideEffectContext;
 };
 
+// Common shape every side effect handler service extends: identifies which
+// operation/metadata it handles and computes the resulting side effects.
 export abstract class BaseMetadataSideEffectHandlerService<
   P extends AllMetadataName,
 > {
@@ -37,6 +44,9 @@ type MetadataSideEffectHandlerDeclaration<P extends AllMetadataName> = {
   description: string;
 };
 
+// Creates a base class stamped with the given operation/metadataName/name/
+// description, and attaches that same info as reflect metadata so the
+// registry can discover it at startup.
 export function MetadataSideEffectHandler<P extends AllMetadataName>({
   operation,
   metadataName,

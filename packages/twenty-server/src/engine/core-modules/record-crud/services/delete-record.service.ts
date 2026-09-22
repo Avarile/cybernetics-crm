@@ -1,3 +1,6 @@
+// Deletes a single record by ID, either soft (default) or permanently
+// destroyed, on behalf of workflows/tools.
+
 import { Injectable, Logger } from '@nestjs/common';
 
 import { isDefined, isValidUuid } from 'twenty-shared/utils';
@@ -23,6 +26,8 @@ export class DeleteRecordService {
     private readonly commonApiContextBuilder: CommonApiContextBuilderService,
   ) {}
 
+  // Soft- or hard-deletes the record identified by objectRecordId, validating
+  // the ID and automation permissions first.
   async execute(params: DeleteRecordParams): Promise<ToolOutput> {
     const { objectName, objectRecordId, authContext, soft = true } = params;
 

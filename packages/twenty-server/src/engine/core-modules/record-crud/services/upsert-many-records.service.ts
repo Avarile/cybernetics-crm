@@ -1,3 +1,6 @@
+// Bulk-upserts records for a given object, creating or updating each one
+// based on conflict detection, on behalf of workflows/tools.
+
 import { Injectable, Logger } from '@nestjs/common';
 
 import { isDefined } from 'twenty-shared/utils';
@@ -24,6 +27,8 @@ export class UpsertManyRecordsService {
     private readonly commonApiContextBuilder: CommonApiContextBuilderService,
   ) {}
 
+  // Upserts multiple records in objectName, reporting how many were created
+  // vs. updated, and rejects objects that automation is not allowed to manage.
   async execute(params: UpsertManyRecordsParams): Promise<ToolOutput> {
     const { objectName, objectRecords, authContext } = params;
 

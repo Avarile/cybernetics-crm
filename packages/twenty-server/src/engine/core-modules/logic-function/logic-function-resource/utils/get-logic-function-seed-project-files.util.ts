@@ -9,6 +9,7 @@ export type LogicFunctionSeedProjectFile = {
   content: Buffer;
 };
 
+// Recursively reads every file under a directory into memory.
 const getAllFiles = async (
   rootDir: string,
   dir: string = rootDir,
@@ -33,6 +34,7 @@ const getAllFiles = async (
   return files;
 };
 
+// Reads all files of the bundled logic-function seed project template.
 export const getLogicFunctionSeedProjectFiles = async (): Promise<
   LogicFunctionSeedProjectFile[]
 > => {

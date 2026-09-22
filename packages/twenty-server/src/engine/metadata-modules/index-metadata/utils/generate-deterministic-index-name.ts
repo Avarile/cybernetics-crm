@@ -1,3 +1,7 @@
+// Generates a stable Postgres index name by hashing the table name, ordered
+// column names, and where clause, so index names stay unique and constant
+// across regenerations of the same logical index.
+
 import { createHash } from 'crypto';
 
 import { belongsToTwentyStandardApp } from 'src/engine/metadata-modules/utils/belongs-to-twenty-standard-app.util';
@@ -13,6 +17,8 @@ type GenerateDeterministicIndexNameArgs = {
   // coexist; the unique-name constraint must not block that).
   indexWhereClause?: string | null;
 };
+// Hashes the table name, ordered column names, and where clause (if any)
+// into a short hex digest, prefixed with IDX_ or IDX_UNIQUE_.
 export const generateDeterministicIndexName = ({
   orderedIndexColumnNames,
   flatObjectMetadata,

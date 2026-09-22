@@ -8,6 +8,8 @@ export type FlatPageLayoutTabWithWidgets = FlatPageLayoutTab & {
   widgets: FlatPageLayoutWidget[];
 };
 
+// Rebuilds a flat page layout tab's nested widgets from the flat widget maps, filtering
+// out widgets that belong to a different tab or are soft-deleted.
 export const reconstructFlatPageLayoutTabWithWidgets = ({
   tab,
   flatPageLayoutWidgetMaps,

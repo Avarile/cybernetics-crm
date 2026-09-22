@@ -1,3 +1,6 @@
+// Builds an update validator for "simple record page" widget types, skipping
+// validation when no configuration was provided.
+
 import { msg, t } from '@lingui/core/macro';
 import { isDefined } from 'twenty-shared/utils';
 
@@ -6,6 +9,8 @@ import { type FlatPageLayoutWidgetValidationError } from 'src/engine/metadata-mo
 import { type WidgetConfigurationType } from 'src/engine/metadata-modules/page-layout-widget/enums/widget-configuration-type.type';
 import { PageLayoutWidgetExceptionCode } from 'src/engine/metadata-modules/page-layout-widget/exceptions/page-layout-widget.exception';
 
+// Returns a validator checking the updated configuration's type matches
+// expectedConfigurationType.
 export const validateSimpleRecordPageWidgetForUpdate =
   (expectedConfigurationType: WidgetConfigurationType) =>
   (

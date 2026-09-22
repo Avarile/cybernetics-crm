@@ -1,3 +1,6 @@
+// Bulk-updates records matching a filter for a given object on behalf of
+// workflows/tools, enforcing automation permissions.
+
 import { Injectable, Logger } from '@nestjs/common';
 
 import { canObjectBeManagedByAutomation } from 'twenty-shared/workflow';
@@ -22,6 +25,8 @@ export class UpdateManyRecordsService {
     private readonly commonApiContextBuilder: CommonApiContextBuilderService,
   ) {}
 
+  // Updates records matching filter in objectName with data, rejecting
+  // objects that automation is not allowed to manage.
   async execute(params: UpdateManyRecordsParams): Promise<ToolOutput> {
     const { objectName, filter, data, authContext } = params;
 

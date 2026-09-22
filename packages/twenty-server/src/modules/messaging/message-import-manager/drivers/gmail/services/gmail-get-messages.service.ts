@@ -1,3 +1,8 @@
+// Batch-fetches full Gmail message bodies for a list of message ids,
+// applies folder-policy filtering, and — for SELECTED_FOLDERS policy —
+// pulls in "thread siblings" (other messages in a thread that has at least
+// one message in a synced label) so a synced thread's context isn't
+// missing messages that landed in unsynced folders.
 import { Injectable } from '@nestjs/common';
 
 import { batchFetchImplementation } from '@jrmdayn/googleapis-batcher';
@@ -24,6 +29,9 @@ export class GmailGetMessagesService {
     private readonly gmailMessagesImportErrorHandler: GmailMessagesImportErrorHandler,
   ) {}
 
+  // Fetches and filters messages by folder policy; for SELECTED_FOLDERS
+  // policy, additionally fetches thread metadata to find and include
+  // sibling messages belonging to threads that have a synced label.
   async getMessages(
     messageIds: string[],
     connectedAccount: Pick<
@@ -159,6 +167,9 @@ export class GmailGetMessagesService {
     return [...includedMessages, ...threadSiblings];
   }
 
+  // Fetches each message by id (batched via the Gmail batch client),
+  // parses successful responses, and drops messages carrying an
+  // excluded system label (e.g. spam/trash/chat).
   private async fetchMessages(
     gmailClient: gmailV1.Gmail,
     messageIds: string[],

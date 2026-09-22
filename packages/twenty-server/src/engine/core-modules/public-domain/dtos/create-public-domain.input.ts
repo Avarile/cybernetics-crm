@@ -1,3 +1,4 @@
+// GraphQL args for registering a new public domain for an application.
 import { ArgsType, Field } from '@nestjs/graphql';
 
 import { IsNotEmpty, IsString, IsUUID } from 'class-validator';

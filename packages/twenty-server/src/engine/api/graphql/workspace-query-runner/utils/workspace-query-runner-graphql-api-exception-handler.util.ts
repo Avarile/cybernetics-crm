@@ -1,3 +1,7 @@
+// Central dispatch that routes any internal exception type raised
+// anywhere in the query-runner pipeline (query runner, ORM, auth,
+// permissions, throttling, workflows, ...) to its matching
+// domain-specific GraphQL API exception handler.
 import { QueryFailedError } from 'typeorm';
 
 import { CommonQueryRunnerException } from 'src/engine/api/common/common-query-runners/errors/common-query-runner.exception';
@@ -27,6 +31,9 @@ export interface QueryFailedErrorWithCode extends QueryFailedError {
   code: string;
 }
 
+// Dispatches an error to its type-specific GraphQL exception handler
+// based on which internal exception class it's an instance of;
+// rethrows unrecognized errors unchanged.
 export const workspaceQueryRunnerGraphqlApiExceptionHandler = (
   error: Error | QueryFailedError,
 ) => {

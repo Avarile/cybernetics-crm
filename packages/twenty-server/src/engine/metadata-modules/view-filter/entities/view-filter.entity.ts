@@ -29,6 +29,10 @@ import { SyncableEntity } from 'src/engine/workspace-manager/types/syncable-enti
   ['relationTargetFieldMetadataId'],
   { where: '"relationTargetFieldMetadataId" IS NOT NULL' },
 )
+// TypeORM entity for a view filter: a field/operand/value condition
+// scoping which records appear in a view, optionally targeting a related
+// object's field (relationTargetFieldMetadataId) and grouped under a
+// view filter group.
 export class ViewFilterEntity
   extends SyncableEntity
   implements Required<ViewFilterEntity>

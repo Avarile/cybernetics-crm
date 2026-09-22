@@ -1,3 +1,6 @@
+// MessageOutboundDriver for email-group (send-as-alias) channels: sends
+// via the workspace's verified outbound emailing domain rather than a
+// connected mailbox provider. Doesn't support drafts.
 import { Injectable } from '@nestjs/common';
 
 import { isNonEmptyString } from '@sniptt/guards';
@@ -26,6 +29,8 @@ export class EmailGroupMessageOutboundService implements MessageOutboundDriver {
     private readonly emailingDomainSenderService: EmailingDomainSenderService,
   ) {}
 
+  // Resolves and validates the account's outbound emailing domain, then
+  // sends through EmailingDomainSenderService.
   async sendMessage(
     sendMessageInput: SendMessageInput,
     connectedAccount: ConnectedAccountEntity,
@@ -64,6 +69,7 @@ export class EmailGroupMessageOutboundService implements MessageOutboundDriver {
     };
   }
 
+  // Email group channels have no mailbox to draft into.
   async createDraft(): Promise<void> {
     throw new MessageChannelException(
       'Email handle channels do not support drafts.',
@@ -71,6 +77,7 @@ export class EmailGroupMessageOutboundService implements MessageOutboundDriver {
     );
   }
 
+  // Email group channels have no mailbox to send a draft from.
   async sendDraft(): Promise<SendMessageResult> {
     throw new MessageChannelException(
       'Email handle channels do not support drafts.',
@@ -78,6 +85,8 @@ export class EmailGroupMessageOutboundService implements MessageOutboundDriver {
     );
   }
 
+  // Finds the workspace's emailing domain matching the account handle's
+  // domain, throwing a descriptive error if none is configured.
   private async resolveEmailingDomain(
     connectedAccount: ConnectedAccountEntity,
   ): Promise<EmailingDomainEntity> {
@@ -107,6 +116,7 @@ export class EmailGroupMessageOutboundService implements MessageOutboundDriver {
     return emailingDomain;
   }
 
+  // Normalizes a possibly-missing single/array recipient value to an array.
   private toRecipientArray(value: string | string[] | undefined): string[] {
     if (!isDefined(value)) {
       return [];

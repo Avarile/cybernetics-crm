@@ -1,5 +1,7 @@
 import { isNonEmptyString } from '@sniptt/guards';
 
+// Strips a trailing ":<uidValidity>" suffix (added when the folder's
+// UIDVALIDITY was known) from a folder's externalId to get its IMAP path.
 export const getImapFolderPath = (
   externalId: string | null | undefined,
 ): string | null => {

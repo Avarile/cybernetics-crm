@@ -25,6 +25,8 @@ export const CALENDAR_RELAUNCH_FAILED_CALENDAR_CHANNELS_CRON_PATTERN =
   '*/30 * * * *';
 
 @Processor(MessageQueue.cronQueue)
+// Every 30 minutes, finds calendar channels stuck in a FAILED/unknown-failure
+// state across active workspaces and queues a relaunch job for each.
 export class CalendarRelaunchFailedCalendarChannelsCronJob {
   constructor(
     @InjectRepository(WorkspaceEntity)

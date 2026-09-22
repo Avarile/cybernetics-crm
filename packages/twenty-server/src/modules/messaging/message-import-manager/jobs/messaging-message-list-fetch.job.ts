@@ -1,3 +1,8 @@
+// Queue entry point for fetching a message channel's list of messages to
+// import: loads the channel, verifies it's still in the expected sync
+// stage (guarding against a stale/duplicate job run), and delegates to
+// MessagingMessageListFetchService, routing failures to the driver
+// exception handler.
 import { Scope } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -36,6 +41,9 @@ export class MessagingMessageListFetchJob {
     private readonly messageImportErrorHandlerService: MessageImportExceptionHandlerService,
   ) {}
 
+  // No-ops if the channel is missing or no longer scheduled for a list
+  // fetch (e.g. a duplicate/stale job); otherwise fetches the message
+  // list and reports success/failure via monitoring events.
   @Process(MessagingMessageListFetchJob.name)
   async handle(data: MessagingMessageListFetchJobData): Promise<void> {
     const { messageChannelId, workspaceId } = data;

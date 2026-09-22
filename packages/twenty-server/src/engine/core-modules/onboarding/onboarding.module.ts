@@ -1,3 +1,5 @@
+// NestJS module wiring the onboarding resolver/service that tracks a
+// user/workspace's progress through the post-signup onboarding flow.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

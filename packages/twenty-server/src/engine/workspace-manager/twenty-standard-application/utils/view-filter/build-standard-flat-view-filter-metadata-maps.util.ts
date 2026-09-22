@@ -10,12 +10,15 @@ type StandardViewFilterBuilder<P extends AllStandardObjectName> = (
   args: Omit<CreateStandardViewFilterArgs<P>, 'context'>,
 ) => Record<string, FlatViewFilter>;
 
+// Registry of per-object view filter builders, one per standard object that declares view filters
 const STANDARD_FLAT_VIEW_FILTER_METADATA_BUILDERS_BY_OBJECT_NAME = {
   task: computeStandardTaskViewFilters,
 } as const satisfies {
   [P in AllStandardObjectName]?: StandardViewFilterBuilder<P>;
 };
 
+// Builds every standard object's fixed view filter set and assembles them into a single FlatEntityMaps,
+// used as the "target" state when seeding or syncing a workspace's standard view filters
 export const buildStandardFlatViewFilterMetadataMaps = (
   args: Omit<CreateStandardViewFilterArgs, 'context' | 'objectName'>,
 ): FlatEntityMaps<FlatViewFilter> => {

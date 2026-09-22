@@ -1,3 +1,4 @@
+// Assertion helper validating that a feature flag key is one of the public flags.
 import { type FeatureFlagKey } from 'twenty-shared/types';
 
 import { type PublicFeatureFlag } from 'src/engine/core-modules/feature-flag/constants/public-feature-flag.const';

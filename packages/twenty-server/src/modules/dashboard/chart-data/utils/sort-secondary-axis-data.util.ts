@@ -24,6 +24,8 @@ type SortSecondaryAxisDataParams<T> = {
   dateGranularity?: ObjectRecordGroupByDateGranularity | null;
 };
 
+// Sorts secondary-axis series/keys per the configured GraphOrderBy strategy
+// (mirrors sortChartDataIfNeeded, but for the secondary axis' own lookup/options).
 export const sortSecondaryAxisData = <T>({
   items,
   orderBy,

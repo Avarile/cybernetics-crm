@@ -1,5 +1,6 @@
 /* @license Enterprise */
 
+// GraphQL inputs for setting up an OIDC or SAML SSO identity provider.
 import { Field, InputType } from '@nestjs/graphql';
 
 import { IsOptional, IsString, IsUrl, IsUUID } from 'class-validator';

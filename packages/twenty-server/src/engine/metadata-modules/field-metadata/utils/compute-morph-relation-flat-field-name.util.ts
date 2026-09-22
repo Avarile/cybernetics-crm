@@ -13,6 +13,9 @@ type ComputeMorphRelationFlatFieldNameArgs = {
   targetObjectMetadataNamePlural: string;
 };
 
+// Derives a morph relation's generated field name by suffixing the base
+// field name with the target object's singular or plural name, depending on
+// relation cardinality.
 export const computeMorphRelationFlatFieldName = ({
   fieldName,
   relationType,

@@ -17,11 +17,13 @@ import { buildPublicConnectedAccount } from 'src/engine/metadata-modules/connect
 @UseGuards(WorkspaceAuthGuard)
 @UseInterceptors(ConnectedAccountGraphqlApiExceptionInterceptor)
 @MetadataResolver(() => ConnectedAccountDTO)
+// GraphQL resolver exposing the caller's connected accounts and deletion.
 export class ConnectedAccountResolver {
   constructor(
     private readonly connectedAccountMetadataService: ConnectedAccountMetadataService,
   ) {}
 
+  // Lists the connected accounts owned by the authenticated member.
   @Query(() => [ConnectedAccountPublicDTO])
   @UseGuards(NoPermissionGuard)
   async myConnectedAccounts(
@@ -37,6 +39,7 @@ export class ConnectedAccountResolver {
     return accounts.map((account) => buildPublicConnectedAccount(account));
   }
 
+  // Deletes a connected account after verifying the caller owns it.
   @Mutation(() => ConnectedAccountPublicDTO)
   @UseGuards(NoPermissionGuard)
   async deleteConnectedAccount(

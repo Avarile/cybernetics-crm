@@ -1,3 +1,6 @@
+// Default build/handler paths and naming rules used when a logic function's
+// source doesn't override them.
+
 export const DEFAULT_BUILT_HANDLER_PATH = 'src/index.mjs';
 export const DEFAULT_SOURCE_HANDLER_PATH = 'src/index.ts';
 export const DEFAULT_HANDLER_NAME = 'main';

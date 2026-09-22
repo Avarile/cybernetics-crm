@@ -1,3 +1,5 @@
+// Wires up the message find-one/find-many post-query hooks that enforce
+// message channel visibility restrictions.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

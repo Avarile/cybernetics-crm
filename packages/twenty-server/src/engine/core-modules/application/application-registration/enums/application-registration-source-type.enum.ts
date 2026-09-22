@@ -1,3 +1,4 @@
+// Where an application registration's package/code comes from.
 import { registerEnumType } from '@nestjs/graphql';
 
 export enum ApplicationRegistrationSourceType {

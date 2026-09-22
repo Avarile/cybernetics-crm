@@ -8,6 +8,8 @@ import {
   CommonQueryRunnerExceptionCode,
 } from 'src/engine/api/common/common-query-runners/errors/common-query-runner.exception';
 
+// Validates a number field input: null passes through, otherwise the value
+// must be a finite number (not NaN or +/-Infinity); throws otherwise.
 export const validateNumberFieldOrThrow = (
   value: unknown,
   fieldName: string,

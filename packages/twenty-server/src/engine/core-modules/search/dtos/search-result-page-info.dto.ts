@@ -1,3 +1,4 @@
+// GraphQL page info DTO for global search result pagination.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType('SearchResultPageInfo')

@@ -8,6 +8,7 @@ import {
   WebhookExceptionCode,
 } from 'src/engine/metadata-modules/webhook/webhook.exception';
 
+// Looks up the flat webhook targeted for deletion, throwing if it doesn't exist.
 export const fromDeleteWebhookInputToFlatWebhookOrThrow = ({
   flatWebhookMaps,
   webhookId,

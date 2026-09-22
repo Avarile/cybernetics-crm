@@ -6,6 +6,8 @@ import { validateFileExtension } from 'src/engine/core-modules/file-storage/util
 import { validatePathSegmentsSafety } from 'src/engine/core-modules/file-storage/utils/validate-path-segments-safety.util';
 import { validateSafeRelativePath } from 'src/engine/core-modules/file-storage/utils/validate-safe-relative-path.util';
 
+// Runs the full validation chain for a file resource path: safe relative path,
+// safe segments, has an extension, and an allowed extension for its folder
 export const validateFilePath = ({
   resourcePath,
   fileFolder,

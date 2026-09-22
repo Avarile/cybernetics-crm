@@ -1,3 +1,6 @@
+// GraphQL input identifying one field (and optional composite sub-field)
+// to include in a custom index.
+
 import { Field, InputType } from '@nestjs/graphql';
 
 import { IsOptional, IsString, IsUUID } from 'class-validator';

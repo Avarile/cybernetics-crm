@@ -17,6 +17,8 @@ import { WorkspaceDataSourceService } from 'src/engine/workspace-datasource/work
 import { STANDARD_ROLE } from 'src/engine/workspace-manager/twenty-standard-application/constants/standard-role.constant';
 import { TwentyStandardApplicationService } from 'src/engine/workspace-manager/twenty-standard-application/services/twenty-standard-application.service';
 
+// Provisions a new workspace end to end: creates its database schema, seeds the standard application
+// (objects, fields, views, roles, etc.), and sets up default roles for the creating user
 @Injectable()
 export class WorkspaceManagerService {
   private readonly logger = new Logger(WorkspaceManagerService.name);
@@ -35,6 +37,8 @@ export class WorkspaceManagerService {
     private readonly applicationService: ApplicationService,
   ) {}
 
+  // Creates the workspace's database schema, seeds its standard application, and assigns default
+  // roles to the creating user
   public async init({
     workspace,
     userId,
@@ -91,6 +95,8 @@ export class WorkspaceManagerService {
     });
   }
 
+  // Assigns the admin role to the workspace's creating user, and ensures a member role exists and is
+  // set as the workspace's default role for future members
   private async setupDefaultRoles({
     userId,
     workspaceId,

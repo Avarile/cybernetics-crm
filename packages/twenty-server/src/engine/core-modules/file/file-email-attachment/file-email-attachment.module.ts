@@ -1,3 +1,4 @@
+// NestJS module for uploading/managing files attached to outgoing emails.
 import { Module } from '@nestjs/common';
 
 import { ApplicationModule } from 'src/engine/core-modules/application/application.module';

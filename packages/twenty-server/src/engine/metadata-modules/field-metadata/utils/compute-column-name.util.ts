@@ -17,6 +17,8 @@ export type FieldTypeAndNameMetadata = {
   type: FieldMetadataType;
 };
 
+// Computes the DB column name for a plain (non-composite) field, appending
+// "Id" for foreign keys; throws if given a composite field type.
 // TODO: If we need to implement custom name logic for columns, we can do it here
 export function computeColumnName(
   fieldMetadataOrFieldName: FieldTypeAndNameMetadata | string,
@@ -40,6 +42,8 @@ export function computeColumnName(
   return generateName(fieldMetadataOrFieldName.name);
 }
 
+// Computes the DB column name for one sub-property of a composite field
+// (e.g. addressCity); throws if given a non-composite field type.
 export function computeCompositeColumnName(
   fieldMetadataOrFieldName: FieldTypeAndNameMetadata | string,
   compositeProperty: CompositeProperty,

@@ -8,6 +8,9 @@ import {
 } from 'src/engine/api/rest/input-request-parsers/rest-input-request-parser.exception';
 import { type AuthenticatedRequest } from 'src/engine/api/rest/types/authenticated-request';
 
+// Parses the `?aggregate=[...]` REST query param (a JSON array of
+// aggregate field keys) into a select-fields map; throws on malformed
+// JSON or a non-array-string value.
 export const parseAggregateFieldsRestRequest = (
   request: AuthenticatedRequest,
 ): CommonSelectedFields => {

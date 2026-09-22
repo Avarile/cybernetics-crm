@@ -1,3 +1,6 @@
+// Updates a single record by ID for a given object, optionally restricting
+// the update to a subset of fields, on behalf of workflows/tools.
+
 import { Injectable, Logger } from '@nestjs/common';
 
 import { isDefined, isValidUuid } from 'twenty-shared/utils';
@@ -23,6 +26,8 @@ export class UpdateRecordService {
     private readonly commonApiContextBuilder: CommonApiContextBuilderService,
   ) {}
 
+  // Updates the record identified by objectRecordId, validating the ID and
+  // automation permissions, and limiting the update to fieldsToUpdate if given.
   async execute(params: UpdateRecordParams): Promise<ToolOutput> {
     const {
       objectName,

@@ -12,7 +12,11 @@ import { type ExceptionHandlerDriverInterface } from 'src/engine/core-modules/ex
 import { MessageImportDriverException } from 'src/modules/messaging/message-import-manager/drivers/exceptions/message-import-driver.exception';
 import { CustomException } from 'src/utils/custom-exception';
 
+// Exception handler driver that reports exceptions to Sentry, enriching each event
+// with GraphQL operation context, user info, and error-specific tags/fingerprints
 export class ExceptionHandlerSentryDriver implements ExceptionHandlerDriverInterface {
+  // Captures each exception to Sentry within a shared scope carrying request context,
+  // tagging known exception types so similar errors group together
   captureExceptions(
     // oxlint-disable-next-line typescript/no-explicit-any
     exceptions: ReadonlyArray<any>,

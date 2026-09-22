@@ -1,3 +1,5 @@
+// Wires up the SMTP client provider used to send outbound mail for IMAP/
+// SMTP/CalDAV connected accounts.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

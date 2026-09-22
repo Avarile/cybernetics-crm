@@ -1,3 +1,4 @@
+// Wires up the messaging sync-status monitoring cron and its tracking service.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

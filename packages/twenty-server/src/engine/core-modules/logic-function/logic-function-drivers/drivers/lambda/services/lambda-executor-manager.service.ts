@@ -1,3 +1,6 @@
+// Manages the lifecycle of the Lambda function backing a single logic
+// function: creating/updating it with the right layers, deploying prebuilt
+// bundles, and coordinating concurrent builds via a distributed lock.
 import * as fs from 'fs/promises';
 import { join } from 'path';
 
@@ -64,6 +67,8 @@ export class LambdaExecutorManagerService {
     private readonly workspaceCacheService: WorkspaceCacheService,
   ) {}
 
+  // Fetches the Lambda function backing a logic function, or undefined if it
+  // doesn't exist yet.
   async getLambdaExecutor(
     flatLogicFunction: FlatLogicFunction,
   ): Promise<GetFunctionCommandOutput | undefined> {
@@ -82,6 +87,7 @@ export class LambdaExecutorManagerService {
     }
   }
 
+  // Deletes the Lambda function backing a logic function, if it exists.
   async delete(flatLogicFunction: FlatLogicFunction): Promise<void> {
     const lambdaExecutor = await this.getLambdaExecutor(flatLogicFunction);
 
@@ -96,6 +102,8 @@ export class LambdaExecutorManagerService {
     );
   }
 
+  // Ensures the Lambda executor exists and is up to date, using a
+  // per-function lock so concurrent invocations don't rebuild redundantly.
   async buildExecutor(context: ExecutorBuildContext): Promise<void> {
     const { canSkip } = await this.checkBuildStatus(context);
 
@@ -158,6 +166,8 @@ export class LambdaExecutorManagerService {
     }
   }
 
+  // Reloads the flat application from cache so a lock waiter sees layer
+  // rebuilds done by whoever held the lock before it.
   private async refreshBuildContext(
     context: ExecutorBuildContext,
   ): Promise<ExecutorBuildContext> {
@@ -176,6 +186,8 @@ export class LambdaExecutorManagerService {
     };
   }
 
+  // Deploys a precompiled bundle's code onto the executor and tags it with
+  // its checksum, building the executor first if needed.
   async installPrebuiltBundle(context: ExecutorBuildContext): Promise<void> {
     const { flatLogicFunction, applicationUniversalIdentifier } = context;
 
@@ -259,6 +271,7 @@ export class LambdaExecutorManagerService {
     );
   }
 
+  // Returns the checksum tag of the currently installed prebuilt bundle, if any.
   async getInstalledBundleChecksum(
     flatLogicFunction: FlatLogicFunction,
   ): Promise<string | null> {
@@ -271,6 +284,8 @@ export class LambdaExecutorManagerService {
     return lambdaExecutor.Tags?.[LAMBDA_PREBUILT_BUNDLE_CHECKSUM_TAG] ?? null;
   }
 
+  // Determines whether the existing executor can be reused as-is (active,
+  // SDK layer fresh, and both expected layers attached).
   private async checkBuildStatus(context: ExecutorBuildContext): Promise<{
     canSkip: boolean;
     lambdaExecutor: GetFunctionCommandOutput | undefined;
@@ -295,6 +310,8 @@ export class LambdaExecutorManagerService {
     return { canSkip, lambdaExecutor };
   }
 
+  // Ensures both dependency layers exist, then creates or updates the
+  // executor function to reference them.
   private async ensureExecutor({
     flatLogicFunction,
     flatApplication,
@@ -358,6 +375,7 @@ export class LambdaExecutorManagerService {
     await this.awsClient.waitFunctionUpdated(flatLogicFunction.id);
   }
 
+  // Updates an existing Lambda function's layers/runtime/timeout/memory config.
   private async updateExecutorConfiguration({
     flatLogicFunction,
     depsLayerArn,
@@ -380,6 +398,7 @@ export class LambdaExecutorManagerService {
     );
   }
 
+  // Zips the executor runtime and creates the Lambda function with its layers.
   private async createExecutor({
     flatLogicFunction,
     depsLayerArn,

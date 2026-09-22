@@ -1,3 +1,5 @@
+// Converts a manifest-declared row-level permission predicate into the
+// universal flat entity shape used to build workspace migrations.
 import { type RowLevelPermissionPredicateManifest } from 'twenty-shared/application';
 
 import { type UniversalFlatRowLevelPermissionPredicate } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-row-level-permission-predicate.type';

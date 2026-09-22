@@ -1,3 +1,6 @@
+// Finds records for a given object with filter/orderBy/pagination, optionally
+// narrowing selected fields to only what the caller's filter/orderBy/select need.
+
 import { Injectable, Logger } from '@nestjs/common';
 
 import { QUERY_MAX_RECORDS } from 'twenty-shared/constants';
@@ -24,6 +27,8 @@ export class FindRecordsService {
     private readonly commonApiContextBuilder: CommonApiContextBuilderService,
   ) {}
 
+  // Queries records for objectName, always ordering by id as a tiebreaker for
+  // stable pagination, and returns records plus total count and reference metadata.
   async execute(
     params: FindRecordsParams,
   ): Promise<ToolOutput<FindRecordsResult>> {

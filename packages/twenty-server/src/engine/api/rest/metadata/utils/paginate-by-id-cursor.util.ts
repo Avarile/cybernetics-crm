@@ -9,12 +9,17 @@ import {
   type Repository,
 } from 'typeorm';
 
+// Pagination info for the id-cursor pagination used by REST metadata
+// endpoints.
 export type RestCursorPageInfo = {
   hasNextPage: boolean;
   startCursor: string | null;
   endCursor: string | null;
 };
 
+// Cursor-paginates a TypeORM repository query by descending/ascending id,
+// using a workspace-scoped where clause plus optional startingAfter/
+// endingBefore id cursors; throws if both cursors are given together.
 export const paginateByIdCursor = async <
   T extends { id: string; workspaceId: string },
 >({

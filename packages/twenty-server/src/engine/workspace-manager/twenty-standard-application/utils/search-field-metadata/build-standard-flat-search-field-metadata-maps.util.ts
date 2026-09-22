@@ -6,6 +6,9 @@ import { SEARCH_FIELDS_BY_STANDARD_OBJECT_NAME } from 'src/engine/workspace-mana
 import { buildStandardFlatSearchFieldMetadatas } from 'src/engine/workspace-manager/twenty-standard-application/utils/search-field-metadata/build-standard-flat-search-field-metadatas.util';
 import { type CreateStandardSearchFieldArgs } from 'src/engine/workspace-manager/twenty-standard-application/utils/search-field-metadata/create-standard-search-field-flat-metadata.util';
 
+// Builds every standard object's search field metadata (from SEARCH_FIELDS_BY_STANDARD_OBJECT_NAME)
+// and assembles them into a single FlatEntityMaps, used as the "target" state when seeding or
+// syncing a workspace's standard search fields
 export const buildStandardFlatSearchFieldMetadataMaps = (
   args: Omit<CreateStandardSearchFieldArgs, 'context' | 'objectName'>,
 ): FlatEntityMaps<FlatSearchFieldMetadata> => {

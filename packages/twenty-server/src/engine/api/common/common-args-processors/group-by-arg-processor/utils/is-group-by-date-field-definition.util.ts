@@ -7,6 +7,8 @@ const GROUP_BY_DATE_GRANULARITIES = new Set<string>(
   Object.values(ObjectRecordGroupByDateGranularity),
 );
 
+// Type guard checking that a groupBy field definition is a date-bucketing
+// definition (a plain object with a recognized `granularity`).
 export const isGroupByDateFieldDefinition = (
   fieldGroupByDefinition: unknown,
 ): fieldGroupByDefinition is DateFieldGroupByDefinition => {

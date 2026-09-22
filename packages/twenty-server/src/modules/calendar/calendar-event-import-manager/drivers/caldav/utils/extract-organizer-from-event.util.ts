@@ -5,6 +5,8 @@ import { isDefined } from 'twenty-shared/utils';
 import { CalendarEventParticipantResponseStatus } from 'src/modules/calendar/common/standard-objects/calendar-event-participant.workspace-entity';
 import { type FetchedCalendarEventParticipant } from 'src/modules/calendar/common/types/fetched-calendar-event';
 
+// Normalizes an iCal event's ORGANIZER property into a participant record,
+// always marked as accepted/organizer since they created the event.
 export const extractOrganizerFromEvent = (
   event: ical.VEvent,
 ): FetchedCalendarEventParticipant | null => {

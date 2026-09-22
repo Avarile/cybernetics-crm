@@ -36,6 +36,10 @@ import { WorkspaceMigrationValidateBuildAndRunService } from 'src/engine/workspa
 import { DashboardSyncService } from 'src/modules/dashboard-sync/services/dashboard-sync.service';
 
 @Injectable()
+// CRUD for page layouts, backed by the flat entity maps and applied
+// through validated workspace migrations, keeping linked dashboards'
+// updatedAt in sync and cleaning up associated dashboards when a
+// DASHBOARD-type layout is destroyed.
 export class PageLayoutService {
   constructor(
     private readonly globalWorkspaceOrmManager: GlobalWorkspaceOrmManager,
@@ -45,6 +49,8 @@ export class PageLayoutService {
     private readonly dashboardSyncService: DashboardSyncService,
   ) {}
 
+  // Returns all active page layouts in the workspace, with tabs and
+  // widgets reconstructed and attached.
   async findByWorkspaceId(workspaceId: string): Promise<PageLayoutDTO[]> {
     const {
       flatPageLayoutMaps,
@@ -69,6 +75,8 @@ export class PageLayoutService {
     );
   }
 
+  // Returns active page layouts matching an optional object metadata id
+  // and/or page layout type filter, with tabs and widgets attached.
   async findBy({
     workspaceId,
     filter: { objectMetadataId, pageLayoutType },
@@ -112,6 +120,8 @@ export class PageLayoutService {
     );
   }
 
+  // Finds a single active page layout by id, with tabs and widgets
+  // attached, throwing if it doesn't exist.
   async findByIdOrThrow({
     id,
     workspaceId,
@@ -152,6 +162,8 @@ export class PageLayoutService {
     );
   }
 
+  // Loads the flat page layout, tab, and widget maps needed to build
+  // layout DTOs.
   private async getPageLayoutFlatEntityMaps(workspaceId: string): Promise<{
     flatPageLayoutMaps: FlatPageLayoutMaps;
     flatPageLayoutTabMaps: FlatPageLayoutTabMaps;
@@ -169,6 +181,7 @@ export class PageLayoutService {
     );
   }
 
+  // Creates a new page layout via a validated workspace migration.
   async create({
     createPageLayoutInput,
     workspaceId,
@@ -246,6 +259,8 @@ export class PageLayoutService {
     );
   }
 
+  // Applies partial updates to an existing page layout via a validated
+  // workspace migration, then updates linked dashboards' updatedAt.
   async update({
     id,
     workspaceId,
@@ -331,6 +346,9 @@ export class PageLayoutService {
     return fromFlatPageLayoutToPageLayoutDto(updatedLayout);
   }
 
+  // Permanently removes a page layout via a validated workspace
+  // migration. If it's a DASHBOARD-type layout, also removes any
+  // dashboards pointing at it, unless the caller already handled that.
   async destroy({
     id,
     workspaceId,
@@ -396,6 +414,8 @@ export class PageLayoutService {
     return true;
   }
 
+  // Permanently removes multiple page layouts in one validated workspace
+  // migration.
   async destroyMany({
     ids,
     workspaceId,
@@ -454,6 +474,8 @@ export class PageLayoutService {
     return true;
   }
 
+  // Removes every dashboard record that references a destroyed DASHBOARD
+  // page layout, running with system (permission-bypassing) auth context.
   private async destroyAssociatedDashboards({
     pageLayoutId,
     workspaceId,

@@ -28,6 +28,8 @@ import { FlatEntityMaps } from 'src/engine/metadata-modules/flat-entity/types/fl
 import { FlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-metadata/types/flat-field-metadata.type';
 import { FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object-metadata/types/flat-object-metadata.type';
 
+// Handles findOne: fetches a single record matching a filter, throwing if
+// none is found.
 @Injectable()
 export class CommonFindOneQueryRunnerService extends CommonBaseQueryRunnerService<
   FindOneQueryArgs,
@@ -35,6 +37,8 @@ export class CommonFindOneQueryRunnerService extends CommonBaseQueryRunnerServic
 > {
   protected readonly operationName = CommonQueryNames.FIND_ONE;
 
+  // Builds the filtered query, fetches the single matching record (or
+  // throws), and hydrates any requested nested relations.
   async run(
     args: CommonExtendedInput<FindOneQueryArgs>,
     queryRunnerContext: CommonExtendedQueryRunnerContext,
@@ -112,6 +116,7 @@ export class CommonFindOneQueryRunnerService extends CommonBaseQueryRunnerServic
     return objectRecords[0];
   }
 
+  // Validates and normalizes the filter against object/field metadata.
   async computeArgs(
     args: CommonInput<FindOneQueryArgs>,
     queryRunnerContext: CommonBaseQueryRunnerContext,
@@ -133,6 +138,7 @@ export class CommonFindOneQueryRunnerService extends CommonBaseQueryRunnerServic
     };
   }
 
+  // Runs the fetched record through the common result-getter pipeline.
   async processQueryResult(
     queryResult: ObjectRecord,
     flatObjectMetadata: FlatObjectMetadata,
@@ -149,6 +155,7 @@ export class CommonFindOneQueryRunnerService extends CommonBaseQueryRunnerServic
     );
   }
 
+  // Requires a non-empty filter.
   async validate(
     args: CommonInput<FindOneQueryArgs>,
     _queryRunnerContext: CommonBaseQueryRunnerContext,

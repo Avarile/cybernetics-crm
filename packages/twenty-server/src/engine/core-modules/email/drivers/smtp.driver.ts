@@ -1,3 +1,4 @@
+// Email driver that sends mail through a configured SMTP server via nodemailer.
 import { Logger } from '@nestjs/common';
 
 import {
@@ -18,6 +19,8 @@ export class SmtpDriver implements EmailDriverInterface {
     this.transport = createTransport(options);
   }
 
+  // Sends the email via SMTP, logging success or failure (fire-and-forget:
+  // does not await the send or propagate errors to the caller).
   async send(sendMailOptions: SendMailOptions): Promise<void> {
     this.transport
       .sendMail(sendMailOptions)

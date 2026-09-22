@@ -1,3 +1,5 @@
+// Wraps a result or error payload into a well-formed JSON-RPC 2.0 response
+// envelope.
 export const wrapJsonRpcResponse = (
   id: string | number,
   payload:

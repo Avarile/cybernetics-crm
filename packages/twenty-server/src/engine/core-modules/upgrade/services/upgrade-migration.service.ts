@@ -24,6 +24,8 @@ export type WorkspaceLastAttemptedCommand = {
 
 const UPGRADE_MIGRATION_SAVE_BATCH_SIZE = 1000;
 
+// Reads and records rows in the upgradeMigration audit table, tracking each
+// instance/workspace command's attempts, outcome, and version cursor
 @Injectable()
 export class UpgradeMigrationService {
   constructor(
@@ -31,6 +33,8 @@ export class UpgradeMigrationService {
     private readonly upgradeMigrationRepository: Repository<UpgradeMigrationEntity>,
   ) {}
 
+  // Infers the app version from a given command name, or from the last
+  // attempted instance command if none is given
   async getInferredVersion(commandName?: string): Promise<string | null> {
     if (isDefined(commandName)) {
       return extractVersionFromCommandName(commandName);
@@ -43,6 +47,7 @@ export class UpgradeMigrationService {
       : null;
   }
 
+  // Whether the most recent attempt of a command (for an instance or a workspace) succeeded
   async isLastAttemptCompleted({
     name,
     workspaceId,
@@ -61,6 +66,9 @@ export class UpgradeMigrationService {
     return isDefined(latestAttempt) && latestAttempt.status === 'completed';
   }
 
+  // Records an attempt of a command's outcome; for instance commands, writes both
+  // the instance-level row and one row per provisioned workspace, batched to
+  // avoid oversized inserts
   async recordUpgradeMigration(
     params:
       | {
@@ -149,6 +157,8 @@ export class UpgradeMigrationService {
     }
   }
 
+  // Records a workspace's starting upgrade cursor (isInitial=true) once, so a
+  // freshly provisioned workspace has a known baseline command
   async markAsWorkspaceInitial({
     name,
     workspaceId,
@@ -232,6 +242,8 @@ export class UpgradeMigrationService {
     return { name: migration.name, status: migration.status };
   }
 
+  // Batch-fetches each workspace's most recent command attempt (by createdAt,
+  // considering only its latest attempt of each command)
   async getWorkspaceLastAttemptedCommandName(
     workspaceIds: string[],
   ): Promise<Map<string, WorkspaceLastAttemptedCommand>> {
@@ -294,6 +306,8 @@ export class UpgradeMigrationService {
     return cursors;
   }
 
+  // Same as getWorkspaceLastAttemptedCommandName, but throws if any requested
+  // workspace has no migration history
   async getWorkspaceLastAttemptedCommandNameOrThrow(
     workspaceIds: string[],
   ): Promise<Map<string, WorkspaceLastAttemptedCommand>> {
@@ -313,6 +327,7 @@ export class UpgradeMigrationService {
     return cursors;
   }
 
+  // Whether every given workspace has completed a specific command as its latest attempt
   async areAllWorkspacesAtCommand({
     commandName,
     workspaceIds,
@@ -344,6 +359,7 @@ export class UpgradeMigrationService {
     return completedCount === workspaceIds.length;
   }
 
+  // Returns the most recently attempted instance-level command, or null if none exist
   async getLastAttemptedInstanceCommand(): Promise<{
     name: string;
     status: UpgradeMigrationStatus;
@@ -386,6 +402,8 @@ export class UpgradeMigrationService {
     };
   }
 
+  // Same as getLastAttemptedInstanceCommand, but throws if the database has
+  // never run an instance command
   async getLastAttemptedInstanceCommandOrThrow(): Promise<{
     name: string;
     status: UpgradeMigrationStatus;

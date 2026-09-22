@@ -13,6 +13,7 @@ import { CalendarChannelDTO } from 'src/engine/metadata-modules/calendar-channel
 import { UpdateCalendarChannelInput } from 'src/engine/metadata-modules/calendar-channel/dtos/update-calendar-channel.input';
 import { CalendarChannelGraphqlApiExceptionInterceptor } from 'src/engine/metadata-modules/calendar-channel/interceptors/calendar-channel-graphql-api-exception.interceptor';
 
+// GraphQL API for reading and updating the current user's calendar channels.
 @UseGuards(WorkspaceAuthGuard)
 @UseInterceptors(CalendarChannelGraphqlApiExceptionInterceptor)
 @MetadataResolver(() => CalendarChannelDTO)
@@ -21,6 +22,7 @@ export class CalendarChannelResolver {
     private readonly calendarChannelMetadataService: CalendarChannelMetadataService,
   ) {}
 
+  // Returns calendar channels for the authenticated user, optionally filtered to one connected account.
   @Query(() => [CalendarChannelDTO])
   @UseGuards(NoPermissionGuard)
   async myCalendarChannels(
@@ -48,6 +50,7 @@ export class CalendarChannelResolver {
     });
   }
 
+  // Verifies the caller owns the target calendar channel before applying the requested updates.
   @Mutation(() => CalendarChannelDTO)
   @UseGuards(NoPermissionGuard)
   async updateCalendarChannel(

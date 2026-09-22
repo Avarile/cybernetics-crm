@@ -1,3 +1,5 @@
+// GraphQL resolver for reading and creating/updating a workspace member's
+// IMAP/SMTP/CALDAV connected account.
 import { UseFilters, UseGuards, UsePipes } from '@nestjs/common';
 import { Args, Mutation, Query } from '@nestjs/graphql';
 
@@ -41,6 +43,8 @@ export class ImapSmtpCaldavResolver {
     WorkspaceAuthGuard,
     SettingsPermissionGuard(PermissionFlagType.CONNECTED_ACCOUNTS),
   )
+  // Returns a connected account's public (password-stripped) connection
+  // parameters, scoped to the current user and workspace.
   async getConnectedImapSmtpCaldavAccount(
     @Args('id', { type: () => UUIDScalarType }) id: string,
     @AuthWorkspace() workspace: WorkspaceEntity,
@@ -76,6 +80,9 @@ export class ImapSmtpCaldavResolver {
     WorkspaceAuthGuard,
     SettingsPermissionGuard(PermissionFlagType.CONNECTED_ACCOUNTS),
   )
+  // Validates and connection-tests the submitted IMAP/SMTP/CALDAV params
+  // (merging in decrypted existing values when updating), then creates or
+  // updates the connected account.
   async saveImapSmtpCaldavAccount(
     @Args('handle') handle: string,
     @Args('connectionParameters')

@@ -9,6 +9,8 @@ import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace
 
 import { TwentyStandardApplicationService } from './services/twenty-standard-application.service';
 
+// Wires up TwentyStandardApplicationService with the application, config, cache and migration
+// modules it needs to synchronize a workspace's standard application
 @Module({
   providers: [TwentyStandardApplicationService],
   imports: [

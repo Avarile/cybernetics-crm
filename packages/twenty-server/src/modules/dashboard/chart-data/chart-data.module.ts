@@ -12,6 +12,8 @@ import { ChartDataQueryService } from 'src/modules/dashboard/chart-data/services
 import { LineChartDataService } from 'src/modules/dashboard/chart-data/services/line-chart-data.service';
 import { PieChartDataService } from 'src/modules/dashboard/chart-data/services/pie-chart-data.service';
 
+// Wires up the bar/line/pie chart data resolvers and the shared query
+// service they use to compute dashboard widget data.
 @Module({
   imports: [
     CoreCommonApiModule,

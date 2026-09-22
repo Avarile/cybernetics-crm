@@ -1,3 +1,6 @@
+// Wires the OAuth 2.0 endpoints (discovery, dynamic client registration,
+// token exchange) and resolver used for applications to authenticate
+// against a workspace.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

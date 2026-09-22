@@ -21,9 +21,12 @@ import { ViewGraphqlApiExceptionFilter } from 'src/engine/metadata-modules/view/
 @MetadataResolver(() => ViewFieldDTO)
 @UseFilters(ViewGraphqlApiExceptionFilter)
 @UseGuards(WorkspaceAuthGuard)
+// GraphQL resolver exposing CRUD operations for view fields, including
+// batch create.
 export class ViewFieldResolver {
   constructor(private readonly viewFieldService: ViewFieldService) {}
 
+  // Lists view fields belonging to a specific view.
   @Query(() => [ViewFieldDTO])
   @UseGuards(NoPermissionGuard)
   async getViewFields(
@@ -33,6 +36,7 @@ export class ViewFieldResolver {
     return this.viewFieldService.findByViewId(workspace.id, viewId);
   }
 
+  // Fetches a single view field by id.
   @Query(() => ViewFieldDTO, { nullable: true })
   @UseGuards(NoPermissionGuard)
   async getViewField(
@@ -42,6 +46,7 @@ export class ViewFieldResolver {
     return this.viewFieldService.findById(id, workspace.id);
   }
 
+  // Updates a single view field.
   @Mutation(() => ViewFieldDTO)
   @UseGuards(UpdateViewFieldPermissionGuard)
   async updateViewField(
@@ -54,6 +59,7 @@ export class ViewFieldResolver {
     });
   }
 
+  // Creates a single new view field.
   @Mutation(() => ViewFieldDTO)
   @UseGuards(CreateViewFieldPermissionGuard)
   async createViewField(
@@ -66,6 +72,7 @@ export class ViewFieldResolver {
     });
   }
 
+  // Creates multiple view fields in one migration.
   @Mutation(() => [ViewFieldDTO])
   @UseGuards(CreateViewFieldPermissionGuard)
   async createManyViewFields(
@@ -79,6 +86,7 @@ export class ViewFieldResolver {
     });
   }
 
+  // Soft-deletes a view field.
   @Mutation(() => ViewFieldDTO)
   @UseGuards(DeleteViewFieldPermissionGuard)
   async deleteViewField(
@@ -91,6 +99,7 @@ export class ViewFieldResolver {
     });
   }
 
+  // Permanently destroys a view field.
   @Mutation(() => ViewFieldDTO)
   @UseGuards(DestroyViewFieldPermissionGuard)
   async destroyViewField(

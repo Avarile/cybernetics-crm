@@ -7,9 +7,13 @@ import {
 } from 'src/engine/metadata-modules/flat-entity/exceptions/flat-entity-maps.exception';
 import { type ViewOverrides } from 'src/engine/metadata-modules/view/entities/view.entity';
 
+// Overrides shape with field metadata foreign-key properties replaced by
+// their universal-identifier equivalents, portable across migrations.
 type UniversalViewOverrides =
   FormatRecordSerializedRelationProperties<ViewOverrides>;
 
+// View override properties that reference field metadata by id and need
+// translation to universal identifiers.
 const VIEW_OVERRIDES_FIELD_METADATA_FOREIGN_KEYS = [
   'kanbanAggregateOperationFieldMetadataId',
   'calendarFieldMetadataId',
@@ -20,6 +24,8 @@ const VIEW_OVERRIDES_FIELD_METADATA_FOREIGN_KEYS = [
 type ViewOverridesFieldMetadataForeignKey =
   (typeof VIEW_OVERRIDES_FIELD_METADATA_FOREIGN_KEYS)[number];
 
+// Derives the universal-identifier property name from a foreign key
+// property name (e.g. "calendarFieldMetadataId" -> "...UniversalIdentifier").
 const toUniversalIdentifierProperty = (
   foreignKey: ViewOverridesFieldMetadataForeignKey,
 ) =>
@@ -28,6 +34,9 @@ const toUniversalIdentifierProperty = (
     'UniversalIdentifier',
   ) as keyof UniversalViewOverrides;
 
+// Converts a view's overrides blob to its universal form by replacing
+// each field-metadata foreign-key override with the matching field's
+// universal identifier (or null if missing, unless configured to throw).
 export const fromViewOverridesToUniversalOverrides = ({
   overrides,
   fieldMetadataUniversalIdentifierById,

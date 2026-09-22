@@ -17,6 +17,9 @@ type ResolvedGroupBy = {
   subFieldLabel?: string;
 };
 
+// Resolves a chart widget's group-by field (and optional sub-field, incl.
+// nested relation/morph sub-fields) into human-readable names/labels for
+// the get_dashboard tool's response.
 export const buildResolvedGroupBy = ({
   fieldId,
   subFieldName,

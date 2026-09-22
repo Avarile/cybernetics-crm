@@ -64,10 +64,15 @@ import { FlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-metada
 import { buildFieldMapsFromFlatObjectMetadata } from 'src/engine/metadata-modules/flat-field-metadata/utils/build-field-maps-from-flat-object-metadata.util';
 import { FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object-metadata/types/flat-object-metadata.type';
 
+// Validates and transforms the raw "data" input of create/update mutations (GraphQL and REST)
+// into a shape ready for the query runner, dispatching per-field-type validation/transformation
+// and resolving relation "connect" where-clauses against target object metadata.
 @Injectable()
 export class DataArgProcessorService {
   constructor(private readonly recordPositionService: RecordPositionService) {}
 
+  // Processes a batch of partial record inputs: backfills position, then validates/transforms
+  // each field value according to its field metadata type, throwing on invalid or missing data.
   async process({
     partialRecordInputs,
     authContext,
@@ -170,6 +175,8 @@ export class DataArgProcessorService {
     return processedRecords;
   }
 
+  // Validates and transforms a single field value based on its FieldMetadataType, delegating
+  // to the matching validate-*/transform-* util pair; handles relation connect operations inline.
   private async processField(
     fieldMetadata: FlatFieldMetadata,
     key: string,
@@ -350,6 +357,8 @@ export class DataArgProcessorService {
     }
   }
 
+  // Processes the "where" clause of a relation connect operation, validating/transforming each
+  // field against the related object's metadata while preserving only the originally-passed keys.
   private async processConnectWhere(
     connectWhere: Record<string, unknown>,
     relationFieldMetadata: FlatFieldMetadata,

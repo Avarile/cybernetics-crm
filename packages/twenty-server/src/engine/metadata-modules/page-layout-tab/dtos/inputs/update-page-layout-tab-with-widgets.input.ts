@@ -16,6 +16,8 @@ import { PageLayoutTabLayoutMode } from 'twenty-shared/types';
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';
 import { UpdatePageLayoutWidgetWithIdInput } from 'src/engine/metadata-modules/page-layout-widget/dtos/inputs/update-page-layout-widget-with-id.input';
 
+// GraphQL input for replacing a page layout tab's fields along with its
+// full set of widgets in one call.
 @InputType()
 export class UpdatePageLayoutTabWithWidgetsInput {
   @Field(() => UUIDScalarType)

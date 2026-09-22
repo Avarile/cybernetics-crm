@@ -10,6 +10,8 @@ import {
 
 import { IsNumberOrString } from 'src/engine/api/mcp/decorators/string-or-number';
 
+// Validated DTO for an incoming JSON-RPC 2.0 request/notification to the
+// MCP endpoint.
 export class JsonRpc {
   @IsString()
   @Matches(/^2\.0$/, { message: 'jsonrpc must be exactly "2.0"' })

@@ -1,5 +1,6 @@
 /* @license Enterprise */
 
+// Request body for the app-billing charge endpoint.
 import { IsEnum, IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
 
 import { UsageOperationType } from 'src/engine/core-modules/usage/enums/usage-operation-type.enum';

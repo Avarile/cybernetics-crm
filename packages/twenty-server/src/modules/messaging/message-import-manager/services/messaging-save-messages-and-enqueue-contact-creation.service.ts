@@ -1,3 +1,6 @@
+// Persists a batch of parsed messages (and their participants/folder
+// associations) in one transaction, then — for eligible participants —
+// enqueues a job to auto-create matching CRM contacts/companies.
 import { Injectable } from '@nestjs/common';
 
 import {
@@ -43,6 +46,12 @@ export class MessagingSaveMessagesAndEnqueueContactCreationService {
     private readonly globalWorkspaceOrmManager: GlobalWorkspaceOrmManager,
   ) {}
 
+  // Saves messages, participants, and folder associations transactionally,
+  // deciding per-participant whether it should trigger contact creation
+  // (never for drafts, the connected account itself, non-work emails when
+  // excluded, or when the channel's auto-creation policy doesn't cover the
+  // message's direction), then enqueues a contact-creation job for the
+  // eligible participants if the channel has auto-creation enabled.
   async saveMessagesAndEnqueueContactCreation(
     messagesToSave: MessageWithParticipants[],
     messageChannel: MessageChannelEntity,

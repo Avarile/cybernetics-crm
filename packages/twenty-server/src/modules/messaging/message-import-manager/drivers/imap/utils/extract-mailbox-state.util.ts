@@ -34,6 +34,9 @@ const resolveUidNext = async (
   return highestUid + 1;
 };
 
+// Reads a locked mailbox's UIDVALIDITY/UIDNEXT/MODSEQ, resolving a missing
+// UIDNEXT (non-compliant servers) via STATUS or, failing that, the highest
+// live message UID.
 export const resolveMailboxState = async (
   client: ImapFlow,
   folderPath: string,

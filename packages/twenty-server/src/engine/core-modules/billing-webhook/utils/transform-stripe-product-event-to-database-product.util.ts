@@ -2,6 +2,7 @@
 
 import type Stripe from 'stripe';
 
+// Maps a Stripe product.created/updated event to the shape stored in BillingProduct
 export const transformStripeProductEventToDatabaseProduct = (
   data: Stripe.ProductUpdatedEvent.Data | Stripe.ProductCreatedEvent.Data,
 ) => {

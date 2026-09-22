@@ -1,5 +1,9 @@
 import { registerEnumType } from '@nestjs/graphql';
 
+// Identifies which built-in engine action or component a command menu
+// item triggers when selected (e.g. create a record, run a workflow,
+// navigate). Includes deprecated keys kept for backward compatibility
+// until the corresponding upgrade migration has run on all workspaces.
 export enum EngineComponentKey {
   NAVIGATE_TO_NEXT_RECORD = 'NAVIGATE_TO_NEXT_RECORD',
   NAVIGATE_TO_PREVIOUS_RECORD = 'NAVIGATE_TO_PREVIOUS_RECORD',

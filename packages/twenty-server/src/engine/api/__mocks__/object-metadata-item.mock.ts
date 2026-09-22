@@ -11,6 +11,9 @@ import { type FieldMetadataEntity } from 'src/engine/metadata-modules/field-meta
 import { type ObjectMetadataEntity } from 'src/engine/metadata-modules/object-metadata/object-metadata.entity';
 import { getMockFieldMetadataEntity } from 'src/utils/__test__/get-field-metadata-entity.mock';
 
+// Test fixture: one mock field-metadata entity per FieldMetadataType, plus
+// a mock ObjectMetadataEntity ("objectName") that carries all of them, for
+// use across the API test suites.
 export const FIELD_LINKS_MOCK_NAME = 'fieldLinks';
 export const FIELD_CURRENCY_MOCK_NAME = 'fieldCurrency';
 export const FIELD_ADDRESS_MOCK_NAME = 'fieldAddress';

@@ -1,3 +1,6 @@
+// GraphQL input for creating a logic function from source code, including
+// its trigger settings for each supported trigger type.
+
 import { Field, InputType } from '@nestjs/graphql';
 
 import {

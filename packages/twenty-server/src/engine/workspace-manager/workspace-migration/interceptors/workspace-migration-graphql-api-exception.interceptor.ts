@@ -17,6 +17,8 @@ import { workspaceMigrationBuilderGraphqlApiExceptionHandler } from 'src/engine/
 import { workspaceMigrationRunnerExceptionFormatter } from 'src/engine/workspace-manager/workspace-migration/interceptors/workspace-migration-runner-exception-formatter';
 import { WorkspaceMigrationRunnerException } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-runner/exceptions/workspace-migration-runner.exception';
 
+// Catches flat-entity and workspace migration builder/runner exceptions thrown by GraphQL resolvers
+// and reformats them into the appropriate GraphQL error shape before re-throwing
 @Injectable()
 export class WorkspaceMigrationGraphqlApiExceptionInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {

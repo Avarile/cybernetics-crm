@@ -1,3 +1,5 @@
+// Admin-panel service reporting the instance's current app version and the
+// latest available version, resolved by querying Docker Hub tags.
 import { Injectable } from '@nestjs/common';
 
 import semver from 'semver';
@@ -14,6 +16,8 @@ export class AdminPanelVersionService {
     private readonly secureHttpClientService: SecureHttpClientService,
   ) {}
 
+  // Returns the current app version and the latest valid semver tag from the
+  // Docker Hub repository; falls back to 'latest' if the lookup fails.
   async getVersionInfo(): Promise<VersionInfoDTO> {
     const currentVersion = this.twentyConfigService.get('APP_VERSION');
 

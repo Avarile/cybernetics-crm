@@ -35,6 +35,7 @@ import { VerifyTwoFactorAuthenticationMethodInput } from './dto/verify-two-facto
 import { VerifyTwoFactorAuthenticationMethodDTO } from './dto/verify-two-factor-authentication-method.dto';
 import { TwoFactorAuthenticationMethodEntity } from './entities/two-factor-authentication-method.entity';
 
+// GraphQL resolver for 2FA provisioning, deletion, and verification
 @MetadataResolver()
 @UseFilters(AuthGraphqlApiExceptionFilter, PermissionsGraphqlApiExceptionFilter)
 export class TwoFactorAuthenticationResolver {
@@ -47,6 +48,8 @@ export class TwoFactorAuthenticationResolver {
     private readonly twoFactorAuthenticationMethodRepository: WorkspaceScopedRepository<TwoFactorAuthenticationMethodEntity>,
   ) {}
 
+  // Starts 2FA provisioning for a user mid-login, authenticated by a login token
+  // (used before the user has a full session) rather than a workspace session
   @Mutation(() => InitiateTwoFactorAuthenticationProvisioningDTO)
   @UseGuards(PublicEndpointGuard, NoPermissionGuard)
   async initiateOTPProvisioning(
@@ -99,6 +102,7 @@ export class TwoFactorAuthenticationResolver {
     return { uri };
   }
 
+  // Starts 2FA provisioning for an already-authenticated, already-logged-in user
   @Mutation(() => InitiateTwoFactorAuthenticationProvisioningDTO)
   @UseGuards(UserAuthGuard, NoPermissionGuard)
   async initiateOTPProvisioningForAuthenticatedUser(
@@ -123,6 +127,7 @@ export class TwoFactorAuthenticationResolver {
     return { uri };
   }
 
+  // Deletes a 2FA method, refusing unless it belongs to the requesting user
   @Mutation(() => DeleteTwoFactorAuthenticationMethodDTO)
   @UseGuards(WorkspaceAuthGuard, UserAuthGuard, CustomPermissionGuard)
   async deleteTwoFactorAuthenticationMethod(
@@ -160,6 +165,7 @@ export class TwoFactorAuthenticationResolver {
     return { success: true };
   }
 
+  // Verifies a submitted OTP against the authenticated user's provisioned 2FA method
   @Mutation(() => VerifyTwoFactorAuthenticationMethodDTO)
   @UseGuards(WorkspaceAuthGuard, UserAuthGuard, NoPermissionGuard)
   async verifyTwoFactorAuthenticationMethodForAuthenticatedUser(

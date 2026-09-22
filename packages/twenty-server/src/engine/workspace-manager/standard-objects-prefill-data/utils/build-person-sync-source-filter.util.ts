@@ -15,6 +15,9 @@ const PERSON_SYNC_SOURCE_EMAIL_FILTER_ID =
 const PERSON_SYNC_SOURCE_CALENDAR_FILTER_ID =
   '4f9c3b5d-8d6a-4e0c-9b34-7c5d6e8f0a12';
 
+// Builds the step filter/filter-group excluding people created by email or
+// calendar sync, used by the seeded "create company" workflow trigger so it
+// only reacts to manually or app-created people.
 export const buildPersonSyncSourceFilter = ({
   createdByFieldMetadataId,
 }: {

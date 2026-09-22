@@ -1,3 +1,7 @@
+// Central service for signing and verifying JWTs. Supports both the newer
+// asymmetric signing-key scheme (with key rotation) and a legacy symmetric
+// scheme derived from APP_SECRET, transparently choosing the right
+// verification key/algorithm based on the token's header.
 import { Injectable } from '@nestjs/common';
 import { JwtService, type JwtVerifyOptions } from '@nestjs/jwt';
 
@@ -47,6 +51,8 @@ export class JwtWrapperService {
     private readonly signingKeyVerifyCounterService: SigningKeyVerifyCounterService,
   ) {}
 
+  // Signs a payload with the current asymmetric signing key, throwing if no
+  // signing key is currently available.
   async signAsyncOrThrow(
     payload: JwtPayload,
     options: { expiresIn: string | number; jwtid?: string },
@@ -71,6 +77,7 @@ export class JwtWrapperService {
   }
 
   // oxlint-disable-next-line typescript/no-explicit-any
+  // Thin pass-through to NestJS JwtService.verify (legacy symmetric verify).
   verify<T extends object = any>(
     token: string,
     options?: { secret: string },
@@ -79,10 +86,14 @@ export class JwtWrapperService {
   }
 
   // oxlint-disable-next-line typescript/no-explicit-any
+  // Thin pass-through to NestJS JwtService.decode.
   decode<T = any>(payload: string, options?: jwt.DecodeOptions): T {
     return this.jwtService.decode(payload, options);
   }
 
+  // Determines which key/algorithm to verify a token with: for asymmetric
+  // tokens, the signing key's public key by kid; for legacy tokens, a
+  // derived app-secret hash based on the token's workspace/user id claim.
   async resolveVerificationKey(
     rawToken: string,
   ): Promise<ResolvedVerificationKey> {
@@ -126,6 +137,9 @@ export class JwtWrapperService {
     };
   }
 
+  // Verifies a JWT's signature using the appropriate resolved key, records
+  // usage metrics, and applies a backward-compatibility fallback for
+  // API_KEY tokens mistakenly signed with the ACCESS secret before a bugfix.
   async verifyJwtToken(
     token: string,
     options?: JwtVerifyOptions,
@@ -184,6 +198,8 @@ export class JwtWrapperService {
     }
   }
 
+  // Derives a legacy symmetric signing secret from APP_SECRET, the token's
+  // subject id, and its type.
   generateAppSecret(type: JwtTokenTypeEnum, appSecretBody: string): string {
     const appSecret = this.twentyConfigService.get('APP_SECRET');
 
@@ -196,10 +212,13 @@ export class JwtWrapperService {
       .digest('hex');
   }
 
+  // Returns a passport-jwt extractor reading the token from the Bearer auth header.
   extractJwtFromRequest(): JwtFromRequestFunction {
     return ExtractJwt.fromAuthHeaderAsBearerToken();
   }
 
+  // Records a successful verification for usage metrics, by signing-key kid
+  // for asymmetric tokens or as a legacy verify otherwise.
   private recordVerifyForAlgorithm(
     algorithm: ResolvedVerificationKey['algorithm'],
     header: ReturnType<typeof decodeJwtHeader>,
@@ -216,6 +235,8 @@ export class JwtWrapperService {
     this.signingKeyVerifyCounterService.recordLegacyVerify();
   }
 
+  // Extracts the subject id (workspaceId or userId) that a legacy token's
+  // secret was derived from, based on the payload's shape.
   private extractAppSecretBody(payload: JwtPayload): string | undefined {
     const workspaceParse = APP_SECRET_BODY_WORKSPACE_SCHEMA.safeParse(payload);
 
@@ -232,6 +253,7 @@ export class JwtWrapperService {
     return undefined;
   }
 
+  // Maps a jsonwebtoken verification error to the appropriate AuthException.
   private toAuthException(error: unknown): AuthException {
     if (error instanceof jwt.TokenExpiredError) {
       return new AuthException(

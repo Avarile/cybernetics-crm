@@ -6,6 +6,7 @@ export interface MessageQueueProcessOptions {
   jobName: string;
 }
 
+// Marks a Processor class method as the handler for jobs with the given name
 export function Process(jobName: string): MethodDecorator {
   return SetMetadata(PROCESS_METADATA, { jobName });
 }

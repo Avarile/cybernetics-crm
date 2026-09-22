@@ -1,6 +1,8 @@
 import { type FileFolder } from 'twenty-shared/types';
 import { isDefined, isValidUuid } from 'twenty-shared/utils';
 
+// Extracts the file id from an internal file URL for a given folder,
+// returning null for external links or non-UUID/malformed ids.
 export const extractFileIdFromUrl = (
   url: string,
   fileFolder: FileFolder,

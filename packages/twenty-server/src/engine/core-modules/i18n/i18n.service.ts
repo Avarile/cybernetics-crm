@@ -42,11 +42,15 @@ import { messages as viMessages } from 'src/engine/core-modules/i18n/locales/gen
 import { messages as zhHansMessages } from 'src/engine/core-modules/i18n/locales/generated/zh-CN';
 import { messages as zhHantMessages } from 'src/engine/core-modules/i18n/locales/generated/zh-TW';
 
+// Loads every locale's generated Lingui message catalog into its own I18n
+// instance at startup, and exposes translation by message id and locale
 @Injectable()
 export class I18nService implements OnModuleInit {
   private i18nInstancesMap: Record<keyof typeof APP_LOCALES, I18n> =
     {} as Record<keyof typeof APP_LOCALES, I18n>;
 
+  // Activates the global i18n singleton on the source locale (for server-side t`…`
+  // calls), then builds and activates a dedicated I18n instance per app locale
   async loadTranslations() {
     // The global i18n singleton backs server-side t`…` calls and has no
     // compiled catalog, so it needs a runtime message compiler. Since lingui
@@ -107,6 +111,7 @@ export class I18nService implements OnModuleInit {
     return this.i18nInstancesMap[locale];
   }
 
+  // Translates a compiled message id into the target locale's text
   translateMessage({
     messageId,
     values,

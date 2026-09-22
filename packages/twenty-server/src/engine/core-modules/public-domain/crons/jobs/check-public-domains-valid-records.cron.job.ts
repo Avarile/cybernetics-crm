@@ -1,3 +1,6 @@
+// Cron job that re-checks DNS validation status for not-yet-validated
+// public domains, sharded across workspaces by hour of creation to spread
+// the load evenly over the day.
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository, Raw } from 'typeorm';
@@ -26,6 +29,8 @@ export class CheckPublicDomainsValidRecordsCronJob {
     CheckPublicDomainsValidRecordsCronJob.name,
     CHECK_PUBLIC_DOMAINS_VALID_RECORDS_CRON_PATTERN,
   )
+  // Finds unvalidated public domains created in the current hour-of-day and
+  // re-checks each one's DNS validation status.
   async handle(): Promise<void> {
     const publicDomains = await this.publicDomainRepository.find({
       where: {

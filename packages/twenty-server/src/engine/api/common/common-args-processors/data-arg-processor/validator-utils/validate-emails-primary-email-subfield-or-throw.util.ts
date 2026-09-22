@@ -9,6 +9,8 @@ import {
   CommonQueryRunnerExceptionCode,
 } from 'src/engine/api/common/common-query-runners/errors/common-query-runner.exception';
 
+// Validates the primaryEmail subfield: null is allowed, otherwise the value
+// must be a string matching the shared email schema; throws otherwise.
 export const validateEmailsPrimaryEmailSubfieldOrThrow = (
   value: unknown,
   fieldName: string,

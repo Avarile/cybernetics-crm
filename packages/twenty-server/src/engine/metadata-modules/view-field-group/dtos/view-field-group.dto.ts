@@ -4,6 +4,8 @@ import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/
 import { type ViewFieldGroupOverrides } from 'src/engine/metadata-modules/view-field-group/entities/view-field-group.entity';
 import { ViewFieldDTO } from 'src/engine/metadata-modules/view-field/dtos/view-field.dto';
 
+// GraphQL representation of a view field group: a named, positioned
+// section grouping a view's displayed fields.
 @ObjectType('ViewFieldGroup')
 export class ViewFieldGroupDTO {
   @Field(() => UUIDScalarType)

@@ -1,3 +1,6 @@
+// Diffs "from" (current) and "to" (desired) flat entity maps for every
+// metadata kind and builds the per-metadata create/update/delete operation
+// records needed to construct a workspace migration.
 import {
   ALL_METADATA_NAME,
   type AllMetadataName,
@@ -17,6 +20,7 @@ import { compareTwoFlatEntity } from 'src/engine/workspace-manager/workspace-mig
 import { shouldInferDeletionFromMissingEntities } from 'src/engine/workspace-manager/workspace-migration/utils/should-infer-deletion-from-missing-entities.util';
 import { type WorkspaceMigrationBuilderOptions } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-builder/types/workspace-migration-builder-options.type';
 
+// Indexes a list of flat entities by their universalIdentifier.
 const toRecordByUniversalIdentifier = <T extends AllMetadataName>(
   flatEntities: MetadataUniversalFlatEntity<T>[],
 ): Record<string, MetadataUniversalFlatEntity<T>> =>
@@ -27,6 +31,10 @@ const toRecordByUniversalIdentifier = <T extends AllMetadataName>(
     ]),
   );
 
+// Diffs a single metadata kind's "from" and "to" flat entity maps into
+// create/update/delete operation records. Deletions are only inferred when
+// the build options allow it for this metadata kind, and never for
+// entities flagged as system side effects.
 const buildFlatEntityOperationRecordForMetadata = <T extends AllMetadataName>({
   metadataName,
   fromFlatEntityMaps,
@@ -95,6 +103,8 @@ const buildFlatEntityOperationRecordForMetadata = <T extends AllMetadataName>({
   };
 };
 
+// Builds the create/update/delete operation record for every metadata
+// kind, skipping metadata kinds with no changes.
 export const buildAllFlatEntityOperationRecordByMetadataNameFromFromTo = ({
   fromAllFlatEntityMaps,
   toAllUniversalFlatEntityMaps,

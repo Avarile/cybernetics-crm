@@ -9,6 +9,7 @@ registerEnumType(ALL_METADATA_NAME, {
   name: 'AllMetadataName',
 });
 
+// Cache hash for one metadata collection, letting clients detect when to refetch it.
 @ObjectType('CollectionHash')
 export class CollectionHashDTO {
   @Field(() => ALL_METADATA_NAME)

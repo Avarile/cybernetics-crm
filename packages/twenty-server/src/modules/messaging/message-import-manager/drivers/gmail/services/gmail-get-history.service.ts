@@ -1,3 +1,6 @@
+// Fetches and interprets a Gmail account's incremental history (changes
+// since the last sync cursor) used to detect messages added/deleted since
+// the previous sync.
 import { Injectable } from '@nestjs/common';
 
 import { isNonEmptyString } from '@sniptt/guards';
@@ -12,6 +15,10 @@ export class GmailGetHistoryService {
     private readonly gmailMessageListFetchErrorHandler: GmailMessageListFetchErrorHandler,
   ) {}
 
+  // Pages through Gmail's users.history.list from lastSyncHistoryId,
+  // accumulating all history records and returning the account's latest
+  // historyId to use as the next sync cursor. On an API error, stops with
+  // whatever was fetched so far.
   public async getHistory(
     gmailClient: gmail_v1.Gmail,
     lastSyncHistoryId: string,
@@ -63,6 +70,9 @@ export class GmailGetHistoryService {
     return { history: fullHistory, historyId: nextHistoryId };
   }
 
+  // Reduces history records into distinct added/deleted message id sets,
+  // treating a label change as an "add" (so re-imports pick up new
+  // metadata) and excluding any id that appears in both added and deleted.
   public async getMessageIdsFromHistory(
     history: gmail_v1.Schema$History[],
   ): Promise<{

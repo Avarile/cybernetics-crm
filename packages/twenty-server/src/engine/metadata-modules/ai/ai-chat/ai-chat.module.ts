@@ -1,3 +1,5 @@
+// NestJS module for the user-facing AI chat feature: threads, streaming
+// execution, title generation, message pruning, and system prompt building.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

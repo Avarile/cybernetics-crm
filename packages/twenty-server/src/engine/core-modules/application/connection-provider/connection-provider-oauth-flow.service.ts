@@ -1,3 +1,7 @@
+// Drives an application's OAuth connection provider flow end to end: builds
+// the authorization URL (with PKCE and a signed, short-lived JWT state
+// carrying workspace/user context), and on callback exchanges the code for
+// tokens and persists (or reconnects) the resulting ConnectedAccount.
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -65,6 +69,10 @@ export class ConnectionProviderOAuthFlowService {
     private readonly connectedAccountRepository: Repository<ConnectedAccountEntity>,
   ) {}
 
+  // Builds the provider's authorization URL: validates a reconnect target
+  // belongs to the requesting workspace/provider, generates a PKCE
+  // verifier when required, signs the request context into the OAuth
+  // state parameter, and appends the provider's extra authorization params.
   async startAuthorizationFlow(
     args: AuthorizeArgs,
   ): Promise<{ authorizationUrl: string }> {
@@ -138,6 +146,8 @@ export class ConnectionProviderOAuthFlowService {
     return { authorizationUrl: authorizationUrl.toString() };
   }
 
+  // Verifies the OAuth state, exchanges the authorization code for tokens,
+  // and persists the resulting connected account.
   async completeAuthorizationFlow(args: CallbackArgs): Promise<CallbackResult> {
     const statePayload = await this.verifyState(args.state);
 
@@ -194,12 +204,15 @@ export class ConnectionProviderOAuthFlowService {
     };
   }
 
+  // Signs the OAuth flow's context into a short-lived state JWT.
   private async signState(payload: AppOAuthStateJwtPayload): Promise<string> {
     return this.jwtWrapperService.signAsyncOrThrow(payload, {
       expiresIn: STATE_JWT_EXPIRES_IN,
     });
   }
 
+  // Verifies and decodes the OAuth state JWT, rejecting an invalid
+  // signature, expiry, or wrong token type.
   private async verifyState(state: string): Promise<AppOAuthStateJwtPayload> {
     try {
       const verified = (await this.jwtWrapperService.verifyJwtToken(
@@ -223,10 +236,14 @@ export class ConnectionProviderOAuthFlowService {
     }
   }
 
+  // Returns the configured server base URL.
   private getServerUrl(): string {
     return this.twentyConfigService.get('SERVER_URL');
   }
 
+  // Encrypts the token pair and either updates the connected account
+  // being reconnected (workspace-scoped to prevent a foreign id leaking
+  // through) or creates a new one with an auto-numbered display name.
   private async persistConnectedAccount({
     provider,
     tokenResponse,

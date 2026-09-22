@@ -1,3 +1,6 @@
+// Assembles the agent-facing tool set for navigation menu item CRUD,
+// scoped to a workspace and optional user.
+
 import { Injectable } from '@nestjs/common';
 
 import { type ToolSet } from 'ai';
@@ -17,6 +20,8 @@ export class NavigationMenuItemToolWorkspaceService {
     this.deps = { navigationMenuItemService };
   }
 
+  // Builds the list/create/update/delete tools bound to the given
+  // workspace/user context, keyed by tool name.
   generateNavigationMenuItemTools(
     workspaceId: string,
     userWorkspaceId?: string,

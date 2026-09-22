@@ -1,5 +1,6 @@
 /* @license Enterprise */
 
+// CLI command that registers the recurring enterprise license validation cron job.
 import { Command, CommandRunner } from 'nest-commander';
 
 import { ENTERPRISE_KEY_VALIDATION_CRON_PATTERN } from 'src/engine/core-modules/enterprise/constants/enterprise-key-validation-cron-pattern.constant';
@@ -21,6 +22,7 @@ export class EnterpriseKeyValidationCronCommand extends CommandRunner {
     super();
   }
 
+  // Schedules the EnterpriseKeyValidationCronJob to repeat on the configured pattern.
   async run(): Promise<void> {
     await this.messageQueueService.addCron<undefined>({
       jobName: EnterpriseKeyValidationCronJob.name,

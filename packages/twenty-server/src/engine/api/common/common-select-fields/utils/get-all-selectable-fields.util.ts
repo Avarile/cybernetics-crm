@@ -22,6 +22,10 @@ type SelectableFieldsStructured = Record<
   boolean | Record<string, boolean>
 >;
 
+// Builds the select-fields map for an object's own (non-relation-nested)
+// fields: composite fields expand to their subfields, to-one relations
+// select their join column, and restricted (unreadable) fields are
+// skipped; optionally limited to label/image-identifier and id fields.
 export const getAllSelectableFields = ({
   restrictedFields,
   flatObjectMetadata,

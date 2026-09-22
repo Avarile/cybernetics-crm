@@ -21,6 +21,8 @@ export type CalendarOngoingStaleJobData = {
   queueName: MessageQueue.calendarQueue,
   scope: Scope.REQUEST,
 })
+// Resets calendar channels whose sync stage has been "ongoing" or "scheduled"
+// for longer than the stale timeout back to their pending stage, so they get retried.
 export class CalendarOngoingStaleJob {
   private readonly logger = new Logger(CalendarOngoingStaleJob.name);
   constructor(

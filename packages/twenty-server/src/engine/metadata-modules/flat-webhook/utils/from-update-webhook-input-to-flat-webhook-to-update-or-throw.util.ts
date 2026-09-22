@@ -11,6 +11,8 @@ import {
 } from 'src/engine/metadata-modules/webhook/webhook.exception';
 import { mergeUpdateInExistingRecord } from 'src/utils/merge-update-in-existing-record.util';
 
+// Applies an update-webhook input onto the matching existing flat webhook, throwing if
+// it doesn't exist.
 export const fromUpdateWebhookInputToFlatWebhookToUpdateOrThrow = ({
   flatWebhookMaps,
   updateWebhookInput,

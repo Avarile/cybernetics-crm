@@ -8,6 +8,10 @@ import { getPropertyFromHeaders } from 'src/modules/messaging/message-import-man
 import { safeParseEmailAddressAddress } from 'src/modules/messaging/message-import-manager/utils/safe-parse-email-address-address.util';
 import { safeParseEmailAddresses } from 'src/modules/messaging/message-import-manager/utils/safe-parse-email-addresses.util';
 
+// Extracts headers, decodes the body, and parses attachments from a raw
+// Gmail API message; asserts on the fields Gmail always provides (id,
+// historyId, internalDate) since their absence signals an unexpected
+// payload shape.
 export const parseGmailMessage = (message: gmail_v1.Schema$Message) => {
   const subject = getPropertyFromHeaders(message, 'Subject');
   const rawFrom = getPropertyFromHeaders(message, 'From');

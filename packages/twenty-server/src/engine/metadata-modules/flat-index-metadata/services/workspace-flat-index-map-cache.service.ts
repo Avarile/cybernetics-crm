@@ -19,6 +19,9 @@ import { WorkspaceCache } from 'src/engine/workspace-cache/decorators/workspace-
 import { createIdToUniversalIdentifierMap } from 'src/engine/workspace-cache/utils/create-id-to-universal-identifier-map.util';
 import { addFlatEntityToFlatEntityMapsThroughMutationOrThrow } from 'src/engine/workspace-manager/workspace-migration/utils/add-flat-entity-to-flat-entity-maps-through-mutation-or-throw.util';
 
+// Builds and caches the workspace's flat-index-metadata maps by loading index entities
+// (with their index field metadatas) and resolving application, object metadata and
+// field metadata ids to universal identifiers.
 @Injectable()
 @WorkspaceCache('flatIndexMaps')
 export class WorkspaceFlatIndexMapCacheService extends WorkspaceCacheProvider<
@@ -37,6 +40,8 @@ export class WorkspaceFlatIndexMapCacheService extends WorkspaceCacheProvider<
     super();
   }
 
+  // Loads all indexes plus related applications, object metadata and field metadata
+  // for the workspace, then assembles them into flat-index-metadata maps.
   async computeForCache(
     workspaceId: string,
   ): Promise<FlatEntityMaps<FlatIndexMetadata>> {

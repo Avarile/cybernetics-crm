@@ -1,3 +1,7 @@
+// Per-workspace worker for the ongoing-stale cron: finds message channels
+// stuck in an ongoing/scheduled sync stage past the stale timeout and
+// resets them back to pending, so a crashed or hung sync doesn't
+// permanently block that channel.
 import { Logger, Scope } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -31,6 +35,8 @@ export class MessagingOngoingStaleJob {
     private readonly messageChannelSyncStatusService: MessageChannelSyncStatusService,
   ) {}
 
+  // Resets each stale ongoing/scheduled channel back to the matching
+  // pending stage (list-fetch or import) so it gets retried.
   @Process(MessagingOngoingStaleJob.name)
   async handle(data: MessagingOngoingStaleJobData): Promise<void> {
     const { workspaceId } = data;

@@ -1,3 +1,5 @@
+// Queue processor that runs the recurring check for newer versions of
+// NPM-sourced installed applications.
 import { Injectable, Logger } from '@nestjs/common';
 
 import { SentryCronMonitor } from 'src/engine/core-modules/cron/sentry-cron-monitor.decorator';
@@ -21,6 +23,8 @@ export class ApplicationVersionCheckCronJob {
     ApplicationVersionCheckCronJob.name,
     APPLICATION_VERSION_CHECK_CRON_PATTERN,
   )
+  // Runs the application version check across all NPM-sourced
+  // registrations.
   async handle(): Promise<void> {
     this.logger.log('Starting application version check...');
 

@@ -21,6 +21,8 @@ import { PageLayoutWidgetEntity } from 'src/engine/metadata-modules/page-layout-
 import { PageLayoutEntity } from 'src/engine/metadata-modules/page-layout/entities/page-layout.entity';
 import { OverridableEntity } from 'src/engine/workspace-manager/types/overridable-entity';
 
+// Workspace-level fields that can override a standard-app page layout
+// tab's defaults without mutating the original definition.
 export type PageLayoutTabOverrides = {
   title?: string;
   position?: number;
@@ -34,6 +36,8 @@ export type PageLayoutTabOverrides = {
   ['workspaceId', 'pageLayoutId'],
   { where: '"deletedAt" IS NULL' },
 )
+// TypeORM entity for a page layout tab: one tab within a page layout,
+// holding its ordered widgets and display configuration (icon, layout mode).
 export class PageLayoutTabEntity
   extends OverridableEntity<PageLayoutTabOverrides>
   implements Required<PageLayoutTabEntity>

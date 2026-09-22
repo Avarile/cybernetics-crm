@@ -9,6 +9,8 @@ import { CalendarBlocklistListener } from 'src/modules/calendar/blocklist-manage
 import { CalendarEventCleanerModule } from 'src/modules/calendar/calendar-event-cleaner/calendar-event-cleaner.module';
 import { CalendarCommonModule } from 'src/modules/calendar/common/calendar-common.module';
 
+// Reacts to blocklist create/update/delete events by removing matching
+// calendar events or re-triggering a calendar re-import.
 @Module({
   imports: [
     CalendarEventCleanerModule,

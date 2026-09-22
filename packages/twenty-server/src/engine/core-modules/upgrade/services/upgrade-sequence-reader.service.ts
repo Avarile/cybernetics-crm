@@ -28,12 +28,16 @@ export type WorkspaceUpgradeStep = {
 
 export type UpgradeStep = InstanceUpgradeStep | WorkspaceUpgradeStep;
 
+// Flattens the registered upgrade commands into a single ordered sequence, and
+// provides cursor navigation helpers over that sequence for the sequence runner
 @Injectable()
 export class UpgradeSequenceReaderService {
   constructor(
     private readonly upgradeCommandRegistryService: UpgradeCommandRegistryService,
   ) {}
 
+  // Builds the full ordered sequence of steps across every cross-upgrade-supported
+  // version: fast instance, then slow instance, then workspace commands per version
   getUpgradeSequence(): UpgradeStep[] {
     const sequence: UpgradeStep[] = [];
 
@@ -57,6 +61,8 @@ export class UpgradeSequenceReaderService {
     return sequence;
   }
 
+  // Finds a step's index in the sequence by name, throwing with an upgrade hint
+  // if it can't be found (meaning the instance is too far behind)
   locateStepInSequenceOrThrow({
     sequence,
     stepName,
@@ -80,6 +86,8 @@ export class UpgradeSequenceReaderService {
     return cursor;
   }
 
+  // Finds the start/end cursor of the contiguous run of workspace commands
+  // surrounding the given workspace command in the sequence
   getWorkspaceSegmentBounds({
     sequence,
     workspaceCommand,
@@ -110,6 +118,8 @@ export class UpgradeSequenceReaderService {
     return { startCursor, endCursor };
   }
 
+  // Collects the contiguous run of workspace commands in the sequence starting
+  // at the given command, stopping at the first non-workspace step
   collectWorkspaceCommandsStartingFrom({
     sequence,
     fromWorkspaceCommand,
@@ -162,6 +172,9 @@ export class UpgradeSequenceReaderService {
       : workspaceCommands.slice(cursorIndex);
   }
 
+  // Computes where a newly provisioned workspace's cursor should start: right
+  // after the instance's completed command, or fast-forwarded to the end of the
+  // following workspace-command segment if one immediately follows
   getInitialCursorForNewWorkspace(lastAttemptedInstanceCommand: {
     name: string;
     status: UpgradeMigrationStatus;
@@ -193,6 +206,8 @@ export class UpgradeSequenceReaderService {
     return { name, status };
   }
 
+  // Returns the last workspace command in the contiguous segment starting at
+  // the given workspace command
   private findLastWorkspaceCommandInSegmentStartingAt(
     sequence: UpgradeStep[],
     firstWorkspaceCommand: WorkspaceUpgradeStep,

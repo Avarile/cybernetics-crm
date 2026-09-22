@@ -1,3 +1,5 @@
+// NestJS module wiring the actor pre-query hooks and service that stamp
+// records with createdBy/updatedBy metadata derived from the auth context.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

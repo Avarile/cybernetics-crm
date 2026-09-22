@@ -8,6 +8,12 @@ import { MESSAGING_GMAIL_FOLDERS_WITH_CATEGORY_EXCLUSIONS } from 'src/modules/me
 import { buildGmailLabelSearchName } from 'src/modules/messaging/message-import-manager/drivers/gmail/utils/build-gmail-label-search-name.util';
 import { computeGmailDefaultNotSyncedLabelsSearchFilter } from 'src/modules/messaging/message-import-manager/drivers/gmail/utils/compute-gmail-default-not-synced-labels-search-filter';
 
+// Builds the Gmail search query used to list which messages to import,
+// based on the channel's folder import policy: for ALL_FOLDERS (or when
+// every folder is synced), just excludes always-excluded labels; for
+// SELECTED_FOLDERS, builds an inclusion query for the synced labels and
+// appends either category exclusions (if a custom label was picked) or
+// the full default exclusions (if only inbox/important/sent are synced).
 export const computeGmailExcludeSearchFilter = (
   messageFolders: Pick<
     MessageFolderEntity,

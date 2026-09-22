@@ -1,3 +1,5 @@
+// GraphQL input for updating an application registration variable's
+// value, or clearing it via resetValue.
 import { Field, InputType } from '@nestjs/graphql';
 
 import { Type } from 'class-transformer';

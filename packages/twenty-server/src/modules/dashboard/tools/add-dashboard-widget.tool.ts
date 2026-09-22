@@ -35,6 +35,8 @@ const addDashboardWidgetSchema = z.object({
   configuration: widgetConfigurationSchema,
 });
 
+// AI agent tool: adds a widget to an existing dashboard tab, resolving
+// object/field names (if given instead of UUIDs) before creating it.
 export const createAddDashboardWidgetTool = (
   deps: Pick<
     DashboardToolDependencies,

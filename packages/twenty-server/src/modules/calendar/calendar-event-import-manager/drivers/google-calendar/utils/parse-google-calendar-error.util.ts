@@ -3,6 +3,7 @@ import {
   CalendarEventImportDriverExceptionCode,
 } from 'src/modules/calendar/calendar-event-import-manager/drivers/exceptions/calendar-event-import-driver.exception';
 
+// Maps a Google Calendar API error (status code + reason) to a typed import-driver exception.
 export const parseGoogleCalendarError = (error: {
   code?: number;
   reason: string;

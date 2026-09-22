@@ -1,3 +1,5 @@
+// CLI script: seeds the workspaceEvent, objectEvent and usageEvent ClickHouse
+// tables with the fixture data from ./fixtures for local development.
 /* oxlint-disable no-console */
 import { createClient, ClickHouseLogLevel } from '@clickhouse/client';
 import { config } from 'dotenv';

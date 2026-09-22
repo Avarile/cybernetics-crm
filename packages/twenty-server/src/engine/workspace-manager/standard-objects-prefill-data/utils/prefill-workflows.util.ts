@@ -14,8 +14,14 @@ import { generateFakeObjectRecordEvent } from 'src/modules/workflow/workflow-bui
 import { generateObjectRecordFields } from 'src/modules/workflow/workflow-builder/workflow-schema/utils/generate-object-record-fields';
 import { getCreateCompanyWhenAddingNewPersonCodeStepLogicFunctionIds } from 'src/engine/workspace-manager/standard-objects-prefill-data/utils/prefill-workflow-code-step-logic-functions.util';
 
+// Seeds two sample workflows into a workspace: "Quick Lead" (a manual form
+// that creates a company and person) and "Create company when adding a new
+// person" (an automated trigger that matches or creates a company by email
+// domain, skipping personal email providers).
 const WORKFLOW_PREFILL_ID_NAMESPACE = '8b213cac-a68b-4ffe-817a-3ec994e9932d';
 
+// Deterministically derives (workspace-scoped) ids for the seeded workflows,
+// their versions, and the automated trigger.
 export const getWorkflowPrefillIds = (workspaceId: string) => ({
   quickLeadWorkflowId: v5(
     `quickLeadWorkflow:${workspaceId}`,
@@ -39,6 +45,8 @@ export const getWorkflowPrefillIds = (workspaceId: string) => ({
   ),
 });
 
+// Inserts the seeded workflows, their versions/steps, and the automated
+// trigger (with its person-sync-source filter) into the workspace schema.
 export const prefillWorkflows = async (
   entityManager: EntityManager,
   workspaceId: string,

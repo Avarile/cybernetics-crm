@@ -15,6 +15,7 @@ import {
   type PermissionFlagPermissionType,
 } from 'src/engine/metadata-modules/permission-flag/constants/permission-flag-permission-type.constant';
 
+// GraphQL representation of a permission flag definition (standard or custom).
 @ObjectType('PermissionFlag')
 export class PermissionFlagDTO {
   @IsUUID()

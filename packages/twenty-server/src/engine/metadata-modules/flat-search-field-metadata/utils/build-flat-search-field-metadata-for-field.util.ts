@@ -3,6 +3,9 @@ import { getSearchFieldUniversalIdentifier } from 'twenty-shared/application';
 import { type FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object-metadata/types/flat-object-metadata.type';
 import { type UniversalFlatSearchFieldMetadata } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-search-field-metadata.type';
 
+// Builds a new universal flat search field metadata linking a searchable field to its
+// object's TS_VECTOR field, deriving a deterministic universal identifier from the
+// application and field universal identifiers.
 export const buildFlatSearchFieldMetadataForField = ({
   flatObjectMetadata,
   flatFieldMetadata,

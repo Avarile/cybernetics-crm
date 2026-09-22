@@ -1,3 +1,4 @@
+// GraphQL DTO for a provider suggestion sourced from the models.dev catalog.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType('ModelsDevProviderSuggestion')

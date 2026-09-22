@@ -1,3 +1,4 @@
+// Track-event schema for a logic function execution result.
 import { z } from 'zod';
 
 import { registerEvent } from 'src/engine/core-modules/event-logs/emit/events/workspace-event/track';

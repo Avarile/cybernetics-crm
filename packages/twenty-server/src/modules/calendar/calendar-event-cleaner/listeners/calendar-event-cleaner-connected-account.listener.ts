@@ -15,6 +15,7 @@ import {
 } from 'src/modules/calendar/calendar-event-cleaner/jobs/delete-connected-account-associated-calendar-data.job';
 
 @Injectable()
+// Queues cleanup jobs whenever connected accounts are deleted.
 export class CalendarEventCleanerConnectedAccountListener {
   constructor(
     @InjectMessageQueue(MessageQueue.calendarQueue)

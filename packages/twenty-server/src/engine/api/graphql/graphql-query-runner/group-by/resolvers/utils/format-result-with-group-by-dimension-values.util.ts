@@ -1,3 +1,7 @@
+// Turns raw group-by aggregate rows (and optionally their underlying
+// records) into the GraphQL-shaped output: each group's dimension
+// values (translated for day-of-week/month-of-year granularities),
+// its aggregate values, and its formatted/permission-processed records.
 import { t } from '@lingui/core/macro';
 import {
   type ObjectRecord,
@@ -12,6 +16,8 @@ import { type FlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-m
 import { type FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object-metadata/types/flat-object-metadata.type';
 import { formatResult } from 'src/engine/twenty-orm/utils/format-result.util';
 
+// Builds the final per-group output items, matching each group's
+// records (if requested) back to it via a composite group key.
 export const formatResultWithGroupByDimensionValues = async ({
   groupsResult,
   groupByDefinitions,
@@ -107,6 +113,8 @@ export const formatResultWithGroupByDimensionValues = async ({
   return formattedResult;
 };
 
+// Builds a stable string key from a row's group-by dimension values,
+// used to correlate the aggregate group row with its matching records.
 const createGroupKey = (
   group: Record<string, unknown>,
   groupByDefinitions: GroupByDefinition[],
@@ -114,6 +122,8 @@ const createGroupKey = (
   return groupByDefinitions.map((def) => String(group[def.alias])).join('|');
 };
 
+// Translates day-of-week/month-of-year group values (e.g. "Monday")
+// into the current locale; other values pass through unchanged.
 const getTranslatedValueIfApplicable = <T>(
   value: T,
   dateGranularity?: ObjectRecordGroupByDateGranularity,

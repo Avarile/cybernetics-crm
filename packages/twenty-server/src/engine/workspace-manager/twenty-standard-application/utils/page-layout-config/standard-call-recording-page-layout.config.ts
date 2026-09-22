@@ -44,6 +44,7 @@ const CALL_RECORDING_PAGE_TABS = {
   },
 } as const satisfies Record<string, StandardPageLayoutTabConfig>;
 
+// Fixed record page layout (tabs and widgets) for the standard "callRecording" object
 export const STANDARD_CALL_RECORDING_PAGE_LAYOUT_CONFIG = {
   name: 'Default Call Recording Layout',
   type: PageLayoutType.RECORD_PAGE,

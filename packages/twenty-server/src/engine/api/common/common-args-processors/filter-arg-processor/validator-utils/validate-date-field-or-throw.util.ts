@@ -10,6 +10,8 @@ import {
   CommonQueryRunnerExceptionCode,
 } from 'src/engine/api/common/common-query-runners/errors/common-query-runner.exception';
 
+// True when the string matches one of the date formats twenty-shared
+// accepts as valid input for a DATE filter.
 const isValidDateFormat = (value: string): boolean => {
   for (const format of ACCEPTED_DATE_FORMATS) {
     const parsed = parse(value, format, new Date());
@@ -22,6 +24,8 @@ const isValidDateFormat = (value: string): boolean => {
   return false;
 };
 
+// Validates a DATE filter value: null passes through, a Date instance or a
+// recognized date-format string is accepted; throws otherwise.
 export const validateDateFieldOrThrow = (
   value: unknown,
   fieldName: string,

@@ -4,6 +4,7 @@ import { assertUnreachable } from 'twenty-shared/utils';
 
 import { CustomException } from 'src/utils/custom-exception';
 
+// Error codes and user-facing messages for calendar channel access and validation failures.
 export enum CalendarChannelExceptionCode {
   CALENDAR_CHANNEL_NOT_FOUND = 'CALENDAR_CHANNEL_NOT_FOUND',
   INVALID_CALENDAR_CHANNEL_INPUT = 'INVALID_CALENDAR_CHANNEL_INPUT',
@@ -25,6 +26,7 @@ const getCalendarChannelExceptionUserFriendlyMessage = (
   }
 };
 
+// Typed exception thrown by calendar channel services, carrying a code the GraphQL handler maps to an HTTP-facing error.
 export class CalendarChannelException extends CustomException<CalendarChannelExceptionCode> {
   constructor(
     message: string,

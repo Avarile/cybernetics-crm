@@ -12,6 +12,8 @@ export type FromCreateViewFieldGroupInputToFlatViewFieldGroupToCreateArgs = {
   flatApplication: FlatApplication;
 } & Pick<AllFlatEntityMaps, 'flatViewMaps'>;
 
+// Builds a new universal flat view field group from a create input, generating an id
+// when not provided and resolving the parent view to a universal identifier.
 export const fromCreateViewFieldGroupInputToFlatViewFieldGroupToCreate = ({
   createViewFieldGroupInput: rawCreateViewFieldGroupInput,
   flatApplication,

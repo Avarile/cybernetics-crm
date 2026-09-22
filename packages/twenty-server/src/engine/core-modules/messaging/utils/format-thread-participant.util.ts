@@ -1,8 +1,11 @@
+// Maps a raw message participant to the timeline participant DTO shape.
 import { isDefined } from 'twenty-shared/utils';
 
 import { type TimelineThreadParticipantDTO } from 'src/engine/core-modules/messaging/dtos/timeline-thread-participant.dto';
 import { type MessageParticipantWorkspaceEntity } from 'src/modules/messaging/common/standard-objects/message-participant.workspace-entity';
 
+// Maps a raw message participant entity to the timeline DTO shape,
+// preferring linked person/workspace-member names over the raw handle.
 export const formatThreadParticipant = (
   threadParticipant: MessageParticipantWorkspaceEntity,
 ): TimelineThreadParticipantDTO => {

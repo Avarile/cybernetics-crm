@@ -4,6 +4,8 @@ import { buildLambdaResourceName } from 'src/engine/core-modules/logic-function/
 
 const RESOURCE_NAME_CHECKSUM_LENGTH = 12;
 
+// Hashes the given contents into a checksum and builds a Lambda resource
+// name from it, so identical content reuses the same resource.
 export const computeHashedLambdaResourceName = ({
   resourceNamePrefix,
   namespace,

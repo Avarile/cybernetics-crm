@@ -3,6 +3,8 @@ import { type QueryRunner } from 'typeorm';
 import { RegisteredInstanceCommand } from 'src/engine/core-modules/upgrade/decorators/registered-instance-command.decorator';
 import { type FastInstanceCommand } from 'src/engine/core-modules/upgrade/interfaces/fast-instance-command.interface';
 
+// Fast instance command (1.21.0): adds an index on viewField.viewFieldGroupId;
+// down drops it.
 @RegisteredInstanceCommand('1.21.0', 1775129420309)
 export class AddViewFieldGroupIdIndexOnViewFieldFastInstanceCommand implements FastInstanceCommand {
   public async up(queryRunner: QueryRunner): Promise<void> {

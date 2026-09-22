@@ -1,3 +1,5 @@
+// Signs short-lived JWT-authenticated download URLs for stored files,
+// deduplicating concurrent signing requests for the same file.
 import { Injectable } from '@nestjs/common';
 
 import { FileFolder } from 'twenty-shared/types';
@@ -19,6 +21,7 @@ export class FileUrlService {
     private readonly twentyConfigService: TwentyConfigService,
   ) {}
 
+  // Signs a URL for a workspace's logo file, or null if it has none.
   async signWorkspaceLogoUrl(
     workspace: Pick<WorkspaceEntity, 'id' | 'logoFileId'>,
   ): Promise<string | null> {
@@ -33,6 +36,7 @@ export class FileUrlService {
     });
   }
 
+  // Signs a URL for the first file in a FILES-field value, or null if empty.
   async signFirstFilesFieldFileUrl({
     filesFieldValue,
     workspaceId,
@@ -53,6 +57,8 @@ export class FileUrlService {
     });
   }
 
+  // Signs a download URL for a file by id, coalescing concurrent calls for
+  // the same file/workspace/folder into a single signing operation.
   async signFileByIdUrl({
     fileId,
     workspaceId,
@@ -86,6 +92,7 @@ export class FileUrlService {
     return signing;
   }
 
+  // Mints a JWT file-access token and builds the resulting signed download URL.
   private async buildSignedFileUrl({
     fileId,
     workspaceId,
@@ -111,6 +118,7 @@ export class FileUrlService {
     return `${serverUrl}/file/${fileFolder}/${fileId}?token=${token}`;
   }
 
+  // Builds an unsigned legacy avatar URL, kept for backward compatibility.
   getLegacyWorkspaceMemberAvatarUrl({
     fileId,
     fileFolder,

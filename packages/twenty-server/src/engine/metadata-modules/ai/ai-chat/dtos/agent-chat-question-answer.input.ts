@@ -1,3 +1,4 @@
+// GraphQL input for a user's answer to an agent-asked multiple-choice question.
 import { Field, InputType, Int } from '@nestjs/graphql';
 
 @InputType()

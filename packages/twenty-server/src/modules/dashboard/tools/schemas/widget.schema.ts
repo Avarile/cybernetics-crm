@@ -1,3 +1,6 @@
+// Zod schemas describing dashboard widget grid position and per-chart-type
+// configuration shapes, used to validate AI dashboard-tool inputs and to
+// document valid values (via .describe()) for the agent.
 import { isNumber } from '@sniptt/guards';
 import {
   AggregateOperations,

@@ -42,11 +42,15 @@ import { WorkspaceMigrationRunnerRestApiExceptionFilter } from 'src/engine/works
   FlatEntityMapsRestApiExceptionFilter,
   WorkspaceMigrationRunnerRestApiExceptionFilter,
 )
+// REST API serving a front component's built JavaScript bundle, either
+// by redirecting to a presigned storage URL or streaming it directly.
 export class FrontComponentController {
   private readonly logger = new Logger(FrontComponentController.name);
 
   constructor(private readonly frontComponentService: FrontComponentService) {}
 
+  // Streams (or redirects to) the built JS bundle for a front component,
+  // setting cache-appropriate response headers.
   @Get([':frontComponentId', ':frontComponentId/:cacheKey'])
   @UseGuards(NoPermissionGuard)
   async getBuiltJs(

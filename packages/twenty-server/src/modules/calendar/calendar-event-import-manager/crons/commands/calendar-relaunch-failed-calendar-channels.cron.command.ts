@@ -13,6 +13,7 @@ import {
   description:
     'Starts a cron job to relaunch failed calendar channels every 30 minutes',
 })
+// Registers the recurring cron job that retries calendar channels stuck in a failed state.
 export class CalendarRelaunchFailedCalendarChannelsCronCommand extends CommandRunner {
   constructor(
     @InjectMessageQueue(MessageQueue.cronQueue)

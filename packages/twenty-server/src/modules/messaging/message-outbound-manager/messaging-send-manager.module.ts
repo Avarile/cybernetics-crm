@@ -1,3 +1,5 @@
+// Wires up the per-provider outbound drivers and the services that
+// dispatch sends/drafts to them and persist sent messages.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

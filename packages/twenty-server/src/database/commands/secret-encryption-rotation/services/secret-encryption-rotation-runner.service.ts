@@ -34,6 +34,10 @@ export type RotationRunSummary = {
   totalDurationMs: number;
 };
 
+// Orchestrates the `secret-encryption:rotate` command: builds a handler per
+// registered rotation site (a generic ColumnRotationSiteHandler unless the site
+// declares a dedicated handler), then runs rotation across the requested site(s)
+// (or all of them) and logs a summary.
 @Injectable()
 export class SecretEncryptionRotationRunnerService implements OnModuleInit {
   private readonly logger = new Logger(
@@ -53,6 +57,7 @@ export class SecretEncryptionRotationRunnerService implements OnModuleInit {
     private readonly moduleRef: ModuleRef,
   ) {}
 
+  // Builds the siteName -> handler map from the typed and untyped site registries.
   onModuleInit(): void {
     for (const entry of Object.values(
       SECRET_ENCRYPTION_ROTATION_SITE_ENTRIES,
@@ -92,6 +97,8 @@ export class SecretEncryptionRotationRunnerService implements OnModuleInit {
     return Array.from(this.handlersBySiteName.keys());
   }
 
+  // Resolves the current/fallback encryption keys, then runs each selected site's
+  // handler in turn, logging progress and returning a per-site + total summary.
   async run(options: RotationRunOptions): Promise<RotationRunSummary> {
     const { primary: currentEncryptionKey, fallback: fallbackEncryptionKey } =
       resolveEncryptionKeysOrThrow({
@@ -178,6 +185,8 @@ export class SecretEncryptionRotationRunnerService implements OnModuleInit {
     };
   }
 
+  // Returns the [siteName, handler] pairs to run: all of them, or just the one
+  // matching `site`, throwing if it's not a recognized site name.
   private resolveHandlersToRun(
     site: string | undefined,
   ): Array<
@@ -201,6 +210,7 @@ export class SecretEncryptionRotationRunnerService implements OnModuleInit {
     return [[siteName, handler]];
   }
 
+  // Logs a per-site and grand-total breakdown of rotated/skipped/errored counts.
   private logSummary(summary: RotationRunSummary): void {
     const totalRotated = summary.results.reduce(
       (sum, result) => sum + result.rotated,

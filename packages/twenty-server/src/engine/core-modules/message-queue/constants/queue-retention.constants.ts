@@ -1,3 +1,4 @@
+// Default BullMQ retention policy: how long/many completed and failed jobs to keep
 export const QUEUE_RETENTION = {
   completedMaxAge: 14400, // 4 hours (4*3600s)
   completedMaxCount: 1000,

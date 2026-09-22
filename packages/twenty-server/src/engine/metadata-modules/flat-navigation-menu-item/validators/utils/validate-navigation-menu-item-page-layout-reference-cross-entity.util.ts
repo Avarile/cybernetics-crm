@@ -12,6 +12,9 @@ import {
 import { type AllUniversalFlatEntityMaps } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/all-universal-flat-entity-maps.type';
 import { getEmptyFlatEntityValidationError } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-builder/builders/utils/get-flat-entity-validation-error.util';
 
+// Validates that any PAGE_LAYOUT-type navigation menu item created/updated, or affected by a
+// touched page layout, references a page layout of type STANDALONE_PAGE; returns validation
+// failures for any that don't.
 export const validateNavigationMenuItemPageLayoutReferenceCrossEntity = ({
   optimisticUniversalFlatMaps,
   orchestratorActionsReport,

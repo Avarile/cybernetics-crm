@@ -18,6 +18,9 @@ import { WorkspaceMigrationBuilderException } from 'src/engine/workspace-manager
   WorkspaceMigrationBuilderException,
 )
 @Injectable()
+// Catches PageLayoutException, PageLayoutTabException,
+// PageLayoutWidgetException, and WorkspaceMigrationBuilderException and
+// converts them into the appropriate GraphQL API error type.
 export class PageLayoutGraphqlApiExceptionFilter implements ExceptionFilter {
   catch(
     exception:

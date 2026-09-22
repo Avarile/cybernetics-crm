@@ -1,3 +1,6 @@
+// Side effect: keeps a unique scalar field's backing UNIQUE index in sync
+// when the field's isUnique flag flips or the field is renamed.
+
 import { Injectable } from '@nestjs/common';
 
 import { isDefined } from 'twenty-shared/utils';
@@ -23,6 +26,9 @@ export class FieldUniqueBackingIndexOnUpdateSideEffectHandlerService extends Met
       "Keep a unique scalar field's backing UNIQUE index in sync when its `isUnique` flag flips or the field is renamed (drop the stale index and recreate the deterministic one).",
   },
 ) {
+  // Detects whether uniqueness flipped or a still-unique field was renamed;
+  // if so, deletes the old deterministic index (if it existed) and creates
+  // the new one (if the field is now unique), otherwise no-ops.
   buildSideEffects({
     flatEntity: flatFieldMetadata,
     allFlatEntityOperationRecordByMetadataName,

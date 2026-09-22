@@ -1,3 +1,5 @@
+// Aggregates every registered track-event name and its properties type into
+// the TrackEventName union and TrackEvents map used across the emitter.
 import {
   type OBJECT_RECORD_CREATED_EVENT,
   type ObjectRecordCreatedTrackEvent,

@@ -13,6 +13,8 @@ import {
 } from 'src/engine/metadata-modules/view-group/exceptions/view-group.exception';
 import { type UniversalFlatViewGroup } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-view-group.type';
 
+// Looks up the flat view group targeted for soft deletion and returns it with
+// deletedAt set, throwing if it doesn't exist.
 export const fromDeleteViewGroupInputToFlatViewGroupOrThrow = ({
   deleteViewGroupInput: rawDeleteViewGroupInput,
   flatViewGroupMaps,

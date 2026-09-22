@@ -1,3 +1,5 @@
+// NestJS module wiring the resolver that lets workspace admins toggle
+// experimental ("lab") public feature flags.
 import { Module } from '@nestjs/common';
 
 import { FeatureFlagModule } from 'src/engine/core-modules/feature-flag/feature-flag.module';

@@ -6,6 +6,8 @@ import {
   CommonQueryRunnerExceptionCode,
 } from 'src/engine/api/common/common-query-runners/errors/common-query-runner.exception';
 
+// Throws unless the value is an array, for operators like "in" that
+// require an array value.
 export const validateArrayOperatorValueOrThrow = (
   value: unknown,
   operator: FilterOperator,

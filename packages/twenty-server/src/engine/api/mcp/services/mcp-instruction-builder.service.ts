@@ -7,6 +7,8 @@ import { getDatabaseCrudToolFlatObjects } from 'src/engine/metadata-modules/ai/a
 import { WorkspaceManyOrAllFlatEntityMapsCacheService } from 'src/engine/metadata-modules/flat-entity/services/workspace-many-or-all-flat-entity-maps-cache.service';
 import { SkillService } from 'src/engine/metadata-modules/skill/skill.service';
 
+// Builds the workspace-specific instructions text sent to MCP clients on
+// initialize, listing the workspace's object names and available skills.
 @Injectable()
 export class McpInstructionBuilderService {
   constructor(
@@ -14,6 +16,8 @@ export class McpInstructionBuilderService {
     private readonly skillService: SkillService,
   ) {}
 
+  // Gathers the workspace's CRUD-tool-eligible object names and skill
+  // names, then formats them into the MCP server instructions string.
   async buildInstructions(workspaceId: string): Promise<string> {
     const [{ flatObjectMetadataMaps }, allSkills] = await Promise.all([
       this.flatEntityMapsCacheService.getOrRecomputeManyOrAllFlatEntityMaps({

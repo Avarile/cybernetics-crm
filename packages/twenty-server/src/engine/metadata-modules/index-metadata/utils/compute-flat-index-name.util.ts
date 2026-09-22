@@ -1,3 +1,7 @@
+// Computes the deterministic database index name for a set of index fields,
+// resolving each field to its actual database column name (handling
+// composite sub-fields and many-to-one relation join columns).
+
 import { compositeTypeDefinitions, RelationType } from 'twenty-shared/types';
 import { isDefined } from 'twenty-shared/utils';
 
@@ -25,6 +29,9 @@ type ComputeFlatIndexNameArgs = {
   indexWhereClause: string | null;
 };
 
+// Resolves each index field to its real column name (composite column,
+// relation join column, or plain field name) in index order, then delegates
+// to the deterministic name generator.
 export const computeFlatIndexNameOrThrow = ({
   flatObjectMetadata,
   objectFlatFieldMetadatas,

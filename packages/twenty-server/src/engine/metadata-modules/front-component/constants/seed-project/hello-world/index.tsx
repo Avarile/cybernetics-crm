@@ -1,3 +1,6 @@
+// Seed project template: a sample visual front component demonstrating
+// the SDK's execution context and user id hooks. Bundled as example
+// source when scaffolding a new front component.
 import { defineFrontComponent } from 'twenty-sdk/define';
 import {
   useFrontComponentExecutionContext,

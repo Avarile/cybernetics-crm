@@ -1,3 +1,5 @@
+// Wraps field metadata REST responses in the pre-flat-entity response shape,
+// for clients still on the legacy format behind the feature flag.
 import { type RestCursorPageInfo } from 'src/engine/api/rest/metadata/utils/paginate-by-id-cursor.util';
 import { type FieldMetadataDTO } from 'src/engine/metadata-modules/field-metadata/dtos/field-metadata.dto';
 

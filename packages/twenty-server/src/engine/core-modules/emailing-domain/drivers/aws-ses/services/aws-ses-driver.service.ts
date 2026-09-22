@@ -1,3 +1,6 @@
+// EmailingDomainDriverInterface implementation backed by AWS SES v2 Tenants:
+// provisions/deprovisions per-workspace SES tenants, verifies sending
+// domains (identity + DKIM), and sends outbound emails through SES.
 import { Logger } from '@nestjs/common';
 
 import {
@@ -52,6 +55,8 @@ export class AwsSesDriver implements EmailingDomainDriverInterface {
     private readonly unsubscribeContentService: UnsubscribeContentService,
   ) {}
 
+  // Creates (or reuses) the SES email identity for a domain, associates it
+  // with the workspace's tenant, and enables DKIM signing once verified.
   async verifyDomain(
     input: EmailingDomainResourceInput,
   ): Promise<EmailingDomainVerificationResult> {
@@ -79,6 +84,8 @@ export class AwsSesDriver implements EmailingDomainDriverInterface {
     }
   }
 
+  // Fetches the current verification/DKIM status of a domain identity from
+  // SES; a missing identity is reported as FAILED rather than thrown.
   async getDomainStatus(
     input: EmailingDomainResourceInput,
   ): Promise<EmailingDomainVerificationResult> {
@@ -118,6 +125,8 @@ export class AwsSesDriver implements EmailingDomainDriverInterface {
     }
   }
 
+  // Ensures a SES tenant exists for the workspace and provisions the
+  // resources (configuration set, etc.) it needs to send email.
   async provisionWorkspace(workspaceId: string): Promise<void> {
     const tenantName = this.buildTenantName(workspaceId);
 
@@ -136,6 +145,8 @@ export class AwsSesDriver implements EmailingDomainDriverInterface {
     await this.awsSesRegisterDomainService.registerDomain(input.domain);
   }
 
+  // Appends unsubscribe headers/footer to the email content before handing
+  // it off to SES for delivery under the workspace's tenant/configuration set.
   async sendEmail(
     input: EmailingDomainSendEmailRequest,
   ): Promise<EmailingDomainSendEmailResult> {
@@ -151,6 +162,8 @@ export class AwsSesDriver implements EmailingDomainDriverInterface {
     });
   }
 
+  // Requires an active unsubscribe hostname before allowing a send, since
+  // every outbound email must carry a working unsubscribe link.
   private getUnsubscribeBaseUrl(emailingDomain: EmailingDomainEntity): string {
     if (
       emailingDomain.unsubscribeHostnameStatus !==
@@ -166,6 +179,8 @@ export class AwsSesDriver implements EmailingDomainDriverInterface {
     return `https://${emailingDomain.unsubscribeHostname}`;
   }
 
+  // Detaches and deletes the domain's SES identity; tolerates the resources
+  // already being gone (NotFoundException) since cleanup may retry.
   async cleanupDomain(input: EmailingDomainResourceInput): Promise<void> {
     const sesClient = this.awsSesClientProvider.getSESClient();
     const tenantName = this.buildTenantName(input.workspaceId);
@@ -189,6 +204,8 @@ export class AwsSesDriver implements EmailingDomainDriverInterface {
       });
   }
 
+  // Tears down the workspace's SES tenant and configuration set, in
+  // dependency order, tolerating resources that no longer exist.
   async deprovisionWorkspace(workspaceId: string): Promise<void> {
     const sesClient = this.awsSesClientProvider.getSESClient();
     const tenantName = this.buildTenantName(workspaceId);
@@ -231,6 +248,7 @@ export class AwsSesDriver implements EmailingDomainDriverInterface {
     return `${AWS_SES_RESOURCE_NAME_PREFIX}-${workspaceId}`;
   }
 
+  // Creates the SES tenant, treating "already exists" as success (idempotent).
   private async ensureTenantExists(tenantName: string): Promise<void> {
     const sesClient = this.awsSesClientProvider.getSESClient();
 
@@ -247,6 +265,8 @@ export class AwsSesDriver implements EmailingDomainDriverInterface {
     }
   }
 
+  // Reuses an existing SES identity if present, otherwise creates a new one;
+  // always (re)associates the identity with the workspace's tenant.
   private async createOrUpdateEmailIdentity(
     domain: string,
     tenantName: string,
@@ -279,6 +299,8 @@ export class AwsSesDriver implements EmailingDomainDriverInterface {
     }
   }
 
+  // Creates a brand-new SES email identity tagged with the tenant name;
+  // newly created identities are never verified yet.
   private async createNewEmailIdentity(
     domain: string,
     tenantName: string,
@@ -309,6 +331,8 @@ export class AwsSesDriver implements EmailingDomainDriverInterface {
     };
   }
 
+  // Links a domain identity to a tenant, treating "already associated" as
+  // success (idempotent).
   private async associateResourceWithTenant(
     domain: string,
     tenantName: string,
@@ -335,6 +359,7 @@ export class AwsSesDriver implements EmailingDomainDriverInterface {
     }
   }
 
+  // Turns on DKIM signing for a verified domain identity.
   private async enableDkimSigning(domain: string): Promise<void> {
     const sesClient = this.awsSesClientProvider.getSESClient();
 
@@ -347,6 +372,8 @@ export class AwsSesDriver implements EmailingDomainDriverInterface {
     this.logger.log(`Enabled DKIM signing for domain: ${domain}`);
   }
 
+  // Maps SES DKIM tokens into the CNAME records the customer must add to
+  // their DNS to prove domain ownership.
   private buildVerificationRecords(
     domain: string,
     dkimTokens: string[],
@@ -358,6 +385,8 @@ export class AwsSesDriver implements EmailingDomainDriverInterface {
     }));
   }
 
+  // Combines SES's identity-verification and DKIM-signing state into a
+  // single VERIFIED / FAILED / PENDING status.
   private determineVerificationStatus(identityResponse: {
     VerifiedForSendingStatus?: boolean;
     DkimAttributes?: {

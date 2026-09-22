@@ -6,6 +6,9 @@ import { type FlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-m
 import { isMorphOrRelationFlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-metadata/utils/is-morph-or-relation-flat-field-metadata.util';
 import { type FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object-metadata/types/flat-object-metadata.type';
 
+// Checks whether a relation field's nested sub-field (e.g. "company.createdAt")
+// resolves to a date-kind field on the related object, so date granularity
+// bucketing should be applied to it.
 export const isRelationNestedFieldDateKind = ({
   relationFieldMetadata,
   relationNestedFieldName,

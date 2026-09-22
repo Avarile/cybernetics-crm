@@ -5,6 +5,9 @@ const PACKAGE_VERSION_REGEX =
 
 const MAX_PACKAGE_VERSION_MATCHES = 1_000;
 
+// Cross-references package.json's declared dependencies against the
+// resolved versions recorded in yarn.lock, returning only the packages
+// that appear in both (capped to avoid pathological inputs).
 export const parseAvailablePackagesFromPackageJsonAndYarnLock = (
   packageJsonContent: string,
   yarnLockContent: string,

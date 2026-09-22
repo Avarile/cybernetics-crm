@@ -18,6 +18,9 @@ import { getWorkspaceSchemaName } from 'src/engine/workspace-datasource/utils/ge
 import { WorkspaceMigrationValidateBuildAndRunService } from 'src/engine/workspace-manager/workspace-migration/services/workspace-migration-validate-build-and-run-service';
 import { type UniversalFlatFieldMetadata } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-field-metadata.type';
 
+// Workspace command (1.21.0): ensures messageThread has a standard `subject` field
+// (renaming any conflicting custom "subject" field to "subjectOld" first), then
+// backfills that field from the subject of each thread's most recently received message.
 @RegisteredWorkspaceCommand('1.21.0', 1775500004000)
 @Command({
   name: 'upgrade:1-21:backfill-message-thread-subject',
@@ -34,6 +37,8 @@ export class BackfillMessageThreadSubjectCommand extends ProvisionedWorkspaceCom
     super(workspaceIteratorService);
   }
 
+  // Ensures the subject field exists, then bulk-updates messageThread.subject from
+  // each thread's latest message (only rows where subject is still NULL).
   override async runOnWorkspace({
     workspaceId,
     dataSource,
@@ -80,6 +85,8 @@ export class BackfillMessageThreadSubjectCommand extends ProvisionedWorkspaceCom
     );
   }
 
+  // Finds an existing field by name on a specific object, used to detect a naming
+  // conflict with the new standard "subject" field.
   private findFieldByNameOnObject({
     flatFieldMetadataMaps,
     objectUniversalIdentifier,
@@ -98,6 +105,8 @@ export class BackfillMessageThreadSubjectCommand extends ProvisionedWorkspaceCom
       );
   }
 
+  // Renames an existing custom "subject" field to "subjectOld" so the new standard
+  // field can be created without a name collision.
   private async renameConflictingField({
     conflictingField,
     workspaceId,
@@ -138,6 +147,8 @@ export class BackfillMessageThreadSubjectCommand extends ProvisionedWorkspaceCom
     );
   }
 
+  // Creates the standard messageThread.subject field if it doesn't already exist,
+  // first renaming away any conflicting custom field of the same name.
   private async ensureSubjectFieldExists({
     workspaceId,
     isDryRun,

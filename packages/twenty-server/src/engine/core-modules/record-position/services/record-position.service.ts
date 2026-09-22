@@ -1,3 +1,6 @@
+// Service that resolves a record's `position` field value from a numeric
+// value or the symbolic 'first'/'last' positions, used to keep manually
+// ordered lists (e.g. kanban/board views) consistent on create/update.
 import { Injectable } from '@nestjs/common';
 
 import { isNumber } from '@sniptt/guards';
@@ -21,6 +24,9 @@ export class RecordPositionService {
     private readonly globalWorkspaceOrmManager: GlobalWorkspaceOrmManager,
   ) {}
 
+  // Resolves a position value for a single new record: passes numeric
+  // values through, or computes a position just before the current minimum
+  // ('first') or just after the current maximum ('last').
   async buildRecordPosition({
     objectMetadata,
     value,
@@ -52,6 +58,10 @@ export class RecordPositionService {
       : 1;
   }
 
+  // Bucket a batch of record inputs by their requested position ('first',
+  // 'last', a number, undefined, or none), then assigns sequential position
+  // values to the 'first'/'last' groups relative to existing records so a
+  // batch insert produces a consistent, non-conflicting order.
   async overridePositionOnRecords({
     partialRecordInputs,
     workspaceId,
@@ -155,6 +165,7 @@ export class RecordPositionService {
     ];
   }
 
+  // Finds the record (id + position) currently at the given position value.
   async findByPosition(
     positionValue: number | null,
     objectMetadata: { isCustom: boolean; nameSingular: string },
@@ -182,6 +193,7 @@ export class RecordPositionService {
     );
   }
 
+  // Directly sets a record's position field to the given value.
   async updatePosition(
     recordId: string,
     positionValue: number,
@@ -205,6 +217,8 @@ export class RecordPositionService {
     }, authContext);
   }
 
+  // Returns the smallest position value currently used for this object, or
+  // null if there are none.
   private async findMinPosition(
     objectMetadata: { isCustom: boolean; nameSingular: string },
     workspaceId: string,
@@ -230,6 +244,8 @@ export class RecordPositionService {
     return sanitizeNumber(result);
   }
 
+  // Returns the largest position value currently used for this object, or
+  // null if there are none.
   private async findMaxPosition(
     objectMetadata: { isCustom: boolean; nameSingular: string },
     workspaceId: string,

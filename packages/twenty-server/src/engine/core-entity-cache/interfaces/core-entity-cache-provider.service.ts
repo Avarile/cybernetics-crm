@@ -7,6 +7,9 @@ import {
 
 type CoreEntityCacheDataType = CoreEntityCacheDataMap[CoreEntityCacheKeyName];
 
+// Base class for providers that compute the data for one core-entity
+// cache key; subclasses are auto-discovered via the @CoreEntityCache
+// decorator.
 @Injectable()
 export abstract class CoreEntityCacheProvider<
   T extends CoreEntityCacheDataType = CoreEntityCacheDataType,

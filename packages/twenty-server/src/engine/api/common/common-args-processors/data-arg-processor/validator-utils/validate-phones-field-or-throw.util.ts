@@ -9,6 +9,9 @@ import {
 } from 'src/engine/api/common/common-query-runners/errors/common-query-runner.exception';
 import { type PhonesFieldGraphQLInput } from 'src/engine/core-modules/record-transformer/utils/transform-phones-value.util';
 
+// Validates a phones composite field input, checking each subfield and
+// rejecting unknown subfields; throws a CommonQueryRunnerException on any
+// violation.
 export const validatePhonesFieldOrThrow = (
   value: unknown,
   fieldName: string,

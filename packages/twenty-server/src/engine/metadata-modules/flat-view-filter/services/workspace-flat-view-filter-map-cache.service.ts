@@ -19,6 +19,9 @@ import { WorkspaceCache } from 'src/engine/workspace-cache/decorators/workspace-
 import { createIdToUniversalIdentifierMap } from 'src/engine/workspace-cache/utils/create-id-to-universal-identifier-map.util';
 import { addFlatEntityToFlatEntityMapsThroughMutationOrThrow } from 'src/engine/workspace-manager/workspace-migration/utils/add-flat-entity-to-flat-entity-maps-through-mutation-or-throw.util';
 
+// Builds and caches the workspace's flat-view-filter maps by loading view filter entities
+// and resolving their application, field metadata, view filter group and view ids to
+// universal identifiers.
 @Injectable()
 @WorkspaceCache('flatViewFilterMaps')
 export class WorkspaceFlatViewFilterMapCacheService extends WorkspaceCacheProvider<FlatViewFilterMaps> {
@@ -37,6 +40,8 @@ export class WorkspaceFlatViewFilterMapCacheService extends WorkspaceCacheProvid
     super();
   }
 
+  // Loads all view filters plus related applications, field metadata, view filter groups
+  // and views for the workspace, then assembles them into flat-view-filter maps.
   async computeForCache(workspaceId: string): Promise<FlatViewFilterMaps> {
     const [viewFilters, applications, fieldMetadatas, viewFilterGroups, views] =
       await Promise.all([

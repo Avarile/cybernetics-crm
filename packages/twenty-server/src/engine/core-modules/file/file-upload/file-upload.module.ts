@@ -1,3 +1,5 @@
+// NestJS module for the direct file-upload flow (presigned/streamed uploads,
+// completion, pending-file cleanup).
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

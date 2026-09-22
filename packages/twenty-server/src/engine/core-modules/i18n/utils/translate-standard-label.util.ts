@@ -4,6 +4,9 @@ import { isDefined } from 'twenty-shared/utils';
 
 import { generateMessageId } from 'src/engine/core-modules/i18n/utils/generateMessageId';
 
+// Translates a standard-object label: custom apps look up the translation in their
+// own catalog, standard apps fall back to the shared i18n instance, source text
+// otherwise
 export const translateStandardLabel = ({
   sourceValue,
   isStandardApp,

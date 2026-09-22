@@ -1,3 +1,5 @@
+// Stores/deletes files attached to FILES-type fields, resolving the owning
+// field/application to build the storage path.
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -29,6 +31,8 @@ export class FilesFieldService {
     private readonly fileUrlService: FileUrlService,
   ) {}
 
+  // Resolves the target field/application, writes the file to storage as
+  // temporary, and returns its metadata with a signed download URL.
   async uploadFile({
     file,
     filename,
@@ -101,6 +105,7 @@ export class FilesFieldService {
     };
   }
 
+  // Deletes a FILES-field file from storage, wrapping failures in a FilesFieldException.
   async deleteFilesFieldFile({
     fileId,
     workspaceId,

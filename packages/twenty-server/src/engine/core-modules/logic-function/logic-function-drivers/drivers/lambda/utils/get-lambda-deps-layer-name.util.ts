@@ -3,6 +3,8 @@ import { buildLambdaResourceName } from 'src/engine/core-modules/logic-function/
 
 const DEPS_LAYER_NAME_PREFIX = 'deps';
 
+// Builds an application's dependency layer name from its yarn.lock checksum,
+// so the layer is shared/rebuilt only when dependencies actually change.
 export const getLambdaDepsLayerName = ({
   flatApplication,
   namespace,

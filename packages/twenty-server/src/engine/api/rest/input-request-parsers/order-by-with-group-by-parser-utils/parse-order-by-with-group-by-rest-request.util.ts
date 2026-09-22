@@ -5,6 +5,9 @@ import { type OrderByWithGroupBy } from 'twenty-shared/types';
 import { RestInputRequestParserExceptionCode } from 'src/engine/api/rest/input-request-parsers/rest-input-request-parser.exception';
 import { type AuthenticatedRequest } from 'src/engine/api/rest/types/authenticated-request';
 
+// Parses the `?order_by=[...]` REST query param for groupBy requests (a
+// JSON array, unlike the DSL used by plain list requests); throws on
+// malformed JSON.
 export const parseOrderByWithGroupByRestRequest = (
   request: AuthenticatedRequest,
 ): OrderByWithGroupBy | undefined => {

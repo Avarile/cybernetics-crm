@@ -1,3 +1,9 @@
+// Listens for batched database mutation events (create/update/delete/
+// restore/destroy) emitted after CRUD resolvers run, and fans each batch
+// out to: the record-event publisher (for subscriptions), the webhook
+// queue, the database-event-trigger queue, and — for audit-logged
+// objects — the event-log/timeline-activity queues. Timeline activity
+// events themselves are only published, not fanned out further.
 import { Injectable } from '@nestjs/common';
 
 import {
@@ -36,21 +42,25 @@ export class EntityEventsToDbListener {
     private readonly objectRecordEventPublisher: ObjectRecordEventPublisher,
   ) {}
 
+  // Handles a batch of record-created events across all objects.
   @OnDatabaseBatchEvent('*', DatabaseEventAction.CREATED)
   async handleCreate(batchEvent: WorkspaceEventBatch<ObjectRecordCreateEvent>) {
     return this.handleEvent(batchEvent, DatabaseEventAction.CREATED);
   }
 
+  // Handles a batch of record-updated events across all objects.
   @OnDatabaseBatchEvent('*', DatabaseEventAction.UPDATED)
   async handleUpdate(batchEvent: WorkspaceEventBatch<ObjectRecordUpdateEvent>) {
     return this.handleEvent(batchEvent, DatabaseEventAction.UPDATED);
   }
 
+  // Handles a batch of record-deleted (soft-delete) events across all objects.
   @OnDatabaseBatchEvent('*', DatabaseEventAction.DELETED)
   async handleDelete(batchEvent: WorkspaceEventBatch<ObjectRecordDeleteEvent>) {
     return this.handleEvent(batchEvent, DatabaseEventAction.DELETED);
   }
 
+  // Handles a batch of record-restored events across all objects.
   @OnDatabaseBatchEvent('*', DatabaseEventAction.RESTORED)
   async handleRestore(
     batchEvent: WorkspaceEventBatch<ObjectRecordRestoreEvent>,
@@ -58,6 +68,7 @@ export class EntityEventsToDbListener {
     return this.handleEvent(batchEvent, DatabaseEventAction.RESTORED);
   }
 
+  // Handles a batch of record-destroyed (hard-delete) events across all objects.
   @OnDatabaseBatchEvent('*', DatabaseEventAction.DESTROYED)
   async handleDestroy(
     batchEvent: WorkspaceEventBatch<ObjectRecordDestroyEvent>,
@@ -65,6 +76,11 @@ export class EntityEventsToDbListener {
     return this.handleEvent(batchEvent, DatabaseEventAction.DESTROYED);
   }
 
+  // Timeline-activity events are only published (they represent
+  // internal activity, not user data changes); everything else is
+  // published and fanned out to webhook and trigger queues, plus
+  // audit-log/timeline-activity ingestion queues when the object is
+  // audit-logged and the action isn't a hard delete.
   private async handleEvent<T extends ObjectRecordEvent>(
     batchEvent: WorkspaceEventBatch<T>,
     action: DatabaseEventAction,

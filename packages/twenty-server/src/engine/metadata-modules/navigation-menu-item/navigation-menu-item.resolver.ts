@@ -1,3 +1,6 @@
+// GraphQL resolver exposing navigation menu item CRUD (single and batch) and
+// resolving the display identifier of a menu item's target record.
+
 import { UseGuards, UseInterceptors } from '@nestjs/common';
 import {
   Args,
@@ -40,6 +43,7 @@ export class NavigationMenuItemResolver {
     private readonly navigationMenuItemService: NavigationMenuItemService,
   ) {}
 
+  // Lists navigation menu items visible to the workspace/user.
   @Query(() => [NavigationMenuItemDTO])
   @UseGuards(NoPermissionGuard)
   async navigationMenuItems(
@@ -53,6 +57,7 @@ export class NavigationMenuItemResolver {
     });
   }
 
+  // Looks up a single navigation menu item by id.
   @Query(() => NavigationMenuItemDTO, { nullable: true })
   @UseGuards(NoPermissionGuard)
   async navigationMenuItem(
@@ -65,6 +70,7 @@ export class NavigationMenuItemResolver {
     });
   }
 
+  // Creates multiple navigation menu items in one call.
   @Mutation(() => [NavigationMenuItemDTO])
   @UseGuards(NoPermissionGuard)
   async createManyNavigationMenuItems(
@@ -85,6 +91,7 @@ export class NavigationMenuItemResolver {
     });
   }
 
+  // Creates a single navigation menu item.
   @Mutation(() => NavigationMenuItemDTO)
   @UseGuards(NoPermissionGuard)
   async createNavigationMenuItem(
@@ -104,6 +111,7 @@ export class NavigationMenuItemResolver {
     });
   }
 
+  // Updates multiple navigation menu items in one call.
   @Mutation(() => [NavigationMenuItemDTO])
   @UseGuards(NoPermissionGuard)
   async updateManyNavigationMenuItems(
@@ -124,6 +132,7 @@ export class NavigationMenuItemResolver {
     });
   }
 
+  // Updates a single navigation menu item.
   @Mutation(() => NavigationMenuItemDTO)
   @UseGuards(NoPermissionGuard)
   async updateNavigationMenuItem(
@@ -143,6 +152,7 @@ export class NavigationMenuItemResolver {
     });
   }
 
+  // Deletes multiple navigation menu items in one call.
   @Mutation(() => [NavigationMenuItemDTO])
   @UseGuards(NoPermissionGuard)
   async deleteManyNavigationMenuItems(
@@ -162,6 +172,7 @@ export class NavigationMenuItemResolver {
     });
   }
 
+  // Deletes a single navigation menu item.
   @Mutation(() => NavigationMenuItemDTO)
   @UseGuards(NoPermissionGuard)
   async deleteNavigationMenuItem(
@@ -181,6 +192,8 @@ export class NavigationMenuItemResolver {
     });
   }
 
+  // Resolves the target record's display identifier for RECORD-type items,
+  // returning null when the item has no target record.
   @ResolveField(() => RecordIdentifierDTO, { nullable: true })
   async targetRecordIdentifier(
     @Parent() navigationMenuItem: NavigationMenuItemDTO,

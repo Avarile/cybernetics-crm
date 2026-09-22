@@ -19,6 +19,8 @@ import {
 
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';
 
+// GraphQL input for a single row-level permission predicate: a condition
+// (field/operand/value) that restricts which records a role can access.
 @InputType()
 export class RowLevelPermissionPredicateInput {
   @IsUUID()
@@ -55,6 +57,8 @@ export class RowLevelPermissionPredicateInput {
   positionInRowLevelPermissionPredicateGroup?: number | null;
 }
 
+// GraphQL input for a group of predicates combined by a logical operator
+// (AND/OR), optionally nested under a parent group.
 @InputType()
 export class RowLevelPermissionPredicateGroupInput {
   @IsUUID()
@@ -79,6 +83,8 @@ export class RowLevelPermissionPredicateGroupInput {
   positionInRowLevelPermissionPredicateGroup?: number | null;
 }
 
+// GraphQL input for replacing all row-level permission predicates and
+// predicate groups for a given role and object.
 @InputType()
 export class UpsertRowLevelPermissionPredicatesInput {
   @IsUUID()

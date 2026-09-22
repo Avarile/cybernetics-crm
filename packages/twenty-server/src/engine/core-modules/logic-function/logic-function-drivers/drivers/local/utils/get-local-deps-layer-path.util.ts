@@ -3,6 +3,7 @@ import { join } from 'path';
 import { type FlatApplication } from 'src/engine/core-modules/application/types/flat-application.type';
 import { LOGIC_FUNCTION_EXECUTOR_TMPDIR_FOLDER } from 'src/engine/core-modules/logic-function/logic-function-drivers/constants/logic-function-executor-tmpdir-folder';
 
+// Returns the local disk path for an application's dependency layer, keyed by yarn.lock checksum.
 export const getLocalDepsLayerPath = (
   flatApplication: FlatApplication,
 ): string => {

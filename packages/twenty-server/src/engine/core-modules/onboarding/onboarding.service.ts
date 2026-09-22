@@ -1,3 +1,7 @@
+// Tracks and drives a user/workspace's progress through onboarding, using
+// per-user/workspace "pending" flags (stored as user vars) for each step,
+// computing the overall OnboardingStatus, and crediting billing rewards
+// (import contacts, install apps) as steps complete.
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -50,6 +54,7 @@ export class OnboardingService {
     private readonly messageQueueService: MessageQueueService,
   ) {}
 
+  // Whether the workspace itself is still being created/activated.
   private isWorkspaceActivationPending(workspace: WorkspaceEntity) {
     return (
       workspace.activationStatus ===
@@ -58,6 +63,9 @@ export class OnboardingService {
     );
   }
 
+  // Derives the current onboarding step by checking, in priority order:
+  // workspace activation, then each pending-step flag, then whether billing
+  // requires a plan; falls through to COMPLETED once nothing is pending.
   async getOnboardingStatus({
     user,
     workspaceId,
@@ -127,6 +135,7 @@ export class OnboardingService {
     return OnboardingStatus.COMPLETED;
   }
 
+  // Whether the workspace still has the "invite your team" step pending.
   async isOnboardingInviteTeamPending({
     workspaceId,
   }: {
@@ -140,6 +149,7 @@ export class OnboardingService {
     );
   }
 
+  // Sets or clears the "connect email account" pending flag for a user.
   async setOnboardingConnectAccountPending(
     {
       userId,
@@ -176,6 +186,9 @@ export class OnboardingService {
     );
   }
 
+  // Clears the connect-account pending flag (if it was set) and, only then,
+  // credits the import-contacts reward — guarding against double-crediting
+  // if this is called more than once.
   async completeOnboardingConnectAccountStep({
     userId,
     workspaceId,
@@ -193,6 +206,8 @@ export class OnboardingService {
     await this.creditImportContactsReward({ workspaceId });
   }
 
+  // Atomically "claims" the connect-account step by deleting its pending
+  // flag, returning whether this call was the one that actually cleared it.
   private async claimOnboardingConnectAccountStep({
     userId,
     workspaceId,
@@ -209,6 +224,8 @@ export class OnboardingService {
     return isDefined(affectedRows) && affectedRows > 0;
   }
 
+  // Credits the configured import-contacts onboarding reward, logging
+  // (not throwing) on failure.
   private async creditImportContactsReward({
     workspaceId,
   }: {
@@ -229,6 +246,7 @@ export class OnboardingService {
     }
   }
 
+  // Sets or clears the "install apps" pending flag for a user.
   async setOnboardingInstallAppsPending(
     {
       userId,
@@ -265,6 +283,8 @@ export class OnboardingService {
     );
   }
 
+  // Claims the install-apps step, filters the requested apps down to ones
+  // allowed for auto-install, and enqueues the install job if any remain.
   async triggerInstallAppsOnboardingStep({
     userId,
     workspaceId,
@@ -300,6 +320,8 @@ export class OnboardingService {
     );
   }
 
+  // Atomically "claims" the install-apps step by deleting its pending flag,
+  // returning whether this call was the one that actually cleared it.
   private async claimInstallAppsOnboardingStep({
     userId,
     workspaceId,
@@ -316,6 +338,8 @@ export class OnboardingService {
     return isDefined(affectedRows) && affectedRows > 0;
   }
 
+  // Credits the configured install-apps reward, scaled by the number of
+  // apps installed, logging (not throwing) on failure.
   async creditInstallAppsReward({
     workspaceId,
     rewardAppsCount,
@@ -339,6 +363,7 @@ export class OnboardingService {
     }
   }
 
+  // Sets or clears the "invite your team" pending flag for a workspace.
   async setOnboardingInviteTeamPending(
     {
       workspaceId,
@@ -371,6 +396,7 @@ export class OnboardingService {
     );
   }
 
+  // Sets or clears the "create your profile" pending flag for a user.
   async setOnboardingCreateProfilePending(
     {
       userId,
@@ -407,6 +433,8 @@ export class OnboardingService {
     );
   }
 
+  // Clears the profile-creation pending flag once the user has supplied at
+  // least a first or last name.
   async completeOnboardingProfileStepIfNameProvided({
     userId,
     workspaceId,

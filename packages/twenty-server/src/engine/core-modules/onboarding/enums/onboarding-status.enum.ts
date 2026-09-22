@@ -1,3 +1,5 @@
+// The workspace/user's current step in the onboarding flow, in the order
+// they're normally completed.
 export enum OnboardingStatus {
   PLAN_REQUIRED = 'PLAN_REQUIRED',
   WORKSPACE_ACTIVATION = 'WORKSPACE_ACTIVATION',

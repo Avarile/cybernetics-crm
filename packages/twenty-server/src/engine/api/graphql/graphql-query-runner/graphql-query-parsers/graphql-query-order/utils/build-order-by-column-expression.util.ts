@@ -1,5 +1,9 @@
+// Small helpers for building ORDER BY expressions: which field types
+// need case-insensitive (LOWER()) ordering, which need a ::text cast
+// first, and how to build the raw "table.column" expression.
 import { FieldMetadataType } from 'twenty-shared/types';
 
+// Text/select/multi-select fields sort case-insensitively.
 export const shouldUseCaseInsensitiveOrder = (
   fieldType: FieldMetadataType,
 ): boolean => {
@@ -10,6 +14,8 @@ export const shouldUseCaseInsensitiveOrder = (
   );
 };
 
+// Select/multi-select fields are stored as enum-like values and need a
+// ::text cast before LOWER() can be applied.
 export const shouldCastToText = (fieldType: FieldMetadataType): boolean => {
   return (
     fieldType === FieldMetadataType.SELECT ||

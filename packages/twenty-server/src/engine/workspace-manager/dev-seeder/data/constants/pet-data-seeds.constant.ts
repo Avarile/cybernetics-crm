@@ -1,3 +1,4 @@
+// Seed data for the sample custom "Pet" objects used to demo custom objects.
 type PetDataSeed = {
   id: string;
   name: string;

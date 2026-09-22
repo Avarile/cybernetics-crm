@@ -6,6 +6,7 @@ import {
   type CreateStandardViewArgs,
 } from 'src/engine/workspace-manager/twenty-standard-application/utils/view/create-standard-view-flat-metadata.util';
 
+// Builds the fixed set of standard views for the "workflowAutomatedTrigger" object
 export const computeStandardWorkflowAutomatedTriggerViews = (
   args: Omit<CreateStandardViewArgs<'workflowAutomatedTrigger'>, 'context'>,
 ): Record<string, FlatView> => {

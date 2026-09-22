@@ -10,6 +10,8 @@ export type BuildStandardFlatPageLayoutMetadataMapsArgs = Omit<
   'context'
 >;
 
+// Builds every standard page layout's flat metadata and assembles them into a single FlatEntityMaps,
+// used as the "target" state when seeding or syncing a workspace's standard page layouts
 export const buildStandardFlatPageLayoutMetadataMaps = (
   args: BuildStandardFlatPageLayoutMetadataMapsArgs,
 ): FlatEntityMaps<FlatPageLayout> => {

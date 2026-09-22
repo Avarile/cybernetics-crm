@@ -1,3 +1,4 @@
+// GraphQL input for partially updating an existing agent.
 import { Field, InputType } from '@nestjs/graphql';
 
 import { Type } from 'class-transformer';

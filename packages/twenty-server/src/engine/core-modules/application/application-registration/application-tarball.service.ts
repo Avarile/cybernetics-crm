@@ -1,3 +1,8 @@
+// Handles uploading an application tarball: securely extracts it, validates
+// server version compatibility and (for existing TARBALL registrations)
+// that the version is strictly newer, then creates or updates the
+// registration, stores the tarball file, rehosts its assets, and syncs its
+// variable schemas.
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -46,6 +51,8 @@ export class ApplicationTarballService {
     private readonly applicationRegistrationService: ApplicationRegistrationService,
   ) {}
 
+  // Extracts and validates an uploaded tarball, then creates or updates the
+  // owning workspace's application registration from its manifest.
   async uploadTarball(params: {
     tarballBuffer: Buffer;
     universalIdentifier?: string;
@@ -249,6 +256,8 @@ export class ApplicationTarballService {
     }
   }
 
+  // Reads an asset file from the extracted package, refusing to read
+  // outside the package's content directory.
   private async readAssetFromContentDir(
     contentDir: string,
     path: string,

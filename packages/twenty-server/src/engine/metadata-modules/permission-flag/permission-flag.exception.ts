@@ -4,6 +4,7 @@ import { assertUnreachable } from 'twenty-shared/utils';
 
 import { CustomException } from 'src/utils/custom-exception';
 
+// Error codes for invalid permission-flag operations (missing flag, duplicate key, mutating standard flags, etc.).
 export enum PermissionFlagExceptionCode {
   PERMISSION_FLAG_NOT_FOUND = 'PERMISSION_FLAG_NOT_FOUND',
   PERMISSION_FLAG_ALREADY_EXISTS = 'PERMISSION_FLAG_ALREADY_EXISTS',
@@ -14,6 +15,7 @@ export enum PermissionFlagExceptionCode {
   PERMISSION_FLAG_IN_USE = 'PERMISSION_FLAG_IN_USE',
 }
 
+// Maps an exception code to the message shown to the end user.
 const getPermissionFlagExceptionUserFriendlyMessage = (
   code: PermissionFlagExceptionCode,
 ) => {
@@ -37,6 +39,7 @@ const getPermissionFlagExceptionUserFriendlyMessage = (
   }
 };
 
+// Domain exception for permission-flag failures, carrying a user-friendly message by default.
 export class PermissionFlagException extends CustomException<PermissionFlagExceptionCode> {
   constructor(
     message: string,

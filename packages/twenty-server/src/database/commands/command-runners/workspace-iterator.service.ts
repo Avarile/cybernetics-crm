@@ -45,6 +45,9 @@ export type WorkspaceIteratorReport = {
 
 const DEFAULT_ACTIVATION_STATUSES = PROVISIONED_WORKSPACE_ACTIVATION_STATUSES;
 
+// Shared engine for per-workspace CLI commands: resolves the target workspace ids
+// (explicit list, or by activation status/pagination), then runs a callback against
+// each workspace's system auth context and data source, collecting a success/fail report.
 @Injectable()
 export class WorkspaceIteratorService {
   private readonly logger = new Logger(WorkspaceIteratorService.name);
@@ -55,6 +58,9 @@ export class WorkspaceIteratorService {
     private readonly globalWorkspaceOrmManager: GlobalWorkspaceOrmManager,
   ) {}
 
+  // Runs `callback` once per matching workspace, inside that workspace's system auth
+  // context, logging and continuing past per-workspace failures. Returns a report of
+  // which workspaces succeeded/failed.
   async iterate(args: WorkspaceIteratorArgs): Promise<WorkspaceIteratorReport> {
     const { callback, ...options } = args;
 
@@ -143,6 +149,8 @@ export class WorkspaceIteratorService {
     return report;
   }
 
+  // Resolves the ordered list of workspace ids matching the given activation
+  // statuses, optional starting id (pagination) and count limit.
   private async fetchWorkspaceIds(
     options: Pick<
       WorkspaceIteratorArgs,

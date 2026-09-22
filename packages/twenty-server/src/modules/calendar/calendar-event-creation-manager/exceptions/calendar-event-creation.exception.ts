@@ -22,6 +22,8 @@ const getCalendarEventCreationExceptionUserFriendlyMessage = (
   }
 };
 
+// Thrown when creating a calendar event fails, either because the account's
+// provider isn't supported or the provider rejected the request.
 export class CalendarEventCreationException extends CustomException<CalendarEventCreationExceptionCode> {
   constructor(
     message: string,

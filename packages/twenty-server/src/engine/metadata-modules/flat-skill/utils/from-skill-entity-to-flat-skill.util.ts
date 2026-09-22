@@ -3,6 +3,8 @@ import { type FlatSkill } from 'src/engine/metadata-modules/flat-skill/types/fla
 import { type FromEntityToFlatEntityArgs } from 'src/engine/workspace-cache/types/from-entity-to-flat-entity-args.type';
 import { resolveManyToOneRelationIdsToUniversalIdentifiers } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/utils/resolve-many-to-one-relation-ids-to-universal-identifiers.util';
 
+// Converts a SkillEntity into its flat representation, resolving
+// many-to-one relation ids (e.g. application) to universal identifiers.
 export const fromSkillEntityToFlatSkill = (
   args: FromEntityToFlatEntityArgs<'skill'>,
 ): FlatSkill => {

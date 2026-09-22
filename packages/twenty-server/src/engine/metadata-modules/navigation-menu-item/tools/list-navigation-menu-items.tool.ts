@@ -1,3 +1,6 @@
+// Agent tool for listing navigation menu items with optional scope, folder,
+// type, and result-count filters.
+
 import { z } from 'zod';
 
 import { NavigationMenuItemType } from 'twenty-shared/types';
@@ -38,6 +41,7 @@ type ListNavigationMenuItemsParams = z.infer<
   typeof listNavigationMenuItemsSchema
 >;
 
+// Builds the list_navigation_menu_items agent tool definition.
 export const createListNavigationMenuItemsTool = (
   deps: Pick<NavigationMenuItemToolDependencies, 'navigationMenuItemService'>,
   context: NavigationMenuItemToolContext,

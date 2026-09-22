@@ -5,6 +5,8 @@ import { addFlatEntityToFlatEntityMapsOrThrow } from 'src/engine/metadata-module
 import { type CreateStandardAgentArgs } from 'src/engine/workspace-manager/twenty-standard-application/utils/agent-metadata/create-standard-agent-flat-metadata.util';
 import { STANDARD_FLAT_AGENT_METADATA_BUILDERS_BY_AGENT_NAME } from 'src/engine/workspace-manager/twenty-standard-application/utils/agent-metadata/create-standard-flat-agent-metadata.util';
 
+// Builds every standard agent's flat metadata and assembles them into a FlatEntityMaps, used as the
+// "target" state when seeding or syncing a workspace's standard agents
 export const buildStandardFlatAgentMetadataMaps = (
   args: Omit<CreateStandardAgentArgs, 'context'>,
 ): FlatEntityMaps<FlatAgent> => {

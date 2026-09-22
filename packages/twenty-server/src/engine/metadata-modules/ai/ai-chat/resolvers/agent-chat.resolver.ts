@@ -1,3 +1,6 @@
+// GraphQL resolver for the AI chat feature: browsing threads/messages,
+// sending/retrying/queuing messages, answering agent questions, cancelling
+// streams, and thread lifecycle (rename/archive/delete).
 import { UseGuards, UseInterceptors } from '@nestjs/common';
 import {
   Args,
@@ -63,6 +66,7 @@ export class AgentChatResolver {
     private readonly threadRepository: WorkspaceScopedRepository<AgentChatThreadEntity>,
   ) {}
 
+  // Lists the current user's chat threads.
   @Query(() => [AgentChatThreadDTO])
   async chatThreads(
     @AuthUserWorkspaceId() userWorkspaceId: string,
@@ -74,6 +78,7 @@ export class AgentChatResolver {
     });
   }
 
+  // Fetches a single thread owned by the current user.
   @Query(() => AgentChatThreadDTO)
   async chatThread(
     @Args('id', { type: () => UUIDScalarType }) id: string,
@@ -87,6 +92,7 @@ export class AgentChatResolver {
     });
   }
 
+  // Lists the messages in a thread.
   @Query(() => [AgentMessageDTO])
   async chatMessages(
     @Args('threadId', { type: () => UUIDScalarType }) threadId: string,
@@ -100,6 +106,8 @@ export class AgentChatResolver {
     });
   }
 
+  // Returns any buffered stream chunks a reconnecting client missed, reaping
+  // a dead stream first if the thread's active stream has stalled.
   @Query(() => ChatStreamCatchupChunksDTO)
   async chatStreamCatchupChunks(
     @Args('threadId', { type: () => UUIDScalarType }) threadId: string,
@@ -138,6 +146,7 @@ export class AgentChatResolver {
     };
   }
 
+  // Creates a new, empty chat thread for the current user.
   @Mutation(() => AgentChatThreadDTO)
   async createChatThread(
     @AuthUserWorkspaceId() userWorkspaceId: string,
@@ -149,6 +158,9 @@ export class AgentChatResolver {
     });
   }
 
+  // Sends a chat message: validates model/credits, unarchives the thread if
+  // needed, reaps a stale active stream, and either queues the message
+  // (if the thread is busy or awaiting an answer) or starts streaming immediately.
   @Mutation(() => SendChatMessageResultDTO)
   async sendChatMessage(
     @Args('threadId', { type: () => UUIDScalarType }) threadId: string,
@@ -271,6 +283,7 @@ export class AgentChatResolver {
     };
   }
 
+  // Retries the thread's last failed turn.
   @Mutation(() => SendChatMessageResultDTO)
   async retryChatMessage(
     @Args('threadId', { type: () => UUIDScalarType }) threadId: string,
@@ -314,6 +327,8 @@ export class AgentChatResolver {
     };
   }
 
+  // Records the user's answers to an agent-asked question and resumes the
+  // paused turn, rolling back the answer if resuming fails to enqueue.
   @Mutation(() => SendChatMessageResultDTO)
   async answerAgentChatQuestion(
     @Args('threadId', { type: () => UUIDScalarType }) threadId: string,
@@ -401,6 +416,7 @@ export class AgentChatResolver {
     return { messageId, queued: false, streamId };
   }
 
+  // Publishes a cancel signal for the thread's active stream and clears its claim.
   @Mutation(() => Boolean)
   async stopAgentChatStream(
     @Args('threadId', { type: () => UUIDScalarType }) threadId: string,
@@ -431,6 +447,7 @@ export class AgentChatResolver {
     return true;
   }
 
+  // Renames a chat thread.
   @Mutation(() => AgentChatThreadDTO)
   async renameChatThread(
     @Args('id', { type: () => UUIDScalarType }) id: string,
@@ -446,6 +463,7 @@ export class AgentChatResolver {
     });
   }
 
+  // Cancels any active stream and soft-deletes (archives) the thread.
   @Mutation(() => AgentChatThreadDTO)
   async archiveChatThread(
     @Args('id', { type: () => UUIDScalarType }) id: string,
@@ -461,6 +479,7 @@ export class AgentChatResolver {
     });
   }
 
+  // Restores a previously archived thread.
   @Mutation(() => AgentChatThreadDTO)
   async unarchiveChatThread(
     @Args('id', { type: () => UUIDScalarType }) id: string,
@@ -474,6 +493,7 @@ export class AgentChatResolver {
     });
   }
 
+  // Cancels any active stream and permanently deletes the thread.
   @Mutation(() => Boolean)
   async deleteChatThread(
     @Args('id', { type: () => UUIDScalarType }) id: string,
@@ -491,6 +511,7 @@ export class AgentChatResolver {
     return true;
   }
 
+  // Publishes a cancel signal for the thread's active stream, if any.
   private async cancelActiveStreamIfAny(
     threadId: string,
     userWorkspaceId: string,
@@ -512,6 +533,7 @@ export class AgentChatResolver {
     );
   }
 
+  // Deletes a message that's still queued (not yet processed).
   @Mutation(() => Boolean)
   async deleteQueuedChatMessage(
     @Args('messageId', { type: () => UUIDScalarType }) messageId: string,
@@ -557,6 +579,8 @@ export class AgentChatResolver {
     return deleted;
   }
 
+  // Returns the assembled system prompt sections/token estimate, for a
+  // settings preview UI.
   @Query(() => AiSystemPromptPreviewDTO)
   async getAiSystemPromptPreview(
     @AuthWorkspace() workspace: WorkspaceEntity,
@@ -569,16 +593,19 @@ export class AgentChatResolver {
     );
   }
 
+  // Converts stored micro-credits to display precision.
   @ResolveField(() => Float)
   totalInputCredits(@Parent() thread: AgentChatThreadEntity): number {
     return toDisplayCredits(thread.totalInputCredits);
   }
 
+  // Converts stored micro-credits to display precision.
   @ResolveField(() => Float)
   totalOutputCredits(@Parent() thread: AgentChatThreadEntity): number {
     return toDisplayCredits(thread.totalOutputCredits);
   }
 
+  // Uses the value preloaded onto the thread if present, otherwise looks it up.
   @ResolveField('lastMessageAt', () => Date, { nullable: true })
   async lastMessageAt(
     @Parent()

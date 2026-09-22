@@ -4,6 +4,8 @@ import { type FieldActorSource } from 'twenty-shared/types';
 import { transformRawJsonField } from 'src/engine/api/common/common-args-processors/data-arg-processor/transformer-utils/transform-raw-json-field.util';
 import { transformTextField } from 'src/engine/api/common/common-args-processors/data-arg-processor/transformer-utils/transform-text-field.util';
 
+// Normalizes an actor composite field input, recursively transforming its
+// context and name subfields and leaving undefined subfields untouched.
 export const transformActorField = (
   value: {
     source?: FieldActorSource | null;

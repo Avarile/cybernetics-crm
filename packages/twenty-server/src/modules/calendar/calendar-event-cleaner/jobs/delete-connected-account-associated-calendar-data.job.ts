@@ -9,6 +9,8 @@ export type DeleteConnectedAccountAssociatedCalendarDataJobData = {
 };
 
 @Processor(MessageQueue.calendarQueue)
+// Prunes calendar events left orphaned after a connected account (and its
+// calendar channels) is deleted.
 export class DeleteConnectedAccountAssociatedCalendarDataJob {
   constructor(
     private readonly calendarEventCleanerService: CalendarEventCleanerService,

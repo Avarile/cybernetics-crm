@@ -1,3 +1,6 @@
+// Error codes and user-facing messages for the tool-driven record CRUD services
+// (create/update/delete/find/group-by/upsert) used by workflows and AI tools.
+
 import { type MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { assertUnreachable } from 'twenty-shared/utils';
@@ -43,6 +46,8 @@ const getRecordCrudExceptionUserFriendlyMessage = (
   }
 };
 
+// Exception thrown by record CRUD services, carrying a code and a translated
+// user-friendly message derived from that code unless one is explicitly provided.
 export class RecordCrudException extends CustomException<RecordCrudExceptionCode> {
   constructor(
     message: string,

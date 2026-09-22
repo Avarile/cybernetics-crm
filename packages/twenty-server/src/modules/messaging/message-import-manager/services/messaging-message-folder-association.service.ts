@@ -1,3 +1,5 @@
+// Persists message-to-folder associations, skipping any (association,
+// folder) pair that already exists to avoid duplicate rows.
 import { Injectable } from '@nestjs/common';
 
 import { In } from 'typeorm';
@@ -18,6 +20,8 @@ export class MessagingMessageFolderAssociationService {
     private readonly globalWorkspaceOrmManager: GlobalWorkspaceOrmManager,
   ) {}
 
+  // Flattens the given associations into individual rows, filters out ones
+  // that already exist, and bulk-inserts the rest.
   async saveMessageFolderAssociations(
     associations: MessageChannelMessageAssociationFolderAssociation[],
     workspaceId: string,

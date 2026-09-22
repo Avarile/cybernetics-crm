@@ -13,6 +13,8 @@ import { MessageChannelEntity } from 'src/engine/metadata-modules/message-channe
 import { PermissionsModule } from 'src/engine/metadata-modules/permissions/permissions.module';
 import { WorkspaceEventEmitterModule } from 'src/engine/workspace-event-emitter/workspace-event-emitter.module';
 
+// Wires up the connected account (email/calendar OAuth or IMAP/SMTP/CalDAV)
+// service, its resolver, and their dependent TypeORM repositories.
 @Module({
   imports: [
     TypeOrmModule.forFeature([

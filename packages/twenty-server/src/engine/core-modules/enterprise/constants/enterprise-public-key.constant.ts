@@ -1,3 +1,5 @@
+// Public keys and a long-lived dev validity token used to verify/bootstrap
+// enterprise license JWTs.
 // RS256 public key for verifying enterprise license JWTs signed by twenty.com
 // The corresponding private key is held exclusively by twenty.com
 export const ENTERPRISE_JWT_PUBLIC_KEY = `-----BEGIN PUBLIC KEY-----

@@ -1,3 +1,5 @@
+// CLI script: applies every .sql file in this directory against ClickHouse that
+// hasn't already been recorded in the `_migration` tracking table, in filename order.
 /* oxlint-disable no-console */
 import fs from 'fs';
 import path from 'path';

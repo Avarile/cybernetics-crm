@@ -9,6 +9,12 @@ import { ALL_TRANSLATABLE_PROPERTIES_BY_METADATA_NAME } from 'src/engine/metadat
 import { type EffectiveEntityI18nContext } from 'src/engine/metadata-modules/utils/effective-entity-i18n-context.type';
 import { type MetadataPresentationOverrides } from 'src/engine/metadata-modules/utils/metadata-presentation-overrides.type';
 
+// Resolves the display value of a single metadata entity property,
+// applying precedence: non-translatable overrides win outright; for
+// translatable properties, a locale-specific override translation wins,
+// then a raw override value, and finally the standard label is translated
+// via the i18n catalog. Custom (non-standard) entities without a
+// translation catalog fall back to the raw base value.
 export const resolveEffectiveEntityProperty = <T extends AllMetadataName>({
   metadataName,
   baseValue,

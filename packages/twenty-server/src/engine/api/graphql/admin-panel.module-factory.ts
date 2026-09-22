@@ -1,3 +1,7 @@
+// Builds the GraphQL Yoga driver config for the admin-panel API:
+// registers error handling, introspection guarding, and query
+// complexity limit plugins, and exposes the GraphiQL playground
+// in development.
 import { type YogaDriverConfig } from '@graphql-yoga/nestjs';
 import * as Sentry from '@sentry/node';
 import GraphQLJSON from 'graphql-type-json';
@@ -16,6 +20,9 @@ import { type TwentyConfigService } from 'src/engine/core-modules/twenty-config/
 import { type DataloaderService } from 'src/engine/dataloaders/dataloader.service';
 import { renderApolloPlayground } from 'src/engine/utils/render-apollo-playground.util';
 
+// Builds the Yoga driver config for the admin-panel GraphQL endpoint: error
+// handling, Sentry tracing, introspection lockdown outside dev, query
+// complexity limits, and the GraphiQL playground.
 export const adminPanelModuleFactory = async (
   twentyConfigService: TwentyConfigService,
   exceptionHandlerService: ExceptionHandlerService,

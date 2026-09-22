@@ -45,6 +45,9 @@ type GetLineChartDataParams = {
   authContext: WorkspaceAuthContext;
 };
 
+// Resolves a line chart widget's configuration into renderable chart data:
+// runs the group-by aggregate query, then formats it as one or more series,
+// applying sorting, gap-filling, cumulative totals, and the max-points/max-series limits.
 @Injectable()
 export class LineChartDataService {
   constructor(
@@ -52,6 +55,8 @@ export class LineChartDataService {
     private readonly chartDataQueryService: ChartDataQueryService,
   ) {}
 
+  // Loads field/object metadata, runs the aggregate query, and dispatches to
+  // the one- or two-dimensional transform based on whether a secondary axis is set.
   async getLineChartData({
     workspaceId,
     objectMetadataId,
@@ -201,6 +206,8 @@ export class LineChartDataService {
     }
   }
 
+  // Builds a single-series line chart dataset: filters, gap-fills, sorts,
+  // limits to the max data-point count, and optionally accumulates values.
   private transformToOneDimensionalLineChartData({
     rawResults,
     primaryAxisGroupByField,
@@ -317,6 +324,8 @@ export class LineChartDataService {
     };
   }
 
+  // Builds a multi-series line chart dataset, capping both data points and
+  // series counts (with a lower series cap when stacked).
   private transformToTwoDimensionalLineChartData({
     rawResults,
     primaryAxisGroupByField,
@@ -519,6 +528,7 @@ export class LineChartDataService {
     };
   }
 
+  // Sorts the secondary-axis series ids per the configured order, if any.
   private sortSecondaryAxisSeriesIds({
     seriesIds,
     seriesMap,
@@ -568,6 +578,7 @@ export class LineChartDataService {
     });
   }
 
+  // Converts a series' per-point y values into a running total.
   private applyCumulativeTransform<T extends { y: number | null }>(
     data: T[],
   ): T[] {

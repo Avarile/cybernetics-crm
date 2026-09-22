@@ -15,9 +15,12 @@ export type FlatPageLayoutWithTabsAndWidgets = FlatPageLayout & {
   tabs: FlatPageLayoutTabWithWidgets[];
 };
 
+// Resolves a widget's effective page layout tab id, accounting for overrides.
 const getResolvedPageLayoutTabId = (widget: FlatPageLayoutWidget): string =>
   resolveOverridableEntityProperty(widget, 'pageLayoutTabId');
 
+// Rebuilds a flat page layout's nested tabs (sorted by position) and each tab's widgets
+// from the flat maps, filtering out soft-deleted tabs and widgets.
 export const reconstructFlatPageLayoutWithTabsAndWidgets = ({
   layout,
   flatPageLayoutTabMaps,

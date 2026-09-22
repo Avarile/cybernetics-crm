@@ -5,6 +5,8 @@ const GOOGLE_CALENDAR_EVENTS_SCOPE =
   'https://www.googleapis.com/auth/calendar.events';
 const MICROSOFT_CALENDARS_READ_WRITE_SCOPE = 'Calendars.ReadWrite';
 
+// Returns the OAuth scopes required to create a calendar event that the
+// connected account is missing (empty for providers that don't use OAuth scopes).
 export const getMissingCreateEventScopes = (connectedAccount: {
   provider: ConnectedAccountProvider;
   scopes: string[] | null;

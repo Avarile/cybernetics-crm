@@ -11,6 +11,8 @@ import {
 } from 'src/engine/workspace-manager/twenty-standard-application/constants/standard-navigation-menu-item.constant';
 import { TWENTY_STANDARD_APPLICATION } from 'src/engine/workspace-manager/twenty-standard-application/constants/twenty-standard-applications';
 
+// Builds a single top-level standard navigation menu item's flat metadata, resolving its target view
+// (or object metadata, for OBJECT-type items) by universal identifier
 export const createStandardNavigationMenuItemFlatMetadata = ({
   workspaceId,
   navigationMenuItemName,

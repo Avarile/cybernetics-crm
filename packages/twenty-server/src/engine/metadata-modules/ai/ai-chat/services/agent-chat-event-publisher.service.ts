@@ -1,3 +1,5 @@
+// Publishes chat stream events to subscribers over the subscription service,
+// buffering stream chunks in Redis so a reconnecting client can catch up.
 import { Injectable } from '@nestjs/common';
 
 import { type AgentChatSubscriptionEvent } from 'twenty-shared/ai';
@@ -18,6 +20,9 @@ export class AgentChatEventPublisherService {
     return `agent-chat-stream-chunks:${threadId}`;
   }
 
+  // Publishes an event to the thread's subscribers; stream chunks are also
+  // appended to a Redis buffer (with a sequence number) for catch-up, and
+  // that buffer is cleared once the message is finalized or credits run out.
   async publish({
     threadId,
     workspaceId,
@@ -58,12 +63,14 @@ export class AgentChatEventPublisherService {
     });
   }
 
+  // Clears any buffered stream chunks for the thread, e.g. before starting a new stream.
   async resetStreamState(threadId: string): Promise<void> {
     const redis = this.redisClientService.getClient();
 
     await redis.del(this.getStreamChunksKey(threadId));
   }
 
+  // Reads all buffered stream chunks for a thread, for stream catch-up.
   async getAccumulatedChunks(threadId: string): Promise<{
     chunks: Record<string, unknown>[];
     maxSeq: number;

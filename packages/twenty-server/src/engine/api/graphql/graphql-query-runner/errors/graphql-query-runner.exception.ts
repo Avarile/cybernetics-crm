@@ -1,3 +1,6 @@
+// Typed exception for failures raised while parsing/executing a
+// workspace GraphQL query (invalid filters, cursors, upsert conflicts,
+// missing metadata, etc.), covering the whole query-runner pipeline.
 import { type MessageDescriptor } from '@lingui/core';
 
 import { CustomException } from 'src/utils/custom-exception';

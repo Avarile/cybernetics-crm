@@ -1,3 +1,7 @@
+// TypeORM entity for a generic user/workspace-scoped key-value setting
+// (user variables, feature flags, config variables), with partial unique
+// indexes enforcing one value per key at each scope (global, per-user,
+// per-workspace, or per-user-per-workspace).
 import { Field, ObjectType } from '@nestjs/graphql';
 
 import {

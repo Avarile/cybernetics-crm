@@ -25,6 +25,9 @@ import {
 import { isFlatFieldMetadataOfType } from 'src/engine/metadata-modules/flat-field-metadata/utils/is-flat-field-metadata-of-type.util';
 import { type FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object-metadata/types/flat-object-metadata.type';
 
+// Post-processes query results before they're returned to the caller:
+// runs per-object-type and per-field-type "getter" handlers (e.g. signing
+// file URLs) and recursively processes nested relation records.
 // TODO: find a way to prevent conflict between handlers executing logic on object relations
 // And this factory that is also executing logic on object relations
 // Right now the factory will override any change made on relations by the handlers
@@ -41,6 +44,7 @@ export class CommonResultGettersService {
     this.initializeFieldHandlers();
   }
 
+  // Registers getter handlers keyed by object name (e.g. workspaceMember).
   private initializeObjectHandlers() {
     this.objectHandlers = new Map<string, QueryResultGetterHandlerInterface>([
       [
@@ -50,6 +54,8 @@ export class CommonResultGettersService {
     ]);
   }
 
+  // Registers getter handlers keyed by field-metadata type (files,
+  // rich text).
   private initializeFieldHandlers() {
     this.fieldHandlers = new Map<
       FieldMetadataType,
@@ -66,6 +72,8 @@ export class CommonResultGettersService {
     ]);
   }
 
+  // Runs processRecord over every record in an array, sharing the
+  // resolved field maps across calls.
   public async processRecordArray(
     recordArray: ObjectRecord[],
     flatObjectMetadata: FlatObjectMetadata,
@@ -93,6 +101,9 @@ export class CommonResultGettersService {
     );
   }
 
+  // Applies the object/field getter handlers to a record's own fields,
+  // then recursively processes any populated relation fields (as arrays
+  // for one-to-many, single records otherwise), merging the results back.
   public async processRecord(
     record: ObjectRecord,
     flatObjectMetadata: FlatObjectMetadata,
@@ -201,6 +212,8 @@ export class CommonResultGettersService {
     return processedRecord;
   }
 
+  // Runs each applicable handler over the record in sequence, excluding
+  // relation-field handling (done separately in processRecord).
   private async processObjectRecordWithoutRelationFields(
     record: ObjectRecord,
     workspaceId: string,
@@ -220,6 +233,8 @@ export class CommonResultGettersService {
     return processedRecord;
   }
 
+  // Looks up the registered handler for an object type, falling back to a
+  // no-op passthrough handler.
   private getObjectHandler(
     objectType: string,
   ): QueryResultGetterHandlerInterface {

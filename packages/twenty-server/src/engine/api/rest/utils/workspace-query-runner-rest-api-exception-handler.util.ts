@@ -16,6 +16,10 @@ interface QueryFailedErrorWithCode extends QueryFailedError {
   code: string;
 }
 
+// Maps errors raised while running a REST query-runner operation
+// (common query-runner, input-parser, throttler, or ORM validation
+// errors) to the appropriate NestJS HTTP exception; rethrows anything
+// else unchanged.
 export const workspaceQueryRunnerRestApiExceptionHandler = (
   error: QueryFailedErrorWithCode,
 ): never => {

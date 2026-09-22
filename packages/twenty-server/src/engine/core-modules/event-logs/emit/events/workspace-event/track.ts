@@ -1,3 +1,5 @@
+// Generic track-event schema/type plus the registry each specific event
+// schema registers itself into, merged with the base event fields.
 import { z } from 'zod';
 
 import { baseEventSchema } from 'src/engine/core-modules/event-logs/emit/events/common/base-schemas';
@@ -23,6 +25,7 @@ export type GenericTrackEvent<E extends string = string> = {
 export const eventsRegistry = new Map<string, z.ZodSchema<any>>();
 
 // oxlint-disable-next-line typescript/no-explicit-any
+// Registers an event's Zod schema (merged with the generic track schema) under its name.
 export function registerEvent<E extends string, S extends z.ZodObject<any>>(
   event: E,
   schema: S,

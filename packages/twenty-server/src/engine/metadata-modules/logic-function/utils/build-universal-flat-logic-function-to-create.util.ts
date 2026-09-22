@@ -1,3 +1,6 @@
+// Builds a complete universal flat logic function record for creation,
+// filling in ids, timestamps, and defaults for any fields the caller omits.
+
 import { v4 } from 'uuid';
 
 import {
@@ -29,6 +32,8 @@ export type BuildUniversalFlatLogicFunctionToCreateInput = Pick<
     id?: string;
   };
 
+// Generates ids/timestamps as needed and applies default values for
+// optional fields not provided by the caller.
 export const buildUniversalFlatLogicFunctionToCreate = (
   input: BuildUniversalFlatLogicFunctionToCreateInput,
 ): UniversalFlatLogicFunction & { id: string } => {

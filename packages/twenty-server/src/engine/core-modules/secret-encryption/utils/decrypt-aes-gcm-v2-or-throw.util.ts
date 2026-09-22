@@ -10,6 +10,8 @@ import {
 } from 'src/engine/core-modules/secret-encryption/exceptions/secret-encryption.exception';
 import { deriveGcmKey } from 'src/engine/core-modules/secret-encryption/utils/derive-gcm-key.util';
 
+// Decrypts an enc:v2 AES-GCM payload (IV + ciphertext + auth tag), throwing if
+// the payload is malformed or the auth tag doesn't verify
 export const decryptAesGcmV2OrThrow = ({
   payloadBase64,
   rawKey,

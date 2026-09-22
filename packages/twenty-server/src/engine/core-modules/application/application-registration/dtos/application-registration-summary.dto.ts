@@ -1,3 +1,6 @@
+// Lightweight GraphQL DTO summarizing an application registration, used
+// where the full entity isn't needed (e.g. embedded on an installed
+// Application).
 import { Field, ObjectType } from '@nestjs/graphql';
 
 import { IsOptional, IsString } from 'class-validator';

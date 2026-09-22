@@ -1,3 +1,4 @@
+// GraphQL args for inviting one or more emails to a workspace.
 import { ArgsType, Field } from '@nestjs/graphql';
 
 import {

@@ -1,3 +1,8 @@
+// After a unique-constraint violation, looks up the existing record that
+// conflicts with the new value, so the error response can link to it.
+// Matches the violated column back to its field (handling composite
+// fields' unique sub-property) and queries bypassing permission checks
+// since this is purely for error-message purposes.
 import { compositeTypeDefinitions } from 'twenty-shared/types';
 import { capitalize } from 'twenty-shared/utils';
 
@@ -7,6 +12,8 @@ import { getFlatFieldsFromFlatObjectMetadata } from 'src/engine/api/graphql/work
 import { type FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object-metadata/types/flat-object-metadata.type';
 import { type WorkspaceEntityManager } from 'src/engine/twenty-orm/entity-manager/workspace-entity-manager';
 
+// Finds the record already occupying the given unique column's value, or
+// null if the field can't be matched or the lookup query fails/finds nothing.
 export const findConflictingRecord = async (
   columnName: string,
   conflictingValue: string,

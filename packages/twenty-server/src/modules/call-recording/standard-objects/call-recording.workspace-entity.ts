@@ -7,6 +7,8 @@ import { type CalendarEventWorkspaceEntity } from 'src/modules/calendar/common/s
 import { type CallRecordingRequestStatus } from 'src/modules/call-recording/common/enums/call-recording-request-status.enum';
 import { type CallRecordingStatus } from 'src/modules/call-recording/common/enums/call-recording-status.enum';
 
+// Standard object: a bot-recorded call/meeting (audio/video/transcript/summary)
+// optionally linked to the calendar event it was recorded from.
 export class CallRecordingWorkspaceEntity extends BaseWorkspaceEntity {
   title: string | null;
   status: CallRecordingStatus;

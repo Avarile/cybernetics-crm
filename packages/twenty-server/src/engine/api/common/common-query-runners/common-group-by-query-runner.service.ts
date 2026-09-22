@@ -58,6 +58,9 @@ import { ViewService } from 'src/engine/metadata-modules/view/services/view.serv
 import { WorkspaceSelectQueryBuilder } from 'src/engine/twenty-orm/repository/workspace-select-query-builder';
 import { formatColumnNameForRelationField } from 'src/engine/twenty-orm/utils/format-column-name-for-relation-field.util';
 
+// Handles groupBy: aggregates records into buckets by one or more group-by
+// fields, applying filters (including any from a saved view) and optional
+// per-group record sampling.
 @Injectable()
 export class CommonGroupByQueryRunnerService extends CommonBaseQueryRunnerService<
   GroupByQueryArgs,
@@ -75,6 +78,8 @@ export class CommonGroupByQueryRunnerService extends CommonBaseQueryRunnerServic
   protected readonly operationName = CommonQueryNames.GROUP_BY;
   protected readonly isReadOnly = true;
 
+  // Builds the grouped/filtered/ordered query and either resolves it with
+  // a sample of records per group or as plain aggregate rows.
   async run(
     args: CommonExtendedInput<GroupByQueryArgs>,
     queryRunnerContext: CommonExtendedQueryRunnerContext,
@@ -170,6 +175,7 @@ export class CommonGroupByQueryRunnerService extends CommonBaseQueryRunnerServic
     });
   }
 
+  // No further processing needed for groupBy results.
   async processQueryResult(
     queryResult: CommonGroupByOutputItem[],
     _flatObjectMetadata: FlatObjectMetadata,
@@ -180,6 +186,9 @@ export class CommonGroupByQueryRunnerService extends CommonBaseQueryRunnerServic
     return queryResult;
   }
 
+  // Resolves a saved view's filters/filter-groups and any-field-filter
+  // value into a record filter, and combines it with the caller's own
+  // filter.
   private async addFiltersFromView({
     args,
     flatObjectMetadata,
@@ -292,6 +301,8 @@ export class CommonGroupByQueryRunnerService extends CommonBaseQueryRunnerServic
     return appliedFilters;
   }
 
+  // Merges in view-derived filters when a viewId is given, then applies
+  // the combined filter and deletedAt condition to the query builder.
   private async addFiltersToQueryBuilder({
     args,
     appliedFilters,
@@ -333,6 +344,8 @@ export class CommonGroupByQueryRunnerService extends CommonBaseQueryRunnerServic
     commonQueryParser.applyDeletedAtToBuilder(queryBuilder, appliedFilters);
   }
 
+  // Executes the grouped query (capped at the group limit) and formats
+  // the raw aggregate rows into CommonGroupByOutputItem entries.
   private async resolveWithoutRecords({
     queryBuilder,
     groupByDefinitions,
@@ -357,6 +370,8 @@ export class CommonGroupByQueryRunnerService extends CommonBaseQueryRunnerServic
     });
   }
 
+  // Adds a left join for each distinct relation field used in groupBy, so
+  // its target columns can be selected/grouped on.
   private addJoinForGroupByOnRelationFields({
     queryBuilder,
     groupByFields,
@@ -400,6 +415,7 @@ export class CommonGroupByQueryRunnerService extends CommonBaseQueryRunnerServic
     }
   }
 
+  // Validates the groupBy definition against object/field metadata.
   async validate(
     args: CommonInput<GroupByQueryArgs>,
     queryRunnerContext: CommonBaseQueryRunnerContext,
@@ -416,6 +432,8 @@ export class CommonGroupByQueryRunnerService extends CommonBaseQueryRunnerServic
     });
   }
 
+  // Normalizes groupBy/orderBy/orderByForRecords and validates/transforms
+  // the filter against object/field metadata.
   async computeArgs(
     args: CommonInput<GroupByQueryArgs>,
     queryRunnerContext: CommonBaseQueryRunnerContext,
@@ -446,6 +464,9 @@ export class CommonGroupByQueryRunnerService extends CommonBaseQueryRunnerServic
     };
   }
 
+  // Scores a base cost of 1 for aggregate-only groupBy, or scales by the
+  // selected fields' complexity times the group limit when per-group
+  // records are included.
   protected override computeQueryComplexity(
     selectedFieldsResult: CommonSelectedFieldsResult,
     args: CommonInput<GroupByQueryArgs>,

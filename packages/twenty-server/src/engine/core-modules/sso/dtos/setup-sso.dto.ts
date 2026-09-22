@@ -1,5 +1,6 @@
 /* @license Enterprise */
 
+// GraphQL response DTO for setting up a new SSO identity provider.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';

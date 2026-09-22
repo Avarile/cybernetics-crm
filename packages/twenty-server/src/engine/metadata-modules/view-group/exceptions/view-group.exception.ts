@@ -4,6 +4,8 @@ import { assertUnreachable } from 'twenty-shared/utils';
 
 import { CustomException } from 'src/utils/custom-exception';
 
+// Exception thrown by the view group module for missing records, invalid
+// input, or creating a group on a view that isn't configured for grouping.
 export class ViewGroupException extends CustomException<ViewGroupExceptionCode> {
   constructor(
     message: string,
@@ -33,6 +35,8 @@ export enum ViewGroupExceptionMessageKey {
   VIEW_NOT_FOUND = 'VIEW_NOT_FOUND',
 }
 
+// Builds the internal (developer-facing) exception message for a given
+// error key, optionally including the offending record's id.
 export const generateViewGroupExceptionMessage = (
   key: ViewGroupExceptionMessageKey,
   id?: string,
@@ -55,6 +59,7 @@ export const generateViewGroupExceptionMessage = (
   }
 };
 
+// Builds the localized, user-facing message for a given error key.
 export const generateViewGroupUserFriendlyExceptionMessage = (
   key: ViewGroupExceptionMessageKey,
 ): MessageDescriptor | undefined => {

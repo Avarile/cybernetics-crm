@@ -15,6 +15,8 @@ export type ListObjectMetadataNamesResult = {
   message: string;
 };
 
+// Builds the MCP tool that returns the workspace's current CRUD-eligible
+// object names, for clients whose cached instructions may be stale.
 export const createListObjectMetadataNamesTool = (
   flatEntityMapsCacheService: WorkspaceManyOrAllFlatEntityMapsCacheService,
   workspaceId: string,

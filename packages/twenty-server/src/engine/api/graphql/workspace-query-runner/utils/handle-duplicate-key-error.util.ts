@@ -1,3 +1,6 @@
+// Turns a raw Postgres unique-constraint violation into a
+// TwentyORMException with a user-friendly message, enriched with the
+// conflicting record's id/object name when it can be looked up.
 import { msg } from '@lingui/core/macro';
 
 import { type WorkspaceInternalContext } from 'src/engine/twenty-orm/interfaces/workspace-internal-context.interface';
@@ -20,6 +23,10 @@ interface DuplicateKeyErrorWithMetadata extends TwentyORMException {
   conflictingObjectNameSingular?: string;
 }
 
+// Parses the Postgres error detail to identify the violated
+// column/value, looks up the conflicting record for a richer error
+// message, and builds the resulting exception (falling back to a
+// generic message if the error can't be parsed).
 export const handleDuplicateKeyError = async (
   error: PostgreSQLError,
   objectMetadata: FlatObjectMetadata,

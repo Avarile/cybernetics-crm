@@ -1,3 +1,7 @@
+// Sanitizes and validates the raw update-object GraphQL input: strips
+// whitespace, rejects edits to non-editable properties on standard objects,
+// and splits overridable properties out into the overrides blob.
+
 import { extractAndSanitizeObjectStringFields } from 'twenty-shared/utils';
 
 import { ALL_OVERRIDABLE_PROPERTIES_BY_METADATA_NAME } from 'src/engine/metadata-modules/flat-entity/constant/all-overridable-properties-by-metadata-name.constant';
@@ -16,6 +20,9 @@ type SanitizeRawUpdateObjectInputArgs = {
   existingFlatObjectMetadata: FlatObjectMetadata;
 };
 
+// Extracts editable properties from the raw input; for standard objects,
+// rejects properties outside the standard-editable allowlist and moves
+// overridable properties into a separate overrides blob instead of the entity.
 export const sanitizeRawUpdateObjectInput = ({
   existingFlatObjectMetadata,
   rawUpdateObjectInput,

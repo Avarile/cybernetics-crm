@@ -1,3 +1,5 @@
+// Lists the widget configuration types that are considered graph widgets.
+
 import { WidgetConfigurationType } from 'src/engine/metadata-modules/page-layout-widget/enums/widget-configuration-type.type';
 
 export const VALID_GRAPH_CONFIGURATION_TYPES = [

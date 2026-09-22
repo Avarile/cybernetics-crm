@@ -10,6 +10,7 @@ import { parseUpsertRestRequest } from 'src/engine/api/rest/input-request-parser
 import { AuthenticatedRequest } from 'src/engine/api/rest/types/authenticated-request';
 import { workspaceQueryRunnerRestApiExceptionHandler } from 'src/engine/api/rest/utils/workspace-query-runner-rest-api-exception-handler.util';
 
+// REST handler for POST /rest/{objects}: creates a single record.
 @Injectable()
 export class RestApiCreateOneHandler extends RestApiBaseHandler {
   constructor(
@@ -18,6 +19,8 @@ export class RestApiCreateOneHandler extends RestApiBaseHandler {
     super();
   }
 
+  // Parses the request body/query, runs the common createOne query
+  // runner, and formats the created record as a REST response.
   async handle(request: AuthenticatedRequest) {
     try {
       const { data, depth, upsert } = this.parseRequestArgs(request);

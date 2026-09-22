@@ -15,6 +15,10 @@ import { buildSystemAuthContext } from 'src/engine/twenty-orm/utils/build-system
 import { type CalendarChannelEventAssociationWorkspaceEntity } from 'src/modules/calendar/common/standard-objects/calendar-channel-event-association.workspace-entity';
 import { type CalendarEventWorkspaceEntity } from 'src/modules/calendar/common/standard-objects/calendar-event.workspace-entity';
 
+// Filters/redacts a list of calendar events in place based on each event's
+// calendar channel visibility: full access if any channel shares everything
+// or the user owns a connected channel, metadata-only redacts title/description,
+// otherwise the event is removed entirely.
 @Injectable()
 export class ApplyCalendarEventsVisibilityRestrictionsService {
   constructor(
@@ -27,6 +31,8 @@ export class ApplyCalendarEventsVisibilityRestrictionsService {
     private readonly calendarChannelRepository: Repository<CalendarChannelEntity>,
   ) {}
 
+  // Mutates `calendarEvents` in place, removing or redacting entries the
+  // given user isn't allowed to see in full.
   public async applyCalendarEventsVisibilityRestrictions(
     calendarEvents: CalendarEventWorkspaceEntity[],
     workspaceId: string,

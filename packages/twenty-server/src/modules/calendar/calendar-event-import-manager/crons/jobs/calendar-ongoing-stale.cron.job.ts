@@ -19,6 +19,8 @@ import {
 export const CALENDAR_ONGOING_STALE_CRON_PATTERN = '0 * * * *';
 
 @Processor(MessageQueue.cronQueue)
+// Hourly, queues a per-workspace job that resets calendar channels whose
+// sync has been stuck "ongoing" for too long back to pending.
 export class CalendarOngoingStaleCronJob {
   constructor(
     @InjectRepository(WorkspaceEntity)

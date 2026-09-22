@@ -37,6 +37,8 @@ import { setFileResponseHeaders } from 'src/engine/core-modules/file/utils/set-f
 import { NoPermissionGuard } from 'src/engine/guards/no-permission.guard';
 import { PublicEndpointGuard } from 'src/engine/guards/public-endpoint.guard';
 
+// HTTP controller serving raw file bytes: application-registration assets,
+// public workspace assets, and workspace-scoped files looked up by id.
 @Controller()
 @UseFilters(FileApiExceptionFilter)
 export class FileController {
@@ -110,6 +112,8 @@ export class FileController {
     }
   }
 
+  // Serves workspace public assets (no auth) by resolving their storage path
+  // to either a redirect to a presigned URL or a direct stream.
   @Get('public-assets/:workspaceId/:applicationId/*path')
   @UseGuards(PublicEndpointGuard, NoPermissionGuard)
   async getPublicAssets(
@@ -183,6 +187,8 @@ export class FileController {
     }
   }
 
+  // Serves a workspace-scoped file by id, authorized via FileByIdGuard,
+  // either redirecting to a presigned URL or streaming it directly.
   @Get('file/:fileFolder/:id')
   @UseGuards(FileByIdGuard, NoPermissionGuard)
   async getFileById(

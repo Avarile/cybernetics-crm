@@ -1,3 +1,6 @@
+// REST exception filter mapping ServerRouteTriggerException codes to the
+// appropriate HTTP status, opting most user/platform errors out of Sentry
+// capture since they're expected outcomes of user logic function code.
 import {
   type ArgumentsHost,
   Catch,
@@ -19,6 +22,8 @@ export class ServerRouteTriggerRestApiExceptionFilter implements ExceptionFilter
     private readonly httpExceptionHandlerService: HttpExceptionHandlerService,
   ) {}
 
+  // Maps each ServerRouteTriggerExceptionCode to an HTTP status code and
+  // writes the error response.
   catch(exception: ServerRouteTriggerException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();

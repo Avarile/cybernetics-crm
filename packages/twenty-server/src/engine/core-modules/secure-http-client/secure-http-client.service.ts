@@ -1,3 +1,7 @@
+// Builds axios/fetch HTTP clients hardened against SSRF (blocking requests
+// to private/internal IPs, including across redirects) when
+// OUTBOUND_HTTP_SAFE_MODE_ENABLED is set, and provides a plain client for
+// requests to trusted internal URLs.
 import { Injectable, Logger } from '@nestjs/common';
 
 import axios, { type AxiosInstance, type CreateAxiosDefaults } from 'axios';
@@ -103,6 +107,8 @@ export class SecureHttpClientService {
     return axios.create(config);
   }
 
+  // Returns a fetch-compatible function backed by the SSRF-safe axios
+  // client (or the native fetch, if safe mode is disabled).
   createSsrfSafeFetch(): typeof globalThis.fetch {
     if (!this.isSafeModeEnabled()) {
       return globalThis.fetch;
@@ -111,6 +117,8 @@ export class SecureHttpClientService {
     return buildAxiosFetch(this.getHttpClient()) as typeof globalThis.fetch;
   }
 
+  // Resolves and validates a hostname isn't a private IP, returning the
+  // resolved IP (or the input unchanged if safe mode is disabled).
   async getValidatedHost(hostnameOrUrl: string): Promise<string> {
     if (!this.isSafeModeEnabled()) {
       return hostnameOrUrl;
@@ -119,6 +127,7 @@ export class SecureHttpClientService {
     return resolveAndValidateHostname(hostnameOrUrl);
   }
 
+  // Whether SSRF-safe mode is currently enabled via config.
   private isSafeModeEnabled(): boolean {
     return this.twentyConfigService.get('OUTBOUND_HTTP_SAFE_MODE_ENABLED');
   }

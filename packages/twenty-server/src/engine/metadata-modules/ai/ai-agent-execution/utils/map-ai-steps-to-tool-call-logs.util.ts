@@ -1,3 +1,5 @@
+// Converts AI SDK step results into a flat, size-bounded tool-call log
+// suitable for storing/displaying alongside a workflow run.
 import { type StepResult, type ToolSet } from 'ai';
 
 import { type AiToolCallLog } from 'twenty-shared/workflow';
@@ -72,6 +74,8 @@ export type MapAiStepsToToolCallLogsOptions = {
   maxToolCallsPerStep?: number;
 };
 
+// Flattens tool-call/result/error parts across all steps into ordered,
+// truncated log entries keyed by tool call id, capped per step.
 export const mapAiStepsToToolCallLogs = (
   steps: StepResult<ToolSet>[],
   options: MapAiStepsToToolCallLogsOptions = {},

@@ -1,3 +1,4 @@
+// GraphQL args for toggling a feature flag on a specific workspace.
 import { ArgsType, Field } from '@nestjs/graphql';
 
 import { IsBoolean, IsNotEmpty, IsUUID } from 'class-validator';

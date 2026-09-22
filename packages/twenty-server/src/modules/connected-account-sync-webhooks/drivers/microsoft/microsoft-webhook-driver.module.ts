@@ -10,6 +10,7 @@ import { WebhookSubscriptionModule } from 'src/modules/connected-account/webhook
 import { MicrosoftCalendarNotificationHandler } from 'src/modules/connected-account-sync-webhooks/drivers/microsoft/microsoft-calendar-notification.handler';
 import { MicrosoftMessagingNotificationHandler } from 'src/modules/connected-account-sync-webhooks/drivers/microsoft/microsoft-messaging-notification.handler';
 
+// Wires up the Microsoft messaging/calendar webhook notification handlers.
 @Module({
   imports: [
     MetricsModule,

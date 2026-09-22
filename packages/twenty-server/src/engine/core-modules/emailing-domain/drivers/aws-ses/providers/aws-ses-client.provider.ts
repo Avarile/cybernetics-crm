@@ -1,3 +1,6 @@
+// Lazily builds and caches a singleton AWS SESv2 client, configured from
+// env-driven credentials (falls back to the default AWS credential chain
+// when no explicit access key/secret is set).
 import { Injectable } from '@nestjs/common';
 
 import {
@@ -13,6 +16,7 @@ export class AwsSesClientProvider {
 
   constructor(private readonly twentyConfigService: TwentyConfigService) {}
 
+  // Returns the cached SES client, creating it on first call.
   public getSESClient(): SESClient {
     if (!this.sesClient) {
       const config: SESClientConfig = {

@@ -32,6 +32,8 @@ export class ApplicationRegistrationAssetService {
     private readonly serverFileStorageService: ServerFileStorageService,
   ) {}
 
+  // Stores the manifest's logo and gallery images into server file
+  // storage and updates the registration's logoFileId/galleryImages.
   async storeRegistrationAssets({
     applicationRegistrationId,
     manifestApplication,
@@ -81,6 +83,9 @@ export class ApplicationRegistrationAssetService {
     );
   }
 
+  // Stores a single asset file, reusing an already-stored file when
+  // skipAlreadyStoredPaths is set, and falling back to any previously
+  // stored file for the same path if the download or storage fails.
   private async storeAssetFile({
     applicationRegistrationId,
     path,
@@ -169,6 +174,8 @@ export class ApplicationRegistrationAssetService {
     return previouslyStoredFileId;
   }
 
+  // Looks up the stored file id for an asset path, returning null (not
+  // throwing) only when the path itself is not a valid storage path.
   private async findStoredAssetFileId({
     applicationRegistrationId,
     path,

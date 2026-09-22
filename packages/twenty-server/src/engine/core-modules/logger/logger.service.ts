@@ -1,3 +1,6 @@
+// App-wide logger facade implementing NestJS's LoggerService interface,
+// delegating to the configured driver and adding an opt-in "performance"
+// log level with simple named perf timers.
 import {
   ConsoleLogger,
   Inject,
@@ -21,6 +24,7 @@ export class LoggerService implements LoggerServiceInterface {
 
   constructor(@Inject(LOGGER_DRIVER) private driver: LoggerDriverType) {}
 
+  // Whether the driver's configured log levels include 'performance'.
   private isPerfLoggingEnabled() {
     return (
       (
@@ -71,6 +75,7 @@ export class LoggerService implements LoggerServiceInterface {
   }
 
   // oxlint-disable-next-line typescript/no-explicit-any
+  // Logs a message only when performance logging is enabled.
   perf(message: any, category: string, ...optionalParams: any[]) {
     if (!this.isPerfLoggingEnabled()) {
       return;
@@ -79,6 +84,7 @@ export class LoggerService implements LoggerServiceInterface {
     this.driver.log.apply(this.driver, [message, category, ...optionalParams]);
   }
 
+  // Starts a named perf timer, if performance logging is enabled.
   perfTime(category: string, label: string) {
     if (!this.isPerfLoggingEnabled()) {
       return;
@@ -87,6 +93,7 @@ export class LoggerService implements LoggerServiceInterface {
     this.perfTimers.set(`${category}::${label}`, performance.now());
   }
 
+  // Stops a named perf timer started with perfTime and logs its duration.
   perfTimeEnd(category: string, label: string) {
     if (!this.isPerfLoggingEnabled()) {
       return;

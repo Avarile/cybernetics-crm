@@ -1,3 +1,7 @@
+// Builds the GraphQL Yoga driver config for the core ('workspace
+// records') GraphQL API: registers the direct-execution fast path,
+// error handling, introspection guarding, and query complexity limit
+// plugins, then exposes GraphiQL only in development.
 import { Injectable } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { type GqlOptionsFactory } from '@nestjs/graphql';
@@ -28,11 +32,15 @@ import { type FlatWorkspace } from 'src/engine/core-modules/workspace/types/flat
 import { DataloaderService } from 'src/engine/dataloaders/dataloader.service';
 import { renderApolloPlayground } from 'src/engine/utils/render-apollo-playground.util';
 
+// Request-scoped GraphQL context: the authenticated user and resolved
+// workspace, made available to every resolver in the core API.
 export interface GraphQLContext extends YogaDriverServerContext<'express'> {
   user?: FlatAuthContextUser;
   workspace?: FlatWorkspace;
 }
 
+// NestJS GqlOptionsFactory implementation that produces the Yoga driver
+// options for the core GraphQL API at bootstrap time.
 @Injectable()
 export class GraphQLConfigService implements GqlOptionsFactory<
   YogaDriverConfig<'express'>
@@ -48,6 +56,9 @@ export class GraphQLConfigService implements GqlOptionsFactory<
     private readonly featureFlagService: FeatureFlagService,
   ) {}
 
+  // Assembles the Yoga plugin chain (direct execution, error handling,
+  // introspection lockdown, complexity limits, optional Sentry tracing)
+  // and the resulting driver config for the core GraphQL API.
   createGqlOptions(): YogaDriverConfig {
     const isDebugMode =
       this.twentyConfigService.get('NODE_ENV') === NodeEnvironment.DEVELOPMENT;

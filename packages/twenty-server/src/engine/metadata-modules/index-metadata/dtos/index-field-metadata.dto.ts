@@ -1,3 +1,6 @@
+// GraphQL object type exposing an index's field membership (which field,
+// composite sub-field, and ordering) to the API.
+
 import { Field, HideField, ObjectType } from '@nestjs/graphql';
 
 import {

@@ -1,3 +1,6 @@
+// BFS over an object's relation fields to find every path (up to a max
+// depth) that eventually reaches the Person object, used to figure out how
+// to fetch people related to an arbitrary record.
 import { FieldMetadataType } from 'twenty-shared/types';
 import { isDefined } from 'twenty-shared/utils';
 
@@ -15,6 +18,8 @@ import { buildObjectIdByNameMaps } from 'src/engine/metadata-modules/flat-object
 const PERSON_OBJECT_NAME_SINGULAR = 'person';
 const DEFAULT_MAX_RELATION_DEPTH_TO_PERSON = 3;
 
+// Whether an object is a system object (excluded from traversal to avoid
+// noisy/irrelevant paths).
 const isSystemObjectMetadata = (objectMetadata: { isSystem?: boolean }) =>
   objectMetadata.isSystem === true;
 
@@ -26,6 +31,9 @@ export type RelationHopToPerson = {
 
 export type RelationPathToPerson = RelationHopToPerson[];
 
+// Breadth-first searches the object metadata graph from `rootObjectNameSingular`
+// for every relation path (bounded by `maxDepth`) that reaches Person,
+// skipping system objects and already-visited objects.
 export const findRelationPathsToPerson = ({
   rootObjectNameSingular,
   flatObjectMetadataMaps,

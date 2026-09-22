@@ -14,6 +14,8 @@ import { type FlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-m
 // oxlint-disable-next-line typescript/no-explicit-any
 type RichTextBlock = Record<string, any>;
 
+// Parses a blocknote JSON string into its block array, returning null
+// (instead of throwing) on malformed or non-array content.
 const parseBlocknoteJsonSafely = (
   blocknoteJson: string,
 ): RichTextBlock[] | null => {
@@ -30,9 +32,13 @@ const parseBlocknoteJsonSafely = (
   }
 };
 
+// Query-result getter that re-signs image URLs embedded in a RICH_TEXT
+// field's blocknote content before returning the record to the caller.
 export class RichTextFieldQueryResultGetterHandler implements QueryResultGetterHandlerInterface {
   constructor(private readonly fileUrlService: FileUrlService) {}
 
+  // Parses each RICH_TEXT field's blocknote JSON and re-signs any embedded
+  // image URLs, leaving other fields untouched.
   async handle(
     record: ObjectRecord,
     workspaceId: string,
@@ -74,6 +80,8 @@ export class RichTextFieldQueryResultGetterHandler implements QueryResultGetterH
     return record;
   }
 
+  // Walks a blocknote block tree, re-signing the URL of any block whose
+  // props.url points at a workspace-stored file, leaving other blocks as-is.
   signBlocknoteImageUrls = async (
     blocknoteBlocks: RichTextBlock[],
     workspaceId: string,

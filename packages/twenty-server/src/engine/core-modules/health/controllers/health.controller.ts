@@ -1,3 +1,4 @@
+// Public health-check endpoint (`/healthz`) used by load balancers/orchestrators.
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { HealthCheck, HealthCheckService } from '@nestjs/terminus';
 
@@ -11,6 +12,7 @@ export class HealthController {
   @Get()
   @UseGuards(PublicEndpointGuard, NoPermissionGuard)
   @HealthCheck()
+  // Runs the (currently empty) set of registered Terminus health indicators.
   check() {
     return this.health.check([]);
   }

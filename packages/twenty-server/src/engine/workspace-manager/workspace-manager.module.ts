@@ -23,6 +23,8 @@ import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace
 
 import { WorkspaceManagerService } from './workspace-manager.service';
 
+// Wires up WorkspaceManagerService with the data source, migration, metadata, permissions, roles and
+// standard-application modules it needs to provision and initialize new workspaces
 @Module({
   imports: [
     WorkspaceDataSourceModule,

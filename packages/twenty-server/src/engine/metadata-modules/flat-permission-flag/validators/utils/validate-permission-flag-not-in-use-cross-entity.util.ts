@@ -7,6 +7,8 @@ import { type AllUniversalFlatEntityMaps } from 'src/engine/workspace-manager/wo
 import { type UniversalDeletePermissionFlagAction } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-builder/builders/permission-flag/types/workspace-migration-permission-flag-action.type';
 import { getEmptyFlatEntityValidationError } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-builder/builders/utils/get-flat-entity-validation-error.util';
 
+// Validates that no permission flag being deleted is still assigned to a role,
+// returning a validation failure for each flag that's still referenced.
 export const validatePermissionFlagNotInUseCrossEntity = ({
   optimisticUniversalFlatMaps,
   deletedPermissionFlagActions,

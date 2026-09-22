@@ -17,6 +17,9 @@ import { WorkspaceCache } from 'src/engine/workspace-cache/decorators/workspace-
 import { createIdToUniversalIdentifierMap } from 'src/engine/workspace-cache/utils/create-id-to-universal-identifier-map.util';
 import { addFlatEntityToFlatEntityMapsThroughMutationOrThrow } from 'src/engine/workspace-manager/workspace-migration/utils/add-flat-entity-to-flat-entity-maps-through-mutation-or-throw.util';
 
+// Builds and caches the workspace's flat-role-permission-flag maps by loading role
+// permission flag entities and resolving their application, role and permission flag
+// ids to universal identifiers.
 @Injectable()
 @WorkspaceCache('flatRolePermissionFlagMaps')
 export class WorkspaceFlatRolePermissionFlagMapCacheService extends WorkspaceCacheProvider<FlatRolePermissionFlagMaps> {
@@ -33,6 +36,8 @@ export class WorkspaceFlatRolePermissionFlagMapCacheService extends WorkspaceCac
     super();
   }
 
+  // Loads all role permission flags plus related applications, roles and permission
+  // flags for the workspace, then assembles them into flat-role-permission-flag maps.
   async computeForCache(
     workspaceId: string,
   ): Promise<FlatRolePermissionFlagMaps> {

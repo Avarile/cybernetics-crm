@@ -1,3 +1,5 @@
+// NestJS module wiring JWT signing/verification (legacy symmetric via
+// @nestjs/jwt, plus the newer asymmetric rotatable signing-key services).
 import { Module } from '@nestjs/common';
 import { JwtModule as NestJwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';

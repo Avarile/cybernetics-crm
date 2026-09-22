@@ -1,3 +1,5 @@
+// Entry point CRUD resolvers call to run registered pre/post hooks for
+// a given object + method around their own execution.
 import { Injectable } from '@nestjs/common';
 
 import merge from 'lodash.merge';
@@ -20,6 +22,9 @@ export class WorkspaceQueryHookService {
   ) {}
 
   //TODO : Refacto-common - Should be Common
+  // Runs all registered pre-hooks for "<objectName>.<methodName>" in
+  // order, deep-merging each hook's returned payload into the args
+  // before passing them to the next hook (and ultimately the resolver).
   public async executePreQueryHooks<
     T extends WorkspaceResolverBuilderMethodNames | CommonQueryNames,
   >(
@@ -53,6 +58,9 @@ export class WorkspaceQueryHookService {
     return payload;
   }
 
+  // Runs all registered post-hooks for "<objectName>.<methodName>" with
+  // the resolver's result, sequentially and without transforming it
+  // (post-hooks are for side effects/observation, not mutation).
   public async executePostQueryHooks<
     T extends WorkspaceResolverBuilderMethodNames,
   >(

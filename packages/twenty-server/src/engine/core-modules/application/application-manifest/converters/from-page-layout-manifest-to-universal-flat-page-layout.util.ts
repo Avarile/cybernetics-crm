@@ -1,3 +1,5 @@
+// Converts a manifest-declared page layout into the universal flat entity
+// shape used to build workspace migrations.
 import { type PageLayoutManifest } from 'twenty-shared/application';
 
 import { type PageLayoutType } from 'src/engine/metadata-modules/page-layout/enums/page-layout-type.enum';

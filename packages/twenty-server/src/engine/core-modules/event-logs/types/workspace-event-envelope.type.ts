@@ -1,3 +1,5 @@
+// Row/table shapes for each event type stored via the event-log pipeline,
+// unified into the discriminated WorkspaceEventEnvelope.
 export type EventContextFields = {
   workspaceId?: string | null;
   userId?: string | null;

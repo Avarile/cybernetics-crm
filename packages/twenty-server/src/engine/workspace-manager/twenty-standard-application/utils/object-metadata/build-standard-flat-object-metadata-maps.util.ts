@@ -5,6 +5,8 @@ import { type FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object
 import { STANDARD_FLAT_OBJECT_METADATA_BUILDERS_BY_OBJECT_NAME } from 'src/engine/workspace-manager/twenty-standard-application/utils/object-metadata/create-standard-flat-object-metadata.util';
 import { type CreateStandardObjectArgs } from 'src/engine/workspace-manager/twenty-standard-application/utils/object-metadata/create-standard-object-flat-metadata.util';
 
+// Builds every standard object's flat metadata and assembles them into a single FlatEntityMaps, used
+// as the "target" state when seeding or syncing a workspace's standard objects
 export const buildStandardFlatObjectMetadataMaps = (
   args: Omit<CreateStandardObjectArgs, 'context' | 'objectName'>,
 ): FlatEntityMaps<FlatObjectMetadata> => {

@@ -1,3 +1,4 @@
+// GraphQL representation of an error surfaced on a chat stream.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType('ChatStreamError')

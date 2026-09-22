@@ -12,6 +12,7 @@ import {
   TwoFactorAuthenticationExceptionCode,
 } from 'src/engine/core-modules/two-factor-authentication/two-factor-authentication.exception';
 
+// Maps TwoFactorAuthenticationException codes to the matching GraphQL error type
 @Catch(TwoFactorAuthenticationException)
 export class TwoFactorAuthenticationExceptionFilter implements ExceptionFilter {
   catch(exception: TwoFactorAuthenticationException) {

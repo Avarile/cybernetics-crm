@@ -1,4 +1,5 @@
-// Gaxios Network Error Mocks
+// Test fixtures: canned low-level network errors (as gaxios would surface
+// them) keyed by error code, for exercising Gmail's network error handling.
 const gaxiosErrorMocks = {
   // Connection Reset Error
   connectionReset: {
@@ -95,7 +96,7 @@ const gaxiosErrorMocks = {
     response: undefined,
   },
 
-  // Helper function to get error by code
+  // Looks up a mock error by its network error code.
   getError: function (code: string) {
     switch (code) {
       case 'ECONNRESET':

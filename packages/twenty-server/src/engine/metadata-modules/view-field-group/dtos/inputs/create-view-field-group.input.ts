@@ -11,6 +11,8 @@ import {
 
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';
 
+// GraphQL/REST input for creating a new view field group (a section
+// header grouping displayed fields in the record page layout).
 @InputType()
 export class CreateViewFieldGroupInput {
   @IsOptional()

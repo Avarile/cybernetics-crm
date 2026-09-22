@@ -39,6 +39,7 @@ type StandardFieldBuilder<P extends AllStandardObjectName> = (
   args: Omit<CreateStandardFieldArgs<P, FieldMetadataType>, 'context'>,
 ) => Record<string, FlatFieldMetadata>;
 
+// Registry of per-object field builders, one per standard object, each producing that object's fixed field set
 const STANDARD_FLAT_FIELD_METADATA_BUILDERS_BY_OBJECT_NAME = {
   attachment: buildAttachmentStandardFlatFieldMetadatas,
   blocklist: buildBlocklistStandardFlatFieldMetadatas,
@@ -77,6 +78,8 @@ const STANDARD_FLAT_FIELD_METADATA_BUILDERS_BY_OBJECT_NAME = {
   [P in AllStandardObjectName]: StandardFieldBuilder<P>;
 };
 
+// Builds every standard object's fixed field set and assembles them into a single FlatEntityMaps,
+// used as the "target" state when seeding or syncing a workspace's standard fields
 export const buildStandardFlatFieldMetadataMaps = (
   args: Omit<
     CreateStandardFieldArgs<AllStandardObjectName, FieldMetadataType>,

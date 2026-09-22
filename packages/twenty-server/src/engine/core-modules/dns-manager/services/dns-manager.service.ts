@@ -1,4 +1,8 @@
 /* @license Enterprise */
+// Wraps the Cloudflare custom hostnames API to register, refresh, and
+// validate custom/public domains, translating Cloudflare's verification
+// status into simplified pending/success/error states for the DNS records
+// the customer needs to set up.
 import { Injectable } from '@nestjs/common';
 
 import { msg } from '@lingui/core/macro';
@@ -37,6 +41,8 @@ export class DnsManagerService {
     }
   }
 
+  // Registers a new custom hostname with Cloudflare, throwing if it's
+  // already registered.
   async registerHostname(customDomain: string, options?: DnsManagerOptions) {
     dnsManagerValidator.isCloudflareInstanceDefined(this.cloudflareClient);
 
@@ -55,6 +61,9 @@ export class DnsManagerService {
     });
   }
 
+  // Fetches the hostname's Cloudflare details and returns the redirection
+  // (CNAME) and SSL (DCV) records the customer must configure, along with
+  // their current verification status.
   async getHostnameWithRecords(
     domain: string,
     options?: DnsManagerOptions,
@@ -111,6 +120,8 @@ export class DnsManagerService {
     };
   }
 
+  // Replaces a registered hostname with a new one: deletes the old
+  // registration (if any) and registers the new one.
   async updateHostname(
     fromHostname: string,
     toHostname: string,
@@ -130,6 +141,8 @@ export class DnsManagerService {
     return this.registerHostname(toHostname, options);
   }
 
+  // Re-submits the hostname's SSL params to Cloudflare to retrigger
+  // verification, returning its current records/status.
   async refreshHostname(hostname: string, options?: DnsManagerOptions) {
     dnsManagerValidator.isCloudflareInstanceDefined(this.cloudflareClient);
 
@@ -151,6 +164,8 @@ export class DnsManagerService {
     return publicDomainWithRecords;
   }
 
+  // Deletes a hostname's Cloudflare registration, swallowing any errors
+  // (used during cleanup paths where failure shouldn't block the caller).
   async deleteHostnameSilently(hostname: string, options?: DnsManagerOptions) {
     dnsManagerValidator.isCloudflareInstanceDefined(this.cloudflareClient);
 
@@ -165,6 +180,7 @@ export class DnsManagerService {
     }
   }
 
+  // Returns true only when both redirection and SSL verification succeeded.
   async isHostnameWorking(hostname: string, options?: DnsManagerOptions) {
     const hostnameDetails = await this.getHostnameDetails(hostname, options);
 
@@ -177,6 +193,7 @@ export class DnsManagerService {
     return statuses.redirection === 'success' && statuses.ssl === 'success';
   }
 
+  // Fixed SSL configuration applied to every registered custom hostname.
   private get sslParams(): CustomHostnameCreateParams['ssl'] {
     return {
       method: 'txt',
@@ -193,12 +210,16 @@ export class DnsManagerService {
     };
   }
 
+  // Picks the Cloudflare zone id for either the public-domain zone or the
+  // main app zone, depending on the hostname's kind.
   private getZoneId(options?: DnsManagerOptions): string {
     return options?.isPublicDomain
       ? this.twentyConfigService.get('CLOUDFLARE_PUBLIC_DOMAIN_ZONE_ID')
       : this.twentyConfigService.get('CLOUDFLARE_ZONE_ID');
   }
 
+  // Looks up a custom hostname's Cloudflare record by exact hostname match,
+  // throwing if Cloudflare unexpectedly returns more than one match.
   private async getHostnameDetails(
     hostname: string,
     options?: DnsManagerOptions,
@@ -231,6 +252,7 @@ export class DnsManagerService {
     );
   }
 
+  // Returns the Cloudflare custom hostname id for `hostname`, if registered.
   async getHostnameId(hostname: string, options?: DnsManagerOptions) {
     const customHostname = await this.getHostnameDetails(hostname, options);
 
@@ -241,6 +263,9 @@ export class DnsManagerService {
     return customHostname.id;
   }
 
+  // Derives simplified pending/success/error statuses for redirection and
+  // SSL from Cloudflare's raw hostname verification fields, treating newly
+  // created hostnames as pending for a short grace period.
   private getHostnameStatuses(customHostname: CustomHostnameListResponse) {
     const { ssl, verification_errors, created_at } = customHostname;
 
@@ -263,6 +288,7 @@ export class DnsManagerService {
     };
   }
 
+  // Deletes a custom hostname registration from Cloudflare by its id.
   async deleteHostname(customHostnameId: string, options?: DnsManagerOptions) {
     dnsManagerValidator.isCloudflareInstanceDefined(this.cloudflareClient);
 

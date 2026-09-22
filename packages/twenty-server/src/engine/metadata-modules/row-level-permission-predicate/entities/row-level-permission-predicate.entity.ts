@@ -36,6 +36,10 @@ import { JsonbProperty } from 'src/engine/workspace-manager/workspace-migration/
 @Index('IDX_RLPP_WORKSPACE_MEMBER_FIELD_METADATA_ID', [
   'workspaceMemberFieldMetadataId',
 ])
+// TypeORM entity for a single row-level permission predicate condition
+// (Enterprise feature): scopes which records of an object a role can
+// access based on a field comparison, optionally against the current
+// workspace member's own field value.
 export class RowLevelPermissionPredicateEntity
   extends SyncableEntity
   implements

@@ -17,6 +17,8 @@ import {
 import { type UniversalFlatViewGroup } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-view-group.type';
 import { mergeUpdateInExistingRecord } from 'src/utils/merge-update-in-existing-record.util';
 
+// Applies an update-view-group input onto the matching existing flat view group,
+// throwing if it doesn't exist.
 export const fromUpdateViewGroupInputToFlatViewGroupToUpdateOrThrow = ({
   updateViewGroupInput: rawUpdateViewGroupInput,
   flatViewGroupMaps,

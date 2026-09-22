@@ -1,3 +1,5 @@
+// HTTP endpoint receiving direct/streamed file uploads for storage drivers
+// without presigned-upload support.
 import {
   Controller,
   Param,

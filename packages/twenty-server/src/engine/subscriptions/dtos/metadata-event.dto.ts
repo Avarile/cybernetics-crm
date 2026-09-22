@@ -3,6 +3,8 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { ObjectRecordEventPropertiesDTO } from 'src/engine/subscriptions/dtos/object-record-event-properties.dto';
 import { MetadataEventAction } from 'src/engine/subscriptions/enums/metadata-event-action.enum';
 
+// A single metadata (object/field/etc.) change event delivered over an
+// event stream subscription.
 @ObjectType('MetadataEvent')
 export class MetadataEventDTO {
   @Field(() => MetadataEventAction)

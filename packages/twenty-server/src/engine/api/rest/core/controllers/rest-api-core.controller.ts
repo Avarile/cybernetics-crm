@@ -21,6 +21,9 @@ import { CustomPermissionGuard } from 'src/engine/guards/custom-permission.guard
 import { JwtAuthGuard } from 'src/engine/guards/jwt-auth.guard';
 import { WorkspaceAuthGuard } from 'src/engine/guards/workspace-auth.guard';
 
+// REST controller exposing CRUD-style endpoints for workspace records
+// (`/rest/*`), mapping HTTP verbs and path suffixes onto the corresponding
+// RestApiCoreService operation.
 @Controller('rest')
 @UseGuards(JwtAuthGuard, WorkspaceAuthGuard, CustomPermissionGuard)
 @UseFilters(RestApiExceptionFilter)
@@ -28,6 +31,7 @@ export class RestApiCoreController {
   private readonly logger = new Logger(RestApiCoreController.name);
   constructor(private readonly restApiCoreService: RestApiCoreService) {}
 
+  // POST /rest/batch/{objects} — creates many records at once.
   @Post('batch/*path')
   async handleApiPostBatch(
     @Req() request: AuthenticatedRequest,
@@ -41,6 +45,7 @@ export class RestApiCoreController {
     res.status(201).send(result);
   }
 
+  // POST /rest/{objects}/duplicates — finds duplicate records.
   @Post('*path/duplicates')
   async handleApiFindDuplicates(
     @Req() request: AuthenticatedRequest,
@@ -54,6 +59,7 @@ export class RestApiCoreController {
     res.status(200).send(result);
   }
 
+  // POST /rest/{objects} — creates a single record.
   @Post('*path')
   async handleApiPost(
     @Req() request: AuthenticatedRequest,
@@ -67,6 +73,7 @@ export class RestApiCoreController {
     res.status(201).send(result);
   }
 
+  // GET /rest/{objects}/groupBy — aggregates records into groups.
   @Get('*path/groupBy')
   async handleApiGroupBy(
     @Req() request: AuthenticatedRequest,
@@ -80,6 +87,7 @@ export class RestApiCoreController {
     res.status(200).send(result);
   }
 
+  // GET /rest/{objects} or /rest/{objects}/{id} — lists or fetches records.
   @Get('*path')
   async handleApiGet(
     @Req() request: AuthenticatedRequest,
@@ -93,6 +101,7 @@ export class RestApiCoreController {
     res.status(200).send(result);
   }
 
+  // DELETE /rest/{objects}/{id} — soft-deletes a record.
   @Delete('*path')
   async handleApiDelete(
     @Req() request: AuthenticatedRequest,
@@ -106,6 +115,7 @@ export class RestApiCoreController {
     res.status(200).send(result);
   }
 
+  // PATCH /rest/restore/{objects}/{id} — restores a soft-deleted record.
   @Patch('restore/*path')
   async handleApiRestore(
     @Req() request: AuthenticatedRequest,
@@ -119,6 +129,7 @@ export class RestApiCoreController {
     res.status(200).send(result);
   }
 
+  // PATCH /rest/{objects}/merge — merges several records into one.
   @Patch('*path/merge')
   async handleApiMerge(
     @Req() request: AuthenticatedRequest,
@@ -132,6 +143,7 @@ export class RestApiCoreController {
     res.status(200).send(result);
   }
 
+  // PATCH /rest/{objects}/{id} — updates a record.
   @Patch('*path')
   async handleApiPatch(
     @Req() request: AuthenticatedRequest,
@@ -148,6 +160,8 @@ export class RestApiCoreController {
   // This endpoint is not documented in the OpenAPI schema.
   // We keep it to avoid a breaking change since it initially used PUT instead
   // of PATCH, and because the PUT verb is often used as a PATCH.
+  // PUT /rest/{objects}/{id} — legacy alias for PATCH update, kept for
+  // backward compatibility.
   @Put('*path')
   async handleApiPut(
     @Req() request: AuthenticatedRequest,

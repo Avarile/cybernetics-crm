@@ -41,6 +41,9 @@ import {
   type CleanWorkspaceDeletionWarningUserVarsJobData,
 } from 'src/engine/workspace-manager/workspace-cleaner/jobs/clean-workspace-deletion-warning-user-vars.job';
 
+// Handles Stripe subscription created/updated/deleted events: syncs the customer,
+// subscription, and subscription items, then suspends or reactivates the workspace
+// based on the resulting subscription status
 @Injectable()
 // oxlint-disable-next-line twenty/inject-workspace-repository
 export class BillingWebhookSubscriptionService {
@@ -67,6 +70,8 @@ export class BillingWebhookSubscriptionService {
     private readonly workspaceCacheService: WorkspaceCacheService,
   ) {}
 
+  // Syncs the subscription and its items from Stripe, then suspends, reactivates,
+  // or deletes the workspace depending on the resulting live subscription statuses
   async processStripeEvent(
     workspaceId: string,
     event:
@@ -231,6 +236,8 @@ export class BillingWebhookSubscriptionService {
     };
   }
 
+  // A workspace should be suspended once all its live subscriptions are canceled or
+  // unpaid, or once trial-ending grace period has passed without payment
   shouldSuspendWorkspace(subscription: SubscriptionWithSchedule): boolean {
     const status = subscription.status as SubscriptionStatus;
 
@@ -259,12 +266,15 @@ export class BillingWebhookSubscriptionService {
     );
   }
 
+  // A workspace should be reactivated if any live subscription is in an activating state
   shouldReactivateWorkspace(subscription: SubscriptionWithSchedule): boolean {
     const status = subscription.status as SubscriptionStatus;
 
     return WORKSPACE_ACTIVATING_SUBSCRIPTION_STATUSES.includes(status);
   }
 
+  // Removes subscription items deleted on the Stripe side, then upserts the
+  // current items from the event payload
   async updateBillingSubscriptionItems(
     subscriptionId: string,
     event:

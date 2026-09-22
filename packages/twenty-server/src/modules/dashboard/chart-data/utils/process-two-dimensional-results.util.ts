@@ -35,6 +35,8 @@ type ProcessTwoDimensionalResultsParams = {
   firstDayOfTheWeek: FirstDayOfTheWeek;
 };
 
+// Formats raw two-dimension group-by results into display-ready data
+// points, also building separate primary/secondary formatted-label -> raw-value lookups.
 export const processTwoDimensionalResults = ({
   rawResults,
   primaryAxisGroupByField,

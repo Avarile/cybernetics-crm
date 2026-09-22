@@ -1,3 +1,4 @@
+// Exception type thrown when a rate limit is exceeded.
 import { type MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { assertUnreachable } from 'twenty-shared/utils';

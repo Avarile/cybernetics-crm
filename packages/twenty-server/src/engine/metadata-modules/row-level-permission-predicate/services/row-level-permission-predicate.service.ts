@@ -40,6 +40,9 @@ import { WorkspaceMigrationBuilderException } from 'src/engine/workspace-manager
 import { WorkspaceMigrationValidateBuildAndRunService } from 'src/engine/workspace-manager/workspace-migration/services/workspace-migration-validate-build-and-run-service';
 
 @Injectable()
+// CRUD and bulk-upsert logic for row-level permission predicates. Reads
+// are gated behind the RLS billing entitlement and enterprise plan;
+// upserts additionally throw if the feature isn't available.
 export class RowLevelPermissionPredicateService {
   constructor(
     private readonly workspaceMigrationValidateBuildAndRunService: WorkspaceMigrationValidateBuildAndRunService,
@@ -50,6 +53,8 @@ export class RowLevelPermissionPredicateService {
     private readonly enterprisePlanService: EnterprisePlanService,
   ) {}
 
+  // Returns all active predicates in the workspace, ordered by position
+  // within their group.
   async findByWorkspaceId(
     workspaceId: string,
   ): Promise<RowLevelPermissionPredicateDTO[]> {
@@ -81,6 +86,7 @@ export class RowLevelPermissionPredicateService {
       .map(fromFlatRowLevelPermissionPredicateToDto);
   }
 
+  // Returns all active predicates for a given role and object.
   async findByRoleAndObject(
     workspaceId: string,
     roleId: string,
@@ -119,6 +125,7 @@ export class RowLevelPermissionPredicateService {
       .map(fromFlatRowLevelPermissionPredicateToDto);
   }
 
+  // Finds a single active predicate by id.
   async findById(
     id: string,
     workspaceId: string,
@@ -150,6 +157,11 @@ export class RowLevelPermissionPredicateService {
     return fromFlatRowLevelPermissionPredicateToDto(flatPredicate);
   }
 
+  // Replaces a role/object's full set of predicates and predicate groups
+  // in one migration: existing input ids are updated, unmatched inputs are
+  // created, and existing groups/predicates absent from the input are
+  // soft-deleted. Groups are processed first so predicates can reference
+  // newly created group ids.
   async upsertRowLevelPermissionPredicates({
     input,
     workspaceId,
@@ -297,6 +309,10 @@ export class RowLevelPermissionPredicateService {
     };
   }
 
+  // Diffs input predicate groups against existing ones for a role/object,
+  // producing create/update/delete operation sets. Newly created groups
+  // are added into a working copy of the flat maps so later predicates in
+  // the same request can resolve their universal identifiers.
   private computePredicateGroupOperations({
     existingGroups,
     inputGroups,
@@ -394,6 +410,8 @@ export class RowLevelPermissionPredicateService {
     };
   }
 
+  // Diffs input predicates against existing ones for a role/object,
+  // producing create/update/delete operation sets.
   private computePredicateOperations({
     existingPredicates,
     inputPredicates,
@@ -493,6 +511,9 @@ export class RowLevelPermissionPredicateService {
     };
   }
 
+  // Applies the computed predicate/group create-update-delete operations
+  // as a single workspace migration, then invalidates the cached role
+  // permissions so the changes take effect.
   private async runUpsertMigration({
     workspaceId,
     predicatesToCreate,
@@ -552,6 +573,8 @@ export class RowLevelPermissionPredicateService {
     ]);
   }
 
+  // Checks whether the workspace's plan and billing entitlement allow use
+  // of the row-level permission (RLS) feature.
   private async hasRowLevelPermissionFeature(
     workspaceId: string,
   ): Promise<boolean> {
@@ -566,6 +589,7 @@ export class RowLevelPermissionPredicateService {
     return hasValidEnterprisePlan && isRowLevelPermissionEnabled;
   }
 
+  // Same as hasRowLevelPermissionFeature, but throws when unavailable.
   private async hasRowLevelPermissionFeatureOrThrow(workspaceId: string) {
     const hasRowLevelPermissionFeature =
       await this.hasRowLevelPermissionFeature(workspaceId);

@@ -7,6 +7,9 @@ import {
 import { type FlatPageLayout } from 'src/engine/metadata-modules/flat-page-layout/types/flat-page-layout.type';
 import { type FromEntityToFlatEntityArgs } from 'src/engine/workspace-cache/types/from-entity-to-flat-entity-args.type';
 
+// Converts a PageLayoutEntity into its flat representation, resolving application, object
+// metadata and default mobile/side-panel tab references to universal identifiers (throws
+// if any referenced entity can't be resolved).
 export const transformPageLayoutEntityToFlatPageLayout = ({
   entity: pageLayoutEntity,
   applicationIdToUniversalIdentifierMap,

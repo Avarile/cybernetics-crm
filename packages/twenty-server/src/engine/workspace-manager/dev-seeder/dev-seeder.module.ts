@@ -34,6 +34,8 @@ import { StandardObjectsPrefillModule } from 'src/engine/workspace-manager/stand
 import { TwentyStandardApplicationModule } from 'src/engine/workspace-manager/twenty-standard-application/twenty-standard-application.module';
 import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace-migration/workspace-migration.module';
 
+// Wires up the services that seed dev/demo workspaces (metadata, core
+// records, sample data, permissions).
 @Module({
   imports: [
     ObjectMetadataModule,

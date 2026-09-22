@@ -55,6 +55,8 @@ import { TimelineJobModule } from 'src/modules/timeline/jobs/timeline-job.module
 import { TimelineActivityModule } from 'src/modules/timeline/timeline-activity.module';
 import { WorkflowModule } from 'src/modules/workflow/workflow.module';
 
+// Registers every background job processor across the app, so their message
+// queue @Process handlers are discoverable regardless of which module owns them
 @Module({
   imports: [
     TypeOrmModule.forFeature([
@@ -116,6 +118,8 @@ import { WorkflowModule } from 'src/modules/workflow/workflow.module';
   ],
 })
 export class JobsModule {
+  // Exposed statically so job processors can resolve providers outside Nest's
+  // normal DI context (e.g. from a BullMQ worker callback)
   static moduleRef: ModuleRef;
 
   constructor(private moduleRef: ModuleRef) {

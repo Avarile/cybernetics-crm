@@ -1,3 +1,4 @@
+// GraphQL input types for connecting/updating an IMAP/SMTP/CALDAV account.
 import { Field, InputType, registerEnumType } from '@nestjs/graphql';
 
 import { EmailConnectionSecurity } from 'src/engine/core-modules/imap-smtp-caldav-connection/enums/email-connection-security.enum';

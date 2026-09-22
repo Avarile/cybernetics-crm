@@ -4,6 +4,9 @@ import { assertUnreachable } from 'twenty-shared/utils';
 
 import { CustomException } from 'src/utils/custom-exception';
 
+// Exception thrown when refreshing a connected account's OAuth access
+// token fails (missing/invalid refresh token, unsupported provider,
+// network error, etc).
 export enum ConnectedAccountRefreshAccessTokenExceptionCode {
   REFRESH_TOKEN_NOT_FOUND = 'REFRESH_TOKEN_NOT_FOUND',
   INVALID_REFRESH_TOKEN = 'INVALID_REFRESH_TOKEN',
@@ -12,6 +15,7 @@ export enum ConnectedAccountRefreshAccessTokenExceptionCode {
   ACCESS_TOKEN_NOT_FOUND = 'ACCESS_TOKEN_NOT_FOUND',
 }
 
+// Maps an exception code to the localized message shown to end users.
 const getConnectedAccountRefreshAccessTokenExceptionUserFriendlyMessage = (
   code: ConnectedAccountRefreshAccessTokenExceptionCode,
 ) => {

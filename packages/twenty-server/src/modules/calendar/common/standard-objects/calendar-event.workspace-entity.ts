@@ -5,6 +5,8 @@ import { type EntityRelation } from 'src/engine/workspace-manager/workspace-migr
 import { type CalendarChannelEventAssociationWorkspaceEntity } from 'src/modules/calendar/common/standard-objects/calendar-channel-event-association.workspace-entity';
 import { type CalendarEventParticipantWorkspaceEntity } from 'src/modules/calendar/common/standard-objects/calendar-event-participant.workspace-entity';
 
+// Standard object representing a synced calendar event, shared across all
+// calendar channels/providers that imported it.
 export class CalendarEventWorkspaceEntity extends BaseWorkspaceEntity {
   title: string | null;
   isCanceled: boolean;

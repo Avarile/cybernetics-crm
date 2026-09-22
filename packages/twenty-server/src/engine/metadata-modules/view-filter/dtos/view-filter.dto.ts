@@ -9,6 +9,9 @@ registerEnumType(ViewFilterOperand, {
   name: 'ViewFilterOperand',
 });
 
+// GraphQL representation of a view filter: a field/operand/value
+// condition records must match to appear in a view, optionally grouped
+// under a view filter group.
 @ObjectType('ViewFilter')
 export class ViewFilterDTO {
   @Field(() => UUIDScalarType)

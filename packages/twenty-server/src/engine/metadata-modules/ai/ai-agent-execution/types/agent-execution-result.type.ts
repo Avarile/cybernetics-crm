@@ -1,3 +1,5 @@
+// Result of a single non-interactive agent execution, including token usage
+// and cost data used for billing.
 import { type LanguageModelUsage, type StepResult, type ToolSet } from 'ai';
 
 export interface AgentExecutionResult {

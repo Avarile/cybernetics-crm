@@ -13,6 +13,8 @@ import { type DashboardWorkspaceEntity } from 'src/modules/dashboard/standard-ob
 
 @Injectable()
 @WorkspaceQueryHook(`dashboard.createOne`)
+// Runs before `dashboard.createOne`; auto-creates a page layout for the
+// dashboard if one wasn't given explicitly.
 export class DashboardCreateOnePreQueryHook implements WorkspacePreQueryHookInstance {
   constructor(
     private readonly dashboardToPageLayoutSyncService: DashboardToPageLayoutSyncService,

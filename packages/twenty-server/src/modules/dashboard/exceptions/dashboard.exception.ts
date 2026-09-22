@@ -31,6 +31,8 @@ const getDashboardExceptionUserFriendlyMessage = (
   }
 };
 
+// Thrown for dashboard operations: not found, duplication failure, or a
+// missing linked page layout.
 export class DashboardException extends CustomException<DashboardExceptionCode> {
   constructor(
     message: string,
@@ -44,6 +46,8 @@ export class DashboardException extends CustomException<DashboardExceptionCode> 
   }
 }
 
+// Builds a developer-facing log message for a dashboard exception, including
+// the relevant id/detail.
 export const generateDashboardExceptionMessage = (
   key: DashboardExceptionMessageKey,
   value?: string,

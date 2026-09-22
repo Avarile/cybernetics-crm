@@ -4,6 +4,8 @@ import { isDefined } from 'twenty-shared/utils';
 
 const { CONNECT, DISCONNECT } = RELATION_NESTED_QUERY_KEYWORDS;
 
+// True when a relation field value is a nested-mutation operation object
+// (has a defined `connect` or `disconnect` key) rather than a plain value.
 export const isRelationNestedOperation = (value: unknown): boolean => {
   if (!isObject(value)) {
     return false;

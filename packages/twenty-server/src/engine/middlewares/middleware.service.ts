@@ -22,6 +22,10 @@ import {
 import { WorkspaceCacheStorageService } from 'src/engine/workspace-cache-storage/workspace-cache-storage.service';
 import { type CustomException } from 'src/utils/custom-exception';
 
+// Shared logic behind the GraphQL/REST hydration middlewares: resolves a
+// request's access token into auth/workspace context, and formats
+// uncaught errors into the appropriate (REST JSON or GraphQL) response
+// shape when hydration itself fails.
 @Injectable()
 export class MiddlewareService {
   constructor(
@@ -32,6 +36,8 @@ export class MiddlewareService {
     private readonly jwtWrapperService: JwtWrapperService,
   ) {}
 
+  // True when the request carries a JWT (used to decide whether GraphQL
+  // requests should be hydrated with auth context or just a default locale).
   public isTokenPresent(request: Request): boolean {
     const token = this.jwtWrapperService.extractJwtFromRequest()(request);
 
@@ -39,6 +45,9 @@ export class MiddlewareService {
   }
 
   // oxlint-disable-next-line typescript/no-explicit-any
+  // Writes a JSON error response directly to `res` for an error raised
+  // during REST request hydration, also forwarding it to the exception
+  // handler service.
   public writeRestResponseOnExceptionCaught(res: Response, error: any) {
     const statusCode = this.getStatus(error);
 
@@ -62,6 +71,8 @@ export class MiddlewareService {
   }
 
   // oxlint-disable-next-line typescript/no-explicit-any
+  // Writes a GraphQL-shaped `{ errors: [...] }` response directly to
+  // `res` for an error raised during GraphQL request hydration.
   public writeGraphqlResponseOnExceptionCaught(res: Response, error: any) {
     let errors;
 
@@ -97,6 +108,9 @@ export class MiddlewareService {
     res.end();
   }
 
+  // Validates the request's token and binds the resolved workspace/auth
+  // data onto it; throws if no workspace with a valid database schema
+  // could be resolved.
   public async hydrateRestRequest(request: Request) {
     const data = await this.accessTokenService.validateTokenByRequest(request);
     const metadataVersion = data.workspace
@@ -116,6 +130,9 @@ export class MiddlewareService {
     bindDataToRequestObject(data, request, metadataVersion);
   }
 
+  // Binds resolved auth/workspace data onto the request when a token is
+  // present, otherwise just sets the request's locale for unauthenticated
+  // GraphQL requests (e.g. login-related queries).
   public async hydrateGraphqlRequest(request: Request) {
     if (!this.isTokenPresent(request)) {
       request.locale =
@@ -135,11 +152,14 @@ export class MiddlewareService {
     bindDataToRequestObject(data, request, metadataVersion);
   }
 
+  // Type guard: true when the error carries an explicit HTTP status code.
   private hasErrorStatus(error: unknown): error is { status: number } {
     return isDefined((error as { status: number })?.status);
   }
 
   // oxlint-disable-next-line typescript/no-explicit-any
+  // Resolves the HTTP status code to respond with for a hydration error:
+  // the error's own status, an AuthException-specific mapping, or 500.
   private getStatus(error: any): number {
     if (this.hasErrorStatus(error)) {
       return error.status;

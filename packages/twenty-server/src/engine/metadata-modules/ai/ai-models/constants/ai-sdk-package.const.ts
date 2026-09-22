@@ -1,3 +1,4 @@
+// Package names of the supported Vercel AI SDK provider integrations.
 export const AI_SDK_OPENAI = '@ai-sdk/openai' as const;
 export const AI_SDK_ANTHROPIC = '@ai-sdk/anthropic' as const;
 export const AI_SDK_GOOGLE = '@ai-sdk/google' as const;

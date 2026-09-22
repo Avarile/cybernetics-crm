@@ -11,6 +11,8 @@ import { getValueFromPath } from 'src/engine/api/common/common-query-runners/com
 
 type WhereCondition = Record<string, FindOperator<ConflictingFieldValue>>;
 
+// Builds a stable dedup key for a composite (multi-column) where condition
+// so the same combination of values isn't queried twice.
 const buildCompositeConditionKey = (
   conditionEntries: [string, ConflictingFieldValue][],
 ): string => {
@@ -21,6 +23,8 @@ const buildCompositeConditionKey = (
   return JSON.stringify(sortedEntries);
 };
 
+// Builds an `IN (...)` where condition for a single-column unique field
+// from the distinct values present across the incoming records.
 const buildSingleColumnCondition = (
   records: Partial<ObjectRecord>[],
   conflictingProperty: ConflictingProperty,
@@ -40,6 +44,8 @@ const buildSingleColumnCondition = (
   return { [conflictingProperty.column]: In(distinctValues) };
 };
 
+// Extracts the column/value pairs for a composite unique constraint from a
+// single record, or undefined if any part of the constraint is missing.
 const buildCompositeConditionEntries = (
   record: Partial<ObjectRecord>,
   conflictingProperties: ConflictingProperty[],
@@ -59,6 +65,9 @@ const buildCompositeConditionEntries = (
   return conditionEntries;
 };
 
+// Builds the set of TypeORM where-conditions used to find records that
+// would conflict with the incoming batch on any unique index (single- or
+// multi-column), deduplicating composite conditions.
 export const buildWhereConditions = (
   records: Partial<ObjectRecord>[],
   conflictingFieldGroups: ConflictingFieldGroup[],

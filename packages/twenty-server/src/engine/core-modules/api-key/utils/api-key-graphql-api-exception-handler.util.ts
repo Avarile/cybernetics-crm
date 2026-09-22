@@ -1,3 +1,5 @@
+// Translates ApiKeyException codes into the corresponding GraphQL API
+// error types so resolvers can rethrow a properly typed error.
 import { assertUnreachable } from 'twenty-shared/utils';
 
 import {

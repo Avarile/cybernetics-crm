@@ -27,6 +27,7 @@ export type LocalDriverOptions = {
 
 const SANDBOX_SCRIPTS_PATH = join(__dirname, '..', 'sandbox-scripts');
 
+// Response read back from the persistent Python kernel process over its control fd
 type KernelResponse = {
   stdout: string;
   stderr: string;
@@ -48,6 +49,7 @@ type LocalSession = {
   hasExited: boolean;
 };
 
+// Recursively copies a directory (used to stage sandbox-scripts into a work dir)
 async function copyDirectoryRecursive(src: string, dest: string) {
   await fs.mkdir(dest, { recursive: true });
 
@@ -65,6 +67,7 @@ async function copyDirectoryRecursive(src: string, dest: string) {
   }
 }
 
+// Generates Python source that sets os.environ from the given env vars
 const buildEnvSetup = (env?: Record<string, string>): string => {
   if (!isDefined(env)) {
     return '';
@@ -92,6 +95,7 @@ export class LocalDriver implements CodeInterpreterDriver {
 
   constructor(private options: LocalDriverOptions = {}) {}
 
+  // Dispatches to the persistent (session) or ephemeral execution path
   async execute(
     code: string,
     files?: InputFile[],
@@ -244,6 +248,8 @@ export class LocalDriver implements CodeInterpreterDriver {
     }
   }
 
+  // Rewrites E2B-style /home/user/... paths in submitted code to the local
+  // work/scripts/output directories, so E2B and local scripts stay path-compatible
   private rewriteSandboxPaths(
     code: string,
     workDir: string,
@@ -260,6 +266,7 @@ export class LocalDriver implements CodeInterpreterDriver {
       .replace(/\/home\/user/g, workDir);
   }
 
+  // Reads every file written to the output directory as an OutputFile
   private async collectOutputFiles(
     outputDir: string,
     callbacks?: StreamCallbacks,
@@ -308,6 +315,8 @@ export class LocalDriver implements CodeInterpreterDriver {
     }
   }
 
+  // Reuses a live session's kernel process, or spawns a fresh persistent Python
+  // kernel with its own work/output/scripts dirs otherwise
   private async getOrCreateSession(
     sessionId: string,
     env?: Record<string, string>,
@@ -410,6 +419,8 @@ export class LocalDriver implements CodeInterpreterDriver {
     return session;
   }
 
+  // Sends code to the session's kernel over its control fd and awaits the
+  // matching response, timing out if the kernel doesn't reply in time
   private runInSession(
     session: LocalSession,
     submission: string,
@@ -449,6 +460,7 @@ export class LocalDriver implements CodeInterpreterDriver {
     });
   }
 
+  // Runs a one-off Python script as a subprocess for the ephemeral (no-session) path
   private runPythonScript(
     scriptPath: string,
     workDir: string,

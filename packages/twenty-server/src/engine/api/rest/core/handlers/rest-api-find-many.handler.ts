@@ -16,6 +16,8 @@ import { parseStartingAfterRestRequest } from 'src/engine/api/rest/input-request
 import { AuthenticatedRequest } from 'src/engine/api/rest/types/authenticated-request';
 import { workspaceQueryRunnerRestApiExceptionHandler } from 'src/engine/api/rest/utils/workspace-query-runner-rest-api-exception-handler.util';
 
+// REST handler for GET /rest/{objects}: lists records with filtering,
+// ordering, and cursor pagination.
 @Injectable()
 export class RestApiFindManyHandler extends RestApiBaseHandler {
   constructor(
@@ -24,6 +26,8 @@ export class RestApiFindManyHandler extends RestApiBaseHandler {
     super();
   }
 
+  // Parses query-string filter/order/pagination args, runs the common
+  // findMany query runner, and formats the page as a REST response.
   async handle(request: AuthenticatedRequest) {
     try {
       const parsedArgs = this.parseRequestArgs(request);

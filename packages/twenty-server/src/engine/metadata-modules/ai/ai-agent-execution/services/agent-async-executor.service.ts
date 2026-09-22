@@ -94,6 +94,7 @@ export class AgentAsyncExecutorService {
     private readonly workspaceRepository: Repository<WorkspaceEntity>,
   ) {}
 
+  // Looks up the role assigned to the agent, used to scope its registry tools.
   private async getAgentRoleId(
     agentId: string,
     workspaceId: string,
@@ -108,6 +109,10 @@ export class AgentAsyncExecutorService {
     return roleTarget?.roleId;
   }
 
+  // Runs a non-interactive agent generation (used by workflows and one-off
+  // runs): resolves the model and tools, calls generateText with billing and
+  // credit checks per step, optionally coerces the result to the agent's
+  // response schema, and reports token usage/cost.
   async executeAgent({
     agent,
     userPrompt,

@@ -6,6 +6,8 @@ import {
   type StreamCallbacks,
 } from './interfaces/code-interpreter-driver.interface';
 
+// No-op driver used when the code interpreter is turned off or misconfigured;
+// every call fails with the reason explaining why it's disabled
 export class DisabledDriver implements CodeInterpreterDriver {
   constructor(private reason: string) {}
 

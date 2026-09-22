@@ -1,5 +1,6 @@
 import { type FieldMetadataFunctionDefaultValue } from 'twenty-shared/types';
 
+// Maps a function default value name to its Postgres SQL expression.
 export const serializeFunctionDefaultValue = (
   defaultValue?: FieldMetadataFunctionDefaultValue,
 ) => {

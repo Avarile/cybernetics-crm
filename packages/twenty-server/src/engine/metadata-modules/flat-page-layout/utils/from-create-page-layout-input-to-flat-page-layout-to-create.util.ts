@@ -14,6 +14,8 @@ export type FromCreatePageLayoutInputToFlatPageLayoutToCreateArgs = {
   flatApplication: FlatApplication;
 } & Pick<AllFlatEntityMaps, 'flatObjectMetadataMaps'>;
 
+// Builds a new flat page layout from a create-page-layout input, defaulting its type to
+// RECORD_PAGE and resolving the referenced object metadata to a universal identifier.
 export const fromCreatePageLayoutInputToFlatPageLayoutToCreate = ({
   createPageLayoutInput: rawCreatePageLayoutInput,
   workspaceId,

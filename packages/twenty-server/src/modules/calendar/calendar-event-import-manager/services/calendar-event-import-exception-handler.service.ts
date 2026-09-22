@@ -27,6 +27,9 @@ export enum CalendarEventImportSyncStep {
   CALENDAR_EVENTS_IMPORT = 'CALENDAR_EVENTS_IMPORT',
 }
 
+// Classifies errors raised during calendar sync (driver, ORM, or token
+// refresh exceptions) and transitions the calendar channel's sync state
+// accordingly: retry, mark failed, or reset for a fresh full re-sync.
 @Injectable()
 export class CalendarEventImportErrorHandlerService {
   private readonly logger = new Logger(
@@ -39,6 +42,7 @@ export class CalendarEventImportErrorHandlerService {
     private readonly exceptionHandlerService: ExceptionHandlerService,
   ) {}
 
+  // Routes a sync error to the appropriate handler based on its exception code.
   public async handleDriverException(
     exception:
       | CalendarEventImportDriverException
@@ -91,6 +95,7 @@ export class CalendarEventImportErrorHandlerService {
     }
   }
 
+  // Sync cursor is invalid/expired: reset and restart from a full event list fetch.
   private async handleSyncCursorErrorException(
     calendarChannel: Pick<CalendarChannelEntity, 'id'>,
     workspaceId: string,
@@ -105,6 +110,9 @@ export class CalendarEventImportErrorHandlerService {
     );
   }
 
+  // Transient failure: retries up to CALENDAR_THROTTLE_MAX_ATTEMPTS times
+  // (incrementing throttle count and rescheduling), then gives up and marks
+  // the channel failed.
   private async handleTemporaryException(
     syncStep: CalendarEventImportSyncStep,
     calendarChannel: Pick<CalendarChannelEntity, 'id' | 'throttleFailureCount'>,
@@ -169,6 +177,7 @@ export class CalendarEventImportErrorHandlerService {
     }
   }
 
+  // Auth/permissions failure: mark the channel failed and flush its pending import queue.
   private async handleInsufficientPermissionsException(
     calendarChannel: Pick<CalendarChannelEntity, 'id'>,
     workspaceId: string,
@@ -179,6 +188,7 @@ export class CalendarEventImportErrorHandlerService {
     );
   }
 
+  // Unclassified failure: mark the channel failed, report it, and rethrow.
   private async handleUnknownException(
     exception: { message: string },
     calendarChannel: Pick<CalendarChannelEntity, 'id'>,
@@ -211,6 +221,8 @@ export class CalendarEventImportErrorHandlerService {
     throw calendarEventImportException;
   }
 
+  // Not-found during import (not list-fetch) means the sync state is out of
+  // date: reset and restart from a full event list fetch.
   private async handleNotFoundException(
     syncStep: CalendarEventImportSyncStep,
     calendarChannel: Pick<CalendarChannelEntity, 'id'>,

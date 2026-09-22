@@ -14,6 +14,8 @@ type GetAllSelectableFieldsArgs = {
   };
 };
 
+// Builds a column-name -> selectable(boolean) map for an object, marking
+// columns backing a restricted (unreadable) field as not selectable.
 export const getAllSelectableColumnNames = ({
   restrictedFields,
   objectMetadata,

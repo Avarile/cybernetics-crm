@@ -1,3 +1,5 @@
+// Core-schema entity grouping the messages produced by one agent turn (one
+// user prompt through to the assistant's response) and its evaluations.
 import {
   Column,
   CreateDateColumn,

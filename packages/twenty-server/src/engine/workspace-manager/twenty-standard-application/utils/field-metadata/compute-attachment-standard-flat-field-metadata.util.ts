@@ -15,6 +15,9 @@ import {
   createStandardFieldFlatMetadata,
 } from 'src/engine/workspace-manager/twenty-standard-application/utils/field-metadata/create-standard-field-flat-metadata.util';
 import { createStandardRelationFieldFlatMetadata } from 'src/engine/workspace-manager/twenty-standard-application/utils/field-metadata/create-standard-relation-field-flat-metadata.util';
+
+// Builds the fixed set of standard fields for the "attachment" object: base system fields plus its
+// polymorphic "target" relation to every attachable standard object (task, note, person, etc.)
 export const buildAttachmentStandardFlatFieldMetadatas = ({
   now,
   objectName,

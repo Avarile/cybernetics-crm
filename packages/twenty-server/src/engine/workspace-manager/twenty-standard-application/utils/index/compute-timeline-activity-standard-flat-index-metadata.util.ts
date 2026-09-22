@@ -5,6 +5,7 @@ import {
   createStandardIndexFlatMetadata,
 } from 'src/engine/workspace-manager/twenty-standard-application/utils/index/create-standard-index-flat-metadata.util';
 
+// Builds the fixed set of standard indexes for the "timelineActivity" object
 export const buildTimelineActivityStandardFlatIndexMetadatas = ({
   now,
   objectName,

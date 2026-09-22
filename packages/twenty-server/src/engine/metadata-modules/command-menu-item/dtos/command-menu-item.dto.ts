@@ -20,6 +20,9 @@ import {
 import { EngineComponentKey } from 'src/engine/metadata-modules/command-menu-item/enums/engine-component-key.enum';
 import { FrontComponentDTO } from 'src/engine/metadata-modules/front-component/dtos/front-component.dto';
 
+// GraphQL representation of a command menu (Cmd+K) entry: what it links
+// to (workflow, front component, or navigation payload), when it's shown,
+// and how it's displayed.
 @ObjectType('CommandMenuItem')
 export class CommandMenuItemDTO {
   @IsUUID()

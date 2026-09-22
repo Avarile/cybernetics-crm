@@ -3,6 +3,7 @@ import { isDefined } from 'twenty-shared/utils';
 import { type FlatEntityMaps } from 'src/engine/metadata-modules/flat-entity/types/flat-entity-maps.type';
 import { type FlatSearchFieldMetadata } from 'src/engine/metadata-modules/flat-search-field-metadata/types/flat-search-field-metadata.type';
 
+// Groups all flat search field metadatas by the TS_VECTOR field they contribute to.
 export const buildSearchFieldMetadatasByTsVectorFieldId = (
   flatSearchFieldMetadataMaps: FlatEntityMaps<FlatSearchFieldMetadata>,
 ): Map<string, FlatSearchFieldMetadata[]> => {

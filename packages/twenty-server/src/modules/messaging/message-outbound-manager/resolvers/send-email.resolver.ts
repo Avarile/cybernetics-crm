@@ -1,3 +1,7 @@
+// GraphQL mutation for sending (or sending a draft of) an email: composes
+// the email via the AI email composer, dispatches the send, then
+// best-effort persists the sent message and cleans up the source draft/
+// attachment files without failing the mutation if cleanup errors.
 import {
   ForbiddenException,
   Logger,
@@ -43,6 +47,11 @@ export class SendEmailResolver {
     private readonly sendEmailService: SendEmailService,
   ) {}
 
+  // Verifies the caller owns the connected account, composes the email,
+  // sends it (or the given draft), then best-effort persists the sent
+  // message, resolves its thread id, deletes the source draft, and
+  // cleans up any staged attachment files — logging rather than failing
+  // the mutation if any of that post-send cleanup errors.
   @Mutation(() => SendEmailOutputDTO)
   async sendEmail(
     @Args('input') input: SendEmailInput,

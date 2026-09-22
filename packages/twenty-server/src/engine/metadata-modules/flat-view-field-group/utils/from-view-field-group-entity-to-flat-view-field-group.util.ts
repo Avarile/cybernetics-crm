@@ -3,6 +3,8 @@ import { type FlatViewFieldGroup } from 'src/engine/metadata-modules/flat-view-f
 import { type FromEntityToFlatEntityArgs } from 'src/engine/workspace-cache/types/from-entity-to-flat-entity-args.type';
 import { resolveManyToOneRelationIdsToUniversalIdentifiers } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/utils/resolve-many-to-one-relation-ids-to-universal-identifiers.util';
 
+// Converts a ViewFieldGroupEntity (with its loaded viewFields) into its flat representation,
+// resolving relation ids to universal identifiers.
 export const fromViewFieldGroupEntityToFlatViewFieldGroup = (
   args: FromEntityToFlatEntityArgs<'viewFieldGroup'>,
 ): FlatViewFieldGroup => {

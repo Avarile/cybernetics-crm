@@ -5,6 +5,8 @@ import {
 } from '@nestjs/common';
 import { BaseExceptionFilter } from '@nestjs/core';
 
+// Test-only exception filter that rethrows instead of formatting a response, so
+// tests see the real error rather than a swallowed HTTP response
 @Catch()
 export class MockedUnhandledExceptionFilter
   extends BaseExceptionFilter

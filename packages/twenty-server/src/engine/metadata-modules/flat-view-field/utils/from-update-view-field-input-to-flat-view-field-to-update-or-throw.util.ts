@@ -21,6 +21,10 @@ import {
 import { type UniversalFlatViewField } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-view-field.type';
 import { mergeUpdateInExistingRecord } from 'src/utils/merge-update-in-existing-record.util';
 
+// Merges an update input into the existing flat view field, throwing if
+// it doesn't exist. Overridable properties are recorded as overrides
+// instead of applied directly when the caller doesn't own the view field,
+// and the view field group foreign key is re-resolved when changed.
 export const fromUpdateViewFieldInputToFlatViewFieldToUpdateOrThrow = ({
   updateViewFieldInput: rawUpdateViewFieldInput,
   flatViewFieldMaps,

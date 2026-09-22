@@ -1,3 +1,6 @@
+// Intercepts object metadata resolver errors and maps them to GraphQL API
+// errors via the shared exception handler.
+
 import {
   type CallHandler,
   type ExecutionContext,
@@ -12,6 +15,7 @@ import { objectMetadataGraphqlApiExceptionHandler } from 'src/engine/metadata-mo
 @Injectable()
 export class ObjectMetadataGraphqlApiExceptionInterceptor implements NestInterceptor {
   // oxlint-disable-next-line typescript/no-explicit-any
+  // Routes any error from the handler chain through the exception mapper.
   intercept(_context: ExecutionContext, next: CallHandler): Observable<any> {
     return next
       .handle()

@@ -35,6 +35,13 @@ type LegacyConnectedAccountWorkspaceEntity = {
   connectionParameters: Record<string, unknown> | null;
 };
 
+// Workspace command (1.21.0): copies connectedAccount, messageChannel,
+// calendarChannel, and messageFolder rows out of the workspace-schema tables and
+// into their new core-schema metadata tables, resolving accountOwnerId to a
+// userWorkspaceId and remapping messageFolder.parentFolderId (still an externalId
+// at this point) to the new core row id. Skips workspaces already migrated
+// (tracked via the IS_CONNECTED_ACCOUNT_MIGRATED feature flag) and rows whose
+// parent reference (owner / connected account / message channel) couldn't be resolved.
 @RegisteredWorkspaceCommand('1.21.0', 1775500012000)
 @Command({
   name: 'upgrade:1-21:migrate-messaging-infrastructure-to-metadata',
@@ -60,6 +67,9 @@ export class MigrateMessagingInfrastructureToMetadataCommand extends Provisioned
     super(workspaceIteratorService);
   }
 
+  // Migrates connectedAccount, then message/calendar channels (which depend on the
+  // migrated connected accounts), then message folders (which depend on the
+  // migrated message channels), each step filtering out rows with unresolved parents.
   override async runOnWorkspace({
     workspaceId,
     options,
@@ -369,6 +379,8 @@ export class MigrateMessagingInfrastructureToMetadataCommand extends Provisioned
     }
   }
 
+  // Maps each workspaceMember id to its corresponding userWorkspace id, used to
+  // resolve a legacy connectedAccount's accountOwnerId to a userWorkspaceId.
   private async buildWorkspaceMemberIdToUserWorkspaceIdMap(
     workspaceId: string,
   ): Promise<Map<string, string>> {

@@ -13,6 +13,7 @@ import {
   description:
     'Starts a cron job to check for stale ongoing calendar event imports and put them back to pending',
 })
+// Registers the recurring cron job that resets stale in-progress calendar syncs.
 export class CalendarOngoingStaleCronCommand extends CommandRunner {
   constructor(
     @InjectMessageQueue(MessageQueue.cronQueue)

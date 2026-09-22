@@ -1,3 +1,6 @@
+// Maps each LogicFunctionExceptionCode to the appropriate GraphQL error type
+// for the API layer, rethrowing unrecognized errors unchanged.
+
 import { assertUnreachable } from 'twenty-shared/utils';
 
 import {

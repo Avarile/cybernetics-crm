@@ -7,6 +7,7 @@ import {
   type CreateStandardViewArgs,
 } from 'src/engine/workspace-manager/twenty-standard-application/utils/view/create-standard-view-flat-metadata.util';
 
+// Builds the fixed set of standard views for the "timelineActivity" object
 export const computeStandardTimelineActivityViews = (
   args: Omit<CreateStandardViewArgs<'timelineActivity'>, 'context'>,
 ): Record<string, FlatView> => {

@@ -1,3 +1,9 @@
+// Orchestrates the "message list fetch" sync stage for a channel: applies
+// any pending group-email/folder actions first, syncs folders, fetches
+// the list of message ids to import/delete per provider, diffs against
+// existing associations to find genuinely new ids, caches them for the
+// import stage, advances sync cursors, and (for a full/first sync) deletes
+// associations for messages that no longer appear remotely.
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -56,6 +62,15 @@ export class MessagingMessageListFetchService {
     private readonly messagingProcessFolderActionsService: MessagingProcessFolderActionsService,
   ) {}
 
+  // Runs the full list-fetch flow for one message channel: applies
+  // pending group-email/folder actions (re-fetching the channel if either
+  // changed something), syncs folders, fetches message lists per
+  // provider, caches new external ids to import in batches of 200,
+  // updates cursors, and — for a full sync — computes and deletes stale
+  // associations for messages no longer present remotely. On success with
+  // pending imports, immediately kicks off the import stage inline rather
+  // than waiting for the next cron tick. Routes any error to the shared
+  // driver exception handler instead of throwing.
   public async processMessageListFetch(
     messageChannel: MessageChannelEntity,
     workspaceId: string,
@@ -290,6 +305,9 @@ export class MessagingMessageListFetchService {
     );
   }
 
+  // Runs pending group-email deletion/import actions on the channel if
+  // any are set; returns whether an action was processed (signaling the
+  // caller to re-fetch a fresh channel entity).
   private async processPendingGroupEmailActions(
     messageChannel: MessageChannelEntity,
     workspaceId: string,
@@ -316,6 +334,8 @@ export class MessagingMessageListFetchService {
     return true;
   }
 
+  // Runs pending sync actions (e.g. deletion) on any folders that have
+  // one queued; returns null if none were pending.
   private async processPendingFolderActions(
     messageChannel: MessageChannelEntity,
     workspaceId: string,
@@ -341,6 +361,11 @@ export class MessagingMessageListFetchService {
     );
   }
 
+  // On a full sync, the message lists represent the complete current
+  // remote state, so any existing association whose external id isn't in
+  // that set is stale and should be deleted; walks all of the channel's
+  // associations in id-ordered pages of 200 to find them without loading
+  // the whole set into memory at once.
   private async computeFullSyncMessageChannelMessageAssociationsToDelete(
     messageChannel: Pick<MessageChannelEntity, 'id'>,
     messageExternalIds: string[],

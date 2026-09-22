@@ -12,6 +12,9 @@ import {
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';
 import { type ImapSmtpCaldavParams } from 'src/engine/core-modules/imap-smtp-caldav-connection/types/imap-smtp-caldav-connection.type';
 
+// GraphQL representation of a connected email/calendar account (OAuth or
+// IMAP/SMTP/CalDAV). Sensitive fields (tokens, connection parameters,
+// OIDC claims) are hidden from the schema.
 @ObjectType('ConnectedAccountDTO')
 export class ConnectedAccountDTO {
   @IsUUID()

@@ -16,6 +16,8 @@ import { provideWorkspaceScopedRepository } from 'src/engine/twenty-orm/workspac
 import { WorkspaceCacheStorageModule } from 'src/engine/workspace-cache-storage/workspace-cache-storage.module';
 import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace-migration/workspace-migration.module';
 
+// Wires up the view group CRUD service, its REST controller, and GraphQL
+// resolver.
 @Module({
   imports: [
     TypeOrmModule.forFeature([ViewGroupEntity, ViewEntity]),

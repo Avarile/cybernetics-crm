@@ -1,3 +1,7 @@
+// Builds the TypeORM `select` map for a query: the explicitly requested
+// scalar columns plus any join (foreign key) columns implicitly needed
+// to resolve many-to-one relation/morph-relation selections, and always
+// includes `id`.
 import { FieldMetadataType } from 'twenty-shared/types';
 import { isDefined } from 'twenty-shared/utils';
 
@@ -46,6 +50,9 @@ export const buildColumnsToSelect = ({
   return result;
 };
 
+// Finds the join-column names for many-to-one (or morph many-to-one)
+// relations that were actually requested, since those FK columns must
+// be selected even though they aren't part of the GraphQL `select` set.
 const getRequiredRelationColumns = (
   relations: Record<string, unknown>,
   flatObjectMetadata: FlatObjectMetadata,

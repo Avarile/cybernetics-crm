@@ -4,6 +4,8 @@ import { assertUnreachable } from 'twenty-shared/utils';
 
 import { CustomException } from 'src/utils/custom-exception';
 
+// Error codes raised while parsing REST query-string args (filter,
+// order_by, depth, limit, etc.).
 export enum RestInputRequestParserExceptionCode {
   INVALID_AGGREGATE_FIELDS_QUERY_PARAM = 'INVALID_AGGREGATE_FIELDS_QUERY_PARAM',
   INVALID_GROUP_BY_QUERY_PARAM = 'INVALID_GROUP_BY_QUERY_PARAM',
@@ -14,6 +16,8 @@ export enum RestInputRequestParserExceptionCode {
   INVALID_FILTER_QUERY_PARAM = 'INVALID_FILTER_QUERY_PARAM',
 }
 
+// Maps a parser exception code to its default translated user-facing
+// message.
 const getRestInputRequestParserExceptionUserFriendlyMessage = (
   code: RestInputRequestParserExceptionCode,
 ) => {
@@ -37,6 +41,7 @@ const getRestInputRequestParserExceptionUserFriendlyMessage = (
   }
 };
 
+// Exception type thrown by the REST input-request parser utils.
 export class RestInputRequestParserException extends CustomException<RestInputRequestParserExceptionCode> {
   constructor(
     message: string,

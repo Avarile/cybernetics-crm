@@ -1,3 +1,6 @@
+// Resolves a DeleteOneObjectInput into the full set of flat field metadata and
+// flat index metadata that must be deleted alongside the object (including relation
+// target fields on other objects and indexes referencing the deleted fields).
 import {
   isDefined,
   trimAndRemoveDuplicatedWhitespacesFromObjectStringProperties,
@@ -23,6 +26,8 @@ type FromDeleteObjectInputToFlatFieldMetadatasToDeleteArgs = {
   AllFlatEntityMaps,
   'flatFieldMetadataMaps' | 'flatObjectMetadataMaps' | 'flatIndexMaps'
 >;
+// Finds the object to delete and cascades to its fields (including relation
+// counterparts on other objects) and any indexes referencing those fields.
 export const fromDeleteObjectInputToFlatFieldMetadatasToDelete = ({
   deleteObjectInput: rawDeleteObjectInput,
   flatFieldMetadataMaps,

@@ -25,6 +25,8 @@ import {
   collectEnumOperationsForObject,
 } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-runner/utils/workspace-schema-enum-operations.util';
 
+// Adapts flat entity-metadata shapes needed by the search-vector expression
+// derivation helpers used when generating a TS_VECTOR column's DDL.
 const buildSearchFieldMetadataDerivationInputs = ({
   fieldMetadatas,
   objectSearchFieldMetadatas,
@@ -72,6 +74,10 @@ const buildSearchFieldMetadataDerivationInputs = ({
   };
 };
 
+// Regenerates CREATE TYPE (for enums) and CREATE TABLE statements for every active
+// object in the workspace, from its metadata — used by the export command instead
+// of dumping the live schema so generated/derived columns (e.g. search vectors) are
+// re-derived correctly rather than copied as static data.
 export const generateWorkspaceSchemaDdl = (
   workspaceId: string,
   schemaName: string,

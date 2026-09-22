@@ -1,3 +1,5 @@
+// REST body for the OAuth token endpoint, covering the fields used across
+// the authorization_code, client_credentials, and refresh_token grants.
 import { IsOptional, IsString, MaxLength } from 'class-validator';
 
 export class OAuthTokenInput {

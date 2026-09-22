@@ -8,6 +8,8 @@ import { type FlatCommandMenuItemMaps } from 'src/engine/metadata-modules/flat-c
 import { type FlatCommandMenuItem } from 'src/engine/metadata-modules/flat-command-menu-item/types/flat-command-menu-item.type';
 import { findFlatEntityByIdInFlatEntityMaps } from 'src/engine/metadata-modules/flat-entity/utils/find-flat-entity-by-id-in-flat-entity-maps.util';
 
+// Looks up the flat command menu item targeted by a delete request,
+// throwing a not-found exception if it doesn't exist.
 export const fromDeleteCommandMenuItemInputToFlatCommandMenuItemOrThrow = ({
   flatCommandMenuItemMaps,
   commandMenuItemId,

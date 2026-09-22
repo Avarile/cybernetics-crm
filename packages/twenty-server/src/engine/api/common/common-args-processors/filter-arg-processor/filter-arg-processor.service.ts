@@ -27,6 +27,8 @@ import { buildFieldMapsFromFlatObjectMetadata } from 'src/engine/metadata-module
 import { isFlatFieldMetadataOfType } from 'src/engine/metadata-modules/flat-field-metadata/utils/is-flat-field-metadata-of-type.util';
 import { FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object-metadata/types/flat-object-metadata.type';
 
+// Rejects filtering directly on a to-one relation field, pointing the
+// caller to the relation's join-column field instead.
 function throwUseJoinColumnInstead(key: string): never {
   const joinColumnName = computeMorphOrRelationFieldJoinColumnName({
     name: key,
@@ -41,8 +43,14 @@ function throwUseJoinColumnInstead(key: string): never {
   );
 }
 
+// Validates and transforms an ObjectRecordFilter against object/field
+// metadata: rejects unknown fields and invalid operators, resolves
+// relation filters (up to MAX_RELATION_FILTER_DEPTH), and normalizes
+// composite-field subfilters.
 @Injectable()
 export class FilterArgProcessorService {
+  // Entry point: recursively validates and transforms the given filter,
+  // returning it unchanged if undefined.
   process<T extends ObjectRecordFilter | undefined>({
     filter,
     flatObjectMetadata,
@@ -75,6 +83,9 @@ export class FilterArgProcessorService {
     ) as T;
   }
 
+  // Walks a filter object, recursing into and/or/not groups, delegating
+  // relation-field keys to validateAndTransformRelationFilter and all
+  // other keys to validateAndTransformFieldFilter.
   private validateAndTransformFilter(
     filterObject: ObjectRecordFilter,
     flatObjectMetadata: FlatObjectMetadata,
@@ -148,6 +159,8 @@ export class FilterArgProcessorService {
     return transformedFilter;
   }
 
+  // Resolves a filter key to a RELATION/MORPH_RELATION field's metadata,
+  // but only when the key names the relation itself (not its join column).
   private resolveRelationFieldMetadataByName({
     key,
     fieldIdByName,
@@ -190,6 +203,10 @@ export class FilterArgProcessorService {
     return undefined;
   }
 
+  // Validates a nested filter on a to-one relation field: only MANY_TO_ONE
+  // relations are filterable this way, nesting depth is capped at
+  // MAX_RELATION_FILTER_DEPTH, and the nested filter is recursively
+  // validated against the related object's metadata.
   private validateAndTransformRelationFilter(
     key: string,
     filterValue: ObjectRecordFilter,
@@ -262,6 +279,9 @@ export class FilterArgProcessorService {
     );
   }
 
+  // Resolves a plain (non-relation) field key and validates its filter
+  // value: composite fields delegate to validateAndTransformCompositeFieldFilter,
+  // scalar fields to validateAndTransformOperatorAndValue.
   private validateAndTransformFieldFilter(
     key: string,
     filterValue: Record<string, unknown>,
@@ -313,6 +333,8 @@ export class FilterArgProcessorService {
     );
   }
 
+  // Validates each subfield filter of a composite field (e.g. address,
+  // currency) against that subfield's own type, rejecting unknown subfields.
   private validateAndTransformCompositeFieldFilter(
     fieldMetadata: FlatFieldMetadata,
     filterValue: Record<string, unknown>,

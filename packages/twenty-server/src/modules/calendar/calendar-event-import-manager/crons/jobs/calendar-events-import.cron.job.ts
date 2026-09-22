@@ -26,6 +26,9 @@ export const CALENDAR_EVENTS_IMPORT_CRON_PATTERN = '*/1 * * * *';
 @Processor({
   queueName: MessageQueue.cronQueue,
 })
+// Every minute, finds calendar channels pending an events import
+// (skipping throttled ones), marks them scheduled, and queues an import job
+// for each active workspace.
 export class CalendarEventsImportCronJob {
   private readonly logger = new Logger(CalendarEventsImportCronJob.name);
 

@@ -1,3 +1,4 @@
+// Fixed ids for the sample calendar channels created in dev-seeded workspaces.
 export const CALENDAR_CHANNEL_DATA_SEED_IDS = {
   TIM: '20202020-a40f-4faf-bb9f-c6f9945b8203',
   JONY: '20202020-a40f-4faf-bb9f-c6f9945b8204',

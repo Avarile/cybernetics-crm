@@ -19,6 +19,11 @@ import { SyncableEntity } from 'src/engine/workspace-manager/types/syncable-enti
 
 @Entity('role')
 @Unique('IDX_ROLE_LABEL_WORKSPACE_ID_UNIQUE', ['label', 'workspaceId'])
+// TypeORM entity for a workspace role: broad, workspace-wide permission
+// defaults (settings, tools, object records) plus assignability to
+// members/agents/API keys and one-to-many links to fine-grained
+// permission overrides (object/field/row-level permissions, permission
+// flags, and its targets).
 export class RoleEntity extends SyncableEntity implements Required<RoleEntity> {
   @PrimaryGeneratedColumn('uuid')
   id: string;

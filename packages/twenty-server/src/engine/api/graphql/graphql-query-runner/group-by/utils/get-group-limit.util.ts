@@ -1,3 +1,5 @@
+// Validates a user-supplied group-by limit, falling back to the default
+// when it's missing or not a positive integer.
 import { DEFAULT_NUMBER_OF_GROUPS_LIMIT } from 'twenty-shared/constants';
 
 export const getGroupLimit = (limit?: number): number => {

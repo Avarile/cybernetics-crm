@@ -14,6 +14,8 @@ const toGoogleEventDateTime = (
     ? { date: isoDateTime.slice(0, 10) }
     : { dateTime: isoDateTime, timeZone };
 
+// Converts a provider-agnostic calendar event input into the Google Calendar
+// API event payload, including attendees and an optional Google Meet request.
 export const toGoogleEventInput = (
   input: CalendarEventToCreate,
 ): calendarV3.Schema$Event => {

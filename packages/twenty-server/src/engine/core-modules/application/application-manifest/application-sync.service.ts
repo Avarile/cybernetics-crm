@@ -1,3 +1,6 @@
+// Syncs an application's core record and metadata from its manifest, and
+// handles full application uninstall (metadata teardown plus runtime
+// resource cleanup).
 import { Inject, Injectable, Logger } from '@nestjs/common';
 
 import { type Manifest } from 'twenty-shared/application';
@@ -46,6 +49,10 @@ export class ApplicationSyncService {
     private readonly logicFunctionDriverFactory: LogicFunctionDriverFactory,
   ) {}
 
+  // Updates the application record from the manifest (or resolves a virtual
+  // owner for a dry run), runs the metadata migration, and best-effort
+  // syncs translations without failing the overall sync on translation
+  // errors.
   public async synchronizeFromManifest({
     workspaceId,
     manifest,
@@ -112,6 +119,8 @@ export class ApplicationSyncService {
     return syncResult;
   }
 
+  // Returns the already-installed application for a dry run, or a synthetic
+  // in-memory flat application when it isn't installed yet.
   private async resolveDryRunOwnerFlatApplication({
     workspaceId,
     manifest,
@@ -131,6 +140,8 @@ export class ApplicationSyncService {
     );
   }
 
+  // Builds a not-yet-persisted FlatApplication from the manifest, used to
+  // preview a dry-run sync for an application that isn't installed yet.
   private buildVirtualDryRunFlatApplication({
     manifest,
     workspaceId,
@@ -206,6 +217,8 @@ export class ApplicationSyncService {
     this.logger.log('Pre-install sync from manifest completed');
   }
 
+  // Reads the installed package.json and updates the application entity's
+  // display fields, version, and checksums to match the manifest.
   private async syncApplication({
     workspaceId,
     manifest,
@@ -252,6 +265,10 @@ export class ApplicationSyncService {
     });
   }
 
+  // Removes all of the application's metadata from the workspace (by
+  // migrating it to an empty state), deletes the application record, and
+  // cleans up its runtime resources. Throws if the application is marked
+  // as not uninstallable.
   public async uninstallApplication({
     workspaceId,
     applicationUniversalIdentifier,
@@ -327,6 +344,8 @@ export class ApplicationSyncService {
     return validateAndBuildResult.workspaceMigration;
   }
 
+  // Best-effort deletes the application's runtime resources (e.g. deployed
+  // logic function infrastructure) via the current logic function driver.
   private async cleanupApplicationRuntimeResources({
     workspaceId,
     applicationUniversalIdentifier,

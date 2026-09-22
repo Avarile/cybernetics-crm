@@ -1,3 +1,4 @@
+// Resolves the on-disk location of the twenty-client-sdk template package.
 import path from 'path';
 
 import { ASSET_PATH } from 'src/constants/assets-path';

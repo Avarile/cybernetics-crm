@@ -1,3 +1,4 @@
+// Public REST endpoint exposing the client (frontend) runtime configuration.
 import { Controller, Get, UseGuards } from '@nestjs/common';
 
 import { type ClientConfig } from 'src/engine/core-modules/client-config/client-config.entity';
@@ -11,6 +12,7 @@ export class ClientConfigController {
 
   @Get()
   @UseGuards(PublicEndpointGuard, NoPermissionGuard)
+  // Returns the public client configuration used to bootstrap the frontend.
   async getClientConfig(): Promise<ClientConfig> {
     return this.clientConfigService.getClientConfig();
   }

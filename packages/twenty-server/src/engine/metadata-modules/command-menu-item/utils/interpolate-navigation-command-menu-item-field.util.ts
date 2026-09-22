@@ -12,6 +12,10 @@ import { buildNavigationInterpolationContext } from 'src/engine/metadata-modules
 import { isObjectMetadataCommandMenuItemPayload } from 'src/engine/metadata-modules/command-menu-item/utils/is-object-metadata-command-menu-item-payload.util';
 import { type ObjectMetadataDTO } from 'src/engine/metadata-modules/object-metadata/dtos/object-metadata.dto';
 
+// Resolves the display value of a NAVIGATION command menu item's field
+// (label/shortLabel/icon): returns the raw value unchanged for non-
+// navigation items, otherwise interpolates its template against the
+// linked object metadata's resolved label/icon.
 export const interpolateNavigationCommandMenuItemField = ({
   commandMenuItem,
   fieldName,

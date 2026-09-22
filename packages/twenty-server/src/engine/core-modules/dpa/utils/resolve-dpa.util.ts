@@ -24,6 +24,7 @@ const COUNTRY_NAMES: Record<string, string> = {
   FR: 'France',
 };
 
+// Maps ISO country codes to display names for the sub-processor list
 const formatLocations = (codes: string[]): string =>
   codes.map((code) => COUNTRY_NAMES[code] ?? code).join(', ');
 
@@ -46,6 +47,7 @@ const fillMergeFields = (
     fieldName in values ? values[fieldName] : match,
   );
 
+// Builds the trailing execution/signature section shown only for signed DPAs
 const buildExecutionBlocks = (
   context: DpaResolveContext,
   values: Record<string, string>,
@@ -125,6 +127,8 @@ export const resolveDpa = (context: DpaResolveContext): ResolvedDpa => {
   };
 };
 
+// Collects any {{MERGE_FIELD}} placeholders left unresolved in a rendered document,
+// used by tests to catch missing region config values
 export const findUnresolvedMergeFields = (resolved: ResolvedDpa): string[] => {
   const unresolved = new Set<string>();
 

@@ -17,6 +17,9 @@ const UNIVERSAL_IDENTIFIERS_TO_FIX = new Set<string>([
   STANDARD_COMMAND_MENU_ITEMS.destroyRecords.universalIdentifier,
 ]);
 
+// Workspace command (1.21.0): re-syncs the conditionalAvailabilityExpression of
+// the delete/restore/destroy command menu items with the current standard
+// application definition, so they work correctly in select-all (exclusion) mode.
 @RegisteredWorkspaceCommand('1.21.0', 1775500007000)
 @Command({
   name: 'upgrade:1-21:fix-select-all-command-menu-items',
@@ -33,6 +36,8 @@ export class FixSelectAllCommandMenuItemsCommand extends ProvisionedWorkspaceCom
     super(workspaceIteratorService);
   }
 
+  // Diffs each target item's conditionalAvailabilityExpression against the
+  // standard definition and updates only the ones that drifted.
   override async runOnWorkspace({
     workspaceId,
     options,

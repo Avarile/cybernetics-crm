@@ -1,3 +1,6 @@
+// Builds the standard failure result a field side effect handler returns
+// when it can't resolve the field's parent object metadata.
+
 import { msg, t } from '@lingui/core/macro';
 import { type AllMetadataName } from 'twenty-shared/metadata';
 
@@ -7,6 +10,8 @@ import { type WorkspaceMigrationActionType } from 'src/engine/metadata-modules/f
 import { MetadataSideEffectExceptionCode } from 'src/engine/metadata-modules/metadata-side-effect/exceptions/metadata-side-effect-exception-code';
 import { type MetadataSideEffectFailure } from 'src/engine/metadata-modules/metadata-side-effect/types/metadata-side-effect-result.type';
 
+// Formats a SIDE_EFFECT_PARENT_METADATA_NOT_FOUND failure for the given
+// field and operation type.
 export const buildFieldSideEffectParentNotFoundFailure = ({
   flatFieldMetadata,
   operation,

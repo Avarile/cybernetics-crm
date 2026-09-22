@@ -1,3 +1,5 @@
+// Maps a native model modality (image, pdf, audio, video) to the file MIME
+// types accepted for it when attaching files to a chat message.
 export const MODALITY_TO_MIME_TYPES: Record<string, string[]> = {
   image: [
     'image/jpeg',

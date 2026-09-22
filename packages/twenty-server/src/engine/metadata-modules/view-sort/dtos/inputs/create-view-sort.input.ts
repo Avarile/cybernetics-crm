@@ -5,6 +5,7 @@ import { IsEnum, IsOptional, IsString, IsUUID } from 'class-validator';
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';
 import { ViewSortDirection } from 'twenty-shared/types';
 
+// GraphQL/REST input for creating a new view sort on a field.
 @InputType()
 export class CreateViewSortInput {
   @IsOptional()

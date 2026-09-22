@@ -18,6 +18,11 @@ type RunInstanceCommandsOptions = {
   includeSlow?: boolean;
 };
 
+// CLI command (`run-instance-commands`): the main upgrade entry point — runs any
+// pending legacy TypeORM migrations, then walks the registered instance-command
+// upgrade sequence (fast commands always, slow commands only with --include-slow),
+// after checking that provisioned workspaces are caught up to the previous version
+// (bypassable with --force).
 // TODO should be replaced by a specific call to the upgrade
 @Command({
   name: 'run-instance-commands',
@@ -58,6 +63,9 @@ export class RunInstanceCommandsCommand extends CommandRunner {
     return true;
   }
 
+  // Safety-checks workspace versions, runs legacy migrations, then executes each
+  // step of the upgrade sequence in order, invalidating the upgrade-status cache
+  // when done (even on failure).
   async run(
     _passedParams: string[],
     options: RunInstanceCommandsOptions,
@@ -109,6 +117,8 @@ export class RunInstanceCommandsCommand extends CommandRunner {
     }
   }
 
+  // Invalidates the cached upgrade-status, swallowing (and just logging) any error
+  // so a cache-invalidation failure doesn't mask the real command result.
   private async safeInvalidateUpgradeStatusCache(): Promise<void> {
     try {
       await this.upgradeStatusService.invalidateInstanceAndAllWorkspacesStatus();
@@ -121,6 +131,9 @@ export class RunInstanceCommandsCommand extends CommandRunner {
     }
   }
 
+  // Refuses to run (unless --force) if any provisioned workspace hasn't yet
+  // completed the last workspace command of the previous version — running instance
+  // commands ahead of that would upgrade the schema out from under lagging workspaces.
   private async checkWorkspaceVersionSafety(
     options: RunInstanceCommandsOptions,
   ): Promise<void> {
@@ -167,6 +180,8 @@ export class RunInstanceCommandsCommand extends CommandRunner {
     }
   }
 
+  // Runs any not-yet-applied migrations from legacy-typeorm-migrations-do-not-add,
+  // each in its own transaction.
   private async runLegacyPendingTypeOrmMigrations(): Promise<void> {
     this.logger.log('Running legacy TypeORM migrations...');
 

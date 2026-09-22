@@ -1,3 +1,6 @@
+// Custom http/https Agent classes that block outbound connections to
+// private/internal IPs at the socket level, protecting against SSRF even
+// through DNS rebinding or automatic redirects.
 import * as http from 'http';
 import * as https from 'https';
 import { type Socket } from 'net';
@@ -80,6 +83,8 @@ class SsrfSafeHttpsAgent extends https.Agent {
   }
 }
 
+// Creates an http.Agent (or https.Agent) that rejects connections to
+// private IPs, for the given protocol.
 export const createSsrfSafeAgent = (protocol: 'http' | 'https'): http.Agent => {
   return protocol === 'https'
     ? new SsrfSafeHttpsAgent()

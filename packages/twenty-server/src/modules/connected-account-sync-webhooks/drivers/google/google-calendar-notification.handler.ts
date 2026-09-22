@@ -22,6 +22,8 @@ import { type WebhookNotificationHandler } from 'src/modules/connected-account-s
 const GOOGLE_CALENDAR_SYNC_RESOURCE_STATE = 'sync';
 
 @Injectable()
+// Handles Google Calendar push notifications: verifies the channel token
+// against the stored client state, then triggers a resync of the matching calendar channel.
 export class GoogleCalendarNotificationHandler implements WebhookNotificationHandler<GoogleCalendarChannelNotification> {
   private readonly logger = new Logger(GoogleCalendarNotificationHandler.name);
 

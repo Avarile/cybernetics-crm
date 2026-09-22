@@ -1,3 +1,6 @@
+// Lists message UIDs to import for each of a channel's IMAP folders,
+// using CONDSTORE/UIDVALIDITY/UIDNEXT to skip folders with no changes
+// since the last sync where possible.
 import { Injectable, Logger } from '@nestjs/common';
 
 import { type ImapFlow } from 'imapflow';
@@ -33,6 +36,8 @@ export class ImapGetMessageListService {
     private readonly errorHandler: ImapMessageListFetchErrorHandler,
   ) {}
 
+  // Connects once and processes each folder to sync (per the channel's
+  // folder import policy) sequentially, closing the connection afterward.
   async getMessageLists({
     connectedAccount,
     messageFolders,
@@ -75,6 +80,10 @@ export class ImapGetMessageListService {
     }
   }
 
+  // Syncs a single folder: short-circuits with an empty result if nothing
+  // changed since the last cursor, otherwise locks the mailbox, resolves
+  // its current UID state, and delegates to ImapSyncService to compute
+  // the message UIDs before building the next sync cursor.
   private async getMessageList(
     client: ImapFlow,
     folder: MessageFolder,
@@ -157,6 +166,9 @@ export class ImapGetMessageListService {
     }
   }
 
+  // True when the folder's UIDVALIDITY and (if CONDSTORE-supported)
+  // highest MODSEQ are unchanged since the previous cursor and no new UIDs
+  // have arrived — meaning the sync can be safely skipped this pass.
   private async canSkipFolderSync(
     client: ImapFlow,
     folder: MessageFolder,

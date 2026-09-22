@@ -13,6 +13,7 @@ import { Type } from 'class-transformer';
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';
 import { ViewSortDirection } from 'twenty-shared/types';
 
+// Partial set of view sort fields that can be updated.
 @InputType()
 class UpdateViewSortInputUpdates {
   @IsOptional()
@@ -26,6 +27,7 @@ class UpdateViewSortInputUpdates {
   subFieldName?: string | null;
 }
 
+// GraphQL/REST input for updating an existing view sort by id.
 @InputType()
 export class UpdateViewSortInput {
   @IsUUID()

@@ -16,6 +16,8 @@ import { parseViewIdRestRequest } from 'src/engine/api/rest/input-request-parser
 import { AuthenticatedRequest } from 'src/engine/api/rest/types/authenticated-request';
 import { workspaceQueryRunnerRestApiExceptionHandler } from 'src/engine/api/rest/utils/workspace-query-runner-rest-api-exception-handler.util';
 
+// REST handler for GET /rest/{objects}/groupBy: aggregates records into
+// groups, optionally including a sample of each group's records.
 @Injectable()
 export class RestApiGroupByHandler extends RestApiBaseHandler {
   constructor(
@@ -25,6 +27,8 @@ export class RestApiGroupByHandler extends RestApiBaseHandler {
     super();
   }
 
+  // Parses query-string group-by/filter/order/aggregate args and runs the
+  // common groupBy query runner, returning its result directly.
   async handle(request: AuthenticatedRequest) {
     try {
       const {
@@ -69,6 +73,9 @@ export class RestApiGroupByHandler extends RestApiBaseHandler {
     }
   }
 
+  // Parses and validates the request's groupBy/filter/order/aggregate
+  // query-string args, resolving the record-select fields when a sample
+  // of each group's records was requested.
   private async parseRequestArgs(request: AuthenticatedRequest) {
     const {
       authContext,

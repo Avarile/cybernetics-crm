@@ -7,6 +7,7 @@ import { WorkspaceFlatWebhookMapCacheService } from 'src/engine/metadata-modules
 import { WebhookEntity } from 'src/engine/metadata-modules/webhook/entities/webhook.entity';
 import { provideWorkspaceScopedRepository } from 'src/engine/twenty-orm/workspace-scoped-repository/provide-workspace-scoped-repository';
 
+// Provides the flat-webhook map cache used to read webhooks in denormalized form.
 @Module({
   imports: [
     TypeOrmModule.forFeature([ApplicationEntity, WebhookEntity]),

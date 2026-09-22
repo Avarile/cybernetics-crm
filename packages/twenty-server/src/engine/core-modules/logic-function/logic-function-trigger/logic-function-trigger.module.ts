@@ -1,3 +1,5 @@
+// NestJS module wiring logic function triggers: cron, database-event, and
+// HTTP route triggers, plus the shared trigger execution job/service.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

@@ -1,3 +1,5 @@
+// Contract each mail provider (Gmail, Microsoft, IMAP/SMTP, email group)
+// implements to send messages and manage drafts.
 import { type ConnectedAccountEntity } from 'src/engine/metadata-modules/connected-account/entities/connected-account.entity';
 import { type SendMessageInput } from 'src/modules/messaging/message-outbound-manager/types/send-message-input.type';
 import { type SendMessageResult } from 'src/modules/messaging/message-outbound-manager/types/send-message-result.type';

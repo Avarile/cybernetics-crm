@@ -5,6 +5,7 @@ export type ParsedMessageId = {
 
 const MESSAGE_ID_REGEX = /^(.+):(\d+)$/;
 
+// Splits a "folder:uid" external message id back into its parts.
 export function parseMessageId(messageId: string): ParsedMessageId | null {
   const match = MESSAGE_ID_REGEX.exec(messageId);
 

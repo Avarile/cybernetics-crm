@@ -1,3 +1,4 @@
+// NestJS module wiring the health-check controller on top of Terminus.
 import { Module } from '@nestjs/common';
 import { TerminusModule } from '@nestjs/terminus';
 

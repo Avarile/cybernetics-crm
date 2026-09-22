@@ -23,6 +23,8 @@ import {
 } from 'src/engine/workspace-manager/twenty-standard-application/utils/page-layout-config';
 import { type StandardRecordPageLayouts } from 'src/engine/workspace-manager/twenty-standard-application/utils/page-layout-config/standard-page-layout-config.type';
 
+// Aggregates all standard page layout configs (the dashboard layout plus each standard object's
+// record page layout) into a single lookup seeded into every workspace
 export const STANDARD_PAGE_LAYOUTS = {
   myFirstDashboard: STANDARD_DASHBOARD_PAGE_LAYOUT_CONFIG,
   blocklistRecordPage: STANDARD_BLOCKLIST_PAGE_LAYOUT_CONFIG,

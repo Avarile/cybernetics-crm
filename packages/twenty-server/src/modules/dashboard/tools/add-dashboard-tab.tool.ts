@@ -23,6 +23,7 @@ const addDashboardTabSchema = z.object({
     ),
 });
 
+// AI agent tool: adds a new tab to an existing dashboard's page layout.
 export const createAddDashboardTabTool = (
   deps: Pick<
     DashboardToolDependencies,

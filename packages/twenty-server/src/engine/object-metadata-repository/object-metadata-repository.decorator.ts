@@ -5,6 +5,8 @@ import { capitalize } from 'twenty-shared/utils';
 import { convertClassNameToObjectMetadataName } from 'src/engine/workspace-manager/utils/convert-class-to-object-metadata-name.util';
 
 // oxlint-disable-next-line typescript/no-explicit-any
+// Parameter decorator injecting the custom repository registered for a
+// given workspace-entity class via ObjectMetadataRepositoryModule.forFeature.
 export const InjectObjectMetadataRepository = (objectMetadata: any) => {
   const token = `${capitalize(
     convertClassNameToObjectMetadataName(objectMetadata.name),

@@ -25,6 +25,8 @@ export type BlocklistReimportCalendarEventsJobData = WorkspaceEventBatch<
   queueName: MessageQueue.calendarQueue,
   scope: Scope.REQUEST,
 })
+// When a blocklist entry is removed, resets the owning member's calendar
+// channels to re-fetch their event lists so previously filtered events come back.
 export class BlocklistReimportCalendarEventsJob {
   constructor(
     private readonly globalWorkspaceOrmManager: GlobalWorkspaceOrmManager,

@@ -1,3 +1,5 @@
+// NestJS module exposing RecordPositionService for computing/reordering
+// record `position` values.
 import { Module } from '@nestjs/common';
 
 import { TwentyORMModule } from 'src/engine/twenty-orm/twenty-orm.module';

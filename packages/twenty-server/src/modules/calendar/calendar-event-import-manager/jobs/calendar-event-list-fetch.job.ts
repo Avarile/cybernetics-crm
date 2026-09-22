@@ -21,6 +21,8 @@ export type CalendarEventListFetchJobData = {
   queueName: MessageQueue.calendarQueue,
   scope: Scope.REQUEST,
 })
+// Fetches the list of changed/deleted event ids for a scheduled calendar
+// channel and hands off to the fetch-events service.
 export class CalendarEventListFetchJob {
   constructor(
     private readonly globalWorkspaceOrmManager: GlobalWorkspaceOrmManager,

@@ -11,6 +11,8 @@ import {
   CommonQueryRunnerExceptionCode,
 } from 'src/engine/api/common/common-query-runners/errors/common-query-runner.exception';
 
+// Throws a CommonQueryRunnerException describing an invalid DATE_TIME
+// value for the given field.
 const throwInvalidDateTimeFieldException = (
   value: unknown,
   fieldName: string,
@@ -26,6 +28,8 @@ const throwInvalidDateTimeFieldException = (
   );
 };
 
+// Validates a DATE_TIME field input, accepting null, a valid Date, or a
+// parseable timestamp string, and normalizes it to an ISO instant string.
 export const validateDateTimeFieldOrThrow = (
   value: unknown,
   fieldName: string,

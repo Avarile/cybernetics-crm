@@ -1,3 +1,6 @@
+// Resolves an OAuth connection provider's client id/secret from its
+// application registration's encrypted variables, and looks up connection
+// providers by id, name, or application.
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -24,6 +27,8 @@ export class ConnectionProviderService {
     private readonly secretEncryptionService: SecretEncryptionService,
   ) {}
 
+  // Decrypts and returns an OAuth provider's client id/secret from its
+  // application registration's variables, throwing if either is unset.
   async getClientCredentials(
     provider: ConnectionProviderEntity,
   ): Promise<{ clientId: string; clientSecret: string }> {
@@ -73,6 +78,7 @@ export class ConnectionProviderService {
     return { clientId, clientSecret };
   }
 
+  // Returns whether a single OAuth provider's client credentials are set.
   async areClientCredentialsConfigured(
     provider: ConnectionProviderEntity,
   ): Promise<boolean> {
@@ -81,6 +87,8 @@ export class ConnectionProviderService {
     return result.get(provider.id) ?? false;
   }
 
+  // Batch-checks whether each provider's OAuth client id/secret variables
+  // are both filled, without decrypting their values.
   async areClientCredentialsConfiguredBatch(
     providers: ConnectionProviderEntity[],
   ): Promise<Map<string, boolean>> {
@@ -169,6 +177,7 @@ export class ConnectionProviderService {
     return result;
   }
 
+  // Looks up a connection provider by application id and name.
   async findOneByApplicationAndName({
     applicationId,
     name,
@@ -181,6 +190,7 @@ export class ConnectionProviderService {
     });
   }
 
+  // Looks up a connection provider by id, throwing if not found.
   async findOneByIdOrThrow(id: string): Promise<ConnectionProviderEntity> {
     const provider = await this.connectionProviderRepository.findOne({
       where: { id },
@@ -196,6 +206,8 @@ export class ConnectionProviderService {
     return provider;
   }
 
+  // Returns all connection providers declared by an application, scoped
+  // to a workspace.
   async findManyByApplication({
     applicationId,
     workspaceId,

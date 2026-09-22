@@ -1,3 +1,4 @@
+// Interface and DI token for a pluggable event-log ingestion backend.
 import { type WorkspaceEventEnvelope } from 'src/engine/core-modules/event-logs/types/workspace-event-envelope.type';
 
 export type EventSink = {

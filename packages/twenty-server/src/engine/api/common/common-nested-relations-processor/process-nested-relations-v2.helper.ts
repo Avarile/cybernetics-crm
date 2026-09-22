@@ -31,13 +31,20 @@ import { type WorkspaceSelectQueryBuilder } from 'src/engine/twenty-orm/reposito
 import { type RolePermissionConfig } from 'src/engine/twenty-orm/types/role-permission-config';
 import { isFieldMetadataEntityOfType } from 'src/engine/utils/is-field-metadata-of-type.util';
 
+// Used as a placeholder id so the "no allowed related records" case still
+// runs a valid (empty-matching) IN query instead of an empty IN clause.
 const EMPTY_RELATION_SENTINEL_RECORD_ID =
   '00000000-0000-0000-0000-000000000000';
 
+// Batches the fetching of relation fields for a set of parent records
+// (avoiding N+1 queries) and assigns the results back onto each parent,
+// recursing into further nested relations.
 @Injectable()
 export class ProcessNestedRelationsV2Helper {
   constructor() {}
 
+  // Kicks off parallel fetch/assignment of every relation named in
+  // `relations` for the given parent records.
   public async processNestedRelations<T extends ObjectRecord = ObjectRecord>({
     flatObjectMetadataMaps,
     flatFieldMetadataMaps,
@@ -92,6 +99,9 @@ export class ProcessNestedRelationsV2Helper {
     await Promise.all(processRelationTasks);
   }
 
+  // Fetches the related records for one relation field across all parent
+  // records, applies per-parent limits and aggregates, assigns the results
+  // back onto the parents, then recurses into any further nested relations.
   private async processRelation<T extends ObjectRecord = ObjectRecord>({
     flatObjectMetadataMaps,
     flatFieldMetadataMaps,
@@ -282,6 +292,8 @@ export class ProcessNestedRelationsV2Helper {
     }
   }
 
+  // Resolves the target object/field metadata a relation field points to,
+  // throwing if the field or its relation target can't be found.
   private getTargetObjectMetadata({
     flatObjectMetadataMaps,
     flatFieldMetadataMaps,
@@ -334,6 +346,8 @@ export class ProcessNestedRelationsV2Helper {
     return { targetRelationName, targetObjectMetadata, targetRelation };
   }
 
+  // Extracts the deduplicated set of id values for a given field across
+  // records, used to batch-fetch related records with a single IN query.
   private getUniqueIds({
     records,
     idField,
@@ -345,6 +359,9 @@ export class ProcessNestedRelationsV2Helper {
     return [...new Set(records.map((item) => item[idField]))];
   }
 
+  // Fetches related records for the given parent ids in one batched query
+  // (plus their aggregates, if requested), applying a per-parent limit
+  // for one-to-many relations via findRelationRecordIdsLimitedPerParent.
   private async findRelations({
     referenceQueryBuilder,
     targetObjectRepository,
@@ -453,6 +470,8 @@ export class ProcessNestedRelationsV2Helper {
     return { relationResults: result, relationAggregatedFieldsResult };
   }
 
+  // Uses a LATERAL join so each parent id gets at most `perParentLimit`
+  // related record ids, avoiding an unbounded one-to-many fetch.
   private async findRelationRecordIdsLimitedPerParent({
     targetObjectRepository,
     targetObjectNameSingular,
@@ -503,6 +522,9 @@ export class ProcessNestedRelationsV2Helper {
     return limitedRecords.map((limitedRecord) => limitedRecord.id);
   }
 
+  // Matches fetched relation results back onto their parent records
+  // (one-to-many by join field, to-one by id), nulling soft-deleted
+  // to-one relations and stripping deletedAt unless it was requested.
   private assignRelationResults({
     parentRecords,
     parentObjectRecordsAggregatedValues,

@@ -1,3 +1,5 @@
+// Wires up the jobs, listeners, commands and service that clean up
+// messages/threads left orphaned by deleted connected accounts or channels.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

@@ -10,6 +10,7 @@ type BuilderArgs = Omit<CreateStandardPageLayoutArgs, 'context'>;
 
 type BuilderFn = (args: BuilderArgs) => FlatPageLayout;
 
+// Wraps a single standard page layout's fixed config into a builder function matching BuilderFn
 const createBuilderFromConfig = (
   layoutName: string,
   config: StandardPageLayoutConfig,
@@ -27,6 +28,7 @@ const createBuilderFromConfig = (
     });
 };
 
+// Derives one builder function per entry in STANDARD_PAGE_LAYOUTS
 const createBuilders = (): Record<string, BuilderFn> => {
   return Object.fromEntries(
     Object.entries(STANDARD_PAGE_LAYOUTS).map(([layoutName, config]) => [
@@ -36,5 +38,6 @@ const createBuilders = (): Record<string, BuilderFn> => {
   );
 };
 
+// Registry of per-layout builder functions, one per entry in STANDARD_PAGE_LAYOUTS
 export const STANDARD_FLAT_PAGE_LAYOUT_BUILDERS_BY_LAYOUT_NAME =
   createBuilders();

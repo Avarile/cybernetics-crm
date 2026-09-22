@@ -1,3 +1,7 @@
+// TypeORM entity for an object (standard or custom) in the workspace data
+// model: its identity, UI/behavior flags, label/image identifiers, and
+// relations to its fields, indexes, permissions, and views.
+
 import {
   Column,
   CreateDateColumn,

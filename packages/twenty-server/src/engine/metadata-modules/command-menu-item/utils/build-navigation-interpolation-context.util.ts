@@ -4,6 +4,8 @@ import { type APP_LOCALES } from 'twenty-shared/translations';
 import { type ObjectMetadataOverrides } from 'src/engine/metadata-modules/object-metadata/types/object-metadata-overrides.type';
 import { resolveEffectiveEntityProperty } from 'src/engine/metadata-modules/utils/resolve-effective-entity-property.util';
 
+// Minimal object metadata shape needed to build a navigation
+// interpolation context.
 export type NavigationInterpolationObjectMetadata = {
   labelPlural: string;
   labelSingular: string;
@@ -12,6 +14,9 @@ export type NavigationInterpolationObjectMetadata = {
   overrides?: ObjectMetadataOverrides | null;
 };
 
+// Builds the template interpolation context (resolved label/icon, with
+// overrides and i18n applied) used to fill placeholders in a NAVIGATION
+// command menu item's label/shortLabel/icon templates.
 export const buildNavigationInterpolationContext = ({
   objectMetadata,
   isStandardApp,

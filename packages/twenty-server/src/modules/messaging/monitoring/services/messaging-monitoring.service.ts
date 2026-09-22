@@ -1,3 +1,5 @@
+// Central hook for messaging pipeline monitoring events; currently a
+// no-op placeholder pending a real metrics backend.
 import { Injectable } from '@nestjs/common';
 
 type MessagingMonitoringTrackInput = {
@@ -13,6 +15,7 @@ type MessagingMonitoringTrackInput = {
 export class MessagingMonitoringService {
   constructor() {}
 
+  // No-op until a monitoring backend (Prometheus) is wired up.
   public async track({
     eventName: _eventName,
     workspaceId: _workspaceId,

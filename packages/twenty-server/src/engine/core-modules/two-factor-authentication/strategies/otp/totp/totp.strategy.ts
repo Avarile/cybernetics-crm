@@ -20,10 +20,13 @@ import {
   TOTPStrategyConfig,
 } from './constants/totp.strategy.constants';
 
+// TOTP (time-based one-time password) implementation of the OTP strategy, backed
+// by otplib's authenticator
 @Injectable()
 export class TotpStrategy implements OTPAuthenticationStrategyInterface {
   public readonly name = TwoFactorAuthenticationStrategy.TOTP;
 
+  // Validates the optional config override against the TOTP schema, throwing on failure
   constructor(options?: TOTPStrategyConfig) {
     let result: ZodSafeParseResult<TOTPStrategyConfig> | undefined;
 
@@ -48,6 +51,7 @@ export class TotpStrategy implements OTPAuthenticationStrategyInterface {
     // otplib will use its defaults: sha1, 6 digits, 30 second step, etc.
   }
 
+  // Generates a new TOTP secret and its provisioning URI for the authenticator app
   public initiate(
     accountName: string,
     issuer: string,
@@ -67,6 +71,7 @@ export class TotpStrategy implements OTPAuthenticationStrategyInterface {
     };
   }
 
+  // Checks a submitted token against the stored TOTP secret
   public validate(
     token: string,
     context: TotpContext,

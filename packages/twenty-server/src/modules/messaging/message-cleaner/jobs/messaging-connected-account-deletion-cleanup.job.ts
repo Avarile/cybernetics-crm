@@ -1,3 +1,5 @@
+// Runs after a connected account is deleted: cleans up any orphaned
+// messages/threads left without a message channel association.
 import { Scope } from '@nestjs/common';
 
 import { Process } from 'src/engine/core-modules/message-queue/decorators/process.decorator';
@@ -19,6 +21,7 @@ export class MessagingConnectedAccountDeletionCleanupJob {
     private readonly messageCleanerService: MessagingMessageCleanerService,
   ) {}
 
+  // Cleans up orphan messages and threads for the given workspace.
   @Process(MessagingConnectedAccountDeletionCleanupJob.name)
   async handle(
     data: MessagingConnectedAccountDeletionCleanupJobData,

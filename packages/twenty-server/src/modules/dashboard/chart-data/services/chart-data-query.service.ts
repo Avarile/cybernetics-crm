@@ -64,12 +64,18 @@ type ExecuteGroupByQueryParams = {
   splitMultiValueFields?: boolean;
 };
 
+// Shared group-by aggregate query builder used by all chart types: resolves
+// primary/secondary group-by and aggregate fields, applies date-granularity
+// bucketing and multi-value unnesting, and executes the query via the
+// common group-by query runner.
 @Injectable()
 export class ChartDataQueryService {
   constructor(
     private readonly commonGroupByQueryRunnerService: CommonGroupByQueryRunnerService,
   ) {}
 
+  // Builds and executes a one- or two-dimensional group-by aggregate query
+  // for chart data, returning raw (unformatted) dimension/aggregate results.
   async executeGroupByQuery({
     flatObjectMetadata,
     flatFieldMetadataMaps,

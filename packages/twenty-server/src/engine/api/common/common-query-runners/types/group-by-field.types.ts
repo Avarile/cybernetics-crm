@@ -5,6 +5,9 @@ import {
 
 import { type FlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-metadata/types/flat-field-metadata.type';
 
+// A resolved groupBy field definition, in three shapes: a plain/composite
+// field, a date field with bucketing granularity, or a field reached one
+// hop through a relation.
 export type GroupByRegularField = {
   fieldMetadata: FlatFieldMetadata;
   subFieldName?: string;

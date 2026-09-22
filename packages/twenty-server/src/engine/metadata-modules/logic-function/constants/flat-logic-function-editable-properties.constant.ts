@@ -1,3 +1,6 @@
+// Lists the logic function properties that can be changed via create/update
+// mutations.
+
 import { type MetadataEntityPropertyName } from 'src/engine/metadata-modules/flat-entity/constant/all-entity-properties-configuration-by-metadata-name.constant';
 
 export const FLAT_LOGIC_FUNCTION_EDITABLE_PROPERTIES = [

@@ -1,3 +1,4 @@
+// GraphQL representation of an AI-graded score for an agent turn.
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 
 import { IsDateString } from 'class-validator';

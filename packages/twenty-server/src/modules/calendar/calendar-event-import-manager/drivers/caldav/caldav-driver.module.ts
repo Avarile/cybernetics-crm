@@ -11,6 +11,7 @@ import { CalDavFetchEventsService } from 'src/modules/calendar/calendar-event-im
 import { CalDavGetEventsService } from 'src/modules/calendar/calendar-event-import-manager/drivers/caldav/services/caldav-get-events.service';
 import { CalDavImportEventsService } from 'src/modules/calendar/calendar-event-import-manager/drivers/caldav/services/caldav-import-events.service';
 
+// Wires up the CalDAV driver's client, fetch, get-events, and import-events services.
 @Module({
   imports: [
     SecureHttpClientModule,

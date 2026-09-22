@@ -35,6 +35,11 @@ type BuildCursorWhereConditionParams = {
   isEqualityCondition?: boolean;
 };
 
+// Builds the where condition for a single cursor key (which may name a
+// composite field or subfield): resolves the field's metadata and
+// delegates composite fields to buildCursorCompositeFieldWhereCondition,
+// otherwise builds a direction-aware scalar comparison from its order-by
+// direction.
 export const buildCursorWhereCondition = ({
   cursorKey,
   cursorValue,

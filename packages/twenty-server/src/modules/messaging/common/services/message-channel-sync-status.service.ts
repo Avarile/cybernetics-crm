@@ -1,3 +1,8 @@
+// Transitions a message channel's sync status/stage through the import
+// pipeline (fetch pending -> scheduled -> ongoing -> import pending ->
+// ongoing -> completed, or failed), emitting metrics and flagging
+// connected accounts for reconnection when sync fails due to insufficient
+// permissions.
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -42,6 +47,7 @@ export class MessageChannelSyncStatusService {
     private readonly metricsService: MetricsService,
   ) {}
 
+  // Marks the given message channels as due for a fresh message list fetch.
   public async markAsMessagesListFetchPending(
     messageChannelIds: string[],
     workspaceId: string,
@@ -70,6 +76,8 @@ export class MessageChannelSyncStatusService {
     );
   }
 
+  // Marks the given message channels as due to have their fetched messages
+  // imported.
   public async markAsMessagesImportPending(
     messageChannelIds: string[],
     workspaceId: string,
@@ -98,6 +106,9 @@ export class MessageChannelSyncStatusService {
     );
   }
 
+  // Clears cached pending-import data and cursors on the channels and their
+  // folders, then re-marks them as pending a full message list fetch —
+  // used to force a clean resync (e.g. after a blocklist item is removed).
   public async resetAndMarkAsMessagesListFetchPending(
     messageChannelIds: string[],
     workspaceId: string,
@@ -143,6 +154,7 @@ export class MessageChannelSyncStatusService {
     await this.markAsMessagesListFetchPending(messageChannelIds, workspaceId);
   }
 
+  // Clears the sync stage start timestamp without changing sync stage/status.
   public async resetSyncStageStartedAt(
     messageChannelIds: string[],
     workspaceId: string,
@@ -165,6 +177,7 @@ export class MessageChannelSyncStatusService {
     );
   }
 
+  // Marks channels as having their message list fetch scheduled/ongoing.
   public async markAsMessagesListFetchScheduled(
     messageChannelIds: string[],
     workspaceId: string,
@@ -191,6 +204,7 @@ export class MessageChannelSyncStatusService {
     );
   }
 
+  // Marks channels as actively fetching their message list right now.
   public async markAsMessagesListFetchOngoing(
     messageChannelIds: string[],
     workspaceId: string,
@@ -217,6 +231,8 @@ export class MessageChannelSyncStatusService {
     );
   }
 
+  // Marks channels as actively synced, resets throttle state, and records
+  // the sync completion metric.
   public async markAsMessageSyncCompleted(
     messageChannelIds: string[],
     workspaceId: string,
@@ -251,6 +267,7 @@ export class MessageChannelSyncStatusService {
     });
   }
 
+  // Marks channels as having their message import scheduled.
   public async markAsMessagesImportScheduled(
     messageChannelIds: string[],
     workspaceId: string,
@@ -275,6 +292,7 @@ export class MessageChannelSyncStatusService {
     );
   }
 
+  // Marks channels as actively importing fetched messages right now.
   public async markAsMessagesImportOngoing(
     messageChannelIds: string[],
     workspaceId: string,
@@ -301,6 +319,9 @@ export class MessageChannelSyncStatusService {
     );
   }
 
+  // Marks channels as failed with the given status, records the failure
+  // metric, and — for insufficient-permissions failures — flags the
+  // connected accounts as auth-failed and queues them for reconnection.
   public async markAsFailed(
     messageChannelIds: string[],
     workspaceId: string,
@@ -366,6 +387,8 @@ export class MessageChannelSyncStatusService {
     );
   }
 
+  // Resolves each message channel to its owning workspace member and adds
+  // them to the "accounts to reconnect" list surfaced to the user.
   private async addToAccountsToReconnect(
     messageChannelIds: string[],
     workspaceId: string,

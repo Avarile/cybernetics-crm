@@ -16,6 +16,7 @@ import {
 import { createStandardRelationFieldFlatMetadata } from 'src/engine/workspace-manager/twenty-standard-application/utils/field-metadata/create-standard-relation-field-flat-metadata.util';
 import { WorkspaceMemberNumberFormatEnum } from 'src/modules/workspace-member/standard-objects/workspace-member.workspace-entity';
 
+// Builds the fixed set of standard fields for the "workspaceMember" object
 export const buildWorkspaceMemberStandardFlatFieldMetadatas = ({
   now,
   objectName,

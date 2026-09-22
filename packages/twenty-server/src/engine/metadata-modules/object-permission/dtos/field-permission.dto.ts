@@ -2,6 +2,7 @@ import { Field, ObjectType } from '@nestjs/graphql';
 
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';
 
+// GraphQL representation of a role's read/update permission override on a single field.
 @ObjectType('FieldPermission')
 export class FieldPermissionDTO {
   @Field(() => UUIDScalarType, { nullable: false })

@@ -4,6 +4,8 @@ import { assertUnreachable } from 'twenty-shared/utils';
 
 import { CustomException } from 'src/utils/custom-exception';
 
+// Exception thrown by the message channel module for missing records,
+// invalid input, ownership violations, or a misconfigured email server.
 export enum MessageChannelExceptionCode {
   MESSAGE_CHANNEL_NOT_FOUND = 'MESSAGE_CHANNEL_NOT_FOUND',
   INVALID_MESSAGE_CHANNEL_INPUT = 'INVALID_MESSAGE_CHANNEL_INPUT',
@@ -11,6 +13,7 @@ export enum MessageChannelExceptionCode {
   EMAIL_GROUP_NOT_CONFIGURED = 'EMAIL_GROUP_NOT_CONFIGURED',
 }
 
+// Maps an exception code to the localized message shown to end users.
 const getMessageChannelExceptionUserFriendlyMessage = (
   code: MessageChannelExceptionCode,
 ) => {

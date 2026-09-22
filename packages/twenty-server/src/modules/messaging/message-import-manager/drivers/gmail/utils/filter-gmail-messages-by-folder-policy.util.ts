@@ -4,6 +4,11 @@ import { MESSAGING_GMAIL_EXCLUDED_CATEGORY_LABELS } from 'src/modules/messaging/
 import { MESSAGING_GMAIL_FOLDERS_WITH_CATEGORY_EXCLUSIONS } from 'src/modules/messaging/message-import-manager/drivers/gmail/constants/messaging-gmail-folders-with-category-exclusions.constant';
 import { type MessageWithParticipants } from 'src/modules/messaging/message-import-manager/types/message';
 
+// For SELECTED_FOLDERS policy, keeps only messages that have at least one
+// label matching a synced folder; a message in a synced custom folder is
+// always kept, while one only in a synced standard folder (inbox/important
+// /sent) is dropped if it also carries an excluded category label (so
+// promotions/social messages that merely land in the inbox stay excluded).
 export const filterGmailMessagesByFolderPolicy = (
   messages: MessageWithParticipants[],
   messageChannel: Pick<

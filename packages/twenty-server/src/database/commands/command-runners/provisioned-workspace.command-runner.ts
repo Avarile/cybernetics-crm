@@ -8,6 +8,8 @@ import { type WorkspaceIteratorService } from 'src/database/commands/command-run
 
 export type ProvisionedWorkspaceCommandOptions = WorkspaceCommandOptions;
 
+// A WorkspaceCommandRunner pre-scoped to only iterate provisioned (active/suspended)
+// workspaces, for commands that shouldn't touch workspaces still being set up or torn down.
 export abstract class ProvisionedWorkspaceCommandRunner<
   Options extends ProvisionedWorkspaceCommandOptions =
     ProvisionedWorkspaceCommandOptions,

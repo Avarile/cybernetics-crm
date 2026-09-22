@@ -8,6 +8,7 @@ import { InjectWorkspaceScopedRepository } from 'src/engine/twenty-orm/workspace
 import { WorkspaceScopedRepository } from 'src/engine/twenty-orm/workspace-scoped-repository/workspace-scoped-repository';
 import { WorkspaceCache } from 'src/engine/workspace-cache/decorators/workspace-cache.decorator';
 
+// Builds and caches the workspace's enabled-feature-flag map, keyed by flag key.
 @Injectable()
 @WorkspaceCache('featureFlagsMap')
 export class WorkspaceFeatureFlagsMapCacheService extends WorkspaceCacheProvider<FeatureFlagMap> {
@@ -18,6 +19,7 @@ export class WorkspaceFeatureFlagsMapCacheService extends WorkspaceCacheProvider
     super();
   }
 
+  // Loads all feature flags for the workspace and indexes their value by flag key.
   async computeForCache(workspaceId: string): Promise<FeatureFlagMap> {
     const workspaceFeatureFlags =
       await this.featureFlagRepository.find(workspaceId);

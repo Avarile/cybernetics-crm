@@ -8,6 +8,10 @@ type FlatEntityWithOverrides = {
   overrides: Record<string, unknown> | null;
 };
 
+// When the caller doesn't own the entity (shouldOverride), splits the
+// updated properties into an overrides blob against the existing entity
+// instead of applying them directly; otherwise passes properties through
+// unchanged and keeps the existing overrides as-is.
 export const sanitizeOverridableEntityInput = <
   T extends AllMetadataName,
   TProperties extends Record<string, unknown>,

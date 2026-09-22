@@ -1,3 +1,4 @@
+// Shapes raw message threads into TimelineThreadDTOs, applying visibility redaction.
 import { FIELD_RESTRICTED_ADDITIONAL_PERMISSIONS_REQUIRED } from 'twenty-shared/constants';
 import { isDefined } from 'twenty-shared/utils';
 
@@ -6,6 +7,9 @@ import { type TimelineThreadDTO } from 'src/engine/core-modules/messaging/dtos/t
 import { extractParticipantSummary } from 'src/engine/core-modules/messaging/utils/extract-participant-summary.util';
 import { type MessageParticipantWorkspaceEntity } from 'src/modules/messaging/common/standard-objects/message-participant.workspace-entity';
 
+// Shapes raw thread data into TimelineThreadDTOs: drops threads with no
+// resolved participants, redacts subject/body fields based on visibility,
+// and attaches the participant summary.
 export const formatThreads = (
   threads: Omit<
     TimelineThreadDTO,

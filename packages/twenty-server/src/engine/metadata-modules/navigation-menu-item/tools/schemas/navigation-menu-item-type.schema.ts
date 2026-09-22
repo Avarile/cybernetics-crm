@@ -1,3 +1,6 @@
+// Zod enum schema mirroring NavigationMenuItemType, for validating agent
+// tool inputs.
+
 import { NavigationMenuItemType } from 'twenty-shared/types';
 import { z } from 'zod';
 

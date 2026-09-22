@@ -1,3 +1,6 @@
+// Rejects creating a single-field UNIQUE index when another UNIQUE index
+// already covers the exact same (field, subFieldName) pair on the object.
+
 import { msg } from '@lingui/core/macro';
 import { isDefined } from 'twenty-shared/utils';
 

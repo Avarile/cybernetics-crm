@@ -36,6 +36,7 @@ type StandardViewFieldBuilder<P extends AllStandardObjectName> = (
   args: Omit<CreateStandardViewFieldArgs<P>, 'context'>,
 ) => Record<string, FlatViewField>;
 
+// Registry of per-object view field builders, one per standard object that declares views
 const STANDARD_FLAT_VIEW_FIELD_METADATA_BUILDERS_BY_OBJECT_NAME = {
   attachment: computeStandardAttachmentViewFields,
   blocklist: computeStandardBlocklistViewFields,
@@ -76,6 +77,9 @@ export type BuildStandardFlatViewFieldMetadataMapsArgs = Omit<
   'context' | 'objectName'
 >;
 
+// Builds every standard object's fixed view field set and assembles them into a single FlatEntityMaps,
+// inheriting each view field's isSystemSideEffect flag from its parent view; used as the "target"
+// state when seeding or syncing a workspace's standard view fields
 export const buildStandardFlatViewFieldMetadataMaps = (
   args: BuildStandardFlatViewFieldMetadataMapsArgs,
 ): FlatEntityMaps<FlatViewField> => {

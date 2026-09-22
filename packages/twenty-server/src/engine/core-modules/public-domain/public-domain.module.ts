@@ -1,3 +1,5 @@
+// NestJS module wiring the public-domain resolver/service/cron for
+// registering and validating custom public-facing domains.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

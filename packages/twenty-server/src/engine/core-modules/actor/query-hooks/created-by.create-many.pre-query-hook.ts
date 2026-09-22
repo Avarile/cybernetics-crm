@@ -1,3 +1,5 @@
+// Pre-query hook that stamps createdBy/updatedBy actor metadata on records
+// being created via a createMany mutation.
 import { isDefined } from 'twenty-shared/utils';
 
 import { type WorkspacePreQueryHookInstance } from 'src/engine/api/graphql/workspace-query-runner/workspace-query-hook/interfaces/workspace-query-hook.interface';
@@ -15,12 +17,15 @@ import {
 } from 'src/engine/core-modules/actor/services/actor-from-auth-context.service';
 import { type WorkspaceAuthContext } from 'src/engine/core-modules/auth/types/workspace-auth-context.type';
 
+// Pre-query hook run before any object's createMany mutation that injects
+// createdBy/updatedBy actor metadata into each record from the auth context.
 @WorkspaceQueryHook(`*.createMany`)
 export class CreatedByCreateManyPreQueryHook implements WorkspacePreQueryHookInstance {
   constructor(
     private readonly actorFromAuthContextService: ActorFromAuthContextService,
   ) {}
 
+  // Validates payload.data is present, then stamps each record with actor fields.
   async execute(
     authContext: WorkspaceAuthContext,
     objectName: string,

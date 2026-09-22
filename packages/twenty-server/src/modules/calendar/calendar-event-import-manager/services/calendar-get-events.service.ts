@@ -17,6 +17,8 @@ export type GetCalendarEventsResponse = {
   nextSyncCursor: string;
 };
 
+// Dispatches "get changed event ids" calls to the driver matching the
+// connected account's provider.
 @Injectable()
 export class CalendarGetCalendarEventsService {
   constructor(

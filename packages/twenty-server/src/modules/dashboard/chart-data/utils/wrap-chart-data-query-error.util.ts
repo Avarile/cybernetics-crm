@@ -8,6 +8,9 @@ import {
   generateChartDataExceptionMessage,
 } from 'src/modules/dashboard/chart-data/exceptions/chart-data.exception';
 
+// Normalizes any error raised while computing chart data into a
+// ChartDataException, mapping permission errors specifically and treating
+// everything else as a query execution failure.
 export const wrapChartDataQueryError = (
   error: unknown,
   contextPrefix: string,

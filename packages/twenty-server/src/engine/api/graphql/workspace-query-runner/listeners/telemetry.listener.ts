@@ -1,3 +1,5 @@
+// Listens for the custom user-signup batch event and forwards it to the
+// telemetry service.
 import { Injectable } from '@nestjs/common';
 
 import { OnCustomBatchEvent } from 'src/engine/api/graphql/graphql-query-runner/decorators/on-custom-batch-event.decorator';
@@ -10,6 +12,7 @@ import { CustomWorkspaceEventBatch } from 'src/engine/workspace-event-emitter/ty
 export class TelemetryListener {
   constructor(private readonly telemetryService: TelemetryService) {}
 
+  // Publishes a batch of user-signup events to telemetry.
   @OnCustomBatchEvent(USER_SIGNUP_EVENT_NAME)
   async handleUserSignup(
     payload: CustomWorkspaceEventBatch<TelemetryEventType>,

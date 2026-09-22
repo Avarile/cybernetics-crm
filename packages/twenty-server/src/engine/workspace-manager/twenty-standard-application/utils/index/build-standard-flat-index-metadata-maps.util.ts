@@ -35,6 +35,7 @@ type StandardIndexBuilder<P extends AllStandardObjectName> = (
   args: Omit<CreateStandardIndexArgs<P>, 'context'>,
 ) => Record<string, FlatIndexMetadata>;
 
+// Registry of per-object index builders, one per standard object that declares indexes
 const STANDARD_FLAT_INDEX_METADATA_BUILDERS_BY_OBJECT_NAME = {
   attachment: buildAttachmentStandardFlatIndexMetadatas,
   blocklist: buildBlocklistStandardFlatIndexMetadatas,
@@ -71,6 +72,8 @@ const STANDARD_FLAT_INDEX_METADATA_BUILDERS_BY_OBJECT_NAME = {
   [P in AllStandardObjectName]?: StandardIndexBuilder<P>;
 };
 
+// Builds every standard object's fixed index set and assembles them into a single FlatEntityMaps,
+// used as the "target" state when seeding or syncing a workspace's standard indexes
 export const buildStandardFlatIndexMetadataMaps = (
   args: Omit<CreateStandardIndexArgs, 'context' | 'objectName'>,
 ): FlatEntityMaps<FlatIndexMetadata> => {

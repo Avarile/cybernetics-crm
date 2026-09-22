@@ -1,3 +1,5 @@
+// NestJS module exposing aggregate AI usage stats (conversations, skills,
+// tools) for a workspace, shown in the AI settings overview.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

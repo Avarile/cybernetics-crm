@@ -1,3 +1,5 @@
+// Sets Sentry user/tags/context fields for the current scope from a
+// workspace (and optional user-workspace) id.
 import * as Sentry from '@sentry/node';
 
 type WorkspaceSentryFields = {

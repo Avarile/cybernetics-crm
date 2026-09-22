@@ -1,6 +1,7 @@
 import { type ExtendedUIMessage } from 'twenty-shared/ai';
 import { getValidTimeZoneOrUndefined, isDefined } from 'twenty-shared/utils';
 
+// Formats a message's send time in the user's timezone for prompt injection.
 const formatMessageTimestamp = (date: Date, timezone: string | null): string =>
   new Intl.DateTimeFormat('en-US', {
     timeZone: getValidTimeZoneOrUndefined(timezone),
@@ -13,6 +14,7 @@ const formatMessageTimestamp = (date: Date, timezone: string | null): string =>
     timeZoneName: 'short',
   }).format(date);
 
+// Parses a message's stored createdAt metadata, if present and valid.
 const extractCreatedAt = (message: ExtendedUIMessage): Date | undefined => {
   const rawCreatedAt = message.metadata?.createdAt;
 
@@ -25,6 +27,8 @@ const extractCreatedAt = (message: ExtendedUIMessage): Date | undefined => {
   return isNaN(parsedCreatedAt.getTime()) ? undefined : parsedCreatedAt;
 };
 
+// Prepends a "Sent: <timestamp>" text part to each user message with a known
+// send time, so the model has temporal context for the conversation.
 export const injectMessageTimestamps = (
   messages: ExtendedUIMessage[],
   timezone: string | null,

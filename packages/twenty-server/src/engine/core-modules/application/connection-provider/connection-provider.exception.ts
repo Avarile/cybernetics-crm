@@ -1,3 +1,5 @@
+// Custom exception type for connection provider failures, with
+// user-friendly translated messages per code.
 import { type MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { assertUnreachable } from 'twenty-shared/utils';
@@ -5,6 +7,7 @@ import { assertUnreachable } from 'twenty-shared/utils';
 import { ConnectionProviderExceptionCode } from 'src/engine/core-modules/application/connection-provider/connection-provider-exception-code.enum';
 import { CustomException } from 'src/utils/custom-exception';
 
+// Returns the localized, user-facing message for a given exception code.
 const getConnectionProviderExceptionUserFriendlyMessage = (
   code: ConnectionProviderExceptionCode,
 ) => {
@@ -34,6 +37,8 @@ const getConnectionProviderExceptionUserFriendlyMessage = (
   }
 };
 
+// Exception thrown for connection provider and OAuth connection flow
+// failures.
 export class ConnectionProviderException extends CustomException<ConnectionProviderExceptionCode> {
   constructor(
     message: string,

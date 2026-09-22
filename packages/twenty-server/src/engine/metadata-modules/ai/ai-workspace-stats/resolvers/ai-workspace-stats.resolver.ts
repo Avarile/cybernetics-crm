@@ -1,3 +1,4 @@
+// GraphQL resolver exposing the AI stats query used by the settings overview.
 import { UseGuards } from '@nestjs/common';
 import { Query } from '@nestjs/graphql';
 
@@ -24,6 +25,7 @@ export class AiWorkspaceStatsResolver {
     private readonly userRoleService: UserRoleService,
   ) {}
 
+  // Computes conversation/skill/tool counts for the workspace, scoped to the caller's role.
   @Query(() => WorkspaceAiStatsDTO)
   async findWorkspaceAiStats(
     @AuthWorkspace() { id: workspaceId }: WorkspaceEntity,

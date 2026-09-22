@@ -40,6 +40,8 @@ const getCalendarEventImportDriverExceptionUserFriendlyMessage = (
   }
 };
 
+// Thrown by calendar import drivers (Google/Microsoft/CalDAV) for provider or
+// sync errors encountered while fetching/importing calendar events.
 export class CalendarEventImportDriverException extends CustomException<CalendarEventImportDriverExceptionCode> {
   constructor(
     message: string,

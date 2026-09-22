@@ -1,3 +1,6 @@
+// Groups and aggregates records for a given object by one or more dimensions,
+// resolving the aggregate field/operation against the object's available aggregations.
+
 import { Injectable, Logger } from '@nestjs/common';
 
 import { QUERY_MAX_RECORDS } from 'twenty-shared/constants';
@@ -29,6 +32,8 @@ export class GroupByRecordsService {
     private readonly groupByArgProcessor: GroupByArgProcessorService,
   ) {}
 
+  // Groups objectName records by groupBy dimensions with the requested
+  // aggregation, translating query-runner errors into RecordCrudException.
   async execute(
     params: GroupByRecordsParams,
   ): Promise<ToolOutput<GroupByRecordsResult>> {
@@ -154,6 +159,8 @@ export class GroupByRecordsService {
     }
   }
 
+  // Derives a human-readable label for a groupBy entry, unwrapping relation
+  // fields (e.g. company.id) to their singular field name where appropriate.
   private getDimensionLabelFromGroupByEntry(
     entry: GroupByRecordsParams['groupBy'][number],
   ): string {

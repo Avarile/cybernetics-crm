@@ -4,6 +4,8 @@ import { ViewFilterGroupLogicalOperator } from 'twenty-shared/types';
 
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';
 
+// GraphQL/REST input for creating a new view filter group, optionally
+// nested under a parent group.
 @InputType()
 export class CreateViewFilterGroupInput {
   @Field(() => UUIDScalarType, { nullable: true })

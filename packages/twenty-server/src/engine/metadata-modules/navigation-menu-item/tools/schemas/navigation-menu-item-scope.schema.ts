@@ -1,3 +1,6 @@
+// Zod schema for the 'workspace' vs 'user' scope of a navigation menu item
+// tool call.
+
 import { z } from 'zod';
 
 export const navigationMenuItemScopeSchema = z

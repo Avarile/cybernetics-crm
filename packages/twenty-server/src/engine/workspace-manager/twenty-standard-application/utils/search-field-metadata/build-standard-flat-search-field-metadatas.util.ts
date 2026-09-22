@@ -7,6 +7,7 @@ import {
 } from 'src/engine/workspace-manager/twenty-standard-application/utils/search-field-metadata/create-standard-search-field-flat-metadata.util';
 import { type FieldTypeAndNameMetadata } from 'src/engine/workspace-manager/utils/get-ts-vector-column-expression.util';
 
+// Builds one standard object's search field metadata entries, one per configured search field, in order
 export const buildStandardFlatSearchFieldMetadatas = <
   O extends AllStandardObjectName,
 >({

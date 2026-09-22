@@ -8,6 +8,8 @@ import { type FetchedCalendarEvent } from 'src/modules/calendar/common/types/fet
 import { MicrosoftOAuth2ClientProvider } from 'src/modules/connected-account/oauth2-client-manager/drivers/microsoft/microsoft-oauth2-client.provider';
 import { type ConnectedAccountEntity } from 'src/engine/metadata-modules/connected-account/entities/connected-account.entity';
 
+// Import-manager driver entry point for Microsoft Calendar: fetches full
+// event data one by one for a set of external event ids.
 @Injectable()
 export class MicrosoftCalendarImportEventsService {
   constructor(

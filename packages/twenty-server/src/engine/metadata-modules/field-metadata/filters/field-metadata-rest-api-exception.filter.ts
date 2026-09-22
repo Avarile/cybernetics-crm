@@ -20,6 +20,8 @@ import { WorkspaceMigrationBuilderException } from 'src/engine/workspace-manager
 import { workspaceMigrationBuilderRestApiExceptionHandler } from 'src/engine/workspace-manager/workspace-migration/interceptors/utils/workspace-migration-builder-rest-api-exception-handler.util';
 import { type CustomException } from 'src/utils/custom-exception';
 
+// REST exception filter mapping field-metadata-related exception types
+// (and their nested workspace-migration/flat-entity-maps errors) to HTTP responses.
 type CaughtException =
   | FieldMetadataException
   | InvalidMetadataException
@@ -41,6 +43,7 @@ export class FieldMetadataRestApiExceptionFilter implements ExceptionFilter {
     private readonly i18nService: I18nService,
   ) {}
 
+  // Dispatches by exception type to the appropriate status-code handler.
   catch(exception: CaughtException, host: ArgumentsHost) {
     const response = host.switchToHttp().getResponse<Response>();
 

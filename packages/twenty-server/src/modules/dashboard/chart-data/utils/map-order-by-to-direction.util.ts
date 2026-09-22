@@ -3,6 +3,7 @@ import { assertUnreachable } from 'twenty-shared/utils';
 
 import { GraphOrderBy } from 'src/engine/metadata-modules/page-layout-widget/enums/graph-order-by.enum';
 
+// Maps a GraphOrderBy value to the underlying record query's sort direction.
 export const mapOrderByToDirection = (
   orderByEnum:
     | GraphOrderBy.FIELD_ASC

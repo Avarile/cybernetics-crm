@@ -1,3 +1,5 @@
+// Post-query hook on message.findMany: applies message channel visibility
+// restrictions to the returned messages for the requesting auth context.
 import { type WorkspacePostQueryHookInstance } from 'src/engine/api/graphql/workspace-query-runner/workspace-query-hook/interfaces/workspace-query-hook.interface';
 
 import { WorkspaceQueryHook } from 'src/engine/api/graphql/workspace-query-runner/workspace-query-hook/decorators/workspace-query-hook.decorator';
@@ -19,6 +21,8 @@ export class MessageFindManyPostQueryHook implements WorkspacePostQueryHookInsta
     private readonly applyMessagesVisibilityRestrictionsService: ApplyMessagesVisibilityRestrictionsService,
   ) {}
 
+  // Requires a user, API key or application auth context (with a
+  // workspace); applies visibility restrictions to `payload` in place.
   async execute(
     authContext: WorkspaceAuthContext,
     _objectName: string,

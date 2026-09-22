@@ -11,6 +11,7 @@ import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace
 
 import { RoleTargetService } from './services/role-target.service';
 
+// Wires up role-target CRUD plus the API-key/user-workspace role lookup caches.
 @Module({
   imports: [
     WorkspaceManyOrAllFlatEntityMapsCacheModule,

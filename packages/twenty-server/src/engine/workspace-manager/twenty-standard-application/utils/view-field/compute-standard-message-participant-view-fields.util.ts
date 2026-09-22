@@ -4,6 +4,7 @@ import {
   type CreateStandardViewFieldArgs,
 } from 'src/engine/workspace-manager/twenty-standard-application/utils/view-field/create-standard-view-field-flat-metadata.util';
 
+// Builds the fixed set of standard view fields for the "messageParticipant" object's views
 export const computeStandardMessageParticipantViewFields = (
   args: Omit<CreateStandardViewFieldArgs<'messageParticipant'>, 'context'>,
 ): Record<string, FlatViewField> => {

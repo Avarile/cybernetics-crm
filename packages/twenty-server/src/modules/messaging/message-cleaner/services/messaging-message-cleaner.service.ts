@@ -1,3 +1,6 @@
+// Deletes message channel message associations and the messages/threads
+// that become orphaned as a result, in paginated batches to avoid loading
+// large result sets into memory at once.
 import { Injectable, Logger } from '@nestjs/common';
 
 import chunk from 'lodash.chunk';
@@ -18,6 +21,10 @@ export class MessagingMessageCleanerService {
     private readonly globalWorkspaceOrmManager: GlobalWorkspaceOrmManager,
   ) {}
 
+  // For the given external message ids on a channel, deletes the matching
+  // message channel message associations, then cascades: deletes messages
+  // left with no remaining associations, then threads left with no
+  // remaining messages. Processed in chunks of 500 external ids.
   async deleteMessagesChannelMessageAssociationsAndRelatedOrphans({
     workspaceId,
     messageExternalIds,
@@ -124,6 +131,8 @@ export class MessagingMessageCleanerService {
     );
   }
 
+  // Deletes all message channel message associations for a given channel,
+  // paginated, inside a single transaction.
   async deleteMessageChannelMessageAssociationsByChannelId({
     workspaceId,
     messageChannelId,
@@ -190,6 +199,9 @@ export class MessagingMessageCleanerService {
     );
   }
 
+  // Deletes, paginated within a transaction, all messages that have no
+  // message channel message associations, then all message threads left
+  // with no messages.
   public async cleanOrphanMessagesAndThreads(workspaceId: string) {
     const authContext = buildSystemAuthContext(workspaceId);
 

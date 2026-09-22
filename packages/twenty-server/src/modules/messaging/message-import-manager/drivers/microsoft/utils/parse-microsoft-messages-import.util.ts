@@ -4,6 +4,8 @@ import {
 } from 'src/modules/messaging/message-import-manager/drivers/exceptions/message-import-driver.exception';
 import { isDefined } from 'twenty-shared/utils';
 
+// Maps a Microsoft Graph error's HTTP status code (and message, for a few
+// special cases) to a classified MessageImportDriverException.
 export const parseMicrosoftMessagesImportError = (
   error: {
     statusCode: number;

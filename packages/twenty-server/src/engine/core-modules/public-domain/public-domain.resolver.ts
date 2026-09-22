@@ -1,3 +1,5 @@
+// GraphQL resolver for registering, listing, deleting, and re-validating a
+// workspace's public domains.
 import { UseFilters, UseGuards, UsePipes } from '@nestjs/common';
 import { Args, Mutation, Query } from '@nestjs/graphql';
 
@@ -45,6 +47,7 @@ export class PublicDomainResolver {
   ) {}
 
   @Query(() => [PublicDomainDTO])
+  // Lists all public domains registered for the workspace.
   async findManyPublicDomains(
     @AuthWorkspace() currentWorkspace: WorkspaceEntity,
   ): Promise<PublicDomainDTO[]> {
@@ -52,6 +55,7 @@ export class PublicDomainResolver {
   }
 
   @Mutation(() => PublicDomainDTO)
+  // Registers a new public domain for the given application.
   async createPublicDomain(
     @Args() { domain, applicationId }: CreatePublicDomainInput,
     @AuthWorkspace() currentWorkspace: WorkspaceEntity,
@@ -64,6 +68,7 @@ export class PublicDomainResolver {
   }
 
   @Mutation(() => Boolean)
+  // Deletes a public domain from the workspace.
   async deletePublicDomain(
     @Args() { domain }: PublicDomainInput,
     @AuthWorkspace() currentWorkspace: WorkspaceEntity,
@@ -77,6 +82,7 @@ export class PublicDomainResolver {
   }
 
   @Mutation(() => DomainValidRecords, { nullable: true })
+  // Refreshes and returns the DNS validation records/status for a public domain.
   async checkPublicDomainValidRecords(
     @Args() { domain }: PublicDomainInput,
     @AuthWorkspace() workspace: WorkspaceEntity,

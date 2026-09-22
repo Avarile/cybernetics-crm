@@ -1,3 +1,4 @@
+// NestJS module exposing CacheLockService, a Redis-backed distributed lock.
 import { Module } from '@nestjs/common';
 
 import { CacheLockService } from 'src/engine/core-modules/cache-lock/cache-lock.service';

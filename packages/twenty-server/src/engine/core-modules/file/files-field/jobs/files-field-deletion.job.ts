@@ -1,3 +1,5 @@
+// Queue processor deleting the storage files behind a FILES-type field's
+// attachments after their owning record was destroyed.
 import { Logger } from '@nestjs/common';
 
 import { isDefined } from 'twenty-shared/utils';
@@ -19,6 +21,7 @@ export class FilesFieldDeletionJob {
   constructor(private readonly filesFieldService: FilesFieldService) {}
 
   @Process(FilesFieldDeletionJob.name)
+  // Deletes each listed file, logging (not throwing) per-file failures.
   async handle(data: FilesFieldDeletionJobData): Promise<void> {
     const { workspaceId, fileIds } = data;
 

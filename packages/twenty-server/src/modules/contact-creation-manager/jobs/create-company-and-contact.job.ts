@@ -17,6 +17,8 @@ export type CreateCompanyAndContactJobData = {
 };
 
 @Processor(MessageQueue.contactCreationQueue)
+// Auto-creates companies and people from a batch of message/calendar
+// participants that don't already exist as contacts.
 export class CreateCompanyAndContactJob {
   constructor(
     private readonly createCompanyAndPersonService: CreateCompanyAndPersonService,

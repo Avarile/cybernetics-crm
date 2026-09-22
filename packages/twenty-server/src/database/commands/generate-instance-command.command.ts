@@ -24,6 +24,9 @@ type GenerateInstanceCommandOptions = {
   version?: TwentyAllVersion;
 };
 
+// CLI command (`generate:instance-command`): scaffolds a new fast or slow instance
+// command file (via InstanceCommandGenerationService) under the target version's
+// upgrade-version-command directory, then registers it in instance-commands.constant.ts.
 @Command({
   name: 'generate:instance-command',
   description:
@@ -79,6 +82,8 @@ export class GenerateInstanceCommandCommand extends CommandRunner {
     return value as TwentyAllVersion;
   }
 
+  // Generates the instance command file from a schema diff (fast) or a data-migration
+  // template (slow), writes it to disk, and registers it in the version's command list.
   async run(
     _passedParams: string[],
     options: GenerateInstanceCommandOptions,
@@ -127,12 +132,15 @@ export class GenerateInstanceCommandCommand extends CommandRunner {
     this.appendToInstanceCommandsConstant(result.className, newImportPath);
   }
 
+  // Resolves the upgrade-version-command subdirectory (e.g. "1-23") for a version.
   private getVersionDir(version: string): string {
     const versionSlug = version.split('.').slice(0, 2).join('-');
 
     return path.join(UPGRADE_VERSION_COMMAND_DIR, versionSlug);
   }
 
+  // Adds an import for the new command class and appends it to the exported array
+  // in instance-commands.constant.ts, throwing if it's already registered.
   private appendToInstanceCommandsConstant(
     className: string,
     importPath: string,

@@ -1,3 +1,5 @@
+// GraphQL resolver for field metadata: CRUD mutations, relation/morph-relation
+// field resolution, and application-override-aware label/description/icon resolution.
 import { UseFilters, UseGuards, UsePipes } from '@nestjs/common';
 import { Args, Context, Mutation, Parent, ResolveField } from '@nestjs/graphql';
 
@@ -50,12 +52,15 @@ export class FieldMetadataResolver {
     nullable: true,
     deprecationReason: 'Use isUIEditable',
   })
+  // Deprecated alias derived from isUIEditable, kept for backward compatibility.
   async isUIReadOnly(
     @Parent() fieldMetadata: Pick<FieldMetadataDTO, 'isUIEditable'>,
   ): Promise<boolean> {
     return !(fieldMetadata.isUIEditable ?? true);
   }
 
+  // Resolves a translatable field property (label/description/icon), applying
+  // any application-level override and locale-specific translation catalog.
   private async resolveStandardOverride(
     fieldMetadata: FieldMetadataStandardOverrideParent,
     labelKey: 'label' | 'description' | 'icon',
@@ -91,6 +96,7 @@ export class FieldMetadataResolver {
   }
 
   @ResolveField(() => String, { nullable: true })
+  // Resolves the field's effective (override/translation-aware) label.
   async label(
     @Parent() fieldMetadata: FieldMetadataStandardOverrideParent,
     @Context() context: { loaders: IDataloaders } & I18nContext,
@@ -105,6 +111,7 @@ export class FieldMetadataResolver {
   }
 
   @ResolveField(() => String, { nullable: true })
+  // Resolves the field's effective (override/translation-aware) description.
   async description(
     @Parent() fieldMetadata: FieldMetadataStandardOverrideParent,
     @Context() context: { loaders: IDataloaders } & I18nContext,
@@ -119,6 +126,7 @@ export class FieldMetadataResolver {
   }
 
   @ResolveField(() => String, { nullable: true })
+  // Resolves the field's effective (override/translation-aware) icon.
   async icon(
     @Parent() fieldMetadata: FieldMetadataStandardOverrideParent,
     @Context() context: { loaders: IDataloaders } & I18nContext,
@@ -134,6 +142,7 @@ export class FieldMetadataResolver {
 
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.DATA_MODEL))
   @Mutation(() => FieldMetadataDTO)
+  // Creates a field via the flat field metadata service.
   async createOneField(
     @Args('input') input: CreateOneFieldMetadataInput,
     @AuthWorkspace() { id: workspaceId }: WorkspaceEntity,
@@ -152,6 +161,7 @@ export class FieldMetadataResolver {
 
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.DATA_MODEL))
   @Mutation(() => FieldMetadataDTO)
+  // Updates a field via the flat field metadata service.
   async updateOneField(
     @Args('input') input: UpdateOneFieldMetadataInput,
     @AuthWorkspace() { id: workspaceId }: WorkspaceEntity,
@@ -170,6 +180,7 @@ export class FieldMetadataResolver {
 
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.DATA_MODEL))
   @Mutation(() => FieldMetadataDTO)
+  // Deletes a field via the flat field metadata service.
   async deleteOneField(
     @Args('input') deleteOneFieldInput: DeleteOneFieldInput,
     @AuthWorkspace() { id: workspaceId }: WorkspaceEntity,
@@ -191,6 +202,7 @@ export class FieldMetadataResolver {
   }
 
   @ResolveField(() => RelationDTO, { nullable: true })
+  // Resolves the relation this field belongs to, if it's a relation field.
   async relation(
     @AuthWorkspace() workspace: WorkspaceEntity,
     @Parent()
@@ -212,6 +224,7 @@ export class FieldMetadataResolver {
   }
 
   @ResolveField(() => [RelationDTO], { nullable: true })
+  // Resolves the set of relations this field belongs to, if it's a morph relation field.
   async morphRelations(
     @AuthWorkspace() workspace: WorkspaceEntity,
     @Parent()

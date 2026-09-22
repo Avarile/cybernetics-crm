@@ -29,6 +29,7 @@ export type E2BDriverOptions = {
 
 const SANDBOX_SCRIPTS_PATH = join(__dirname, '..', 'sandbox-scripts');
 
+// Recursively copies the local sandbox-scripts directory into the E2B sandbox
 async function uploadDirectoryToSandbox(
   sandbox: Sandbox,
   localPath: string,
@@ -51,11 +52,15 @@ async function uploadDirectoryToSandbox(
   }
 }
 
+// Code interpreter driver backed by E2B cloud sandboxes; reuses a warm sandbox
+// per session when a sessionId is provided, otherwise runs and tears down ephemerally
 export class E2BDriver implements CodeInterpreterDriver {
   private readonly logger = new Logger(E2BDriver.name);
 
   constructor(private options: E2BDriverOptions) {}
 
+  // Runs code in an E2B sandbox, uploading input files first and collecting
+  // any files written to /home/user/output afterward
   async execute(
     code: string,
     files?: InputFile[],
@@ -182,6 +187,8 @@ export class E2BDriver implements CodeInterpreterDriver {
     }
   }
 
+  // Clears a reused sandbox's output directory so stale files from a prior run
+  // aren't returned as results
   private async resetOutputDirectory(sandbox: Sandbox): Promise<void> {
     const outputDirectory = '/home/user/output';
 
@@ -200,10 +207,12 @@ export class E2BDriver implements CodeInterpreterDriver {
     }
   }
 
+  // Kills and forgets any warm sandboxes tied to the given session
   async releaseSession(sessionId: string): Promise<void> {
     await releaseSessionSandboxes(Sandbox, this.options.apiKey, sessionId);
   }
 
+  // Kills warm sandboxes that have been idle past maxAgeMs
   async sweepExpiredSessions(maxAgeMs: number): Promise<number> {
     return sweepExpiredSessionSandboxes(Sandbox, this.options.apiKey, maxAgeMs);
   }

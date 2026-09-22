@@ -1,6 +1,9 @@
 import { type AiProviderModelConfig } from 'src/engine/metadata-modules/ai/ai-models/types/ai-provider-model-config.type';
 import { type AiProvidersConfig } from 'src/engine/metadata-modules/ai/ai-models/types/ai-providers-config.type';
 
+// Fills in each provider's `name` from its key and tags all catalog models
+// with `source: 'catalog'`, so catalog-loaded providers/models have a
+// consistent shape before being merged with custom ones.
 export const normalizeAiProviders = (
   raw: AiProvidersConfig,
 ): AiProvidersConfig => {

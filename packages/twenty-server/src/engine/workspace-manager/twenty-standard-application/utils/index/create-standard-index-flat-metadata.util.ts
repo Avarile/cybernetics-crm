@@ -18,6 +18,7 @@ import { type AllStandardObjectName } from 'src/engine/workspace-manager/twenty-
 import { type StandardBuilderArgs } from 'src/engine/workspace-manager/twenty-standard-application/types/metadata-standard-buillder-args.type';
 import { type UniversalFlatIndexFieldMetadata } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-index-metadata.type';
 
+// Per-index content (name, related fields, index type/uniqueness) supplied by each standard index builder
 export type CreateStandardIndexOptions<O extends AllStandardObjectName> = {
   indexName: AllStandardObjectIndexName<O>;
   relatedFieldNames: AllStandardObjectFieldName<O>[];
@@ -26,6 +27,7 @@ export type CreateStandardIndexOptions<O extends AllStandardObjectName> = {
   Pick<FlatIndexMetadata, 'indexType' | 'indexWhereClause' | 'isUnique'>
 >;
 
+// Arguments accepted by createStandardIndexFlatMetadata
 export type CreateStandardIndexArgs<
   O extends AllStandardObjectName = AllStandardObjectName,
 > = StandardBuilderArgs<'index'> & {
@@ -33,6 +35,8 @@ export type CreateStandardIndexArgs<
   context: CreateStandardIndexOptions<O>;
 };
 
+// Builds a single standard index's FlatIndexMetadata: resolves its related fields' universal
+// identifiers, computes the deterministic index name/universal identifier, and links its index fields
 export const createStandardIndexFlatMetadata = <
   O extends AllStandardObjectName,
 >({

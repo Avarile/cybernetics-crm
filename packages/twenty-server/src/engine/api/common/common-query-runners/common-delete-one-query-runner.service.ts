@@ -25,6 +25,8 @@ import { FlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-metada
 import { FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object-metadata/types/flat-object-metadata.type';
 import { assertMutationNotOnRemoteObject } from 'src/engine/metadata-modules/object-metadata/utils/assert-mutation-not-on-remote-object.util';
 
+// Handles deleteOne by delegating to CommonDeleteManyQueryRunnerService
+// with an id-equality filter.
 @Injectable()
 export class CommonDeleteOneQueryRunnerService extends CommonBaseQueryRunnerService<
   DeleteOneQueryArgs,
@@ -38,6 +40,7 @@ export class CommonDeleteOneQueryRunnerService extends CommonBaseQueryRunnerServ
 
   protected readonly operationName = CommonQueryNames.DELETE_ONE;
 
+  // Delegates to deleteMany filtered by id, throwing if no record matched.
   async run(
     args: CommonExtendedInput<DeleteOneQueryArgs>,
     queryRunnerContext: CommonExtendedQueryRunnerContext,
@@ -63,6 +66,7 @@ export class CommonDeleteOneQueryRunnerService extends CommonBaseQueryRunnerServ
     return result[0];
   }
 
+  // No args transformation needed for deleteOne.
   async computeArgs(
     args: CommonInput<DeleteOneQueryArgs>,
     _queryRunnerContext: CommonBaseQueryRunnerContext,
@@ -70,6 +74,7 @@ export class CommonDeleteOneQueryRunnerService extends CommonBaseQueryRunnerServ
     return args;
   }
 
+  // Runs the deleted record through the common result-getter pipeline.
   async processQueryResult(
     queryResult: ObjectRecord,
     flatObjectMetadata: FlatObjectMetadata,
@@ -86,6 +91,7 @@ export class CommonDeleteOneQueryRunnerService extends CommonBaseQueryRunnerServ
     );
   }
 
+  // Rejects mutations on remote objects and validates the target id.
   async validate(
     args: CommonInput<DeleteOneQueryArgs>,
     queryRunnerContext: CommonBaseQueryRunnerContext,

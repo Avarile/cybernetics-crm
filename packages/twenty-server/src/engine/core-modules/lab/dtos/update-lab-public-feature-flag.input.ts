@@ -1,3 +1,4 @@
+// GraphQL input for toggling a public (lab) feature flag.
 import { Field, InputType } from '@nestjs/graphql';
 
 import { IsBoolean, IsNotEmpty } from 'class-validator';

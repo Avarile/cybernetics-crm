@@ -1,3 +1,4 @@
+// NestJS module for assigning/removing permission roles on AI agents.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

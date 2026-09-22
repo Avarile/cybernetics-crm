@@ -28,6 +28,8 @@ import { FlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-metada
 import { FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object-metadata/types/flat-object-metadata.type';
 import { assertMutationNotOnRemoteObject } from 'src/engine/metadata-modules/object-metadata/utils/assert-mutation-not-on-remote-object.util';
 
+// Handles destroyMany: permanently deletes records matching the filter
+// and optionally hydrates nested relations on the destroyed records.
 @Injectable()
 export class CommonDestroyManyQueryRunnerService extends CommonBaseQueryRunnerService<
   DestroyManyQueryArgs,
@@ -35,6 +37,8 @@ export class CommonDestroyManyQueryRunnerService extends CommonBaseQueryRunnerSe
 > {
   protected readonly operationName = CommonQueryNames.DESTROY_MANY;
 
+  // Builds the filtered query, hard-deletes matching records, and
+  // hydrates any requested nested relations on the destroyed records.
   async run(
     args: CommonExtendedInput<DestroyManyQueryArgs>,
     queryRunnerContext: CommonExtendedQueryRunnerContext,
@@ -94,6 +98,7 @@ export class CommonDestroyManyQueryRunnerService extends CommonBaseQueryRunnerSe
     return destroyedRecords;
   }
 
+  // Validates and normalizes the destroy filter against object/field metadata.
   async computeArgs(
     args: CommonInput<DestroyManyQueryArgs>,
     queryRunnerContext: CommonBaseQueryRunnerContext,
@@ -115,6 +120,7 @@ export class CommonDestroyManyQueryRunnerService extends CommonBaseQueryRunnerSe
     };
   }
 
+  // Runs the destroyed records through the common result-getter pipeline.
   async processQueryResult(
     queryResult: ObjectRecord[],
     flatObjectMetadata: FlatObjectMetadata,
@@ -131,6 +137,8 @@ export class CommonDestroyManyQueryRunnerService extends CommonBaseQueryRunnerSe
     );
   }
 
+  // Rejects mutations on remote objects, requires a filter to be present
+  // (to prevent accidental destroy-all), and validates any id-in-list values.
   async validate(
     args: CommonInput<DestroyManyQueryArgs>,
     queryRunnerContext: CommonBaseQueryRunnerContext,

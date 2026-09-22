@@ -8,6 +8,9 @@ import { type FlatNavigationMenuItemMaps } from 'src/engine/metadata-modules/fla
 import { type FlatNavigationMenuItem } from 'src/engine/metadata-modules/flat-navigation-menu-item/types/flat-navigation-menu-item.type';
 import { type CreateNavigationMenuItemInput } from 'src/engine/metadata-modules/navigation-menu-item/dtos/create-navigation-menu-item.input';
 
+// Builds a new flat navigation menu item from a create input, auto-assigning the next
+// position within its user-workspace/folder group when not explicitly provided, and
+// resolving referenced entities to universal identifiers.
 export const fromCreateNavigationMenuItemInputToFlatNavigationMenuItemToCreate =
   ({
     createNavigationMenuItemInput,

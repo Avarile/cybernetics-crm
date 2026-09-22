@@ -1,3 +1,4 @@
+// Error codes for connection provider and OAuth connection flow failures.
 export enum ConnectionProviderExceptionCode {
   PROVIDER_NOT_FOUND = 'PROVIDER_NOT_FOUND',
   CLIENT_CREDENTIALS_NOT_CONFIGURED = 'CLIENT_CREDENTIALS_NOT_CONFIGURED',

@@ -1,3 +1,4 @@
+// GraphQL DTO for a stored file's metadata plus a signed download URL.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 import { UUIDScalarType } from 'src/engine/api/graphql/workspace-schema-builder/graphql-types/scalars';

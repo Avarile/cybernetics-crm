@@ -1,3 +1,7 @@
+// Computes before/after diffs between two versions of an object record for
+// change events, translating relation join-column changes into the related
+// field's id-based before/after shape and filtering out non-meaningful
+// fields (updatedAt, searchVector, relation/morph-relation fields).
 import {
   FieldMetadataType,
   RelationType,
@@ -18,12 +22,14 @@ export type RelationFieldChangeValue = {
   id: string | null;
 };
 
+// Wraps a raw relation id into the {id} shape used for relation field diffs.
 const buildRelationFieldChangeValue = (
   relationId: string | null | undefined,
 ): RelationFieldChangeValue => ({
   id: isDefined(relationId) ? relationId : null,
 });
 
+// Narrows a field to a MANY_TO_ONE relation field.
 const isManyToOneRelationField = (
   field: FlatFieldMetadata,
 ): field is FlatFieldMetadata<FieldMetadataType.RELATION> => {
@@ -33,6 +39,7 @@ const isManyToOneRelationField = (
   );
 };
 
+// Resolves the join column name backing a many-to-one relation field.
 const getJoinColumnNameForRelationField = (
   field: FlatFieldMetadata<FieldMetadataType.RELATION>,
 ) => {
@@ -44,6 +51,9 @@ const getJoinColumnNameForRelationField = (
   );
 };
 
+// Maps the keys of a raw update diff to the corresponding field names,
+// additionally including a relation field's join column name alongside its
+// own name so both are treated as "updated".
 export const computeUpdatedFieldsFromDiff = (
   diff: Record<string, unknown>,
   objectMetadataItem: FlatObjectMetadata,
@@ -77,6 +87,10 @@ export const computeUpdatedFieldsFromDiff = (
   });
 };
 
+// Builds a map of changed fields (excluding updatedAt/searchVector/relation
+// columns) between oldRecord and newRecord, each as {before, after}, then
+// separately adds an entry per changed many-to-one relation field using its
+// join column value wrapped as {id}.
 export const objectRecordChangedValues = (
   oldRecord: Partial<ObjectRecord>,
   newRecord: Partial<ObjectRecord>,

@@ -1,3 +1,5 @@
+// Custom exception type and error codes for application variable failures,
+// with user-friendly translated messages per code.
 import { type MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { assertUnreachable } from 'twenty-shared/utils';
@@ -9,6 +11,7 @@ export enum ApplicationVariableEntityExceptionCode {
   INVALID_APPLICATION_VARIABLE_INPUT = 'INVALID_APPLICATION_VARIABLE_INPUT',
 }
 
+// Returns the localized, user-facing message for a given exception code.
 const getApplicationVariableEntityExceptionUserFriendlyMessage = (
   code: ApplicationVariableEntityExceptionCode,
 ) => {
@@ -22,6 +25,8 @@ const getApplicationVariableEntityExceptionUserFriendlyMessage = (
   }
 };
 
+// Exception thrown for application variable failures (not found, invalid
+// input).
 export class ApplicationVariableEntityException extends CustomException<ApplicationVariableEntityExceptionCode> {
   constructor(
     message: string,

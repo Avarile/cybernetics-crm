@@ -1,3 +1,6 @@
+// Parses a raw inbound email (from S3) with postal-mime into the
+// pipeline's normalized message shape; always treated as INCOMING with no
+// attachments and synthesizes a Message-ID from the S3 key when absent.
 import { Injectable } from '@nestjs/common';
 
 import PostalMime, { type Email as ParsedEmail } from 'postal-mime';
@@ -11,6 +14,7 @@ import { sanitizeString } from 'src/modules/messaging/message-import-manager/uti
 
 @Injectable()
 export class InboundEmailParserService {
+  // Parses the raw MIME buffer and builds the normalized message.
   async parse(
     rawMessage: Buffer,
     s3Key: string,
@@ -21,6 +25,7 @@ export class InboundEmailParserService {
     return { parsed: parsedEmail, message };
   }
 
+  // Maps a parsed email into the pipeline's normalized message shape.
   private buildMessage(
     parsedEmail: ParsedEmail,
     s3Key: string,

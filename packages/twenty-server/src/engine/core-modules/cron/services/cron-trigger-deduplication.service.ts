@@ -1,3 +1,6 @@
+// Service preventing the same cron pattern from being dispatched more than
+// once per scheduled tick across multiple server instances, using a Redis
+// lock keyed by the pattern's last trigger timestamp.
 import { Injectable } from '@nestjs/common';
 
 import { CronExpressionParser } from 'cron-parser';
@@ -16,6 +19,8 @@ export class CronTriggerDeduplicationService {
     private readonly cacheStorageService: CacheStorageService,
   ) {}
 
+  // Returns true (and claims a dedup lock) only if `pattern` was due within
+  // the current root cron tick and no other instance has already claimed it.
   async shouldDispatch(
     keyPrefix: string,
     pattern: string,

@@ -37,9 +37,13 @@ import { WorkspaceMigrationRunnerRestApiExceptionFilter } from 'src/engine/works
   FlatEntityMapsRestApiExceptionFilter,
   WorkspaceMigrationRunnerRestApiExceptionFilter,
 )
+// REST API for page layouts (GraphQL exposes the same operations via
+// PageLayoutResolver).
 export class PageLayoutController {
   constructor(private readonly pageLayoutService: PageLayoutService) {}
 
+  // Lists page layouts in the workspace, optionally filtered by object
+  // metadata id and/or page layout type.
   @Get()
   @UseGuards(NoPermissionGuard)
   async findMany(
@@ -60,6 +64,7 @@ export class PageLayoutController {
     return this.pageLayoutService.findByWorkspaceId(workspace.id);
   }
 
+  // Fetches a single page layout by id, throwing not-found if absent.
   @Get(':id')
   @UseGuards(NoPermissionGuard)
   async findOne(
@@ -72,6 +77,7 @@ export class PageLayoutController {
     });
   }
 
+  // Creates a new page layout.
   @Post()
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.LAYOUTS))
   async create(
@@ -84,6 +90,7 @@ export class PageLayoutController {
     });
   }
 
+  // Updates a page layout's fields.
   @Patch(':id')
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.LAYOUTS))
   async update(
@@ -100,6 +107,7 @@ export class PageLayoutController {
     return updatedPageLayout;
   }
 
+  // Permanently destroys a page layout.
   @Delete(':id')
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.LAYOUTS))
   async destroy(

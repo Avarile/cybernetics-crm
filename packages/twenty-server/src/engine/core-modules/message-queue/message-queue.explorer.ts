@@ -30,6 +30,8 @@ interface ProcessorGroup {
   isRequestScoped: boolean;
 }
 
+// Discovers every @Processor/@Process-decorated method across the app at startup
+// and wires each one to consume jobs from its declared queue
 @Injectable()
 export class MessageQueueExplorer implements OnModuleInit {
   private readonly logger = new Logger('MessageQueueModule');
@@ -47,6 +49,8 @@ export class MessageQueueExplorer implements OnModuleInit {
     this.explore();
   }
 
+  // Finds every processor provider, groups them by queue, and registers a
+  // worker per queue that dispatches jobs to the matching processor methods
   explore() {
     const processors = this.discoveryService
       .getProviders()
@@ -74,6 +78,8 @@ export class MessageQueueExplorer implements OnModuleInit {
     }
   }
 
+  // Groups discovered processor instances by their declared queue name,
+  // collecting each instance's @Process-decorated method names
   private groupProcessorsByQueueName(processors: InstanceWrapper[]) {
     return processors.reduce(
       (acc, wrapper) => {
@@ -121,6 +127,7 @@ export class MessageQueueExplorer implements OnModuleInit {
     );
   }
 
+  // Resolves the MessageQueueService instance registered for a queue token
   private getQueueService(queueToken: string): MessageQueueService {
     try {
       return this.moduleRef.get<MessageQueueService>(queueToken, {
@@ -132,6 +139,7 @@ export class MessageQueueExplorer implements OnModuleInit {
     }
   }
 
+  // Registers the queue worker that runs every processor group against each job
   private handleProcessorGroupCollection(
     processorGroupCollection: ProcessorGroup[],
     queue: MessageQueueService,
@@ -144,6 +152,8 @@ export class MessageQueueExplorer implements OnModuleInit {
     }, options);
   }
 
+  // Invokes a processor's matching @Process methods for the job, resolving a
+  // fresh request-scoped instance carrying the job's workspaceId when needed
   private async handleProcessor(
     { instance, host, processMethodNames, isRequestScoped }: ProcessorGroup,
     job: MessageQueueJob<MessageQueueJobData>,
@@ -200,6 +210,8 @@ export class MessageQueueExplorer implements OnModuleInit {
     }
   }
 
+  // Calls each matching process method with the job's data, reporting and
+  // rethrowing any exception so the queue driver can retry/fail the job
   private async invokeProcessMethods(
     instance: object,
     processMethodNames: string[],

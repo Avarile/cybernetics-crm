@@ -1,3 +1,4 @@
+// Maps a connection security setting to nodemailer TLS options.
 import { EmailConnectionSecurity } from 'src/engine/core-modules/imap-smtp-caldav-connection/enums/email-connection-security.enum';
 
 type SmtpTlsOptions = {
@@ -5,6 +6,7 @@ type SmtpTlsOptions = {
   ignoreTLS?: boolean;
 };
 
+// Maps a connection security choice to nodemailer's TLS options.
 export const buildSmtpTlsOptions = (
   connectionSecurity: EmailConnectionSecurity,
 ): SmtpTlsOptions => {

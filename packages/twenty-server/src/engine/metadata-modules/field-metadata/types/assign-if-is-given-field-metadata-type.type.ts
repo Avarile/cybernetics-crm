@@ -1,3 +1,6 @@
+// Assigns a type only when the field metadata type is exactly the expected
+// one (or unresolved/generic), otherwise resolves to never|null — used to
+// type relation/morph-only columns on FieldMetadataEntity.
 import { type FieldMetadataType, type IsExactly } from 'twenty-shared/types';
 
 export type AssignIfIsGivenFieldMetadataType<

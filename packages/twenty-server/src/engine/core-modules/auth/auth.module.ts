@@ -1,3 +1,6 @@
+// NestJS module wiring together authentication: password/SSO/OAuth sign-in,
+// token issuance (access/refresh/login/transient), workspace invitations,
+// and the controllers/strategies for Google, Microsoft and SAML providers.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

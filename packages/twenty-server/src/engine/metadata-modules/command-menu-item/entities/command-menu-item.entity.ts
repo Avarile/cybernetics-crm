@@ -22,6 +22,8 @@ import { ObjectMetadataEntity } from 'src/engine/metadata-modules/object-metadat
 import { PageLayoutEntity } from 'src/engine/metadata-modules/page-layout/entities/page-layout.entity';
 import { OverridableEntity } from 'src/engine/workspace-manager/types/overridable-entity';
 
+// Workspace-level fields that can override a standard-app command menu
+// item's defaults without mutating the original definition.
 export type CommandMenuItemOverrides = {
   label?: string;
   icon?: string | null;
@@ -55,6 +57,9 @@ export type CommandMenuItemOverrides = {
   'CHK_CMD_MENU_ITEM_ENGINE_KEY_COHERENCE',
   `("engineComponentKey" = 'TRIGGER_WORKFLOW_VERSION' AND "workflowVersionId" IS NOT NULL AND "frontComponentId" IS NULL AND "payload" IS NULL) OR ("engineComponentKey" = 'FRONT_COMPONENT_RENDERER' AND "frontComponentId" IS NOT NULL AND "workflowVersionId" IS NULL AND "payload" IS NULL) OR ("engineComponentKey" = 'NAVIGATION' AND "payload" IS NOT NULL AND "workflowVersionId" IS NULL AND "frontComponentId" IS NULL) OR ("engineComponentKey" NOT IN ('TRIGGER_WORKFLOW_VERSION', 'FRONT_COMPONENT_RENDERER', 'NAVIGATION') AND "workflowVersionId" IS NULL AND "frontComponentId" IS NULL AND "payload" IS NULL)`,
 )
+// TypeORM entity for command menu (Cmd+K) items. A DB check constraint
+// enforces that exactly one target (workflow version, front component, or
+// navigation payload) is set, matching the item's engineComponentKey.
 export class CommandMenuItemEntity
   extends OverridableEntity<CommandMenuItemOverrides>
   implements Required<CommandMenuItemEntity>

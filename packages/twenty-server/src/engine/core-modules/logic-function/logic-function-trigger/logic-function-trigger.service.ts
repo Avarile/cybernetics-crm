@@ -1,3 +1,6 @@
+// Runs a logic function triggered by an HTTP route, building its event
+// payload from the request and normalizing the execution result/error into
+// a route trigger outcome.
 import { Injectable } from '@nestjs/common';
 
 import { Request } from 'express';
@@ -21,6 +24,8 @@ export class LogicFunctionTriggerService {
     private readonly logicFunctionExecutorService: LogicFunctionExecutorService,
   ) {}
 
+  // Builds the request event, executes the logic function, and maps the
+  // result to either a response or a user-facing error outcome.
   async run({
     logicFunction,
     request,

@@ -3,6 +3,8 @@ import { isDefined } from 'twenty-shared/utils';
 import { MESSAGING_THROTTLE_DURATION } from 'src/modules/messaging/message-import-manager/constants/messaging-throttle-duration';
 import { isValidDate } from 'src/utils/date/isValidDate';
 
+// True if a channel is still in its explicit retry-after window or its
+// exponential backoff window from prior throttle failures.
 export const isThrottled = (
   syncStageStartedAt: string | null,
   throttleFailureCount: number,
@@ -37,6 +39,7 @@ export const isThrottled = (
   return exponentialBackoffUntil > now;
 };
 
+// Exponential backoff from the stage start time, doubling per failure.
 const computeThrottlePauseUntil = (
   syncStageStartedAt: string,
   throttleFailureCount: number,

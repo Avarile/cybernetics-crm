@@ -1,3 +1,6 @@
+// Converts a raw search string into a Postgres to_tsquery expression,
+// escaping special characters and prefix-matching each word, joined with
+// AND or OR per `operator`.
 export const formatSearchTerms = (
   searchTerm: string,
   operator: 'and' | 'or' = 'and',

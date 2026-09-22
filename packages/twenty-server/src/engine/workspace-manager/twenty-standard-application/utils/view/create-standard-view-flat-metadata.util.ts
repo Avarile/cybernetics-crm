@@ -15,6 +15,7 @@ import { type AllStandardObjectName } from 'src/engine/workspace-manager/twenty-
 import { type AllStandardObjectViewName } from 'src/engine/workspace-manager/twenty-standard-application/types/all-standard-object-view-name.type';
 import { type StandardBuilderArgs } from 'src/engine/workspace-manager/twenty-standard-application/types/metadata-standard-buillder-args.type';
 
+// Per-view content (name, type, kanban/calendar/group-by fields) supplied by each standard view's builder
 export type CreateStandardViewOptions<O extends AllStandardObjectName> = {
   viewName: AllStandardObjectViewName<O>;
   name: string;
@@ -32,6 +33,7 @@ export type CreateStandardViewOptions<O extends AllStandardObjectName> = {
   calendarEndFieldName?: AllStandardObjectFieldName<O>;
 };
 
+// Arguments accepted by createStandardViewFlatMetadata
 export type CreateStandardViewArgs<
   O extends AllStandardObjectName = AllStandardObjectName,
 > = StandardBuilderArgs<'view'> & {
@@ -39,6 +41,8 @@ export type CreateStandardViewArgs<
   context: CreateStandardViewOptions<O>;
 };
 
+// Builds a single standard view's FlatView, resolving its id/universal identifier and its
+// kanban/group-by/calendar field references from the standard object's fixed definitions
 export const createStandardViewFlatMetadata = <
   O extends AllStandardObjectName,
 >({

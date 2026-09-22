@@ -1,5 +1,7 @@
 /* @license Enterprise */
 
+// NestJS module wiring the enterprise licensing resolver, plan service, and
+// the recurring license validation cron job.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

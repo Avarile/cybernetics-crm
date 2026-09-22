@@ -13,6 +13,7 @@ import {
 import { findFlatEntityByIdInFlatEntityMaps } from 'src/engine/metadata-modules/flat-entity/utils/find-flat-entity-by-id-in-flat-entity-maps.util';
 import { type UniversalFlatViewSort } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-view-sort.type';
 
+// Looks up the flat view sort targeted for permanent destruction, throwing if it doesn't exist.
 export const fromDestroyViewSortInputToFlatViewSortOrThrow = ({
   destroyViewSortInput,
   flatViewSortMaps,

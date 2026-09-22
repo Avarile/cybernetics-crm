@@ -6,6 +6,7 @@ type SeedServerIdArgs = {
   schemaName: string;
 };
 
+// Inserts a random SERVER_ID config value if one doesn't already exist.
 export const seedServerId = async ({
   queryRunner,
   schemaName,

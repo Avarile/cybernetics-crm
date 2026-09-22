@@ -8,6 +8,7 @@ import { sanitizeCalendarEvent } from 'src/modules/calendar/calendar-event-impor
 import { CalendarEventParticipantResponseStatus } from 'src/modules/calendar/common/standard-objects/calendar-event-participant.workspace-entity';
 import { type FetchedCalendarEvent } from 'src/modules/calendar/common/types/fetched-calendar-event';
 
+// Converts Microsoft Graph calendar events into the shared FetchedCalendarEvent shape.
 export const formatMicrosoftCalendarEvents = (
   events: Event[],
 ): FetchedCalendarEvent[] => {

@@ -1,3 +1,4 @@
+// Generic GraphQL success DTO returned by onboarding step mutations.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType('OnboardingStepSuccess')

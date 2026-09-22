@@ -14,6 +14,9 @@ import { type FlatEntityMaps } from 'src/engine/metadata-modules/flat-entity/typ
 import { type FlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-metadata/types/flat-field-metadata.type';
 import { type FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object-metadata/types/flat-object-metadata.type';
 
+// Converts a decoded pagination cursor into the OR-of-ANDs filter
+// conditions needed to fetch records strictly after (or before, for
+// backward pagination) that cursor position, given the query's order-by.
 export const computeCursorArgFilter = (
   cursor: ObjectRecordCursor,
   orderBy: ObjectRecordOrderBy,

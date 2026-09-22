@@ -28,6 +28,8 @@ import { FlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-metada
 import { FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object-metadata/types/flat-object-metadata.type';
 import { assertMutationNotOnRemoteObject } from 'src/engine/metadata-modules/object-metadata/utils/assert-mutation-not-on-remote-object.util';
 
+// Handles restoreMany: un-soft-deletes records matching the filter and
+// optionally hydrates nested relations on the restored records.
 @Injectable()
 export class CommonRestoreManyQueryRunnerService extends CommonBaseQueryRunnerService<
   RestoreManyQueryArgs,
@@ -35,6 +37,8 @@ export class CommonRestoreManyQueryRunnerService extends CommonBaseQueryRunnerSe
 > {
   protected readonly operationName = CommonQueryNames.RESTORE_MANY;
 
+  // Builds the filtered query, restores matching soft-deleted records,
+  // and hydrates any requested nested relations.
   async run(
     args: CommonExtendedInput<RestoreManyQueryArgs>,
     queryRunnerContext: CommonExtendedQueryRunnerContext,
@@ -94,6 +98,7 @@ export class CommonRestoreManyQueryRunnerService extends CommonBaseQueryRunnerSe
     return restoredRecords;
   }
 
+  // Validates and normalizes the restore filter against object/field metadata.
   async computeArgs(
     args: CommonInput<RestoreManyQueryArgs>,
     queryRunnerContext: CommonBaseQueryRunnerContext,
@@ -115,6 +120,7 @@ export class CommonRestoreManyQueryRunnerService extends CommonBaseQueryRunnerSe
     };
   }
 
+  // Runs the restored records through the common result-getter pipeline.
   async processQueryResult(
     queryResult: ObjectRecord[],
     flatObjectMetadata: FlatObjectMetadata,
@@ -131,6 +137,8 @@ export class CommonRestoreManyQueryRunnerService extends CommonBaseQueryRunnerSe
     );
   }
 
+  // Rejects mutations on remote objects, requires a filter to be present,
+  // and validates any id-in-list values.
   async validate(
     args: RestoreManyQueryArgs,
     queryRunnerContext: CommonBaseQueryRunnerContext,

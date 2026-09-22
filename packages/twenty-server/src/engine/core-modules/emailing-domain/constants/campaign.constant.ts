@@ -1,3 +1,5 @@
+// Status enums, job names, and tuning constants shared across the
+// message campaign send/materialize/stats-refresh pipeline.
 export const CAMPAIGN_MESSAGE_DELIVERY_STATUS = {
   QUEUED: 'QUEUED',
   SENT: 'SENT',

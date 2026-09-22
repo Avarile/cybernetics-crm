@@ -12,6 +12,8 @@ import { type WorkspaceMigrationValidateBuildAndRunService } from 'src/engine/wo
 const QUICK_LEAD_COMMAND_MENU_ITEM_UNIVERSAL_IDENTIFIER =
   '5b389a80-345f-42b5-83fa-2e6b6ad95f01';
 
+// Creates a "Quick Lead" command menu item that triggers the seeded Quick
+// Lead workflow, via a workspace migration, unless it already exists.
 export const prefillWorkflowCommandMenuItems = async ({
   workspaceId,
   applicationService,

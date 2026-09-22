@@ -8,6 +8,7 @@ import {
 } from 'src/modules/calendar/calendar-event-import-manager/drivers/exceptions/calendar-event-import-driver.exception';
 import { MessageNetworkExceptionCode } from 'src/modules/messaging/message-import-manager/drivers/exceptions/message-network.exception';
 
+// Maps a low-level Gaxios network error code to a typed import-driver exception.
 export const parseGaxiosError = (
   error: GaxiosError,
 ): CalendarEventImportDriverException => {

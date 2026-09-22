@@ -1,3 +1,4 @@
+// Shape of a Microsoft Graph $batch response containing message bodies.
 export interface MicrosoftGraphBatchResponse {
   responses: {
     id: string;

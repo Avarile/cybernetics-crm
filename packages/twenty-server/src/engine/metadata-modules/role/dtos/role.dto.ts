@@ -12,6 +12,7 @@ import { type RoleTargetEntity } from 'src/engine/metadata-modules/role-target/r
 import { RowLevelPermissionPredicateGroupDTO } from 'src/engine/metadata-modules/row-level-permission-predicate/dtos/row-level-permission-predicate-group.dto';
 import { RowLevelPermissionPredicateDTO } from 'src/engine/metadata-modules/row-level-permission-predicate/dtos/row-level-permission-predicate.dto';
 
+// Minimal API key representation exposed on a role's assigned API keys.
 @ObjectType('ApiKeyForRole')
 export class ApiKeyForRoleDTO {
   @Field(() => UUIDScalarType, { nullable: false })
@@ -27,6 +28,9 @@ export class ApiKeyForRoleDTO {
   revokedAt?: Date | null;
 }
 
+// GraphQL representation of a workspace role: its broad permission
+// defaults plus resolver-populated relations (assigned members/agents/API
+// keys, permission flags, and object/field/row-level permissions).
 @ObjectType('Role')
 export class RoleDTO {
   @Field(() => UUIDScalarType, { nullable: false })

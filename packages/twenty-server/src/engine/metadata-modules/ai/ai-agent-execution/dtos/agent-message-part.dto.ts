@@ -1,3 +1,5 @@
+// GraphQL representation of one part of an agent message (text, reasoning,
+// tool call/result, source reference, or file attachment).
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 
 import { IsDateString } from 'class-validator';

@@ -16,6 +16,7 @@ import {
 import { createStandardRelationFieldFlatMetadata } from 'src/engine/workspace-manager/twenty-standard-application/utils/field-metadata/create-standard-relation-field-flat-metadata.util';
 import { MessageDirection } from 'src/modules/messaging/common/enums/message-direction.enum';
 
+// Builds the fixed set of standard fields for the "messageChannelMessageAssociation" object
 export const buildMessageChannelMessageAssociationStandardFlatFieldMetadatas =
   ({
     now,

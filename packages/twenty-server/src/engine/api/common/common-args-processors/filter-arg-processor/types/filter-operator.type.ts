@@ -1,3 +1,4 @@
+// Union of all comparison operators usable in an ObjectRecordFilter.
 export type FilterOperator =
   | 'eq'
   | 'neq'

@@ -19,6 +19,7 @@ import {
   WorkspaceExceptionCode,
 } from 'src/engine/core-modules/workspace/workspace.exception';
 
+// Assigns and validates custom domains for workspaces, gated by billing entitlement
 @Injectable()
 export class CustomDomainManagerService {
   constructor(
@@ -33,6 +34,7 @@ export class CustomDomainManagerService {
     private readonly eventLogEmitterService: EventLogEmitterService,
   ) {}
 
+  // Throws unless the workspace has the custom domain billing entitlement
   async isCustomDomainEnabled(workspaceId: string) {
     const isCustomDomainBillingEnabled =
       await this.billingService.hasEntitlement(
@@ -48,6 +50,8 @@ export class CustomDomainManagerService {
     }
   }
 
+  // Validates the domain isn't already taken by another workspace or registered as a
+  // public domain, then registers or repoints DNS to it
   async setCustomDomain(workspace: WorkspaceEntity, customDomain: string) {
     await this.isCustomDomainEnabled(workspace.id);
 
@@ -90,6 +94,8 @@ export class CustomDomainManagerService {
     }
   }
 
+  // Checks whether the workspace's custom domain DNS records are valid, updates the
+  // enabled flag on change, and emits an activation/deactivation event
   async checkCustomDomainValidRecords(
     workspace: WorkspaceEntity,
     domainValidRecord?: DomainValidRecords,

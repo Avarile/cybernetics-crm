@@ -1,3 +1,4 @@
+// Decoded/parsed fields extracted from a Lambda invocation's base64 log tail.
 export type ParsedLambdaLogResult = {
   logs: string;
   initDurationMs: string | null;
@@ -14,6 +15,8 @@ const EMPTY_PARSED_LAMBDA_LOG_RESULT: ParsedLambdaLogResult = {
   coldStart: false,
 };
 
+// Decodes a Lambda invocation's base64 log tail and extracts timing info
+// (init/billed/report duration, cold start) plus the cleaned-up log text.
 export const parseLambdaLogResult = (
   logResult: string | undefined,
 ): ParsedLambdaLogResult => {

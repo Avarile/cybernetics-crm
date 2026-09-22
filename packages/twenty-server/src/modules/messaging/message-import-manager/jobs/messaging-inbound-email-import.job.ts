@@ -1,3 +1,5 @@
+// Queue entry point for importing one SNS/S3-delivered inbound email into
+// its matching email-group message channel.
 import { Logger, Scope } from '@nestjs/common';
 
 import { Process } from 'src/engine/core-modules/message-queue/decorators/process.decorator';
@@ -21,6 +23,7 @@ export class MessagingInboundEmailImportJob {
     private readonly inboundEmailImportService: InboundEmailImportService,
   ) {}
 
+  // Delegates to InboundEmailImportService and logs the outcome.
   @Process(MessagingInboundEmailImportJob.name)
   async handle(data: MessagingInboundEmailImportJobData): Promise<void> {
     const { s3Key, envelopeRecipients } = data;

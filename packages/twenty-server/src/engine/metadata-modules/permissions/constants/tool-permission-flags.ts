@@ -1,3 +1,4 @@
+// Permission flag keys that gate tool invocations (vs. settings-area access).
 export const TOOL_PERMISSION_FLAGS = [
   'AI',
   'VIEWS',

@@ -1,3 +1,7 @@
+// Converts flat object records fetched from the database into the
+// Relay-style GraphQL connection shape (edges/cursors/pageInfo), and
+// recursively formats each record's fields, including composite fields
+// and nested relation records/connections, down to a bounded depth.
 import {
   compositeTypeDefinitions,
   FieldMetadataType,
@@ -43,6 +47,8 @@ export class ObjectRecordsToGraphqlConnectionHelper {
     this.objectIdByNameSingular = objectIdByNameSingular;
   }
 
+  // Builds a Relay connection (edges + pageInfo + aggregates) for a page
+  // of object records, formatting each record and encoding its cursor.
   public createConnection<T extends ObjectRecord = ObjectRecord>({
     objectRecords,
     parentObjectRecord,
@@ -115,6 +121,8 @@ export class ObjectRecordsToGraphqlConnectionHelper {
     };
   }
 
+  // Picks out only the requested aggregated field values from the raw
+  // aggregated-values map for this record's set of siblings.
   private extractAggregatedFieldsValues = ({
     selectedAggregatedFields,
     objectRecordsAggregatedValues,
@@ -147,6 +155,11 @@ export class ObjectRecordsToGraphqlConnectionHelper {
   };
 
   // oxlint-disable-next-line typescript/no-explicit-any
+  // Formats a single record field-by-field for the GraphQL response:
+  // expands composite fields, recurses into relation fields (building
+  // nested connections for to-many, nested records for to-one), and
+  // formats scalar values (e.g. dates to ISO strings). Enforces
+  // CONNECTION_MAX_DEPTH to guard against unbounded relation nesting.
   public processRecord<T extends Record<string, any>>({
     objectRecord,
     objectName,
@@ -289,6 +302,7 @@ export class ObjectRecordsToGraphqlConnectionHelper {
     return processedObjectRecord as T;
   }
 
+  // Formats a composite field's sub-properties into their GraphQL shape.
   private processCompositeField(
     fieldMetadata: FlatFieldMetadata,
     // oxlint-disable-next-line typescript/no-explicit-any
@@ -332,6 +346,7 @@ export class ObjectRecordsToGraphqlConnectionHelper {
   }
 
   // oxlint-disable-next-line typescript/no-explicit-any
+  // Applies type-specific output formatting (currently: Date -> ISO string).
   private formatFieldValue(value: any, fieldType: FieldMetadataType) {
     switch (fieldType) {
       case FieldMetadataType.DATE:

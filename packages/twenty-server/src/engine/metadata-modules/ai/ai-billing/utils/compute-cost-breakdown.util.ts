@@ -39,6 +39,8 @@ const safeNumber = (value: number | undefined): number => {
 // Output token semantics still differ by model family:
 //   Anthropic: outputTokens excludes reasoning (thinking) tokens
 //   OpenAI/xAI/Groq/Google: outputTokens includes reasoning tokens
+// Computes dollar cost from token usage against a model's per-million-token
+// rates, applying long-context pricing thresholds and cache discount rates.
 export const computeCostBreakdown = (
   model: AiModelConfig,
   usage: TokenUsageInput,

@@ -44,9 +44,12 @@ import { WorkspaceMigrationRunnerRestApiExceptionFilter } from 'src/engine/works
   FlatEntityMapsRestApiExceptionFilter,
   WorkspaceMigrationRunnerRestApiExceptionFilter,
 )
+// REST API for view fields (GraphQL exposes the same operations via
+// ViewFieldResolver).
 export class ViewFieldController {
   constructor(private readonly viewFieldService: ViewFieldService) {}
 
+  // Lists view fields in the workspace, optionally filtered to one view.
   @Get()
   @UseGuards(NoPermissionGuard)
   async findMany(
@@ -60,6 +63,7 @@ export class ViewFieldController {
     return this.viewFieldService.findByWorkspaceId(workspace.id);
   }
 
+  // Fetches a single view field by id, throwing not-found if absent.
   @Get(':id')
   @UseGuards(NoPermissionGuard)
   async findOne(
@@ -86,6 +90,7 @@ export class ViewFieldController {
     return viewField;
   }
 
+  // Updates a view field.
   @Patch(':id')
   @UseGuards(UpdateViewFieldPermissionGuard)
   async update(
@@ -99,6 +104,7 @@ export class ViewFieldController {
     });
   }
 
+  // Creates a new view field.
   @Post()
   @UseGuards(CreateViewFieldPermissionGuard)
   async create(
@@ -111,6 +117,7 @@ export class ViewFieldController {
     });
   }
 
+  // Soft-deletes a view field.
   @Delete(':id')
   @UseGuards(DeleteViewFieldPermissionGuard)
   async delete(

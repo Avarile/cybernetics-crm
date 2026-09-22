@@ -24,6 +24,7 @@ import { streamToBuffer } from 'src/utils/stream-to-buffer';
 export class FileAiChatResolver {
   constructor(private readonly fileAiChatService: FileAiChatService) {}
 
+  // Uploads a file attached to an AI chat message and returns its signed URL.
   @Mutation(() => FileWithSignedUrlDTO)
   @UseGuards(SettingsPermissionGuard(PermissionFlagType.UPLOAD_FILE))
   async uploadAiChatFile(

@@ -9,6 +9,7 @@ import {
   LogicFunctionExceptionCode,
 } from 'src/engine/metadata-modules/logic-function/logic-function.exception';
 
+// No-op driver used when LOGIC_FUNCTION_TYPE is disabled; execution/transpile/install throw to surface misconfiguration
 export class DisabledDriver implements LogicFunctionDriver {
   async delete(): Promise<void> {
     // No-op when disabled

@@ -24,6 +24,8 @@ import { V2_20_UpgradeVersionCommandModule } from 'src/database/commands/upgrade
 import { V2_21_UpgradeVersionCommandModule } from 'src/database/commands/upgrade-version-command/2-21/2-21-upgrade-version-command.module';
 import { V2_22_UpgradeVersionCommandModule } from 'src/database/commands/upgrade-version-command/2-22/2-22-upgrade-version-command.module';
 
+// Aggregates every per-version workspace-command module so all registered
+// @RegisteredWorkspaceCommand classes are available as Nest providers to the upgrade runner.
 @Module({
   imports: [
     V1_21_UpgradeVersionCommandModule,

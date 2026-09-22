@@ -1,3 +1,5 @@
+// Sends an email immediately (synchronously) through the currently active
+// email driver, without going through the message queue.
 import { Injectable } from '@nestjs/common';
 
 import { type SendMailOptions } from 'nodemailer';
@@ -10,6 +12,7 @@ import { EmailDriverFactory } from 'src/engine/core-modules/email/email-driver.f
 export class EmailSenderService implements EmailDriverInterface {
   constructor(private readonly emailDriverFactory: EmailDriverFactory) {}
 
+  // Delegates to the active driver's send method.
   async send(sendMailOptions: SendMailOptions): Promise<void> {
     const driver = this.emailDriverFactory.getCurrentDriver();
 

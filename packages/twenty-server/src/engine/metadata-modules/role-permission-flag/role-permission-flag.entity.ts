@@ -19,6 +19,8 @@ import { PermissionFlagEntity } from 'src/engine/metadata-modules/permission-fla
 import { RoleEntity } from 'src/engine/metadata-modules/role/role.entity';
 import { SyncableEntity } from 'src/engine/workspace-manager/types/syncable-entity.interface';
 
+// Join entity granting a permission flag to a role. The legacy `flag` column is being
+// phased out in favor of the `permissionFlagId` relation (see the upgrade command references).
 @Entity('rolePermissionFlag')
 @WasRenamedInUpgrade([
   {

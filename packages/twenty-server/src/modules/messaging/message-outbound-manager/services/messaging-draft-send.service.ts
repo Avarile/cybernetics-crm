@@ -1,3 +1,6 @@
+// Resolves a locally-synced draft message id to its provider external id
+// (scoped to the caller's own connected account's channels) so it can be
+// sent, deleted, or used to look up its resulting thread.
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -25,6 +28,8 @@ export class MessagingDraftSendService {
     private readonly messageChannelRepository: Repository<MessageChannelEntity>,
   ) {}
 
+  // Resolves the draft's provider external id and sends it via the
+  // matching outbound driver.
   async sendDraftMessage({
     draftMessageId,
     sendMessageInput,
@@ -55,6 +60,8 @@ export class MessagingDraftSendService {
     );
   }
 
+  // Looks up the thread id of the (now-synced) message with the given
+  // external id.
   async getSentMessageThreadId({
     messageExternalId,
     workspaceId,
@@ -85,6 +92,8 @@ export class MessagingDraftSendService {
     );
   }
 
+  // Deletes the draft's message channel association (and any resulting
+  // orphan) after it's been sent.
   async deleteSentDraft({
     draftMessageId,
     connectedAccountId,

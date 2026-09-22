@@ -19,6 +19,10 @@ import { WorkspaceCacheModule } from 'src/engine/workspace-cache/workspace-cache
 import { WorkspaceMigrationRunnerModule } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-runner/workspace-migration-runner.module';
 import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace-migration/workspace-migration.module';
 
+// Registers the 2.20 workspace commands (message campaign stat fields, message
+// list view, actor-source enum backfill, workflow-version-to-core backfill, search
+// vector/field-metadata reconciliation, installed-app search vector rebuild) as
+// providers for the upgrade runner.
 @Module({
   imports: [
     ApplicationModule,

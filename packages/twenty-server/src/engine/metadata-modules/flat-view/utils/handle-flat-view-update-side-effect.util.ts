@@ -7,6 +7,7 @@ import { computeFlatViewGroupsOnViewCreate } from 'src/engine/metadata-modules/f
 import { type FlatView } from 'src/engine/metadata-modules/flat-view/types/flat-view.type';
 import { type UniversalFlatViewGroup } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-view-group.type';
 
+// View groups to delete/create as a side effect of a view update.
 export type FlatViewUpdateSideEffects = {
   flatViewGroupsToDelete: UniversalFlatViewGroup[];
   flatViewGroupsToCreate: UniversalFlatViewGroup[];
@@ -15,11 +16,16 @@ export type FlatViewUpdateSideEffects = {
 type HandleFlatViewUpdateSideEffectArgs = FromTo<FlatView, 'flatView'> &
   Pick<AllFlatEntityMaps, 'flatViewGroupMaps' | 'flatFieldMetadataMaps'>;
 
+// Shared empty side-effects value, cloned before use to avoid mutation.
 export const FLAT_VIEW_UPDATE_EMPTY_SIDE_EFFECTS: FlatViewUpdateSideEffects = {
   flatViewGroupsToDelete: [],
   flatViewGroupsToCreate: [],
 };
 
+// When a view update changes mainGroupByFieldMetadataId, deletes the
+// view's existing view groups and recomputes new ones for the new
+// grouping field (or none, if grouping was cleared). No-op if the
+// grouping field is unchanged.
 export const handleFlatViewUpdateSideEffect = ({
   fromFlatView,
   toFlatView,

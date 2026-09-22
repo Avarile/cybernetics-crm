@@ -1,3 +1,4 @@
+// GraphQL DTO representing a single BullMQ job for the admin queue viewer.
 import { Field, ObjectType } from '@nestjs/graphql';
 
 import GraphQLJSON from 'graphql-type-json';

@@ -1,3 +1,7 @@
+// Registers all concrete metadata side effect handler services (field and
+// object metadata lifecycle handlers) so the discovery-based registry can
+// find and index them.
+
 import { Module } from '@nestjs/common';
 
 import { FieldSearchFieldMetadataOnDeleteSideEffectHandlerService } from 'src/engine/metadata-modules/metadata-side-effect/handlers/field-metadata/services/field-search-field-metadata-on-delete-side-effect-handler.service';
@@ -21,4 +25,6 @@ import { ObjectSystemSideEffectsOnDeleteSideEffectHandlerService } from 'src/eng
     ObjectSystemSideEffectsOnDeleteSideEffectHandlerService,
   ],
 })
+// Provides the concrete side effect handler services to the discovery
+// module's registry.
 export class MetadataSideEffectHandlersModule {}

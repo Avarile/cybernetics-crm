@@ -1,3 +1,4 @@
+// Builds LoggerModule options (driver type, log levels) from config.
 import {
   LoggerDriverType,
   type LoggerModuleOptions,

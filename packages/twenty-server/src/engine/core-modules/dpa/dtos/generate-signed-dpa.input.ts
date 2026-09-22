@@ -2,6 +2,7 @@ import { Field, InputType } from '@nestjs/graphql';
 
 import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
 
+// Customer-provided signatory details used to generate a signed DPA
 @InputType()
 export class GenerateSignedDpaInput {
   @Field()

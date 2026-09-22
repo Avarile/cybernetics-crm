@@ -1,3 +1,5 @@
+// Application entry point: bootstraps the NestJS app, configures body parsers,
+// sessions, upload middleware and proxy trust, then starts the HTTP server.
 import { NestFactory } from '@nestjs/core';
 import { type NestExpressApplication } from '@nestjs/platform-express';
 
@@ -27,6 +29,8 @@ import { settings } from './engine/constants/settings';
 import { generateFrontConfig } from './utils/generate-front-config';
 
 // Trigger
+// Creates the Nest application, wires global filters/loggers/body limits and
+// listens on the configured port.
 const bootstrap = async () => {
   setPgDateTypeParser();
 

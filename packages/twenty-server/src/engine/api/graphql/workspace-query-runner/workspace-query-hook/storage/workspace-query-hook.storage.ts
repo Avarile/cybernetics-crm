@@ -1,4 +1,6 @@
-// hook-registry.service.ts
+// In-memory registry of pre/post query hook instances, keyed by
+// "<object>.<method>". Lookups also merge in any "*.<method>" wildcard
+// hooks registered for that method, applied ahead of the object-specific ones.
 import { Injectable } from '@nestjs/common';
 import { type Module } from '@nestjs/core/injector/module';
 
@@ -29,6 +31,7 @@ export class WorkspaceQueryHookStorage {
     WorkspaceQueryHookData<WorkspacePostQueryHookInstance>[]
   >();
 
+  // Registers a pre-hook instance under its "<object>.<method>" (or wildcard) key.
   registerWorkspaceQueryPreHookInstance(
     key: WorkspaceQueryHookKey,
     data: WorkspaceQueryHookData<WorkspacePreQueryHookInstance>,
@@ -40,6 +43,8 @@ export class WorkspaceQueryHookStorage {
     this.preHookInstances.get(key)?.push(data);
   }
 
+  // Returns the pre-hooks for a key: any "*.<method>" wildcard hooks
+  // first, followed by hooks registered specifically for that object.
   getWorkspaceQueryPreHookInstances(
     key: WorkspaceQueryHookKey,
   ): WorkspaceQueryHookData<WorkspacePreQueryHookInstance>[] {
@@ -65,6 +70,7 @@ export class WorkspaceQueryHookStorage {
     return [...wildcardInstances, ...(this.preHookInstances.get(key) ?? [])];
   }
 
+  // Registers a post-hook instance under its "<object>.<method>" (or wildcard) key.
   registerWorkspacePostQueryHookInstance(
     key: WorkspaceQueryHookKey,
     data: WorkspaceQueryHookData<WorkspacePostQueryHookInstance>,
@@ -76,6 +82,8 @@ export class WorkspaceQueryHookStorage {
     this.postHookInstances.get(key)?.push(data);
   }
 
+  // Returns the post-hooks for a key: any "*.<method>" wildcard hooks
+  // first, followed by hooks registered specifically for that object.
   getWorkspacePostQueryHookInstances(
     key: WorkspaceQueryHookKey,
   ): WorkspaceQueryHookData<WorkspacePostQueryHookInstance>[] {

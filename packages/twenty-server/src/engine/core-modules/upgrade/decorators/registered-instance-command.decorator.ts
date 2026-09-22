@@ -17,6 +17,8 @@ const REGISTERED_INSTANCE_COMMAND_KEY = 'REGISTERED_INSTANCE_COMMAND';
 // When dropping a version from TWENTY_CROSS_UPGRADE_SUPPORTED_VERSIONS, also
 // remove the @RegisteredInstanceCommand decorator from its associated
 // command files.
+// Class decorator that marks a class as a discoverable instance command, tagging
+// it with the version it was introduced in and whether it's fast or slow
 export const RegisteredInstanceCommand =
   (
     version: TwentyAllVersion,
@@ -32,6 +34,7 @@ export const RegisteredInstanceCommand =
     );
   };
 
+// Reads the @RegisteredInstanceCommand metadata off a command class, if present
 export const getRegisteredInstanceCommandMetadata = (
   target: Function,
 ): RegisteredInstanceCommandMetadata | undefined =>

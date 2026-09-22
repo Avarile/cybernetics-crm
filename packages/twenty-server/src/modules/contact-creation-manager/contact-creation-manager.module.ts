@@ -12,6 +12,8 @@ import { CreateCompanyAndPersonService } from 'src/modules/contact-creation-mana
 import { CreateCompanyService } from 'src/modules/contact-creation-manager/services/create-company.service';
 import { CreatePersonService } from 'src/modules/contact-creation-manager/services/create-person.service';
 
+// Wires up automatic company/person creation from message and calendar
+// participants (e.g. new email correspondents become CRM contacts).
 @Module({
   imports: [
     WorkspaceDataSourceModule,

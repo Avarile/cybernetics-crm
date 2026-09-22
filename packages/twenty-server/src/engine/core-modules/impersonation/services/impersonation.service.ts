@@ -1,3 +1,6 @@
+// Service that authorizes and executes user impersonation: validates the
+// target/impersonator, checks authorization, logs the attempt, and issues an
+// impersonation login token.
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -28,6 +31,8 @@ export class ImpersonationService {
     private readonly impersonationAuthorizationService: ImpersonationAuthorizationService,
   ) {}
 
+  // Validates both users exist, rejects self-impersonation, checks
+  // authorization, and if allowed generates an impersonation login token.
   async impersonate(
     toImpersonateUserId: string,
     workspaceId: string,
@@ -87,6 +92,9 @@ export class ImpersonationService {
     );
   }
 
+  // Logs the impersonation attempt, generates a login token scoped to the
+  // target user/workspace, and returns the target workspace's login URLs
+  // along with the token.
   async generateImpersonationLoginToken(
     impersonatorUserWorkspace: UserWorkspaceEntity,
     toImpersonateUserWorkspace: UserWorkspaceEntity,

@@ -1,5 +1,6 @@
 import { SECRET_ENCRYPTION_ENVELOPE_V2_PREFIX } from 'src/engine/core-modules/secret-encryption/constants/secret-encryption.constant';
 
+// Builds the enc:v2:{keyId}:{payload} envelope string from its parts
 export const formatSecretEncryptionEnvelopeV2 = ({
   keyId,
   payloadBase64,

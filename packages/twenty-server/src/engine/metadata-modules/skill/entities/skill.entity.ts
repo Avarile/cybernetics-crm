@@ -9,6 +9,8 @@ import {
 
 import { SyncableEntity } from 'src/engine/workspace-manager/types/syncable-entity.interface';
 
+// A skill (standard or custom) available to agents, defined as markdown content; names
+// are unique per workspace only among active skills.
 @Entity('skill')
 @Index('IDX_SKILL_ID_IS_ACTIVE', ['id', 'isActive'])
 @Index('IDX_SKILL_NAME_WORKSPACE_ID_UNIQUE', ['name', 'workspaceId'], {

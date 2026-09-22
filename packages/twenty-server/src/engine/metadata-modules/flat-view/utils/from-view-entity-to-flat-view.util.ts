@@ -6,6 +6,9 @@ import { fromViewOverridesToUniversalOverrides } from 'src/engine/metadata-modul
 import { type FromEntityToFlatEntityArgs } from 'src/engine/workspace-cache/types/from-entity-to-flat-entity-args.type';
 import { resolveManyToOneRelationIdsToUniversalIdentifiers } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/utils/resolve-many-to-one-relation-ids-to-universal-identifiers.util';
 
+// Converts a view TypeORM entity (with its loaded children) into its flat
+// form, resolving relation ids to universal identifiers and collecting
+// each child collection's ids and universal identifiers.
 export const fromViewEntityToFlatView = (
   args: FromEntityToFlatEntityArgs<'view'>,
 ): FlatView => {

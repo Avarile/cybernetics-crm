@@ -1,3 +1,5 @@
+// CLI command to register the recurring message-channel sync-status
+// monitoring cron job.
 import { Command, CommandRunner } from 'nest-commander';
 
 import { InjectMessageQueue } from 'src/engine/core-modules/message-queue/decorators/message-queue.decorator';
@@ -21,6 +23,7 @@ export class MessagingMessageChannelSyncStatusMonitoringCronCommand extends Comm
     super();
   }
 
+  // Schedules the recurring sync-status monitoring cron job.
   async run(): Promise<void> {
     await this.messageQueueService.addCron<undefined>({
       jobName: MessagingMessageChannelSyncStatusMonitoringCronJob.name,

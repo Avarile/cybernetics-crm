@@ -1,3 +1,5 @@
+// NestJS module wiring the email verification resolver/service and the
+// token service used to mint/validate verification tokens.
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

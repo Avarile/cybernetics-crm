@@ -7,6 +7,8 @@ import {
 import { type ResolvedEncryptionKeys } from 'src/engine/core-modules/secret-encryption/types/resolved-encryption-keys.type';
 import { computeEncryptionKeyId } from 'src/engine/core-modules/secret-encryption/utils/compute-encryption-key-id.util';
 
+// Finds which of the resolved keys (primary or fallback) matches an envelope's
+// key id, supporting decryption during key rotation
 export const pickEncryptionKeyByKeyIdOrThrow = ({
   keyId,
   keys,

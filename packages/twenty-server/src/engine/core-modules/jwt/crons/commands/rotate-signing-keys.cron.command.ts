@@ -1,5 +1,6 @@
 /* @license Enterprise */
 
+// CLI command that registers the recurring JWT signing key rotation cron job.
 import { Command, CommandRunner } from 'nest-commander';
 
 import { ROTATE_SIGNING_KEYS_CRON_PATTERN } from 'src/engine/core-modules/jwt/constants/rotate-signing-keys-cron-pattern.constant';
@@ -21,6 +22,7 @@ export class RotateSigningKeysCronCommand extends CommandRunner {
     super();
   }
 
+  // Schedules the RotateSigningKeysCronJob to repeat on the configured pattern.
   async run(): Promise<void> {
     await this.messageQueueService.addCron<undefined>({
       jobName: RotateSigningKeysCronJob.name,

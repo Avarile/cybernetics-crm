@@ -1,3 +1,6 @@
+// Maps ApplicationException codes thrown by application services to the
+// appropriate GraphQL error types (not found, forbidden, user input, or
+// internal server error) for consistent API error responses.
 import { Catch, ExceptionFilter } from '@nestjs/common';
 
 import { assertUnreachable } from 'twenty-shared/utils';
@@ -17,6 +20,8 @@ import {
 
 @Catch(ApplicationException)
 export class ApplicationExceptionFilter implements ExceptionFilter {
+  // Translates an ApplicationException's code into the matching GraphQL
+  // error class and throws it.
   catch(exception: ApplicationException) {
     switch (exception.code) {
       case ApplicationExceptionCode.OBJECT_NOT_FOUND:

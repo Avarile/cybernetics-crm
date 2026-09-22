@@ -34,6 +34,8 @@ export class ApplicationConnectionsController {
     private readonly listService: ApplicationConnectionsListService,
   ) {}
 
+  // Lists the requesting application's connections in the workspace,
+  // optionally scoped to the requesting user.
   @Post('list')
   @HttpCode(HttpStatus.OK)
   async list(
@@ -51,6 +53,7 @@ export class ApplicationConnectionsController {
     });
   }
 
+  // Returns a single connection by id.
   @Post('get')
   @HttpCode(HttpStatus.OK)
   async get(
@@ -68,6 +71,9 @@ export class ApplicationConnectionsController {
     });
   }
 
+  // Extracts the authenticated application/workspace context from the
+  // request, throwing unless it was authenticated with an application
+  // access token.
   private requireAppContext(request: Request): {
     applicationId: string;
     workspaceId: string;

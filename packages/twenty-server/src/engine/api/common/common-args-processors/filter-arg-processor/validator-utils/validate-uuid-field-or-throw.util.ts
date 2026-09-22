@@ -9,6 +9,8 @@ import {
   CommonQueryRunnerExceptionCode,
 } from 'src/engine/api/common/common-query-runners/errors/common-query-runner.exception';
 
+// Validates that a UUID filter value is null or a well-formed UUID string;
+// throws a CommonQueryRunnerException otherwise.
 export const validateUUIDFieldOrThrow = (
   value: unknown,
   fieldName: string,

@@ -4,6 +4,8 @@ import { extractAttendeesFromEvent } from 'src/modules/calendar/calendar-event-i
 import { extractOrganizerFromEvent } from 'src/modules/calendar/calendar-event-import-manager/drivers/caldav/utils/extract-organizer-from-event.util';
 import { type FetchedCalendarEvent } from 'src/modules/calendar/common/types/fetched-calendar-event';
 
+// Parses a raw iCal blob into FetchedCalendarEvents, expanding recurrences
+// into separate events. Returns an empty list if parsing fails.
 export const parseICalEvents = (
   rawData: string,
   objectUrl: string,

@@ -1,3 +1,5 @@
+// Core-entity-cache provider resolving a UserWorkspaceEntity by id into its
+// flat (cache-friendly) representation.
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -19,6 +21,7 @@ export class UserWorkspaceEntityCacheProviderService extends CoreEntityCacheProv
     super();
   }
 
+  // Loads the user-workspace by id and flattens it for caching.
   async computeForCache(entityId: string): Promise<FlatUserWorkspace | null> {
     const entity = await this.userWorkspaceRepository.findOne({
       where: { id: entityId },

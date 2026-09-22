@@ -1,3 +1,5 @@
+// Exception type and user-facing message mapping for approved-access-domain
+// error codes.
 import { type MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { assertUnreachable } from 'twenty-shared/utils';

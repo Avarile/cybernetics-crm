@@ -1,3 +1,5 @@
+// Validates a FIELDS-type page layout widget's configuration on creation.
+
 import { msg, t } from '@lingui/core/macro';
 import { isDefined } from 'twenty-shared/utils';
 import { validate as uuidValidate } from 'uuid';
@@ -7,6 +9,9 @@ import { type FlatPageLayoutWidgetValidationError } from 'src/engine/metadata-mo
 import { WidgetConfigurationType } from 'src/engine/metadata-modules/page-layout-widget/enums/widget-configuration-type.type';
 import { PageLayoutWidgetExceptionCode } from 'src/engine/metadata-modules/page-layout-widget/exceptions/page-layout-widget.exception';
 
+// Requires configuration to be present and of type FIELDS, then checks
+// newFieldDefaultVisibility is a boolean and viewUniversalIdentifier, when
+// present, is a valid UUID.
 export const validateFieldsFlatPageLayoutWidgetForCreation = (
   args: ValidateFlatPageLayoutWidgetTypeSpecificitiesForCreationArgs,
 ): FlatPageLayoutWidgetValidationError[] => {

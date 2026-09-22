@@ -27,6 +27,8 @@ const WORKFLOWS_FOLDER_ITEM_NAMES = [
   'workflowsFolderAllWorkflowVersions',
 ] as const;
 
+// Builds the flat navigation menu item maps for a workspace: the fixed top-level standard nav items,
+// the "Workflows" folder, and its nested items, resolving each item's target view by universal identifier
 export const buildStandardFlatNavigationMenuItemMaps = ({
   now,
   workspaceId,

@@ -1,3 +1,7 @@
+// Converts a PageLayoutWidgetEntity read from the database into its flat
+// representation, resolving relation ids and configuration/override ids to
+// universal identifiers for cross-workspace sync.
+
 import { isDefined } from 'twenty-shared/utils';
 
 import { fromEntityToScalarEntity } from 'src/engine/metadata-modules/flat-entity/utils/from-entity-to-scalar-entity.util';
@@ -15,6 +19,8 @@ type FromPageLayoutWidgetEntityToFlatPageLayoutWidgetArgs =
     viewUniversalIdentifierById?: Partial<Record<string, string>>;
   };
 
+// Builds the scalar entity fields, resolves its relations and configuration
+// to universal identifiers, and converts overrides if present.
 export const fromPageLayoutWidgetEntityToFlatPageLayoutWidget = (
   args: FromPageLayoutWidgetEntityToFlatPageLayoutWidgetArgs,
 ): FlatPageLayoutWidget => {

@@ -30,6 +30,8 @@ export type BlocklistItem = Omit<
   workspaceMemberId: string;
 };
 
+// Validates blocklist handles (email/domain format, ownership, and
+// uniqueness per workspace member) before create/update mutations go through.
 @Injectable()
 export class BlocklistValidationService {
   constructor(
@@ -38,6 +40,7 @@ export class BlocklistValidationService {
     private readonly globalWorkspaceOrmManager: GlobalWorkspaceOrmManager,
   ) {}
 
+  // Validates schema then uniqueness for a batch of new blocklist entries.
   public async validateBlocklistForCreateMany(
     payload: CreateManyResolverArgs<BlocklistItem>,
     userId: string,
@@ -47,6 +50,7 @@ export class BlocklistValidationService {
     await this.validateUniquenessForCreateMany(payload, userId, workspaceId);
   }
 
+  // Re-validates schema (only if the handle changed) then uniqueness for an update.
   public async validateBlocklistForUpdateOne(
     payload: UpdateOneResolverArgs<BlocklistItem>,
     userId: string,
@@ -58,6 +62,7 @@ export class BlocklistValidationService {
     await this.validateUniquenessForUpdateOne(payload, userId, workspaceId);
   }
 
+  // Ensures every handle is either a valid email or a domain prefixed with '@'.
   public async validateSchema(blocklist: BlocklistItem[]) {
     const emailOrDomainSchema = z
       .string()
@@ -93,6 +98,8 @@ export class BlocklistValidationService {
     }
   }
 
+  // Ensures the acting user can only create blocklist entries for themselves,
+  // and that none of the new handles already exist in their blocklist.
   public async validateUniquenessForCreateMany(
     payload: CreateManyResolverArgs<BlocklistItem>,
     userId: string,
@@ -154,6 +161,8 @@ export class BlocklistValidationService {
     }
   }
 
+  // Ensures the record exists, its workspace member ownership isn't being
+  // changed, and the new handle doesn't collide with another entry of the same member.
   public async validateUniquenessForUpdateOne(
     payload: UpdateOneResolverArgs<BlocklistItem>,
     userId: string,

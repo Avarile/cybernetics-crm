@@ -8,6 +8,9 @@ import { ApplicationModule } from 'src/engine/core-modules/application/applicati
 import { WorkspaceCacheModule } from 'src/engine/workspace-cache/workspace-cache.module';
 import { WorkspaceMigrationModule } from 'src/engine/workspace-manager/workspace-migration/workspace-migration.module';
 
+// Registers the 2.14 workspace commands (fix standard relation field labels/icons,
+// sync call recording request status, drop calendar event recording preference) as
+// providers for the upgrade runner.
 @Module({
   imports: [
     ApplicationModule,

@@ -1,3 +1,7 @@
+// Builds a creation validator for "simple record page" widget types
+// (timeline, tasks, notes, files, etc.) whose configuration only needs to
+// match a single expected configurationType.
+
 import { msg, t } from '@lingui/core/macro';
 import { isDefined } from 'twenty-shared/utils';
 
@@ -6,6 +10,8 @@ import { type FlatPageLayoutWidgetValidationError } from 'src/engine/metadata-mo
 import { type WidgetConfigurationType } from 'src/engine/metadata-modules/page-layout-widget/enums/widget-configuration-type.type';
 import { PageLayoutWidgetExceptionCode } from 'src/engine/metadata-modules/page-layout-widget/exceptions/page-layout-widget.exception';
 
+// Returns a validator requiring configuration to be present and its type to
+// match expectedConfigurationType.
 export const validateSimpleRecordPageWidgetForCreation =
   (expectedConfigurationType: WidgetConfigurationType) =>
   (

@@ -19,6 +19,7 @@ import {
   type StandardPageLayoutWidgetConfig,
 } from 'src/engine/workspace-manager/twenty-standard-application/utils/page-layout-config';
 
+// Per-widget content (title, type, position, configuration) supplied by each standard page layout widget's builder
 export type CreateStandardPageLayoutWidgetContext = {
   layoutName: string;
   tabTitle: string;
@@ -34,6 +35,7 @@ export type CreateStandardPageLayoutWidgetContext = {
   conditionalAvailabilityExpression: string | null;
 };
 
+// Arguments accepted by createStandardPageLayoutWidgetFlatMetadata
 export type CreateStandardPageLayoutWidgetArgs = {
   now: string;
   workspaceId: string;
@@ -43,6 +45,8 @@ export type CreateStandardPageLayoutWidgetArgs = {
   context: CreateStandardPageLayoutWidgetContext;
 };
 
+// Builds a single standard page layout widget's FlatPageLayoutWidget, resolving its id and its
+// parent tab's id/universal identifier from the standard layout's fixed config and pre-generated ids
 export const createStandardPageLayoutWidgetFlatMetadata = ({
   context: {
     layoutName,

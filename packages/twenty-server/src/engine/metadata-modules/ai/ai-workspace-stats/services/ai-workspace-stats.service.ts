@@ -1,3 +1,5 @@
+// Aggregates a workspace's chat thread count, skill count, and role-scoped
+// visible tool count into a single stats object.
 import { Injectable } from '@nestjs/common';
 
 import { isDefined } from 'twenty-shared/utils';
@@ -18,6 +20,8 @@ export class AiWorkspaceStatsService {
     private readonly toolRegistryService: ToolRegistryService,
   ) {}
 
+  // Fetches conversation count, skill map, and role-scoped tool catalog in
+  // parallel and combines them into the workspace's AI stats.
   async computeStats(
     workspaceId: string,
     roleId: string,

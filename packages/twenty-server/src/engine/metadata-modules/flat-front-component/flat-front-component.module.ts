@@ -6,6 +6,7 @@ import { WorkspaceManyOrAllFlatEntityMapsCacheModule } from 'src/engine/metadata
 import { WorkspaceFlatFrontComponentMapCacheService } from 'src/engine/metadata-modules/flat-front-component/services/workspace-flat-front-component-map-cache.service';
 import { FrontComponentEntity } from 'src/engine/metadata-modules/front-component/entities/front-component.entity';
 
+// Provides the flat-front-component map cache used to read front components in denormalized form.
 @Module({
   imports: [
     TypeOrmModule.forFeature([ApplicationEntity, FrontComponentEntity]),

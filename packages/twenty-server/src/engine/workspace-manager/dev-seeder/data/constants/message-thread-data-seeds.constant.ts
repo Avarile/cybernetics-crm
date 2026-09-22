@@ -1,3 +1,4 @@
+// Seed data for sample dev-seeded message threads.
 type MessageThreadDataSeed = {
   id: string;
   createdAt: Date;

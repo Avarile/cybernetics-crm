@@ -1,3 +1,6 @@
+// Builds the `mergeMany` GraphQL mutation resolver for an object:
+// delegates the record-merging logic to CommonMergeManyQueryRunnerService
+// and formats the resulting merged record.
 import { Injectable } from '@nestjs/common';
 
 import graphqlFields from 'graphql-fields';
@@ -23,6 +26,8 @@ export class MergeManyResolverFactory implements WorkspaceResolverBuilderFactory
     private readonly commonMergeManyQueryRunnerService: CommonMergeManyQueryRunnerService,
   ) {}
 
+  // Returns a resolver function that merges the given records and
+  // formats the resulting record for the GraphQL response.
   create(
     context: WorkspaceSchemaBuilderContext,
   ): Resolver<MergeManyResolverArgs> {

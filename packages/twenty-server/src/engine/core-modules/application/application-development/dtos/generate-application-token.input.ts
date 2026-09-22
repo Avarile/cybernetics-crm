@@ -1,3 +1,4 @@
+// GraphQL args for generating an application development token.
 import { ArgsType, Field } from '@nestjs/graphql';
 
 import { IsNotEmpty, IsUUID } from 'class-validator';

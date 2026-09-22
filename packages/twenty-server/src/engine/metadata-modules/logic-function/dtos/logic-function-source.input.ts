@@ -1,3 +1,5 @@
+// GraphQL input carrying a logic function's raw source code and handler name.
+
 import { Field, InputType } from '@nestjs/graphql';
 
 import { IsString, Matches } from 'class-validator';

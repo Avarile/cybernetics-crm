@@ -10,6 +10,8 @@ interface DecoratorOptions {
   allowUndefined?: boolean;
 }
 
+// Injects the authenticated user from the request, throwing unless
+// `allowUndefined` is passed (since API-key-only requests have no user).
 export const AuthUser = createParamDecorator(
   (options: DecoratorOptions | undefined, ctx: ExecutionContext) => {
     const request = getRequest(ctx);
