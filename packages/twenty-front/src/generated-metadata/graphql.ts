@@ -1548,6 +1548,11 @@ export type EmailPasswordResetLink = {
   success: Scalars['Boolean']['output'];
 };
 
+export type DatabaseConfiguration = {
+  __typename?: 'DatabaseConfiguration';
+  configurationType: WidgetConfigurationType;
+};
+
 export type EmailThreadConfiguration = {
   __typename?: 'EmailThreadConfiguration';
   configurationType: WidgetConfigurationType;
@@ -1746,7 +1751,8 @@ export enum FeatureFlagKey {
   IS_REST_METADATA_API_NEW_FORMAT_DIRECT = 'IS_REST_METADATA_API_NEW_FORMAT_DIRECT',
   IS_SETTINGS_DISCOVERY_HERO_ENABLED = 'IS_SETTINGS_DISCOVERY_HERO_ENABLED',
   IS_UNIQUE_INDEXES_ENABLED = 'IS_UNIQUE_INDEXES_ENABLED',
-  IS_WORKFLOW_VERSION_IN_CORE_ENABLED = 'IS_WORKFLOW_VERSION_IN_CORE_ENABLED'
+  IS_WORKFLOW_VERSION_IN_CORE_ENABLED = 'IS_WORKFLOW_VERSION_IN_CORE_ENABLED',
+  IS_DATABASE_CENTRE_INTEGRATION_ENABLED = 'IS_DATABASE_CENTRE_INTEGRATION_ENABLED'
 }
 
 export type Field = {
@@ -4172,6 +4178,7 @@ export enum PermissionFlagType {
   APPLICATIONS = 'APPLICATIONS',
   BILLING = 'BILLING',
   CODE_INTERPRETER_TOOL = 'CODE_INTERPRETER_TOOL',
+  DATABASE_CENTRE_INTEGRATION = 'DATABASE_CENTRE_INTEGRATION',
   CONNECTED_ACCOUNTS = 'CONNECTED_ACCOUNTS',
   CREATE_CALENDAR_EVENT_TOOL = 'CREATE_CALENDAR_EVENT_TOOL',
   DATA_MODEL = 'DATA_MODEL',
@@ -6160,12 +6167,13 @@ export type Webhook = {
   updatedAt: Scalars['DateTime']['output'];
 };
 
-export type WidgetConfiguration = AggregateChartConfiguration | BarChartConfiguration | CalendarConfiguration | EmailThreadConfiguration | EmailsConfiguration | FieldConfiguration | FieldRichTextConfiguration | FieldsConfiguration | FilesConfiguration | FrontComponentConfiguration | IframeConfiguration | LineChartConfiguration | NotesConfiguration | PieChartConfiguration | RecordTableConfiguration | StandaloneRichTextConfiguration | TasksConfiguration | TimelineConfiguration | ViewConfiguration | WorkflowConfiguration | WorkflowRunConfiguration | WorkflowVersionConfiguration;
+export type WidgetConfiguration = AggregateChartConfiguration | BarChartConfiguration | CalendarConfiguration | DatabaseConfiguration | EmailThreadConfiguration | EmailsConfiguration | FieldConfiguration | FieldRichTextConfiguration | FieldsConfiguration | FilesConfiguration | FrontComponentConfiguration | IframeConfiguration | LineChartConfiguration | NotesConfiguration | PieChartConfiguration | RecordTableConfiguration | StandaloneRichTextConfiguration | TasksConfiguration | TimelineConfiguration | ViewConfiguration | WorkflowConfiguration | WorkflowRunConfiguration | WorkflowVersionConfiguration;
 
 export enum WidgetConfigurationType {
   AGGREGATE_CHART = 'AGGREGATE_CHART',
   BAR_CHART = 'BAR_CHART',
   CALENDAR = 'CALENDAR',
+  DATABASE = 'DATABASE',
   EMAILS = 'EMAILS',
   EMAIL_THREAD = 'EMAIL_THREAD',
   FIELD = 'FIELD',
@@ -6189,6 +6197,7 @@ export enum WidgetConfigurationType {
 
 export enum WidgetType {
   CALENDAR = 'CALENDAR',
+  DATABASE = 'DATABASE',
   EMAILS = 'EMAILS',
   EMAIL_THREAD = 'EMAIL_THREAD',
   FIELD = 'FIELD',

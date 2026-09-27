@@ -13,7 +13,10 @@ import { SettingsSkeletonLoader } from '@/settings/components/SettingsSkeletonLo
 import { SettingPublicDomain } from '@/settings/domains/components/SettingPublicDomain';
 import { SettingsPath } from 'twenty-shared/types';
 import { getSettingsPath } from 'twenty-shared/utils';
-import { PermissionFlagType } from '~/generated-metadata/graphql';
+import {
+  FeatureFlagKey,
+  PermissionFlagType,
+} from '~/generated-metadata/graphql';
 
 const SettingsGraphQLPlayground = lazy(() =>
   import('~/pages/settings/developers/playground/SettingsGraphQLPlayground').then(
@@ -224,6 +227,14 @@ const SettingsCustomDomainPage = lazy(() =>
   import('~/pages/settings/domains/SettingsCustomDomainPage').then(
     (module) => ({
       default: module.SettingsCustomDomainPage,
+    }),
+  ),
+);
+
+const SettingsDatabaseCentre = lazy(() =>
+  import('~/pages/settings/database-centre/SettingsDatabaseCentre').then(
+    (module) => ({
+      default: module.SettingsDatabaseCentre,
     }),
   ),
 );
@@ -881,6 +892,21 @@ export const SettingsRoutes = ({ isAdminPageEnabled }: SettingsRoutesProps) => (
         <Route
           path={SettingsPath.RoleAddObjectLevel}
           element={<SettingsRoleAddObjectLevel />}
+        />
+      </Route>
+      <Route
+        element={
+          <SettingsProtectedRouteWrapper
+            settingsPermission={PermissionFlagType.DATABASE_CENTRE_INTEGRATION}
+            requiredFeatureFlag={
+              FeatureFlagKey.IS_DATABASE_CENTRE_INTEGRATION_ENABLED
+            }
+          />
+        }
+      >
+        <Route
+          path={SettingsPath.DatabaseCentre}
+          element={<SettingsDatabaseCentre />}
         />
       </Route>
       <Route

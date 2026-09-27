@@ -625,6 +625,9 @@ export const STANDARD_OBJECTS = {
       attachments: {
         universalIdentifier: '20202020-c1b5-4120-b0f0-987ca401ed53',
       },
+      databaseRecordTargets: {
+        universalIdentifier: 'fe67a8c1-abe4-4ebe-b50f-7ce190f6dd65',
+      },
       timelineActivities: {
         universalIdentifier: '20202020-0414-4daf-9c0d-64fe7b27f89f',
       },
@@ -749,6 +752,9 @@ export const STANDARD_OBJECTS = {
       attachments: {
         universalIdentifier: '20202020-bf6f-4220-8c55-2764f1175870',
       },
+      databaseRecordTargets: {
+        universalIdentifier: 'd144c3a1-e9e1-46cf-8ecc-c11718ecaaa5',
+      },
     },
     indexes: {
       searchVectorGinIndex: {
@@ -770,6 +776,166 @@ export const STANDARD_OBJECTS = {
           },
           updatedAt: {
             universalIdentifier: '20202020-af12-4a12-8a12-da5ab0b0af04',
+          },
+        },
+      },
+    },
+  },
+  databaseConnection: {
+    universalIdentifier: '70417a84-202b-4f7e-9e89-4d41d6b13afc',
+    fields: {
+      ...buildStandardObjectSystemFields(
+        '70417a84-202b-4f7e-9e89-4d41d6b13afc',
+      ),
+      name: { universalIdentifier: '1afada47-98ed-4b94-9da5-302c25b2e422' },
+      baseUrl: { universalIdentifier: '02c8500f-7466-44a4-9852-c54f5d9a0427' },
+      encryptedApiToken: {
+        universalIdentifier: '9a4525d1-c4de-4d82-bd11-b0cf23b4941a',
+      },
+      tokenFingerprint: {
+        universalIdentifier: '825c530a-ff1f-4a1a-968d-59c58b41a30f',
+      },
+      isEnabled: {
+        universalIdentifier: 'c547fed9-6918-4c84-8217-d17eb0274d05',
+      },
+      lastVerifiedAt: {
+        universalIdentifier: 'e08add4b-fba4-4739-ab46-ab6d0dc08f84',
+      },
+      lastVerificationStatus: {
+        universalIdentifier: '647c3083-0374-4847-9902-031fdb25f333',
+      },
+      databaseRecordTargets: {
+        universalIdentifier: 'c08993fb-7f21-4d93-87aa-69631bd1e8f8',
+      },
+    },
+    indexes: {},
+    views: {
+      allDatabaseConnections: {
+        universalIdentifier: '46d832e1-79af-4f1f-b9e3-de9ba2eaf87a',
+        viewFields: {
+          id: { universalIdentifier: '23ddda14-5d47-4e5d-9ac5-880a106ed4ec' },
+          name: { universalIdentifier: '4f337fcb-f150-4b3c-90e3-484bc7141dac' },
+          baseUrl: {
+            universalIdentifier: '063a1078-ed12-4a18-939f-6fd9582f7b51',
+          },
+          isEnabled: {
+            universalIdentifier: 'eef4394c-1a49-4cdb-b9a5-27eb58c176eb',
+          },
+          lastVerificationStatus: {
+            universalIdentifier: 'fd2df350-a81f-4cdc-82be-1ef18a1440fb',
+          },
+        },
+      },
+    },
+  },
+  databaseRecordTarget: {
+    universalIdentifier: '26d68f20-242a-4af6-913b-77a76fb61192',
+    fields: {
+      ...buildStandardObjectSystemFields(
+        '26d68f20-242a-4af6-913b-77a76fb61192',
+      ),
+      targetTask: {
+        universalIdentifier: '2586e6f5-2eff-48f4-af2a-5299f3347209',
+      },
+      targetNote: {
+        universalIdentifier: 'fb0342ea-de74-4baa-98b9-d3bae1a14641',
+      },
+      targetPerson: {
+        universalIdentifier: 'ef159931-09fa-4f13-a8cf-a258e140f100',
+      },
+      targetCompany: {
+        universalIdentifier: '3621d780-27d1-4666-8e95-7518ca12b8cd',
+      },
+      targetOpportunity: {
+        universalIdentifier: '5f566850-bce0-44d3-a339-77c9d511da37',
+      },
+      targetDashboard: {
+        universalIdentifier: '94604863-ed8e-45ed-86e0-067d17668455',
+      },
+      targetWorkflow: {
+        universalIdentifier: 'f7fee9e9-236b-413e-bbe0-84730070ffc2',
+      },
+      databaseConnection: {
+        universalIdentifier: 'd925ebe2-8b53-4f36-99a6-1470e5b228ad',
+      },
+      spaceId: { universalIdentifier: 'a7a8beb4-d777-430b-9aca-21bcf662526d' },
+      baseId: { universalIdentifier: 'aacc21cc-0699-4d45-ba09-d87f1a853da6' },
+      tableId: { universalIdentifier: '33131d13-0bf4-4a8c-bf04-526d31f67050' },
+      recordId: { universalIdentifier: 'd9333cb1-1093-4179-bb43-b311df6db6fc' },
+      viewId: { universalIdentifier: 'd83135d5-66e8-4627-ba5e-721eb83d8b6d' },
+      recordName: {
+        universalIdentifier: 'f147a9a5-a13c-45a9-b09c-c1819739e1a2',
+      },
+      baseName: {
+        universalIdentifier: '1b5f7020-0fb5-4d01-818a-c16bd21b010c',
+      },
+      tableName: {
+        universalIdentifier: '5e3809bc-9e07-4682-b534-26876cad024b',
+      },
+      previewFields: {
+        universalIdentifier: '17e8fe13-1fd5-49e8-bc40-3f4d9d2b164c',
+      },
+      sourceUrl: {
+        universalIdentifier: '0192af3a-c12e-4d17-aa7e-27d3feb94174',
+      },
+      snapshotStatus: {
+        universalIdentifier: 'bd32ab46-8723-4601-a6fc-2e9f0ebcdf1f',
+      },
+      snapshotAt: {
+        universalIdentifier: 'c03d3f1b-6897-4812-8f31-c1031d871cdd',
+      },
+    },
+    morphIds: {
+      targetMorphId: { morphId: '5cffe7c6-bdec-43ac-bc4d-777ed7ff114b' },
+    },
+    indexes: {
+      targetTaskIdIndex: {
+        universalIdentifier: 'd2d68046-e79d-4cfc-9237-df2cb15353fd',
+      },
+      targetNoteIdIndex: {
+        universalIdentifier: 'c15d5a29-6c11-4250-b5a3-73f4af7a0d75',
+      },
+      targetPersonIdIndex: {
+        universalIdentifier: '1259aa40-8d84-48ba-9ba4-3c19683a3114',
+      },
+      targetCompanyIdIndex: {
+        universalIdentifier: 'fd73aed8-c546-49db-85b7-4886550ffb5e',
+      },
+      targetOpportunityIdIndex: {
+        universalIdentifier: 'fc0319c4-dd46-4aad-9f33-de38287eaae7',
+      },
+      targetDashboardIdIndex: {
+        universalIdentifier: '838265b7-d43e-4928-9018-b4bb23c2a1bb',
+      },
+      targetWorkflowIdIndex: {
+        universalIdentifier: 'c427c048-5aec-44fc-8329-53fba8070029',
+      },
+      databaseConnectionIdIndex: {
+        universalIdentifier: '8e3a89ab-de8f-424e-bb96-dbae93675613',
+      },
+      tableIdIndex: {
+        universalIdentifier: 'c1a28460-c222-4474-8d0b-a11245199524',
+      },
+      recordIdIndex: {
+        universalIdentifier: '5c039992-86eb-47c5-ae4a-3a1337cb5ad0',
+      },
+    },
+    views: {
+      allDatabaseRecordTargets: {
+        universalIdentifier: 'e4c72f2a-67a7-4a72-995a-e40ae5d261ba',
+        viewFields: {
+          id: { universalIdentifier: '62ecd496-cadf-4926-8b0f-8a18b1605979' },
+          recordName: {
+            universalIdentifier: 'f32ffccf-6d54-4fbd-9417-fa265262301a',
+          },
+          tableName: {
+            universalIdentifier: '891e0011-6625-4021-9d73-dc50e2cd9669',
+          },
+          baseName: {
+            universalIdentifier: 'd5ff3715-17c8-458c-991b-85478c92b836',
+          },
+          snapshotStatus: {
+            universalIdentifier: '8007c42c-c34c-490f-be61-a348bd14f869',
           },
         },
       },
@@ -1313,6 +1479,9 @@ export const STANDARD_OBJECTS = {
       attachments: {
         universalIdentifier: '20202020-4986-4c92-bf19-39934b149b16',
       },
+      databaseRecordTargets: {
+        universalIdentifier: '8c7a2861-d92f-433c-bc87-853b904452eb',
+      },
       timelineActivities: {
         universalIdentifier: '20202020-7030-42f8-929c-1a57b25d6bce',
       },
@@ -1464,6 +1633,9 @@ export const STANDARD_OBJECTS = {
       },
       attachments: {
         universalIdentifier: '20202020-87c7-4118-83d6-2f4031005209',
+      },
+      databaseRecordTargets: {
+        universalIdentifier: 'fcb986e9-6e0e-44a9-9d67-e6a92ddc88b2',
       },
       timelineActivities: {
         universalIdentifier: '20202020-30e2-421f-96c7-19c69d1cf631',
@@ -1639,6 +1811,9 @@ export const STANDARD_OBJECTS = {
       attachments: {
         universalIdentifier: '20202020-cd97-451f-87fa-bcb789bdbf3a',
       },
+      databaseRecordTargets: {
+        universalIdentifier: 'f524cba4-cde4-40b5-9846-4a521ad48f2e',
+      },
       messageParticipants: {
         universalIdentifier: '20202020-498e-4c61-8158-fa04f0638334',
       },
@@ -1783,6 +1958,9 @@ export const STANDARD_OBJECTS = {
       },
       attachments: {
         universalIdentifier: '20202020-794d-4783-a8ff-cecdb15be139',
+      },
+      databaseRecordTargets: {
+        universalIdentifier: 'c8da8e3a-eb32-4ab4-a78b-35a39ae7ef93',
       },
       assignee: { universalIdentifier: '20202020-065a-4f42-a906-e20422c1753f' },
       timelineActivities: {
@@ -2176,6 +2354,9 @@ export const STANDARD_OBJECTS = {
       },
       attachments: {
         universalIdentifier: '20202020-4a8c-4e2d-9b1c-7e5f3a2b4c6d',
+      },
+      databaseRecordTargets: {
+        universalIdentifier: '4f2ee673-dbb8-48e7-b304-90b40cb6933f',
       },
     },
     indexes: {

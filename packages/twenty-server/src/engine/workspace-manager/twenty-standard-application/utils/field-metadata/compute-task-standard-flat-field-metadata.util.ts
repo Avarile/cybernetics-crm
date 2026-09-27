@@ -335,6 +335,32 @@ export const buildTaskStandardFlatFieldMetadatas = ({
     twentyStandardApplicationId,
     now,
   }),
+  databaseRecordTargets: createStandardRelationFieldFlatMetadata({
+    objectName,
+    workspaceId,
+    context: {
+      type: FieldMetadataType.RELATION,
+      morphId: null,
+      fieldName: 'databaseRecordTargets',
+      label: i18nLabel(
+        STANDARD_RELATION_FIELD_PROPERTIES_BY_RELATION_OBJECT
+          .databaseRecordTarget.label,
+      ),
+      description: i18nLabel(msg`Database records linked to the task`),
+      icon: STANDARD_RELATION_FIELD_PROPERTIES_BY_RELATION_OBJECT
+        .databaseRecordTarget.icon,
+      isNullable: true,
+      targetObjectName: 'databaseRecordTarget',
+      targetFieldName: 'targetTask',
+      settings: {
+        relationType: RelationType.ONE_TO_MANY,
+      },
+    },
+    standardObjectMetadataRelatedEntityIds,
+    dependencyFlatEntityMaps,
+    twentyStandardApplicationId,
+    now,
+  }),
   assignee: createStandardRelationFieldFlatMetadata({
     objectName,
     workspaceId,

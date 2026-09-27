@@ -14,6 +14,7 @@ export enum PermissionFlagType {
   LAYOUTS = 'LAYOUTS',
   BILLING = 'BILLING',
   AI_SETTINGS = 'AI_SETTINGS',
+  DATABASE_CENTRE_INTEGRATION = 'DATABASE_CENTRE_INTEGRATION',
 
   // Tool permissions
   AI = 'AI',

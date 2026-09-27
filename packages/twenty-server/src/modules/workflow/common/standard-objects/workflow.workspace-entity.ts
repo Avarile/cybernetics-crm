@@ -3,6 +3,7 @@ import { type ActorMetadata } from 'twenty-shared/types';
 import { BaseWorkspaceEntity } from 'src/engine/twenty-orm/base.workspace-entity';
 import { type EntityRelation } from 'src/engine/workspace-manager/workspace-migration/types/entity-relation.interface';
 import { type AttachmentWorkspaceEntity } from 'src/modules/attachment/standard-objects/attachment.workspace-entity';
+import { type DatabaseRecordTargetWorkspaceEntity } from 'src/modules/database-record/standard-objects/database-record-target.workspace-entity';
 import { type TimelineActivityWorkspaceEntity } from 'src/modules/timeline/standard-objects/timeline-activity.workspace-entity';
 import { type WorkflowAutomatedTriggerWorkspaceEntity } from 'src/modules/workflow/common/standard-objects/workflow-automated-trigger.workspace-entity';
 import { type WorkflowRunWorkspaceEntity } from 'src/modules/workflow/common/standard-objects/workflow-run.workspace-entity';
@@ -26,6 +27,7 @@ export class WorkflowWorkspaceEntity extends BaseWorkspaceEntity {
   automatedTriggers: EntityRelation<WorkflowAutomatedTriggerWorkspaceEntity[]>;
   timelineActivities: EntityRelation<TimelineActivityWorkspaceEntity[]>;
   attachments: EntityRelation<AttachmentWorkspaceEntity[]>;
+  databaseRecordTargets: EntityRelation<DatabaseRecordTargetWorkspaceEntity[]>;
   createdBy: ActorMetadata;
   updatedBy: ActorMetadata;
 }

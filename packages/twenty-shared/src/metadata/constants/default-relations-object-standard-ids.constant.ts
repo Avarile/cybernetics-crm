@@ -5,4 +5,5 @@ export const DEFAULT_RELATIONS_OBJECTS_STANDARD_IDS = [
   'attachment',
   'noteTarget',
   'taskTarget',
+  'databaseRecordTarget',
 ] as const satisfies (keyof typeof STANDARD_OBJECTS)[];

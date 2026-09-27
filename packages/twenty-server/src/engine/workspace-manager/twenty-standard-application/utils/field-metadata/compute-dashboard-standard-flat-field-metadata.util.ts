@@ -277,4 +277,30 @@ export const buildDashboardStandardFlatFieldMetadatas = ({
     twentyStandardApplicationId,
     now,
   }),
+  databaseRecordTargets: createStandardRelationFieldFlatMetadata({
+    objectName,
+    workspaceId,
+    context: {
+      type: FieldMetadataType.RELATION,
+      morphId: null,
+      fieldName: 'databaseRecordTargets',
+      label: i18nLabel(
+        STANDARD_RELATION_FIELD_PROPERTIES_BY_RELATION_OBJECT
+          .databaseRecordTarget.label,
+      ),
+      description: i18nLabel(msg`Database records linked to the dashboard`),
+      icon: STANDARD_RELATION_FIELD_PROPERTIES_BY_RELATION_OBJECT
+        .databaseRecordTarget.icon,
+      isNullable: true,
+      targetObjectName: 'databaseRecordTarget',
+      targetFieldName: 'targetDashboard',
+      settings: {
+        relationType: RelationType.ONE_TO_MANY,
+      },
+    },
+    standardObjectMetadataRelatedEntityIds,
+    dependencyFlatEntityMaps,
+    twentyStandardApplicationId,
+    now,
+  }),
 });

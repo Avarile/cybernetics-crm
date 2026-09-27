@@ -149,6 +149,20 @@ const OPPORTUNITY_PAGE_TABS = {
       },
     },
   },
+  database: {
+    universalIdentifier:
+      STANDARD_PAGE_LAYOUT_UNIVERSAL_IDENTIFIERS.opportunityRecordPage.tabs
+        .database.universalIdentifier,
+    ...TAB_PROPS.database,
+    widgets: {
+      database: {
+        universalIdentifier:
+          STANDARD_PAGE_LAYOUT_UNIVERSAL_IDENTIFIERS.opportunityRecordPage.tabs
+            .database.widgets.database.universalIdentifier,
+        ...WIDGET_PROPS.database,
+      },
+    },
+  },
 } as const satisfies Record<string, StandardPageLayoutTabConfig>;
 
 // Fixed record page layout (tabs and widgets) for the standard "opportunity" object

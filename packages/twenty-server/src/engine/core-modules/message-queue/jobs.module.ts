@@ -49,6 +49,7 @@ import { CleanWorkspaceDeletionWarningUserVarsJob } from 'src/engine/workspace-m
 import { WorkspaceCleanerModule } from 'src/engine/workspace-manager/workspace-cleaner/workspace-cleaner.module';
 import { CalendarEventParticipantManagerModule } from 'src/modules/calendar/calendar-event-participant-manager/calendar-event-participant-manager.module';
 import { CalendarModule } from 'src/modules/calendar/calendar.module';
+import { DatabaseRecordModule } from 'src/modules/database-record/database-record.module';
 import { AutoCompaniesAndContactsCreationJobModule } from 'src/modules/contact-creation-manager/jobs/auto-companies-and-contacts-creation-job.module';
 import { MessagingModule } from 'src/modules/messaging/messaging.module';
 import { TimelineJobModule } from 'src/modules/timeline/jobs/timeline-job.module';
@@ -76,6 +77,7 @@ import { WorkflowModule } from 'src/modules/workflow/workflow.module';
     AuthModule,
     MessagingModule,
     CalendarModule,
+    DatabaseRecordModule,
     CalendarEventParticipantManagerModule,
     TimelineActivityModule,
     StripeModule,

@@ -101,6 +101,14 @@ export const STANDARD_PAGE_LAYOUT_UNIVERSAL_IDENTIFIERS = {
           },
         },
       },
+      database: {
+        universalIdentifier: '9e41a4df-83e6-467e-b935-037a6fe5fa51',
+        widgets: {
+          database: {
+            universalIdentifier: '33e2e4ec-6929-469d-b6ba-5fcc19722351',
+          },
+        },
+      },
     },
   },
   personRecordPage: {
@@ -168,6 +176,14 @@ export const STANDARD_PAGE_LAYOUT_UNIVERSAL_IDENTIFIERS = {
         widgets: {
           calendar: {
             universalIdentifier: '20202020-ac02-4002-8002-ae0a1ea11271',
+          },
+        },
+      },
+      database: {
+        universalIdentifier: '8a728257-ecba-4dc8-a5b4-94cc20d5a60b',
+        widgets: {
+          database: {
+            universalIdentifier: 'ba7a5168-9fed-42a4-a887-51f4a51be1ac',
           },
         },
       },
@@ -241,6 +257,14 @@ export const STANDARD_PAGE_LAYOUT_UNIVERSAL_IDENTIFIERS = {
           },
         },
       },
+      database: {
+        universalIdentifier: '371a3eb3-7436-4105-b10f-98965748d678',
+        widgets: {
+          database: {
+            universalIdentifier: '7067f501-0de3-40ed-b4fa-1b7f0a961999',
+          },
+        },
+      },
     },
   },
   noteRecordPage: {
@@ -281,6 +305,14 @@ export const STANDARD_PAGE_LAYOUT_UNIVERSAL_IDENTIFIERS = {
           },
         },
       },
+      database: {
+        universalIdentifier: '582352de-0b96-4714-8a98-8987a2f3093e',
+        widgets: {
+          database: {
+            universalIdentifier: '4a01a81f-ab8e-48a5-9399-b48493b86e14',
+          },
+        },
+      },
     },
   },
   taskRecordPage: {
@@ -318,6 +350,14 @@ export const STANDARD_PAGE_LAYOUT_UNIVERSAL_IDENTIFIERS = {
         widgets: {
           files: {
             universalIdentifier: '20202020-ac05-4005-8005-ba5ca11a5541',
+          },
+        },
+      },
+      database: {
+        universalIdentifier: '1d69be6f-1b24-4977-a8e3-b90cfc15f954',
+        widgets: {
+          database: {
+            universalIdentifier: '891e1226-4493-40c9-83f8-3138dd1d389a',
           },
         },
       },

@@ -14,6 +14,10 @@ export const STANDARD_RELATION_FIELD_PROPERTIES_BY_RELATION_OBJECT = {
     label: msg`Timeline Activities`,
     icon: 'IconTimelineEvent',
   },
+  databaseRecordTarget: {
+    label: msg`Database Records`,
+    icon: 'IconDatabase',
+  },
 } satisfies Record<
   (typeof DEFAULT_RELATIONS_OBJECTS_STANDARD_IDS)[number],
   { label: MessageDescriptor; icon: string }

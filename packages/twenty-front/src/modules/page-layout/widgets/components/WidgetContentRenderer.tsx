@@ -1,5 +1,6 @@
 import { type PageLayoutWidget } from '@/page-layout/types/PageLayoutWidget';
 import { CalendarWidget } from '@/page-layout/widgets/calendar/components/CalendarWidget';
+import { DatabaseRecordWidget } from '@/page-layout/widgets/database-record/components/DatabaseRecordWidget';
 import { EmailThreadWidget } from '@/page-layout/widgets/email-thread/components/EmailThreadWidget';
 import { EmailWidget } from '@/page-layout/widgets/emails/components/EmailWidget';
 import { FieldRichTextWidgetRenderer } from '@/page-layout/widgets/field-rich-text/components/FieldRichTextWidgetRenderer';
@@ -80,6 +81,9 @@ export const WidgetContentRenderer = ({
 
     case WidgetType.EMAIL_THREAD:
       return <EmailThreadWidget widget={widget} />;
+
+    case WidgetType.DATABASE:
+      return <DatabaseRecordWidget widget={widget} />;
 
     default:
       return null;

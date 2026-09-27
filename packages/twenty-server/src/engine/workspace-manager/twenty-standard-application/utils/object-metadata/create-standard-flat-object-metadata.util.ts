@@ -248,6 +248,72 @@ export const STANDARD_FLAT_OBJECT_METADATA_BUILDERS_BY_OBJECT_NAME = {
       twentyStandardApplicationId,
       now,
     }),
+  databaseConnection: ({
+    now,
+    workspaceId,
+    standardObjectMetadataRelatedEntityIds,
+    twentyStandardApplicationId,
+    dependencyFlatEntityMaps,
+  }: Omit<
+    CreateStandardObjectArgs<'databaseConnection'>,
+    'context' | 'objectName'
+  >) =>
+    createStandardObjectFlatMetadata({
+      objectName: 'databaseConnection',
+      dependencyFlatEntityMaps,
+      context: {
+        universalIdentifier:
+          STANDARD_OBJECTS.databaseConnection.universalIdentifier,
+        nameSingular: 'databaseConnection',
+        namePlural: 'databaseConnections',
+        labelSingular: i18nLabel(msg`Database Connection`),
+        labelPlural: i18nLabel(msg`Database Connections`),
+        description: i18nLabel(
+          msg`A workspace's connection to the cybernetics-data-centre`,
+        ),
+        icon: 'IconDatabase',
+        isSystem: true,
+        isUICreatable: false,
+        labelIdentifierFieldMetadataName: 'name',
+      },
+      workspaceId,
+      standardObjectMetadataRelatedEntityIds,
+      twentyStandardApplicationId,
+      now,
+    }),
+  databaseRecordTarget: ({
+    now,
+    workspaceId,
+    standardObjectMetadataRelatedEntityIds,
+    twentyStandardApplicationId,
+    dependencyFlatEntityMaps,
+  }: Omit<
+    CreateStandardObjectArgs<'databaseRecordTarget'>,
+    'context' | 'objectName'
+  >) =>
+    createStandardObjectFlatMetadata({
+      objectName: 'databaseRecordTarget',
+      dependencyFlatEntityMaps,
+      context: {
+        universalIdentifier:
+          STANDARD_OBJECTS.databaseRecordTarget.universalIdentifier,
+        nameSingular: 'databaseRecordTarget',
+        namePlural: 'databaseRecordTargets',
+        labelSingular: i18nLabel(msg`Database Record Target`),
+        labelPlural: i18nLabel(msg`Database Record Targets`),
+        description: i18nLabel(
+          msg`A link between a record and a cybernetics-data-centre record`,
+        ),
+        icon: 'IconDatabase',
+        isSystem: true,
+        isUICreatable: false,
+        labelIdentifierFieldMetadataName: 'id',
+      },
+      workspaceId,
+      standardObjectMetadataRelatedEntityIds,
+      twentyStandardApplicationId,
+      now,
+    }),
   messageCampaign: ({
     now,
     workspaceId,

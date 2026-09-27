@@ -12,6 +12,7 @@ import { type EntityRelation } from 'src/engine/workspace-manager/workspace-migr
 import { type AttachmentWorkspaceEntity } from 'src/modules/attachment/standard-objects/attachment.workspace-entity';
 import { type CalendarEventParticipantWorkspaceEntity } from 'src/modules/calendar/common/standard-objects/calendar-event-participant.workspace-entity';
 import { type CompanyWorkspaceEntity } from 'src/modules/company/standard-objects/company.workspace-entity';
+import { type DatabaseRecordTargetWorkspaceEntity } from 'src/modules/database-record/standard-objects/database-record-target.workspace-entity';
 import { type MessageListMemberWorkspaceEntity } from 'src/modules/emailing/standard-objects/message-list-member.workspace-entity';
 import { type MessageParticipantWorkspaceEntity } from 'src/modules/messaging/common/standard-objects/message-participant.workspace-entity';
 import { type NoteTargetWorkspaceEntity } from 'src/modules/note/standard-objects/note-target.workspace-entity';
@@ -39,6 +40,7 @@ export class PersonWorkspaceEntity extends BaseWorkspaceEntity {
   taskTargets: EntityRelation<TaskTargetWorkspaceEntity[]>;
   noteTargets: EntityRelation<NoteTargetWorkspaceEntity[]>;
   attachments: EntityRelation<AttachmentWorkspaceEntity[]>;
+  databaseRecordTargets: EntityRelation<DatabaseRecordTargetWorkspaceEntity[]>;
   messageParticipants: EntityRelation<MessageParticipantWorkspaceEntity[]>;
   calendarEventParticipants: EntityRelation<
     CalendarEventParticipantWorkspaceEntity[]

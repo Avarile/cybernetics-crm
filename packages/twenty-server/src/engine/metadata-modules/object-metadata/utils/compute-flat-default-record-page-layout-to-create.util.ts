@@ -38,6 +38,7 @@ export const computeFlatDefaultRecordPageLayoutToCreate = ({
     { key: 'tasks' as const, widgetKey: 'tasks' as const },
     { key: 'notes' as const, widgetKey: 'notes' as const },
     { key: 'files' as const, widgetKey: 'files' as const },
+    { key: 'database' as const, widgetKey: 'database' as const },
   ];
 
   const pageLayoutTabs: FlatPageLayoutTab[] = [];

@@ -142,6 +142,12 @@ export const TAB_PROPS = {
     icon: 'IconCalendarEvent',
     layoutMode: PageLayoutTabLayoutMode.CANVAS,
   },
+  database: {
+    title: 'Database',
+    position: 80,
+    icon: 'IconDatabase',
+    layoutMode: PageLayoutTabLayoutMode.CANVAS,
+  },
   note: {
     title: 'Note',
     position: 15,
@@ -202,6 +208,12 @@ export const WIDGET_PROPS = {
   calendar: {
     title: 'Calendar',
     type: WidgetType.CALENDAR,
+    gridPosition: GRID_POSITIONS.HALF_HEIGHT,
+    position: CANVAS_LAYOUT_POSITIONS.DEFAULT,
+  },
+  database: {
+    title: 'Database',
+    type: WidgetType.DATABASE,
     gridPosition: GRID_POSITIONS.HALF_HEIGHT,
     position: CANVAS_LAYOUT_POSITIONS.DEFAULT,
   },

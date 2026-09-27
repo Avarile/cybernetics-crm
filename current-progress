@@ -1,0 +1,42 @@
+I've finished building all four phases. Typecheck (server and frontend), lint, and the 37 new or affected unit tests all pass. It has not been
+  run end-to-end: no dev server, no upgrade command against a real workspace, and no live data centre. Nothing is committed.
+
+  The last session ran out of memory during nx typecheck twenty-server, because it runs typecheck tasks in parallel next to VS Code's TypeScript
+  server and Jest. I typechecked each package one at a time with a memory cap instead, and saved that recipe to memory.
+
+  What you get
+  - Record pages: a "Database" tab on Company, Person, Opportunity, Note, Task and every custom object. It lists attached records with a preview,
+    a status badge, and View / Refresh / Remove / open-in-data-centre actions. The Attach button opens a two-pane picker (databases and tables on
+    the left, searchable paginated records on the right), limited to 10 attachments per record.
+  - Settings → Data Centre: URL, a write-only API token (only the last 4 characters are shown), an enable toggle, and a Test connection button.
+    It's visible only with the new DATABASE_CENTRE_INTEGRATION permission.
+  - Background: stale previews refresh hourly, and records deleted or made inaccessible upstream get flagged. Metadata lookups are cached, and
+    outbound calls are capped at 120 per minute per workspace.
+  - Security: the token is encrypted and included in secret-encryption:rotate. Outbound calls use the existing SSRF-protected HTTP client, never
+    follow redirects, and cap responses at 5 MB.
+  - Upgrades:
+    - New workspaces get everything automatically, including new custom objects.
+    - For existing workspaces I added one database migration for the new tab type and two upgrade commands: one adds the new objects, tabs and
+      permission, the other adds the relation and tab to existing custom objects.
+
+  Deviations from the design
+  - databaseConnection is locked out of the generic record API. Without that, anyone with ordinary edit rights on that object could point the URL
+    at their own server and receive the decrypted token. It can now only be changed from Settings.
+  - The upgrade commands are in version 2.22, not 2.23. A 2.22 migration would never run on an instance that has already upgraded past that point,
+    so the first upgrade command also adds the new tab type to the database itself (idempotent). 2.23 commands would stay inactive until you bump
+    the version.
+  - Browsing is two levels, not three: databases grouped by space, then tables. That's what the data centre API your other project already uses
+    supports.
+  - Dashboard and Workflow can hold attachments but don't get the tab: Dashboard has no record page layout, and a Database tab doesn't fit
+    Workflow's layout.
+  - No custom audit log: attach and remove go through the normal record-saving path, like Notes and Files, and don't write anything extra.
+  - Frontend GraphQL types were written by hand, because generating them needs a running server. Run npx nx run twenty-front:graphql:generate
+    --configuration=metadata once the server is up.
+
+  To try it
+  1. Enable IS_DATABASE_CENTRE_INTEGRATION_ENABLED for a workspace.
+  2. Run yarn command:prod upgrade so existing workspaces get the new objects and tabs.
+  3. Give a role the "Data Centre" permission, then configure the connection and click Test connection.
+  4. Run cron:register:all to start the hourly refresh.
+
+  I'd test the two upgrade commands on a copy of the database before running them in production.

@@ -18,6 +18,8 @@ export const SEARCH_FIELDS_BY_STANDARD_OBJECT_NAME = {
     { name: 'domainName', type: FieldMetadataType.LINKS },
   ],
   dashboard: [{ name: 'title', type: FieldMetadataType.TEXT }],
+  databaseConnection: [{ name: 'name', type: FieldMetadataType.TEXT }],
+  databaseRecordTarget: [{ name: 'id', type: FieldMetadataType.UUID }],
   message: [{ name: 'subject', type: FieldMetadataType.TEXT }],
   messageCampaign: [{ name: 'subject', type: FieldMetadataType.TEXT }],
   messageChannelMessageAssociation: [

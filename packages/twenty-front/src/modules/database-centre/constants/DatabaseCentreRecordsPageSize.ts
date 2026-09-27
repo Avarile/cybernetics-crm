@@ -1,0 +1,1 @@
+export const DATABASE_CENTRE_RECORDS_PAGE_SIZE = 50;

@@ -1,5 +1,6 @@
 import { type Type } from '@nestjs/common';
 
+import { DatabaseConnectionTokenRotationHandler } from 'src/database/commands/secret-encryption-rotation/handlers/database-connection-token-rotation.handler';
 import { ConnectionParametersRotationHandler } from 'src/database/commands/secret-encryption-rotation/handlers/connection-parameters-rotation.handler';
 import { SensitiveConfigStorageRotationHandler } from 'src/database/commands/secret-encryption-rotation/handlers/sensitive-config-storage-rotation.handler';
 import { type SecretEncryptionRotationHandler } from 'src/database/commands/secret-encryption-rotation/interfaces/secret-encryption-rotation-handler.interface';
@@ -121,6 +122,10 @@ export const SECRET_ENCRYPTION_ROTATION_UNTYPED_SITE_ENTRIES = {
   SENSITIVE_CONFIG_STORAGE: {
     siteName: 'sensitive-config-storage',
     handler: SensitiveConfigStorageRotationHandler,
+  },
+  DATABASE_CONNECTION_API_TOKEN: {
+    siteName: 'database-connection-api-token',
+    handler: DatabaseConnectionTokenRotationHandler,
   },
 } as const satisfies Record<
   string,

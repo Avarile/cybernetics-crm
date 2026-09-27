@@ -20,6 +20,7 @@ import { CleanOnboardingWorkspacesCronCommand } from 'src/engine/workspace-manag
 import { CleanSuspendedWorkspacesCronCommand } from 'src/engine/workspace-manager/workspace-cleaner/commands/clean-suspended-workspaces.cron.command';
 import { CalendarEventListFetchCronCommand } from 'src/modules/calendar/calendar-event-import-manager/crons/commands/calendar-event-list-fetch.cron.command';
 import { CalendarEventsImportCronCommand } from 'src/modules/calendar/calendar-event-import-manager/crons/commands/calendar-import.cron.command';
+import { DatabaseRecordSnapshotRefreshCronCommand } from 'src/modules/database-record/crons/commands/database-record-snapshot-refresh.cron.command';
 import { CalendarOngoingStaleCronCommand } from 'src/modules/calendar/calendar-event-import-manager/crons/commands/calendar-ongoing-stale.cron.command';
 import { CalendarRelaunchFailedCalendarChannelsCronCommand } from 'src/modules/calendar/calendar-event-import-manager/crons/commands/calendar-relaunch-failed-calendar-channels.cron.command';
 import { MessagingMessageListFetchCronCommand } from 'src/modules/messaging/message-import-manager/crons/commands/messaging-message-list-fetch.cron.command';
@@ -49,6 +50,7 @@ export class CronRegisterAllCommand extends CommandRunner {
 
     private readonly calendarEventListFetchCronCommand: CalendarEventListFetchCronCommand,
     private readonly calendarEventsImportCronCommand: CalendarEventsImportCronCommand,
+    private readonly databaseRecordSnapshotRefreshCronCommand: DatabaseRecordSnapshotRefreshCronCommand,
     private readonly calendarOngoingStaleCronCommand: CalendarOngoingStaleCronCommand,
     private readonly calendarRelaunchFailedCalendarChannelsCronCommand: CalendarRelaunchFailedCalendarChannelsCronCommand,
 
@@ -115,6 +117,10 @@ export class CronRegisterAllCommand extends CommandRunner {
       {
         name: 'CalendarEventsImport',
         command: this.calendarEventsImportCronCommand,
+      },
+      {
+        name: 'DatabaseRecordSnapshotRefresh',
+        command: this.databaseRecordSnapshotRefreshCronCommand,
       },
       {
         name: 'CalendarOngoingStale',

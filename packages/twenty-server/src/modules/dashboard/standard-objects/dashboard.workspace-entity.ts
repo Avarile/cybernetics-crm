@@ -3,6 +3,7 @@ import { type ActorMetadata } from 'twenty-shared/types';
 import { BaseWorkspaceEntity } from 'src/engine/twenty-orm/base.workspace-entity';
 import { type EntityRelation } from 'src/engine/workspace-manager/workspace-migration/types/entity-relation.interface';
 import { type AttachmentWorkspaceEntity } from 'src/modules/attachment/standard-objects/attachment.workspace-entity';
+import { type DatabaseRecordTargetWorkspaceEntity } from 'src/modules/database-record/standard-objects/database-record-target.workspace-entity';
 import { type TimelineActivityWorkspaceEntity } from 'src/modules/timeline/standard-objects/timeline-activity.workspace-entity';
 
 // Standard object representing a dashboard, backed by a page layout that
@@ -15,5 +16,6 @@ export class DashboardWorkspaceEntity extends BaseWorkspaceEntity {
   updatedBy: ActorMetadata;
   timelineActivities: EntityRelation<TimelineActivityWorkspaceEntity[]>;
   attachments: EntityRelation<AttachmentWorkspaceEntity[]>;
+  databaseRecordTargets: EntityRelation<DatabaseRecordTargetWorkspaceEntity[]>;
   searchVector: string;
 }

@@ -1,3 +1,4 @@
+import { useIsDatabaseCentreAvailableInWorkspace } from '@/database-centre/hooks/useIsDatabaseCentreAvailableInWorkspace';
 import { metadataStoreState } from '@/metadata-store/states/metadataStoreState';
 import { type FlatObjectMetadataItem } from '@/metadata-store/types/FlatObjectMetadataItem';
 import { useObjectMetadataItems } from '@/object-metadata/hooks/useObjectMetadataItems';
@@ -26,6 +27,7 @@ import { useAtomFamilyStateValue } from '@/ui/utilities/state/jotai/hooks/useAto
 import { styled } from '@linaria/react';
 import { useMemo } from 'react';
 import { FieldMetadataType } from 'twenty-shared/types';
+import { WidgetType } from '~/generated-metadata/graphql';
 import { isDefined } from 'twenty-shared/utils';
 import { useIsMobile } from 'twenty-ui/utilities';
 
@@ -99,6 +101,32 @@ export const PageLayoutTabsRenderer = () => {
   );
 
   const { objectMetadataItems } = useObjectMetadataItems();
+
+  const isDatabaseCentreAvailableInWorkspace =
+    useIsDatabaseCentreAvailableInWorkspace();
+
+  // The Database tab is hidden while the integration is off, and on objects
+  // whose databaseRecordTargets relation hasn't been provisioned yet
+  const shouldHideDatabaseWidgets = useMemo(() => {
+    if (!isDatabaseCentreAvailableInWorkspace) {
+      return true;
+    }
+
+    const objectMetadataItem = objectMetadataItems.find(
+      (item) =>
+        item.nameSingular === targetRecordIdentifier?.targetObjectNameSingular,
+    );
+
+    return !(
+      objectMetadataItem?.fields.some(
+        (field) => field.name === 'databaseRecordTargets',
+      ) ?? false
+    );
+  }, [
+    isDatabaseCentreAvailableInWorkspace,
+    objectMetadataItems,
+    targetRecordIdentifier,
+  ]);
 
   const inactiveRelationFieldNames = useMemo(() => {
     if (!isDefined(targetRecordIdentifier)) {
@@ -175,6 +203,14 @@ export const PageLayoutTabsRenderer = () => {
     () =>
       sortedTabs.filter((tab) => {
         const widgetTypes = tab.widgets.map((widget) => widget.type);
+
+        if (
+          shouldHideDatabaseWidgets &&
+          widgetTypes.includes(WidgetType.DATABASE)
+        ) {
+          return false;
+        }
+
         return !widgetTypes.some((widgetType) => {
           const relationFieldName =
             WIDGET_TYPE_TO_RELATION_FIELD_NAME[widgetType];
@@ -184,7 +220,7 @@ export const PageLayoutTabsRenderer = () => {
           );
         });
       }),
-    [sortedTabs, inactiveRelationFieldNames],
+    [sortedTabs, inactiveRelationFieldNames, shouldHideDatabaseWidgets],
   );
 
   const activeTabExistsInCurrentPageLayout = currentPageLayout.tabs.some(

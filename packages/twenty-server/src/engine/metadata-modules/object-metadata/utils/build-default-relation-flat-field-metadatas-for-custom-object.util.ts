@@ -31,6 +31,8 @@ const morphIdByRelationObjectNameSingular = {
   attachment: STANDARD_OBJECTS.attachment.morphIds.targetMorphId.morphId,
   noteTarget: STANDARD_OBJECTS.noteTarget.morphIds.targetMorphId.morphId,
   taskTarget: STANDARD_OBJECTS.taskTarget.morphIds.targetMorphId.morphId,
+  databaseRecordTarget:
+    STANDARD_OBJECTS.databaseRecordTarget.morphIds.targetMorphId.morphId,
 } satisfies Record<
   (typeof DEFAULT_RELATIONS_OBJECTS_STANDARD_IDS)[number],
   string | null
@@ -40,6 +42,9 @@ export type BuildDefaultRelationFieldsForCustomObjectArgs = {
   existingFlatObjectMetadataMaps: FlatEntityMaps<FlatObjectMetadata>;
   sourceFlatObjectMetadata: UniversalFlatObjectMetadata;
   flatApplication: FlatApplication;
+  // Restricts generation to a subset, e.g. to retrofit one new default
+  // relation onto custom objects that predate it
+  relationObjectNameSingulars?: (typeof DEFAULT_RELATIONS_OBJECTS_STANDARD_IDS)[number][];
 };
 
 type SourceAndTargetFlatFieldMetadatasRecord = {
@@ -58,6 +63,7 @@ export const buildDefaultRelationFlatFieldMetadatasForCustomObject = ({
   existingFlatObjectMetadataMaps,
   sourceFlatObjectMetadata,
   flatApplication,
+  relationObjectNameSingulars = [...DEFAULT_RELATIONS_OBJECTS_STANDARD_IDS],
 }: BuildDefaultRelationFieldsForCustomObjectArgs): SourceAndTargetFlatFieldMetadatasRecord => {
   const objectIdByNameSingular = Object.values(
     existingFlatObjectMetadataMaps.byUniversalIdentifier,
@@ -73,13 +79,14 @@ export const buildDefaultRelationFlatFieldMetadatasForCustomObject = ({
   }, {});
 
   const result =
-    DEFAULT_RELATIONS_OBJECTS_STANDARD_IDS.reduce<SourceAndTargetFlatFieldMetadatasRecord>(
+    relationObjectNameSingulars.reduce<SourceAndTargetFlatFieldMetadatasRecord>(
       (sourceAndTargetFlatFieldMetadatasRecord, objectMetadataNameSingular) => {
         const isObjectMigratedToMorphRelations =
           objectMetadataNameSingular === 'timelineActivity' ||
           objectMetadataNameSingular === 'attachment' ||
           objectMetadataNameSingular === 'noteTarget' ||
-          objectMetadataNameSingular === 'taskTarget';
+          objectMetadataNameSingular === 'taskTarget' ||
+          objectMetadataNameSingular === 'databaseRecordTarget';
 
         const targetFlatObjectMetadataId =
           objectIdByNameSingular[objectMetadataNameSingular];

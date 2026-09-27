@@ -95,6 +95,11 @@ const STANDARD_PERMISSION_FLAG_METADATA: Record<
     description: 'Create and configure AI agents',
     icon: 'IconSparkles',
   },
+  [PermissionFlagType.DATABASE_CENTRE_INTEGRATION]: {
+    label: 'Data Centre',
+    description: 'Configure the cybernetics-data-centre connection',
+    icon: 'IconDatabase',
+  },
   [PermissionFlagType.AI]: {
     label: 'Ask AI',
     description: 'Chat with AI agents and use AI features',

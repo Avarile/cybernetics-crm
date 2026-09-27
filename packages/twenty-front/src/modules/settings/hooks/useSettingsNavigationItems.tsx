@@ -22,6 +22,7 @@ import {
   IconColorSwatch,
   type IconComponent,
   IconCurrencyDollar,
+  IconDatabase,
   IconDoorEnter,
   IconHelpCircle,
   IconHierarchy2,
@@ -75,6 +76,9 @@ const useSettingsNavigationItems = (): SettingsNavigationSection[] => {
   const permissionMap = usePermissionFlagMap();
   const isEmailGroupFeatureEnabled = useIsFeatureEnabled(
     FeatureFlagKey.IS_EMAIL_GROUP_ENABLED,
+  );
+  const isDatabaseCentreFeatureEnabled = useIsFeatureEnabled(
+    FeatureFlagKey.IS_DATABASE_CENTRE_INTEGRATION_ENABLED,
   );
   return [
     {
@@ -153,6 +157,14 @@ const useSettingsNavigationItems = (): SettingsNavigationSection[] => {
           path: SettingsPath.ApiWebhooks,
           Icon: IconPlug,
           isHidden: !permissionMap[PermissionFlagType.API_KEYS_AND_WEBHOOKS],
+        },
+        {
+          label: t`Data Centre`,
+          path: SettingsPath.DatabaseCentre,
+          Icon: IconDatabase,
+          isHidden:
+            !isDatabaseCentreFeatureEnabled ||
+            !permissionMap[PermissionFlagType.DATABASE_CENTRE_INTEGRATION],
         },
         // TODO: Re-enable when integrations page is ready
         // {

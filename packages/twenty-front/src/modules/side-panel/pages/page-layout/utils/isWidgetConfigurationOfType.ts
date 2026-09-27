@@ -3,6 +3,7 @@ import {
   type AggregateChartConfiguration,
   type BarChartConfiguration,
   type CalendarConfiguration,
+  type DatabaseConfiguration,
   type EmailThreadConfiguration,
   type EmailsConfiguration,
   type FieldRichTextConfiguration,
@@ -43,6 +44,9 @@ type WidgetConfigurationTypenameMap = {
     'configurationType'
   > & {
     configurationType: WidgetConfigurationType.FRONT_COMPONENT;
+  };
+  DatabaseConfiguration: Omit<DatabaseConfiguration, 'configurationType'> & {
+    configurationType: WidgetConfigurationType.DATABASE;
   };
   EmailThreadConfiguration: Omit<
     EmailThreadConfiguration,
