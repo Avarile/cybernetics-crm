@@ -91,6 +91,16 @@ export const buildDefaultRelationFlatFieldMetadatasForCustomObject = ({
         const targetFlatObjectMetadataId =
           objectIdByNameSingular[objectMetadataNameSingular];
 
+        // databaseRecordTarget only exists once upgrade:2-22:sync-database-centre-standard-objects
+        // has run; until then custom objects are created without it and
+        // upgrade:2-22:add-database-record-target-to-custom-objects adds it later
+        if (
+          !isDefined(targetFlatObjectMetadataId) &&
+          objectMetadataNameSingular === 'databaseRecordTarget'
+        ) {
+          return sourceAndTargetFlatFieldMetadatasRecord;
+        }
+
         if (!isDefined(targetFlatObjectMetadataId)) {
           throw new ObjectMetadataException(
             `Standard target object metadata id ${targetFlatObjectMetadataId} not found in cache`,

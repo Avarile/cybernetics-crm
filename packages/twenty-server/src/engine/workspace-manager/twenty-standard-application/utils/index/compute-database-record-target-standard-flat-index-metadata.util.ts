@@ -101,18 +101,6 @@ export const buildDatabaseRecordTargetStandardFlatIndexMetadatas = ({
     twentyStandardApplicationId,
     now,
   }),
-  databaseConnectionIdIndex: createStandardIndexFlatMetadata({
-    objectName,
-    workspaceId,
-    context: {
-      indexName: 'databaseConnectionIdIndex',
-      relatedFieldNames: ['databaseConnection'],
-    },
-    standardObjectMetadataRelatedEntityIds,
-    dependencyFlatEntityMaps,
-    twentyStandardApplicationId,
-    now,
-  }),
   tableIdIndex: createStandardIndexFlatMetadata({
     objectName,
     workspaceId,

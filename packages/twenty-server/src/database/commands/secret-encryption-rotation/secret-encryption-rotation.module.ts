@@ -13,6 +13,7 @@ import { KeyValuePairEntity } from 'src/engine/core-modules/key-value-pair/key-v
 import { SecretEncryptionModule } from 'src/engine/core-modules/secret-encryption/secret-encryption.module';
 import { TwentyConfigModule } from 'src/engine/core-modules/twenty-config/twenty-config.module';
 import { WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.entity';
+import { WorkspaceCacheModule } from 'src/engine/workspace-cache/workspace-cache.module';
 
 // Wires up the `secret-encryption:rotate` CLI command: registers every entity that
 // holds an encrypted column, plus each site's dedicated rotation handler, so the
@@ -39,6 +40,7 @@ const DEDICATED_ROTATION_HANDLERS = [
   imports: [
     SecretEncryptionModule,
     TwentyConfigModule,
+    WorkspaceCacheModule,
     TypeOrmModule.forFeature(ROTATION_ENTITIES),
   ],
   providers: [

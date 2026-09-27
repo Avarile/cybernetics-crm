@@ -55,17 +55,13 @@ export class DatabaseRecordSnapshotService {
     workspaceId: string,
     { baseId, tableId, recordId, viewId }: DatabaseRecordSnapshotLocator,
   ): Promise<DatabaseRecordSnapshot> {
-    const [base, table, schema] = await Promise.all([
+    // The schema lookup fetches (and caches) the table first, so the table
+    // read after it is a cache hit rather than a second upstream call
+    const [base, schema] = await Promise.all([
       this.databaseRecordBrowseService.getBaseForConnection(
         activeConnection,
         workspaceId,
         baseId,
-      ),
-      this.databaseRecordBrowseService.getTableForConnection(
-        activeConnection,
-        workspaceId,
-        baseId,
-        tableId,
       ),
       this.databaseRecordBrowseService.getTableSchemaForConnection(
         activeConnection,
@@ -74,6 +70,13 @@ export class DatabaseRecordSnapshotService {
         tableId,
       ),
     ]);
+
+    const table = await this.databaseRecordBrowseService.getTableForConnection(
+      activeConnection,
+      workspaceId,
+      baseId,
+      tableId,
+    );
 
     const primaryField = schema.fields.find((field) => field.isPrimary);
     const previewFields = schema.fields

@@ -39,7 +39,7 @@ describe('CyberneticsDataCentreClientService', () => {
     jest.clearAllMocks();
   });
 
-  it('should validate the host and use a hardened client for every request', async () => {
+  it('should use a hardened client for every request', async () => {
     const { service, secureHttpClientService, get } = buildService({
       status: 200,
       data: [{ id: 'base-1' }],
@@ -48,9 +48,6 @@ describe('CyberneticsDataCentreClientService', () => {
     const bases = await service.listBases(CREDENTIALS, WORKSPACE_ID);
 
     expect(bases).toEqual([{ id: 'base-1' }]);
-    expect(secureHttpClientService.getValidatedHost).toHaveBeenCalledWith(
-      CREDENTIALS.baseUrl,
-    );
     expect(secureHttpClientService.getHttpClient).toHaveBeenCalledWith(
       expect.objectContaining({
         maxRedirects: 0,
@@ -152,7 +149,7 @@ describe('CyberneticsDataCentreClientService', () => {
   });
 
   it('should refuse hosts rejected by SSRF validation', async () => {
-    const { service, secureHttpClientService, get } = buildService({
+    const { service, secureHttpClientService } = buildService({
       status: 200,
     });
 
@@ -161,10 +158,9 @@ describe('CyberneticsDataCentreClientService', () => {
       .mockRejectedValueOnce(new Error('private IP'));
 
     await expect(
-      service.listSpaces(CREDENTIALS, WORKSPACE_ID),
+      service.assertBaseUrlIsAllowed('http://127.0.0.1'),
     ).rejects.toMatchObject({
       code: DatabaseCentreExceptionCode.INVALID_BASE_URL,
     });
-    expect(get).not.toHaveBeenCalled();
   });
 });

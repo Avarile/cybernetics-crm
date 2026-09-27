@@ -96,9 +96,14 @@ export const DatabaseRecordsCard = () => {
     databaseRecordTargetObjectMetadataItem.id,
   );
 
+  // Creating records is covered by the update permission in Twenty
   const canEdit =
     targetObjectPermissions.canUpdateObjectRecords &&
     databaseRecordTargetPermissions.canUpdateObjectRecords;
+
+  const canRemove =
+    targetObjectPermissions.canUpdateObjectRecords &&
+    databaseRecordTargetPermissions.canSoftDeleteObjectRecords;
 
   const isConnectionUsable = isConfigured && isEnabled;
 
@@ -203,7 +208,7 @@ export const DatabaseRecordsCard = () => {
           <DatabaseRecordTargetRow
             key={databaseRecordTarget.id}
             databaseRecordTarget={databaseRecordTarget}
-            canEdit={canEdit}
+            canRemove={canRemove}
             canRefresh={canEdit && isConnectionUsable}
             onView={handleView}
             onRefresh={refreshDatabaseRecord}

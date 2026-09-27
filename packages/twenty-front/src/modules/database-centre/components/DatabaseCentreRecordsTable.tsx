@@ -16,6 +16,7 @@ import { formatDatabaseCentreCellValue } from '@/database-centre/utils/formatDat
 import { SettingsTextInput } from '@/ui/input/components/SettingsTextInput';
 import { IconChevronLeft, IconChevronRight, IconSearch } from 'twenty-ui/icon';
 import { Checkbox, LightIconButton } from 'twenty-ui/input';
+import { isDefined } from 'twenty-shared/utils';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
 
 const VISIBLE_SECONDARY_FIELD_COUNT = 4;
@@ -73,6 +74,11 @@ const StyledFooter = styled.div`
   color: ${themeCssVariables.font.color.tertiary};
   display: flex;
   justify-content: space-between;
+`;
+
+const StyledPagination = styled.div`
+  display: flex;
+  gap: ${themeCssVariables.spacing[1]};
 `;
 
 const StyledHint = styled.div`
@@ -154,7 +160,7 @@ export const DatabaseCentreRecordsTable = ({
         fullWidth
       />
       <StyledTableWrapper>
-        {error !== undefined ? (
+        {isDefined(error) ? (
           <StyledHint>{error.message}</StyledHint>
         ) : loading && records.length === 0 ? (
           <StyledHint>
@@ -198,7 +204,7 @@ export const DatabaseCentreRecordsTable = ({
                       {record.name.length > 0
                         ? record.name
                         : formatDatabaseCentreCellValue(
-                            primaryField !== undefined
+                            isDefined(primaryField)
                               ? record.fields[primaryField.id]
                               : undefined,
                           )}
@@ -221,7 +227,7 @@ export const DatabaseCentreRecordsTable = ({
             {pageStart}–{pageEnd} of {totalCount}
           </Trans>
         </span>
-        <span>
+        <StyledPagination>
           <LightIconButton
             Icon={IconChevronLeft}
             disabled={!hasPreviousPage}
@@ -241,7 +247,7 @@ export const DatabaseCentreRecordsTable = ({
               )
             }
           />
-        </span>
+        </StyledPagination>
       </StyledFooter>
     </StyledContainer>
   );

@@ -3,7 +3,6 @@ import { type CustomWorkspaceEntity } from 'src/engine/twenty-orm/custom.workspa
 import { type EntityRelation } from 'src/engine/workspace-manager/workspace-migration/types/entity-relation.interface';
 import { type CompanyWorkspaceEntity } from 'src/modules/company/standard-objects/company.workspace-entity';
 import { type DashboardWorkspaceEntity } from 'src/modules/dashboard/standard-objects/dashboard.workspace-entity';
-import { type DatabaseConnectionWorkspaceEntity } from 'src/modules/database-record/standard-objects/database-connection.workspace-entity';
 import { type NoteWorkspaceEntity } from 'src/modules/note/standard-objects/note.workspace-entity';
 import { type OpportunityWorkspaceEntity } from 'src/modules/opportunity/standard-objects/opportunity.workspace-entity';
 import { type PersonWorkspaceEntity } from 'src/modules/person/standard-objects/person.workspace-entity';
@@ -29,9 +28,6 @@ export class DatabaseRecordTargetWorkspaceEntity extends BaseWorkspaceEntity {
   targetWorkflow: EntityRelation<WorkflowWorkspaceEntity> | null;
   targetWorkflowId: string | null;
   custom: EntityRelation<CustomWorkspaceEntity>;
-
-  databaseConnection: EntityRelation<DatabaseConnectionWorkspaceEntity> | null;
-  databaseConnectionId: string | null;
 
   spaceId: string;
   baseId: string;

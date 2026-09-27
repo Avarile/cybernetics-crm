@@ -15,7 +15,7 @@ import { MenuItem } from 'twenty-ui/navigation';
 
 type DatabaseRecordTargetDropdownProps = {
   databaseRecordTargetId: string;
-  canEdit: boolean;
+  canRemove: boolean;
   canRefresh: boolean;
   onView: () => void;
   onRefresh: () => void;
@@ -24,7 +24,7 @@ type DatabaseRecordTargetDropdownProps = {
 
 export const DatabaseRecordTargetDropdown = ({
   databaseRecordTargetId,
-  canEdit,
+  canRemove,
   canRefresh,
   onView,
   onRefresh,
@@ -61,7 +61,7 @@ export const DatabaseRecordTargetDropdown = ({
                 onClick={handleItemClick(onRefresh)}
               />
             )}
-            {canEdit && (
+            {canRemove && (
               <MenuItem
                 text={t`Remove`}
                 accent="danger"

@@ -68,11 +68,23 @@ export class DatabaseConnectionService {
 
     const existingConnection = await this.findConnection(workspaceId);
 
-    if (!isDefined(existingConnection) && !isNonEmptyString(input.apiToken)) {
+    // The stored token was issued for the old origin; sending it to a new one
+    // would hand it to whoever controls that host
+    const isOriginChanged =
+      isDefined(existingConnection) && existingConnection.baseUrl !== baseUrl;
+
+    if (
+      (isOriginChanged || !isDefined(existingConnection)) &&
+      !isNonEmptyString(input.apiToken)
+    ) {
       throw new DatabaseCentreException(
-        'An API token is required to create a data centre connection',
+        'An API token is required to create a data centre connection or change its URL',
         DatabaseCentreExceptionCode.CONNECTION_NOT_CONFIGURED,
-        { userFriendlyMessage: msg`An API token is required.` },
+        {
+          userFriendlyMessage: isOriginChanged
+            ? msg`Re-enter the API token when changing the URL.`
+            : msg`An API token is required.`,
+        },
       );
     }
 
@@ -275,7 +287,11 @@ export class DatabaseConnectionService {
       baseUrl: connection.baseUrl,
       tokenFingerprint: connection.tokenFingerprint,
       isEnabled: connection.isEnabled,
-      lastVerifiedAt: connection.lastVerifiedAt,
+      // The ORM hands DATE_TIME columns back as Date objects, which the String
+      // GraphQL field would otherwise serialize as epoch milliseconds
+      lastVerifiedAt: isDefined(connection.lastVerifiedAt)
+        ? new Date(connection.lastVerifiedAt).toISOString()
+        : null,
       lastVerificationStatus: connection.lastVerificationStatus ?? 'UNVERIFIED',
     };
   }

@@ -3,13 +3,21 @@ import { Injectable, Logger } from '@nestjs/common';
 import { capitalize, isDefined } from 'twenty-shared/utils';
 
 import { type WorkspaceAuthContext } from 'src/engine/core-modules/auth/types/workspace-auth-context.type';
+import { ActorFromAuthContextService } from 'src/engine/core-modules/actor/services/actor-from-auth-context.service';
+import { ApiKeyRoleService } from 'src/engine/core-modules/api-key/services/api-key-role.service';
 import { CacheLockService } from 'src/engine/core-modules/cache-lock/cache-lock.service';
 import { WorkspaceManyOrAllFlatEntityMapsCacheService } from 'src/engine/metadata-modules/flat-entity/services/workspace-many-or-all-flat-entity-maps-cache.service';
 import { findFlatEntityByIdInFlatEntityMaps } from 'src/engine/metadata-modules/flat-entity/utils/find-flat-entity-by-id-in-flat-entity-maps.util';
 import { buildFieldMapsFromFlatObjectMetadata } from 'src/engine/metadata-modules/flat-field-metadata/utils/build-field-maps-from-flat-object-metadata.util';
 import { buildObjectIdByNameMaps } from 'src/engine/metadata-modules/flat-object-metadata/utils/build-object-id-by-name-maps.util';
+import {
+  PermissionsException,
+  PermissionsExceptionCode,
+} from 'src/engine/metadata-modules/permissions/permissions.exception';
+import { UserRoleService } from 'src/engine/metadata-modules/user-role/user-role.service';
 import { GlobalWorkspaceOrmManager } from 'src/engine/twenty-orm/global-workspace-datasource/global-workspace-orm.manager';
 import { type WorkspaceRepository } from 'src/engine/twenty-orm/repository/workspace.repository';
+import { type RolePermissionConfig } from 'src/engine/twenty-orm/types/role-permission-config';
 import { DATABASE_CENTRE_MAX_ATTACHMENTS_PER_RECORD } from 'src/modules/database-record/constants/database-centre.constants';
 import { type AttachDatabaseRecordsInput } from 'src/modules/database-record/dtos/attach-database-records.input';
 import {
@@ -43,6 +51,9 @@ export class DatabaseRecordAttachmentService {
     private readonly cacheLockService: CacheLockService,
     private readonly databaseConnectionService: DatabaseConnectionService,
     private readonly databaseRecordSnapshotService: DatabaseRecordSnapshotService,
+    private readonly userRoleService: UserRoleService,
+    private readonly apiKeyRoleService: ApiKeyRoleService,
+    private readonly actorFromAuthContextService: ActorFromAuthContextService,
   ) {}
 
   async attach(
@@ -69,22 +80,25 @@ export class DatabaseRecordAttachmentService {
     const uniqueRecordIds = Array.from(new Set(input.recordIds));
 
     // Fetched before taking the lock: upstream calls are the slow part
-    const snapshots: DatabaseRecordSnapshot[] = [];
-
-    for (const recordId of uniqueRecordIds) {
-      snapshots.push(
-        await this.databaseRecordSnapshotService.buildSnapshot(
-          activeConnection,
-          workspaceId,
-          {
-            baseId: input.baseId,
-            tableId: input.tableId,
-            recordId,
-            viewId: input.viewId,
-          },
-        ),
+    const buildSnapshot = (recordId: string) =>
+      this.databaseRecordSnapshotService.buildSnapshot(
+        activeConnection,
+        workspaceId,
+        {
+          baseId: input.baseId,
+          tableId: input.tableId,
+          recordId,
+          viewId: input.viewId,
+        },
       );
-    }
+
+    // The first snapshot warms the base/table/schema cache, so the rest,
+    // fetched in parallel, only cost one record read each
+    const [firstRecordId, ...otherRecordIds] = uniqueRecordIds;
+    const snapshots: DatabaseRecordSnapshot[] = [
+      await buildSnapshot(firstRecordId),
+      ...(await Promise.all(otherRecordIds.map(buildSnapshot))),
+    ];
 
     // Serializes concurrent attaches to the same record so the cap and
     // uniqueness checks can't be raced
@@ -125,13 +139,19 @@ export class DatabaseRecordAttachmentService {
               );
             }
 
-            const insertResult = await repository.insert(
-              newSnapshots.map((snapshot) => ({
-                ...snapshot,
-                [targetJoinColumnName]: input.targetRecordId,
-                databaseConnectionId: activeConnection.connection.id,
-              })),
-            );
+            // Direct repository writes skip the query-runner hooks that fill
+            // createdBy/updatedBy, so the acting user is attributed here
+            const recordsWithActor =
+              await this.actorFromAuthContextService.injectActorFieldsOnCreate({
+                records: newSnapshots.map((snapshot) => ({
+                  ...snapshot,
+                  [targetJoinColumnName]: input.targetRecordId,
+                })),
+                objectMetadataNameSingular: DATABASE_RECORD_TARGET_OBJECT_NAME,
+                authContext,
+              });
+
+            const insertResult = await repository.insert(recordsWithActor);
 
             return insertResult.identifiers
               .map((identifier) => identifier.id)
@@ -275,6 +295,8 @@ export class DatabaseRecordAttachmentService {
     targetRecordId: string,
   ): Promise<void> {
     const workspaceId = authContext.workspace.id;
+    const rolePermissionConfig =
+      await this.getRolePermissionConfigOrThrow(authContext);
 
     const targetRecord =
       await this.globalWorkspaceOrmManager.executeInWorkspaceContext(
@@ -282,6 +304,7 @@ export class DatabaseRecordAttachmentService {
           const repository = await this.globalWorkspaceOrmManager.getRepository(
             workspaceId,
             targetObjectNameSingular,
+            rolePermissionConfig,
           );
 
           return repository.findOne({
@@ -325,6 +348,8 @@ export class DatabaseRecordAttachmentService {
     ) => Promise<TResult>,
   ): Promise<TResult> {
     const workspaceId = authContext.workspace.id;
+    const rolePermissionConfig =
+      await this.getRolePermissionConfigOrThrow(authContext);
 
     return this.globalWorkspaceOrmManager.executeInWorkspaceContext(
       async () => {
@@ -332,11 +357,46 @@ export class DatabaseRecordAttachmentService {
           await this.globalWorkspaceOrmManager.getRepository<DatabaseRecordTargetWorkspaceEntity>(
             workspaceId,
             DATABASE_RECORD_TARGET_OBJECT_NAME,
+            rolePermissionConfig,
           );
 
         return callback(repository);
       },
       authContext,
     );
+  }
+
+  // Repositories only enforce object permissions when told which role to
+  // evaluate; without one they refuse every query
+  private async getRolePermissionConfigOrThrow(
+    authContext: WorkspaceAuthContext,
+  ): Promise<RolePermissionConfig> {
+    const workspaceId = authContext.workspace.id;
+
+    switch (authContext.type) {
+      case 'user':
+        return {
+          unionOf: [
+            await this.userRoleService.getRoleIdForUserWorkspace({
+              workspaceId,
+              userWorkspaceId: authContext.userWorkspaceId,
+            }),
+          ],
+        };
+      case 'apiKey':
+        return {
+          unionOf: [
+            await this.apiKeyRoleService.getRoleIdForApiKeyId(
+              authContext.apiKey.id,
+              workspaceId,
+            ),
+          ],
+        };
+      default:
+        throw new PermissionsException(
+          `Auth context of type ${authContext.type} cannot attach data centre records`,
+          PermissionsExceptionCode.PERMISSION_DENIED,
+        );
+    }
   }
 }

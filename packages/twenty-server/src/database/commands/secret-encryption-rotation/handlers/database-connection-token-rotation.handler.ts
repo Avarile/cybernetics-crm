@@ -2,6 +2,8 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { isNonEmptyString } from '@sniptt/guards';
+import { STANDARD_OBJECTS } from 'twenty-shared/metadata';
+import { isDefined } from 'twenty-shared/utils';
 import { WorkspaceActivationStatus } from 'twenty-shared/workspace';
 import { In, Not, Like, Repository } from 'typeorm';
 
@@ -18,6 +20,7 @@ import { WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.ent
 import { GlobalWorkspaceOrmManager } from 'src/engine/twenty-orm/global-workspace-datasource/global-workspace-orm.manager';
 import { type WorkspaceRepository } from 'src/engine/twenty-orm/repository/workspace.repository';
 import { buildSystemAuthContext } from 'src/engine/twenty-orm/utils/build-system-auth-context.util';
+import { WorkspaceCacheService } from 'src/engine/workspace-cache/services/workspace-cache.service';
 import { type DatabaseConnectionWorkspaceEntity } from 'src/modules/database-record/standard-objects/database-connection.workspace-entity';
 
 @Injectable()
@@ -34,6 +37,7 @@ export class DatabaseConnectionTokenRotationHandler extends SecretEncryptionRota
     private readonly workspaceRepository: Repository<WorkspaceEntity>,
     private readonly globalWorkspaceOrmManager: GlobalWorkspaceOrmManager,
     private readonly secretEncryptionService: SecretEncryptionService,
+    private readonly workspaceCacheService: WorkspaceCacheService,
   ) {
     super();
   }
@@ -47,12 +51,13 @@ export class DatabaseConnectionTokenRotationHandler extends SecretEncryptionRota
     let remaining = 0;
 
     for (const workspaceId of await this.findWorkspaceIds()) {
-      remaining += await this.withConnectionRepository(
+      remaining += await this.withConnectionRepositoryIfProvisioned(
         workspaceId,
         (repository) =>
           repository.count({
             where: this.buildNotRotatedWhere(currentEncryptionKeyId),
           }),
+        0,
       );
     }
 
@@ -71,44 +76,48 @@ export class DatabaseConnectionTokenRotationHandler extends SecretEncryptionRota
     };
 
     for (const workspaceId of await this.findWorkspaceIds()) {
-      await this.withConnectionRepository(workspaceId, async (repository) => {
-        // One connection per workspace, so no paging is needed
-        const connections = await repository.find({
-          where: this.buildNotRotatedWhere(currentEncryptionKeyId),
-        });
+      await this.withConnectionRepositoryIfProvisioned(
+        workspaceId,
+        async (repository) => {
+          // One connection per workspace, so no paging is needed
+          const connections = await repository.find({
+            where: this.buildNotRotatedWhere(currentEncryptionKeyId),
+          });
 
-        for (const connection of connections) {
-          try {
-            const plaintext =
-              this.secretEncryptionService.decryptVersionedOrThrow(
-                connection.encryptedApiToken as EncryptedString,
-                { workspaceId },
-              );
+          for (const connection of connections) {
+            try {
+              const plaintext =
+                this.secretEncryptionService.decryptVersionedOrThrow(
+                  connection.encryptedApiToken as EncryptedString,
+                  { workspaceId },
+                );
 
-            if (!dryRun) {
-              await repository.update(
-                {
-                  id: connection.id,
-                  encryptedApiToken: connection.encryptedApiToken,
-                },
-                {
-                  encryptedApiToken:
-                    this.secretEncryptionService.encryptVersioned(plaintext, {
-                      workspaceId,
-                    }),
-                },
+              if (!dryRun) {
+                await repository.update(
+                  {
+                    id: connection.id,
+                    encryptedApiToken: connection.encryptedApiToken,
+                  },
+                  {
+                    encryptedApiToken:
+                      this.secretEncryptionService.encryptVersioned(plaintext, {
+                        workspaceId,
+                      }),
+                  },
+                );
+              }
+
+              outcome.rotated++;
+            } catch (error) {
+              this.logger.error(
+                buildRotationErrorMessage(siteName, connection.id, error),
               );
+              outcome.errors++;
             }
-
-            outcome.rotated++;
-          } catch (error) {
-            this.logger.error(
-              buildRotationErrorMessage(siteName, connection.id, error),
-            );
-            outcome.errors++;
           }
-        }
-      });
+        },
+        undefined,
+      );
     }
 
     return outcome;
@@ -142,12 +151,31 @@ export class DatabaseConnectionTokenRotationHandler extends SecretEncryptionRota
       .filter((workspaceId) => isNonEmptyString(workspaceId));
   }
 
-  private async withConnectionRepository<TResult>(
+  // A workspace whose metadata predates the data centre integration has no
+  // databaseConnection object; it has nothing to rotate and must not abort
+  // the rotation of every other secret
+  private async withConnectionRepositoryIfProvisioned<TResult>(
     workspaceId: string,
     callback: (
       repository: WorkspaceRepository<DatabaseConnectionWorkspaceEntity>,
     ) => Promise<TResult>,
+    fallback: TResult,
   ): Promise<TResult> {
+    const { flatObjectMetadataMaps } =
+      await this.workspaceCacheService.getOrRecompute(workspaceId, [
+        'flatObjectMetadataMaps',
+      ]);
+
+    if (
+      !isDefined(
+        flatObjectMetadataMaps.byUniversalIdentifier[
+          STANDARD_OBJECTS.databaseConnection.universalIdentifier
+        ],
+      )
+    ) {
+      return fallback;
+    }
+
     return this.globalWorkspaceOrmManager.executeInWorkspaceContext(
       async () => {
         const repository =

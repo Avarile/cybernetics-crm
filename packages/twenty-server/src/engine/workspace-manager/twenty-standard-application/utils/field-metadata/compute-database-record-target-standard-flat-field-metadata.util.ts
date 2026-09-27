@@ -471,35 +471,6 @@ export const buildDatabaseRecordTargetStandardFlatFieldMetadatas = ({
     now,
   }),
 
-  // Relation to the workspace's connection
-  databaseConnection: createStandardRelationFieldFlatMetadata({
-    objectName,
-    workspaceId,
-    context: {
-      type: FieldMetadataType.RELATION,
-      morphId: null,
-      fieldName: 'databaseConnection',
-      label: i18nLabel(msg`Connection`),
-      description: i18nLabel(
-        msg`The workspace connection this record was attached through`,
-      ),
-      icon: 'IconDatabase',
-      isNullable: true,
-      isUIEditable: false,
-      targetObjectName: 'databaseConnection',
-      targetFieldName: 'databaseRecordTargets',
-      settings: {
-        relationType: RelationType.MANY_TO_ONE,
-        onDelete: RelationOnDeleteAction.SET_NULL,
-        joinColumnName: 'databaseConnectionId',
-      },
-    },
-    standardObjectMetadataRelatedEntityIds,
-    dependencyFlatEntityMaps,
-    twentyStandardApplicationId,
-    now,
-  }),
-
   // Morph target relations, mirroring attachment's targetX fields
   targetTask: createStandardRelationFieldFlatMetadata({
     objectName,

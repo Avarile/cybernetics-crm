@@ -804,16 +804,12 @@ export const STANDARD_OBJECTS = {
       lastVerificationStatus: {
         universalIdentifier: '647c3083-0374-4847-9902-031fdb25f333',
       },
-      databaseRecordTargets: {
-        universalIdentifier: 'c08993fb-7f21-4d93-87aa-69631bd1e8f8',
-      },
     },
     indexes: {},
     views: {
       allDatabaseConnections: {
         universalIdentifier: '46d832e1-79af-4f1f-b9e3-de9ba2eaf87a',
         viewFields: {
-          id: { universalIdentifier: '23ddda14-5d47-4e5d-9ac5-880a106ed4ec' },
           name: { universalIdentifier: '4f337fcb-f150-4b3c-90e3-484bc7141dac' },
           baseUrl: {
             universalIdentifier: '063a1078-ed12-4a18-939f-6fd9582f7b51',
@@ -854,9 +850,6 @@ export const STANDARD_OBJECTS = {
       },
       targetWorkflow: {
         universalIdentifier: 'f7fee9e9-236b-413e-bbe0-84730070ffc2',
-      },
-      databaseConnection: {
-        universalIdentifier: 'd925ebe2-8b53-4f36-99a6-1470e5b228ad',
       },
       spaceId: { universalIdentifier: 'a7a8beb4-d777-430b-9aca-21bcf662526d' },
       baseId: { universalIdentifier: 'aacc21cc-0699-4d45-ba09-d87f1a853da6' },
@@ -910,9 +903,6 @@ export const STANDARD_OBJECTS = {
       targetWorkflowIdIndex: {
         universalIdentifier: 'c427c048-5aec-44fc-8329-53fba8070029',
       },
-      databaseConnectionIdIndex: {
-        universalIdentifier: '8e3a89ab-de8f-424e-bb96-dbae93675613',
-      },
       tableIdIndex: {
         universalIdentifier: 'c1a28460-c222-4474-8d0b-a11245199524',
       },
@@ -924,7 +914,6 @@ export const STANDARD_OBJECTS = {
       allDatabaseRecordTargets: {
         universalIdentifier: 'e4c72f2a-67a7-4a72-995a-e40ae5d261ba',
         viewFields: {
-          id: { universalIdentifier: '62ecd496-cadf-4926-8b0f-8a18b1605979' },
           recordName: {
             universalIdentifier: 'f32ffccf-6d54-4fbd-9417-fa265262301a',
           },

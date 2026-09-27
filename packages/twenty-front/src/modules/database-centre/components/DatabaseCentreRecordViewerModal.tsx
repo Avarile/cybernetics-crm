@@ -13,6 +13,7 @@ import { useModal } from '@/ui/layout/modal/hooks/useModal';
 import { IconExternalLink, IconX } from 'twenty-ui/icon';
 import { Button, IconButton } from 'twenty-ui/input';
 import { ModalContent, ModalHeader } from 'twenty-ui/surfaces';
+import { getSafeUrl, isDefined } from 'twenty-shared/utils';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
 
 const StyledHeader = styled.div`
@@ -99,15 +100,19 @@ export const DatabaseCentreRecordViewerModal = ({
             {recordDetail?.record.name ?? t`Data centre record`}
           </StyledTitle>
           <StyledHeaderActions>
-            {recordDetail !== undefined && (
+            {isDefined(recordDetail) && (
               <Button
                 Icon={IconExternalLink}
                 title={t`Open in data centre`}
                 size="small"
                 variant="secondary"
-                onClick={() =>
-                  window.open(recordDetail.deepLink, '_blank', 'noopener')
-                }
+                onClick={() => {
+                  const safeDeepLink = getSafeUrl(recordDetail.deepLink);
+
+                  if (isDefined(safeDeepLink)) {
+                    window.open(safeDeepLink, '_blank', 'noopener');
+                  }
+                }}
               />
             )}
             <IconButton Icon={IconX} size="small" onClick={handleClose} />
@@ -119,9 +124,9 @@ export const DatabaseCentreRecordViewerModal = ({
           <StyledHint>
             <Trans>Loading record…</Trans>
           </StyledHint>
-        ) : error !== undefined ? (
+        ) : isDefined(error) ? (
           <StyledHint>{error.message}</StyledHint>
-        ) : recordDetail !== undefined ? (
+        ) : isDefined(recordDetail) ? (
           <StyledFieldList>
             {recordDetail.fields.map((field) => (
               <Fragment key={field.id}>

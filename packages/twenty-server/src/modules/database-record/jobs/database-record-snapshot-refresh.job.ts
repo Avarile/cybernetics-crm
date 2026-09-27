@@ -30,6 +30,7 @@ const RUN_ABORTING_EXCEPTION_CODES = [
   DatabaseCentreExceptionCode.CONNECTION_NOT_CONFIGURED,
   DatabaseCentreExceptionCode.CONNECTION_DISABLED,
   DatabaseCentreExceptionCode.TOKEN_DECRYPTION_FAILED,
+  DatabaseCentreExceptionCode.INVALID_BASE_URL,
   DatabaseCentreExceptionCode.UPSTREAM_UNAUTHORIZED,
   DatabaseCentreExceptionCode.UPSTREAM_UNREACHABLE,
   DatabaseCentreExceptionCode.UPSTREAM_RATE_LIMITED,
@@ -115,7 +116,14 @@ export class DatabaseRecordSnapshotRefreshJob {
             break;
           }
 
-          // Leaves this record's snapshot as is; it's retried next run
+          // Keeps the last good preview but marks it outdated and bumps
+          // snapshotAt, so a permanently failing record rotates to the back
+          // of the queue instead of blocking every future batch
+          await repository.update(
+            { id: target.id },
+            { snapshotStatus: 'STALE', snapshotAt: new Date().toISOString() },
+          );
+
           this.logger.warn(
             `Failed to refresh data centre record ${target.id} in workspace ${workspaceId}: ${(error as Error).message}`,
           );

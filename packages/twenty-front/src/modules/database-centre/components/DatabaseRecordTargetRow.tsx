@@ -4,7 +4,7 @@ import { type DatabaseRecordTarget } from '@/database-centre/types/DatabaseCentr
 import { getDatabaseRecordSnapshotStatusTag } from '@/database-centre/utils/getDatabaseRecordSnapshotStatusTag';
 import { styled } from '@linaria/react';
 import { useLingui } from '@lingui/react/macro';
-import { isDefined } from 'twenty-shared/utils';
+import { getSafeUrl, isDefined } from 'twenty-shared/utils';
 import { Tag } from 'twenty-ui/data-display';
 import { IconDatabase, IconExternalLink } from 'twenty-ui/icon';
 import { LightIconButton } from 'twenty-ui/input';
@@ -43,7 +43,7 @@ const StyledRightContent = styled.div`
 
 type DatabaseRecordTargetRowProps = {
   databaseRecordTarget: DatabaseRecordTarget;
-  canEdit: boolean;
+  canRemove: boolean;
   canRefresh: boolean;
   onView: (databaseRecordTarget: DatabaseRecordTarget) => void;
   onRefresh: (databaseRecordTargetId: string) => void;
@@ -52,7 +52,7 @@ type DatabaseRecordTargetRowProps = {
 
 export const DatabaseRecordTargetRow = ({
   databaseRecordTarget,
-  canEdit,
+  canRemove,
   canRefresh,
   onView,
   onRefresh,
@@ -88,8 +88,12 @@ export const DatabaseRecordTargetRow = ({
   const handleOpenExternally = (event: React.MouseEvent) => {
     event.stopPropagation();
 
-    if (isDefined(databaseRecordTarget.sourceUrl)) {
-      window.open(databaseRecordTarget.sourceUrl, '_blank', 'noopener');
+    // sourceUrl is writable through the generic record API, so only
+    // http(s) links are ever opened
+    const safeSourceUrl = getSafeUrl(databaseRecordTarget.sourceUrl);
+
+    if (isDefined(safeSourceUrl)) {
+      window.open(safeSourceUrl, '_blank', 'noopener');
     }
   };
 
@@ -117,7 +121,7 @@ export const DatabaseRecordTargetRow = ({
             {beautifyPastDateRelativeToNow(databaseRecordTarget.snapshotAt)}
           </StyledSecondaryText>
         )}
-        {isDefined(databaseRecordTarget.sourceUrl) && (
+        {isDefined(getSafeUrl(databaseRecordTarget.sourceUrl)) && (
           <LightIconButton
             Icon={IconExternalLink}
             accent="tertiary"
@@ -126,7 +130,7 @@ export const DatabaseRecordTargetRow = ({
         )}
         <DatabaseRecordTargetDropdown
           databaseRecordTargetId={databaseRecordTarget.id}
-          canEdit={canEdit}
+          canRemove={canRemove}
           canRefresh={canRefresh}
           onView={() => onView(databaseRecordTarget)}
           onRefresh={() => onRefresh(databaseRecordTarget.id)}

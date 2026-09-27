@@ -1,17 +1,12 @@
 import { msg } from '@lingui/core/macro';
 import { i18nLabel } from 'src/engine/workspace-manager/twenty-standard-application/utils/i18n-label.util';
-import {
-  DateDisplayFormat,
-  FieldMetadataType,
-  RelationType,
-} from 'twenty-shared/types';
+import { DateDisplayFormat, FieldMetadataType } from 'twenty-shared/types';
 import { type FlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-metadata/types/flat-field-metadata.type';
 import { type AllStandardObjectFieldName } from 'src/engine/workspace-manager/twenty-standard-application/types/all-standard-object-field-name.type';
 import {
   type CreateStandardFieldArgs,
   createStandardFieldFlatMetadata,
 } from 'src/engine/workspace-manager/twenty-standard-application/utils/field-metadata/create-standard-field-flat-metadata.util';
-import { createStandardRelationFieldFlatMetadata } from 'src/engine/workspace-manager/twenty-standard-application/utils/field-metadata/create-standard-relation-field-flat-metadata.util';
 
 // Builds the fixed set of standard fields for the "databaseConnection" object: base system fields
 // plus the single set of credentials a workspace uses to reach the cybernetics-data-centre.
@@ -359,29 +354,6 @@ export const buildDatabaseConnectionStandardFlatFieldMetadatas = ({
           color: 'gray',
         },
       ],
-    },
-    standardObjectMetadataRelatedEntityIds,
-    dependencyFlatEntityMaps,
-    twentyStandardApplicationId,
-    now,
-  }),
-  databaseRecordTargets: createStandardRelationFieldFlatMetadata({
-    objectName,
-    workspaceId,
-    context: {
-      type: FieldMetadataType.RELATION,
-      morphId: null,
-      fieldName: 'databaseRecordTargets',
-      label: i18nLabel(msg`Database records`),
-      description: i18nLabel(msg`Records attached through this connection`),
-      icon: 'IconDatabase',
-      isNullable: true,
-      isUIEditable: false,
-      targetObjectName: 'databaseRecordTarget',
-      targetFieldName: 'databaseConnection',
-      settings: {
-        relationType: RelationType.ONE_TO_MANY,
-      },
     },
     standardObjectMetadataRelatedEntityIds,
     dependencyFlatEntityMaps,

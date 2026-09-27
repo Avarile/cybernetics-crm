@@ -31,7 +31,7 @@ const getDatabaseCentreExceptionUserFriendlyMessage = (
     case DatabaseCentreExceptionCode.CONNECTION_DISABLED:
       return msg`The data centre connection is disabled.`;
     case DatabaseCentreExceptionCode.INVALID_BASE_URL:
-      return msg`The data centre URL is invalid or not allowed.`;
+      return msg`The data centre URL is invalid, not allowed, or could not be resolved.`;
     case DatabaseCentreExceptionCode.TOKEN_DECRYPTION_FAILED:
       return msg`The stored data centre token can't be read. Please enter it again.`;
     case DatabaseCentreExceptionCode.UPSTREAM_UNAUTHORIZED:

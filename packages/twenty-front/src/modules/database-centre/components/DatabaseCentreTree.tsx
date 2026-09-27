@@ -17,6 +17,7 @@ import {
   IconFolder,
   IconTable,
 } from 'twenty-ui/icon';
+import { isDefined } from 'twenty-shared/utils';
 import { themeCssVariables } from 'twenty-ui/theme-constants';
 
 export type DatabaseCentreSelectedTable = {
@@ -149,7 +150,7 @@ export const DatabaseCentreTree = ({
     );
   }
 
-  if (error !== undefined) {
+  if (isDefined(error)) {
     return <StyledHint>{error.message}</StyledHint>;
   }
 

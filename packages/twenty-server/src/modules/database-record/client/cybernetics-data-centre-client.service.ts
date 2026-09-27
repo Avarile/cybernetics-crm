@@ -62,9 +62,9 @@ export class CyberneticsDataCentreClientService {
   async assertBaseUrlIsAllowed(baseUrl: string): Promise<void> {
     try {
       await this.secureHttpClientService.getValidatedHost(baseUrl);
-    } catch {
+    } catch (error) {
       throw new DatabaseCentreException(
-        `Data centre host is not allowed: ${baseUrl}`,
+        `Data centre host is not allowed or could not be resolved: ${baseUrl} (${error instanceof Error ? error.message : 'unknown error'})`,
         DatabaseCentreExceptionCode.INVALID_BASE_URL,
       );
     }
@@ -270,7 +270,8 @@ export class CyberneticsDataCentreClientService {
     path: string,
     parameters: QueryParameters = [],
   ): Promise<unknown> {
-    await this.assertBaseUrlIsAllowed(baseUrl);
+    // The SSRF-safe agent validates the resolved IP on every connection, so
+    // the host isn't re-resolved here; it's checked up front when saved
     await this.throttleOrThrow(workspaceId);
 
     const queryString = new URLSearchParams(parameters).toString();
