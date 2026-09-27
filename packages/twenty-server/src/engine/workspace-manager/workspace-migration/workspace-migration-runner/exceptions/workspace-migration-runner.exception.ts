@@ -54,6 +54,10 @@ const getActionUniversalIdentifierOrThrow = (
   return action.universalIdentifier;
 };
 
+// Splits EXECUTION_FAILED out from the other codes purely so the constructor args type
+// below can discriminate on `code`: EXECUTION_FAILED requires `action`/`errors`, every
+// other code requires `message`/`context` — this makes passing the wrong shape for a
+// given code a type error rather than a runtime one.
 const {
   // oxlint-disable-next-line unused-imports/no-unused-vars
   EXECUTION_FAILED: WorkspaceMigrationRunnerExceptionExecutionFailedCode,

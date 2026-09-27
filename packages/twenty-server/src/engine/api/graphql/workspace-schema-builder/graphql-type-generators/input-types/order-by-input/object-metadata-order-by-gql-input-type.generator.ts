@@ -11,6 +11,9 @@ import { computeObjectMetadataInputTypeKey } from 'src/engine/api/graphql/worksp
 import { type FlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-metadata/types/flat-field-metadata.type';
 import { type FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object-metadata/types/flat-object-metadata.type';
 
+// Plain per-field ordering used by findMany. Contrast with
+// ObjectMetadataOrderByWithGroupByGqlInputTypeGenerator, which builds a
+// different shape (aggregate + dimension-value ordering) for groupBy queries.
 @Injectable()
 export class ObjectMetadataOrderByGqlInputTypeGenerator {
   private readonly logger = new Logger(

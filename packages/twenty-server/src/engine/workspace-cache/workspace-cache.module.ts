@@ -6,6 +6,8 @@ import { MetricsModule } from 'src/engine/core-modules/metrics/metrics.module';
 import { WorkspaceCacheService } from 'src/engine/workspace-cache/services/workspace-cache.service';
 
 @Module({
+  // DiscoveryModule lets WorkspaceCacheService scan all providers at startup to find
+  // the ones decorated with @WorkspaceCache.
   imports: [CacheStorageModule, DiscoveryModule, MetricsModule],
   providers: [WorkspaceCacheService],
   exports: [WorkspaceCacheService],

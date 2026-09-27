@@ -29,6 +29,9 @@ export const enrichFieldMetadataEventWithRelations = ({
     return record;
   }
 
+  // Enrichment failures are swallowed on purpose: this runs in the event-broadcast path,
+  // where relation resolution shouldn't block delivery of the underlying metadata event
+  // (the record is still published, just without the extra relation/morph data).
   try {
     if (
       isFlatFieldMetadataOfType(flatFieldMetadata, FieldMetadataType.RELATION)

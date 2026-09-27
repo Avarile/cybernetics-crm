@@ -7,6 +7,10 @@ import { SlowInstanceCommand } from 'src/engine/core-modules/upgrade/interfaces/
 export class BackfillDisplayFieldsOnApplicationRegistrationSlowInstanceCommand
   implements SlowInstanceCommand
 {
+  // Unconditionally re-derives every listed column from the manifest for any row that
+  // has one (unlike the logo backfill, this doesn't check the columns are still NULL
+  // first), so a manual edit made to these fields before this ran would be overwritten.
+  // "screenshots" converts the manifest's JSON array into a Postgres text[] column.
   async runDataMigration(dataSource: DataSource): Promise<void> {
     await dataSource.query(
       `UPDATE "core"."applicationRegistration"
@@ -26,6 +30,7 @@ export class BackfillDisplayFieldsOnApplicationRegistrationSlowInstanceCommand
 
   public async up(_queryRunner: QueryRunner): Promise<void> {}
 
+  // Clears these columns on every row, not just the ones this command backfilled.
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
       `UPDATE "core"."applicationRegistration"

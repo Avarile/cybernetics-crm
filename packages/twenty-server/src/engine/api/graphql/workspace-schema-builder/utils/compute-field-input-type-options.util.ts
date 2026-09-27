@@ -11,6 +11,9 @@ export const computeFieldInputTypeOptions = (
   return {
     nullable: fieldMetadata.isNullable ?? undefined,
     defaultValue: fieldMetadata.defaultValue ?? undefined,
+    // Filter inputs for MULTI_SELECT use MultiSelectFilterType's own
+    // `containsAny: [String]` field instead of wrapping the whole input in a
+    // list, so isArray is skipped specifically for the Filter kind.
     isArray:
       kind !== GqlInputTypeDefinitionKind.Filter &&
       fieldMetadata.type === FieldMetadataType.MULTI_SELECT,

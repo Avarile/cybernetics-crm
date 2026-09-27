@@ -251,6 +251,8 @@ function formatFieldMetadataValue(
   value: any,
   fieldMetadataType: FieldMetadataType,
 ) {
+  // Some query paths (eg: raw/aggregate queries) return array columns as Postgres's
+  // native array literal text ("{a,b,c}") rather than an already-parsed JS array.
   if (
     typeof value === 'string' &&
     (fieldMetadataType === FieldMetadataType.MULTI_SELECT ||
@@ -293,14 +295,10 @@ function transformCompositeFieldNullValue(
   );
 }
 
-/**
- * Handles composite fields with missing required subfields.
- * - For nullable fields: sets to null if all required subfields are null
- * - For non-nullable fields: provides a default value to prevent GraphQL errors
- *
- * This handles existing records that were created before the field was added
- * or records with incomplete data.
- */
+// Handles composite fields with missing required subfields (eg: existing records
+// created before the field was added, or records with incomplete data):
+// - For nullable fields: sets to null if all required subfields are null
+// - For non-nullable fields: provides a default value to prevent GraphQL errors
 function handleEmptyCompositeFields(
   // oxlint-disable-next-line typescript/no-explicit-any
   data: Record<string, any>,
@@ -353,9 +351,7 @@ function handleEmptyCompositeFields(
   }
 }
 
-/**
- * Returns a default value for non-nullable composite fields.
- */
+// Returns a default value for non-nullable composite fields.
 function getDefaultCompositeFieldValue(
   fieldType: FieldMetadataType,
   // oxlint-disable-next-line typescript/no-explicit-any

@@ -2,6 +2,9 @@ import { isDefined } from 'twenty-shared/utils';
 
 import { hasRecordFieldValue } from 'src/engine/api/graphql/graphql-query-runner/utils/has-record-field-value.util';
 
+// Default merge strategy for simple (non-array, non-composite) fields: keep
+// the priority record's value if it's non-empty, otherwise fall back to the
+// first other record that has one.
 export const defaultMergeFieldValue = <T>(
   recordsWithValues: { value: T; recordId: string }[],
   priorityRecordId: string,

@@ -46,6 +46,8 @@ export class MetadataEventEmitter {
         ? resolvedInitiatorContext.apiKey.id
         : undefined;
 
+    // Batched per (metadataName, action) rather than emitted one event at a time,
+    // so a single migration touching many fields fires one listener call per group.
     const grouped = this.groupByMetadataNameAndAction(metadataEvents);
 
     for (const { eventName, events, metadataName, type } of grouped.values()) {
@@ -74,6 +76,10 @@ export class MetadataEventEmitter {
       return initiatorContext;
     }
 
+    // Falls back to the AsyncLocalStorage-backed request context when the caller
+    // didn't pass one explicitly (eg: emitted from deep inside a service). This
+    // throws when called outside a request/job context, so events emitted from
+    // truly context-free code (eg: some background jobs) just have no initiator.
     try {
       return getWorkspaceAuthContext();
     } catch {

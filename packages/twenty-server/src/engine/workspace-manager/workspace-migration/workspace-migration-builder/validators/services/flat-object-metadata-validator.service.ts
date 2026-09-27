@@ -14,6 +14,15 @@ import { getEmptyFlatEntityValidationError } from 'src/engine/workspace-manager/
 import { FlatEntityUpdateValidationArgs } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-builder/types/universal-flat-entity-update-validation-args.type';
 import { UniversalFlatEntityValidationArgs } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-builder/types/universal-flat-entity-validation-args.type';
 
+// Three distinct, overlapping protections on delete/update, easy to conflate:
+// - isSystemBuild (build option): bypasses all of the checks below; only true when
+//   Twenty's own standard-app builder is running the migration.
+// - isSystem (per-entity flag): this specific object is system-managed; update is
+//   restricted to `overrides`/`isActive`, delete is blocked outright.
+// - belongsToTwentyStandardApp / isCallerTwentyStandardApp: whether the object and the
+//   caller respectively belong to Twenty's built-in standard application (a broader
+//   category than isSystem — covers ordinary standard CRM objects like Person/Company
+//   too) — blocks a *different* application's migration from deleting a standard object.
 @Injectable()
 export class FlatObjectMetadataValidatorService {
   public validateFlatObjectMetadataUpdate({

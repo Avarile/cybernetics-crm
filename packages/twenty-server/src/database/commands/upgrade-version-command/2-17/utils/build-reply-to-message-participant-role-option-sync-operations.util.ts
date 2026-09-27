@@ -12,6 +12,9 @@ import { type FlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-m
 const MESSAGE_PARTICIPANT_ROLE_FIELD_UNIVERSAL_IDENTIFIER =
   STANDARD_OBJECTS.messageParticipant.fields.role.universalIdentifier;
 
+// id must match compute-message-participant-standard-flat-field-metadata.util.ts's
+// definition of the same option, since new workspaces get it from there while
+// existing ones are backfilled here; both need the same fixed id for idempotency.
 export const REPLY_TO_MESSAGE_PARTICIPANT_ROLE_OPTION: FieldMetadataComplexOption =
   {
     id: '20202020-3b1a-4e2c-9d7f-8a6b5c4d3e2f',

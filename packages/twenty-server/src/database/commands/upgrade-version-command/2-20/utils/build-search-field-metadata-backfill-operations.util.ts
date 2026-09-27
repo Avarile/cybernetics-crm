@@ -86,6 +86,8 @@ export const buildSearchFieldMetadataBackfillOperations = ({
       name: 'id',
     });
 
+    // Junction/id-label objects use their own "id" field as the label identifier;
+    // id isn't a searchable field type, so skip before even loading its metadata.
     if (
       labelIdentifierFieldMetadataUniversalIdentifier ===
       derivedIdFieldUniversalIdentifier

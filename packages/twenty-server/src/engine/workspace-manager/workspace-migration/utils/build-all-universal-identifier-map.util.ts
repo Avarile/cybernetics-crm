@@ -14,6 +14,10 @@ export type UniversalIdentifierOwner = {
 
 export type AllUniversalIdentifierMap = Map<string, UniversalIdentifierOwner>;
 
+// Flattens every metadata type's flat entity maps into one lookup, keyed by
+// universalIdentifier, because universalIdentifiers must be unique across ALL metadata
+// types (not just within one type) — used by the cross-entity uniqueness validator to
+// find collisions between, say, an object and a role sharing the same identifier.
 export const buildAllUniversalIdentifierMap = (
   allFlatEntityMaps: AllUniversalFlatEntityMaps,
 ): AllUniversalIdentifierMap => {

@@ -6,6 +6,9 @@ export class AddWorkspaceForeignKeys1767002571103 implements MigrationInterface 
   name = 'AddWorkspaceForeignKeys1767002571103';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
+    // ADD CONSTRAINT can fail on a self-hosted instance with pre-existing orphaned rows
+    // (a workspaceId with no matching workspace). The savepoint lets that failure be
+    // swallowed so this migration doesn't abort the whole transaction on such instances.
     const savepointName = 'sp_add_workspace_foreign_keys';
 
     try {

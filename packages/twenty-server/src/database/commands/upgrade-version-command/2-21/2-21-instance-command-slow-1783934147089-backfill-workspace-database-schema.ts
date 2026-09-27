@@ -22,6 +22,8 @@ export class BackfillWorkspaceDatabaseSchemaSlowInstanceCommand
       return;
     }
 
+    // UNNEST-zip the two parallel arrays into a values set for a single bulk UPDATE,
+    // instead of one round-trip per workspace.
     await dataSource.query(
       `UPDATE "core"."workspace" AS w
        SET "databaseSchema" = data.schema_name

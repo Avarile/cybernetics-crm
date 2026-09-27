@@ -5,6 +5,9 @@ import { type UniversalFlatRole } from 'src/engine/workspace-manager/workspace-m
 import { type FlatEntityValidationError } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-builder/builders/types/failed-flat-entity-validation.type';
 import { type WorkspaceMigrationBuilderOptions } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-builder/types/workspace-migration-builder-options.type';
 
+// Prevents one application's migration from creating/updating a permission-related entity
+// that targets a role owned by a *different* application — without this, an application
+// could grant or revoke access on another application's role.
 export const validateRoleBelongsToCallerApplication = ({
   referencedRole,
   buildOptions,

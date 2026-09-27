@@ -4,9 +4,13 @@ export class RemoveSaveCancelRecordPageLayoutEngineKeys1773668124779 implements 
   name = 'RemoveSaveCancelRecordPageLayoutEngineKeys1773668124779';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
+    // Rows using the values being dropped must go first — a value can't be removed from
+    // a Postgres enum type while any row still references it.
     await queryRunner.query(
       `DELETE FROM "core"."commandMenuItem" WHERE "engineComponentKey" IN ('SAVE_RECORD_PAGE_LAYOUT', 'CANCEL_RECORD_PAGE_LAYOUT')`,
     );
+    // Postgres has no DROP VALUE for enums: rename the old type, create a new one without
+    // the removed values, cast the column over, then drop the old type.
     await queryRunner.query(
       `ALTER TYPE "core"."commandMenuItem_enginecomponentkey_enum" RENAME TO "commandMenuItem_enginecomponentkey_enum_old"`,
     );

@@ -56,6 +56,8 @@ export class WorkspaceSelectQueryBuilder<
     return this.findOptions;
   }
 
+  // Re-wraps the clone in this class: TypeORM's own clone() would otherwise return a
+  // plain SelectQueryBuilder that has lost the permission/RLS context entirely.
   override clone(): this {
     const clonedQueryBuilder = super.clone();
 
@@ -224,6 +226,9 @@ export class WorkspaceSelectQueryBuilder<
     }
   }
 
+  // TypeORM's getExists() internally builds a fresh query via dataSource.createQueryBuilder(),
+  // bypassing this class entirely — which would skip both the row-level-permission
+  // predicates and the field/entity permission checks below. Disabled rather than fixed.
   override getExists(): Promise<boolean> {
     throw new PermissionsException(
       'getExists is not supported because it calls dataSource.createQueryBuilder()',
@@ -332,6 +337,7 @@ export class WorkspaceSelectQueryBuilder<
     );
   }
 
+  // Same reason as getExists(): internally escapes this class via dataSource.createQueryBuilder().
   override executeExistsQuery(): Promise<boolean> {
     throw new PermissionsException(
       'executeExistsQuery is not supported because it calls dataSource.createQueryBuilder()',
@@ -340,6 +346,8 @@ export class WorkspaceSelectQueryBuilder<
   }
 
   private validatePermissions(): void {
+    // RLS predicates are added to the WHERE clause first so the entity/field permission
+    // check below (which inspects the full expressionMap) sees the final query shape.
     this.applyRowLevelPermissionPredicates();
     validateQueryIsPermittedOrThrow({
       expressionMap: this.expressionMap,

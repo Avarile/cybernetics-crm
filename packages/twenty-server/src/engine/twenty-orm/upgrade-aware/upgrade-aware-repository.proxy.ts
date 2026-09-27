@@ -10,6 +10,12 @@ import { UpgradeUnavailableEntityWriteException } from 'src/engine/twenty-orm/up
 
 const logger = new Logger('UpgradeAwareRepositoryProxy');
 
+// Wraps a repository so code written against an entity/column/relation that a pending
+// upgrade hasn't created yet (or has already dropped) doesn't crash: reads on an
+// unavailable entity silently short-circuit to an empty result, writes throw instead of
+// hitting a table/column that doesn't exist, and selects/relations referencing an
+// unavailable related entity are stripped out of the query options before they run.
+
 type RepositoryMethodBehavior =
   | {
       kind: 'short-circuit-read';

@@ -1,3 +1,6 @@
+// Builds the `restoreOne` GraphQL mutation resolver for an object:
+// delegates to CommonRestoreOneQueryRunnerService and formats the
+// un-soft-deleted record back into GraphQL shape.
 import { Injectable } from '@nestjs/common';
 
 import graphqlFields from 'graphql-fields';

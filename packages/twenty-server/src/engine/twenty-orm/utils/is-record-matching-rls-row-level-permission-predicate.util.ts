@@ -88,6 +88,9 @@ export const isRecordMatchingRLSRowLevelPermissionPredicate = ({
   flatFieldMetadataMaps: FlatEntityMaps<FlatFieldMetadata>;
   shouldIgnoreSoftDeleteDefaultFilter?: boolean;
 }): boolean => {
+  // An empty filter means "no RLS predicate restricts this role" — it still only
+  // matches non-deleted records, applying the same default soft-delete filter as
+  // a real predicate would (see shouldRejectMatchingBecauseRecordIsSoftDeleted below).
   if (Object.keys(filter).length === 0 && record.deletedAt === null) {
     return true;
   }

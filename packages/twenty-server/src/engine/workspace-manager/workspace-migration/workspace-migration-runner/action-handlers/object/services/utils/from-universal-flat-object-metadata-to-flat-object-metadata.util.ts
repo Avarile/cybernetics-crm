@@ -110,6 +110,8 @@ export const fromUniversalFlatObjectMetadataToFlatObjectMetadata = ({
     applicationUniversalIdentifier,
     labelIdentifierFieldMetadataId,
     labelIdentifierFieldMetadataUniversalIdentifier,
+    // Column is NOT NULL but no longer read; the real table name is computed on demand
+    // elsewhere (see computeObjectTargetTable). Placeholder satisfies the constraint.
     targetTableName: 'DEPRECATED',
     imageIdentifierFieldMetadataId,
     imageIdentifierFieldMetadataUniversalIdentifier,

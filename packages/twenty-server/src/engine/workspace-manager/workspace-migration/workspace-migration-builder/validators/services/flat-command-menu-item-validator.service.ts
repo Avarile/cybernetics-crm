@@ -152,6 +152,10 @@ export class FlatCommandMenuItemValidatorService {
     return validationResult;
   }
 
+  // engineComponentKey acts as a discriminant: exactly one of workflowVersionId/
+  // frontComponentUniversalIdentifier/payload is relevant depending on its value, and
+  // every branch enforces that the OTHER fields are explicitly absent — a workflow
+  // trigger item can't also carry a front-component reference, etc.
   private validateEngineComponentKeyCoherence({
     engineComponentKey,
     workflowVersionId,

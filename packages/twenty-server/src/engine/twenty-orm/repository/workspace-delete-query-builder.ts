@@ -101,6 +101,9 @@ export class WorkspaceDeleteQueryBuilder<
 
       const tableName = computeObjectTargetTable(objectMetadata);
 
+      // getOne() caps this at a single row (it calls take(1) internally), so a DELETE
+      // whose WHERE matches multiple rows only captures one "before" record for the
+      // DESTROYED event below — the event's recordsBefore won't reflect every row deleted.
       const before = await eventSelectQueryBuilder.getOne({
         noFormatting: true,
       });
@@ -188,6 +191,8 @@ export class WorkspaceDeleteQueryBuilder<
     });
   }
 
+  // Morphing into another query type is disabled on every workspace query builder (see
+  // WorkspaceInsertQueryBuilder for the full rationale).
   override select(): WorkspaceSelectQueryBuilder<T> {
     throw new TwentyORMException(
       'This builder cannot morph into a select builder',

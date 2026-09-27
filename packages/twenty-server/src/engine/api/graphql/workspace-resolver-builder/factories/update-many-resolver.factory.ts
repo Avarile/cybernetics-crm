@@ -1,3 +1,6 @@
+// Builds the `updateMany` GraphQL mutation resolver for an object:
+// delegates to CommonUpdateManyQueryRunnerService and formats the
+// updated records back into GraphQL shape.
 import { Injectable } from '@nestjs/common';
 
 import graphqlFields from 'graphql-fields';

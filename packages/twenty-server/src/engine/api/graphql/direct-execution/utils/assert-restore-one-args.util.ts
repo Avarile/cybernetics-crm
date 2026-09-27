@@ -8,6 +8,8 @@ import { STANDARD_ERROR_MESSAGE } from 'src/engine/api/common/common-query-runne
 import { type RestoreOneResolverArgs } from 'src/engine/api/graphql/workspace-resolver-builder/interfaces/workspace-resolvers-builder.interface';
 import { isValidUuid } from 'twenty-shared/utils';
 
+// Direct execution skips graphql-js's schema-based arg coercion, so each
+// resolver method needs its own manual allowlist + shape check here instead.
 export function assertRestoreOneArgs(
   args: unknown,
 ): asserts args is RestoreOneResolverArgs {

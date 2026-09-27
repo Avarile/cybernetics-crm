@@ -8,6 +8,8 @@ import { type NoteTargetWorkspaceEntity } from 'src/modules/note/standard-object
 import { type TaskTargetWorkspaceEntity } from 'src/modules/task/standard-objects/task-target.workspace-entity';
 import { type TimelineActivityWorkspaceEntity } from 'src/modules/timeline/standard-objects/timeline-activity.workspace-entity';
 
+// Custom objects only index their label-identifier field into the generated
+// searchVector column, unlike standard objects which can list several fields.
 export const SEARCH_FIELDS_FOR_CUSTOM_OBJECT: FieldTypeAndNameMetadata[] = [
   {
     name: DEFAULT_LABEL_IDENTIFIER_FIELD_NAME,

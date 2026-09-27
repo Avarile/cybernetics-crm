@@ -31,6 +31,7 @@ export class TrashCleanupJob {
         `Trash cleanup failed for workspace ${workspaceId}`,
         error instanceof Error ? error.stack : String(error),
       );
+      // Re-throw after logging so the message queue's own retry/failure handling still applies.
       throw error;
     }
   }

@@ -3,6 +3,9 @@ import { type DocumentNode, type FieldNode, Kind } from 'graphql';
 import { findOperationDefinition } from 'src/engine/api/graphql/direct-execution/utils/find-operation-definition.util';
 import { graphQLBuildFragmentMap } from 'src/engine/api/graphql/direct-execution/utils/graphql-build-fragment-map.util';
 
+// With no real GraphQL executor running, fragment spreads and inline fragments
+// aren't expanded automatically, so this walks them manually to flatten every
+// top-level field into one list.
 export const graphQLExtractTopLevelFields = (
   document: DocumentNode,
   operationName: string | undefined,

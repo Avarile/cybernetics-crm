@@ -7,6 +7,10 @@ import { type SlowInstanceCommand } from 'src/engine/core-modules/upgrade/interf
 export class BackfillGalleryImagesOnApplicationRegistrationSlowInstanceCommand
   implements SlowInstanceCommand
 {
+  // Converts the legacy "screenshots" text[] (plain URLs) into the new "galleryImages"
+  // jsonb array of {path, fileId}; fileId is left NULL since these are external URLs,
+  // not files uploaded through the managed file system. WITH ORDINALITY preserves the
+  // original array order in the rebuilt jsonb array.
   async runDataMigration(dataSource: DataSource): Promise<void> {
     await dataSource.query(
       `UPDATE "core"."applicationRegistration" AS "registration"

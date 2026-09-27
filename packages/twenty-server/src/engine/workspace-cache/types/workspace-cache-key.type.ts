@@ -17,6 +17,9 @@ import { type UserWorkspaceRoleMap } from 'src/engine/metadata-modules/role-targ
 import { type FlatRowLevelPermissionPredicateGroupMaps } from 'src/engine/metadata-modules/row-level-permission-predicate/types/flat-row-level-permission-predicate-group-maps.type';
 import { type FlatRowLevelPermissionPredicateMaps } from 'src/engine/metadata-modules/row-level-permission-predicate/types/flat-row-level-permission-predicate-maps.type';
 
+// "V2" distinguishes this registry's Redis key namespace from the older, still-active
+// WORKSPACE_CACHE_KEYS in engine/workspace-cache-storage/ — the two systems run side by
+// side, so their prefixes must not collide.
 export const WORKSPACE_CACHE_KEYS_V2 = {
   flatObjectMetadataMaps: 'flat-maps:object-metadata',
   flatFieldMetadataMaps: 'flat-maps:field-metadata',

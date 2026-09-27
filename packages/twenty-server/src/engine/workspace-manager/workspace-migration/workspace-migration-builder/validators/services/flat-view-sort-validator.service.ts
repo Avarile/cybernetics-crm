@@ -86,6 +86,13 @@ export class FlatViewSortValidatorService {
         flatEntityMaps: optimisticFlatViewSortMaps,
       });
 
+    // Likely bug: this compares universalIdentifier (the sort's own id) instead of a
+    // shared key like viewUniversalIdentifier (contrast with the analogous check in
+    // flat-view-field-validator.service.ts, which compares viewUniversalIdentifier).
+    // Since otherFlatViewSorts never contains an entry whose id equals
+    // flatViewSortToValidate's own not-yet-created id, this condition can never be true
+    // against a genuinely different view sort — the "same field sorted twice in one
+    // view" case this appears intended to catch currently always passes uncaught.
     const equivalentExistingFlatViewSortExists = otherFlatViewSorts.some(
       (flatViewSort) =>
         flatViewSort.universalIdentifier ===

@@ -10,6 +10,8 @@ import { type FlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-m
 import { WorkspaceCacheService } from 'src/engine/workspace-cache/services/workspace-cache.service';
 import { WorkspaceMigrationValidateBuildAndRunService } from 'src/engine/workspace-manager/workspace-migration/services/workspace-migration-validate-build-and-run-service';
 
+// Hardcoded rather than read off STANDARD_OBJECTS: the field was already removed from
+// the standard message object definition, so only its universal identifier remains.
 const MESSAGE_DIRECTION_FIELD_UNIVERSAL_IDENTIFIER =
   '20202020-0203-4118-8e2a-05b9bdae6dab';
 

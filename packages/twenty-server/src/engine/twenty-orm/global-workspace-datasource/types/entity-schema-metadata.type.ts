@@ -62,6 +62,9 @@ export const buildEntitySchemaMetadataMaps = (
     objectMetadataMaps.byId[object.id] = {
       id: object.id,
       nameSingular: object.nameSingular,
+      // "Custom" just means it doesn't belong to the standard Twenty application —
+      // drives the table-naming convention in computeTableName (custom objects get a
+      // distinct prefix).
       isCustom: object.applicationId !== standardApplicationId,
       fieldIds: fieldIdsByObjectId.get(object.id) ?? [],
     };

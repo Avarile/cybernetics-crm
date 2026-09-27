@@ -3,6 +3,11 @@ import { isDefined } from 'twenty-shared/utils';
 
 import { defaultMergeFieldValue } from 'src/engine/api/graphql/graphql-query-runner/utils/default-merge-field-value.util';
 
+// A real merge reassigns each related record's foreign key to the surviving
+// record, so ONE_TO_MANY just ends up with one combined set naturally. In a
+// dry-run preview that reassignment hasn't happened yet, so this synthesizes
+// the union of every merged record's related records to show what the result
+// would look like.
 export const mergeRelationFieldValuesForDryRunRecord = (
   recordsWithValues: { value: unknown; recordId: string }[],
   relationType: RelationType | undefined,

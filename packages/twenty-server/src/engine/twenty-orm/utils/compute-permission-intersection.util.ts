@@ -34,6 +34,8 @@ export const computePermissionIntersection = (
     for (const permissions of permissionsArray) {
       const objPerm = permissions[objectMetadataId];
 
+      // A role that grants no permissions at all for this object makes the
+      // intersection fully restrictive for it — most-restrictive-role wins.
       if (!objPerm) {
         canReadObjectRecords = false;
         canUpdateObjectRecords = false;
@@ -85,6 +87,8 @@ export const computePermissionIntersection = (
       canSoftDeleteObjectRecords,
       canDestroyObjectRecords,
       restrictedFields,
+      // Row-level-permission predicates aren't intersected here — callers that combine
+      // permissions across multiple roles only get entity/field-level results back.
       rowLevelPermissionPredicates: [],
       rowLevelPermissionPredicateGroups: [],
     };

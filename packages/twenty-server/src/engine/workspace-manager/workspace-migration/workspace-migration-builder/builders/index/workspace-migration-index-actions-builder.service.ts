@@ -81,6 +81,12 @@ export class WorkspaceMigrationIndexActionsBuilderService extends WorkspaceEntit
     };
   }
 
+  // Postgres indexes can't be altered in place, so unlike other entity types there's no
+  // dedicated "update" validator: an index update is validated as if it were a deletion
+  // of the old index followed by a creation of the merged (old + update) version, run
+  // against a temporary map with the old index already removed so the new one doesn't
+  // collide with itself. remainingFlatEntityMapsToValidate is passed empty since this
+  // isn't part of a create/delete batch loop (see WorkspaceEntityMigrationBuilderService).
   protected validateFlatEntityUpdate({
     optimisticFlatEntityMapsAndRelatedFlatEntityMaps,
     universalIdentifier,

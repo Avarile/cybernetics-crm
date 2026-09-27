@@ -98,6 +98,12 @@ export class UpdateLogicFunctionActionHandlerService extends WorkspaceMigrationR
       update as Parameters<typeof logicFunctionRepository.update>[1],
     );
 
+    // Neither this file deletion nor installPrebuiltBundleIfNeeded's external deploy is
+    // undone if a later action in this migration fails: this handler class has no
+    // rollbackForMetadata override, so the base no-op applies. Unlike the sibling
+    // create/delete handlers (which also lack a real rollback but at least don't destroy
+    // anything), a failure here permanently deletes the old built file while the DB
+    // update itself gets rolled back — a genuine, if narrow, data-loss window.
     await this.installPrebuiltBundleIfNeeded({
       existingLogicFunction,
       update,

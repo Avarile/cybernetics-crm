@@ -364,6 +364,9 @@ export class FlatViewFilterValidatorService {
     subFieldName: string | null | undefined;
     relationTargetFieldType: FieldMetadataType | undefined;
   }) {
+    // A filter on a relation field actually filters by a property of the related
+    // record (e.g. "company.name contains X"), so the operand set that applies is the
+    // target field's type, not RELATION itself.
     const effectiveFieldType =
       fieldType === FieldMetadataType.RELATION &&
       isDefined(relationTargetFieldType)

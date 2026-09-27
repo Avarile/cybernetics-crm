@@ -22,6 +22,8 @@ export const bindDataToRequestObject = (
   request.impersonationContext = data.impersonationContext;
   request.tokenType = data.tokenType;
 
+  // Precedence: the user's saved preference wins over a per-request header, which
+  // wins over the app default (eg: for unauthenticated or member-less requests).
   request.locale =
     data.userWorkspace?.locale ??
     (request.headers['x-locale'] as keyof typeof APP_LOCALES) ??

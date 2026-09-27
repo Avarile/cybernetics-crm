@@ -24,6 +24,11 @@ import { isMorphOrRelationFlatFieldMetadata } from 'src/engine/metadata-modules/
 import { type FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object-metadata/types/flat-object-metadata.type';
 import { isMorphOrRelationFieldMetadataType } from 'src/engine/utils/is-morph-or-relation-field-metadata-type.util';
 
+// Relation fields aren't built into the plain object type up front — this
+// takes the already-registered plain type back out of GqlTypesStorage,
+// clones it via toConfig(), and re-registers it under the same key with
+// relation fields merged in. Only called for objects that actually have a
+// relation/morph field (see gql-type.generator.ts's guard before calling this).
 @Injectable()
 export class ObjectMetadataWithRelationsGqlObjectTypeGenerator {
   private readonly logger = new Logger(
@@ -163,6 +168,9 @@ export class ObjectMetadataWithRelationsGqlObjectTypeGenerator {
       );
     }
 
+    // ONE_TO_MANY resolves to a paginated Connection (many related records);
+    // MANY_TO_ONE/ONE_TO_ONE resolve directly to the target's Plain type
+    // (a single related record).
     const key = computeObjectMetadataObjectTypeKey(
       objectMetadataTarget.nameSingular,
       flatFieldMetadata.settings.relationType === RelationType.ONE_TO_MANY

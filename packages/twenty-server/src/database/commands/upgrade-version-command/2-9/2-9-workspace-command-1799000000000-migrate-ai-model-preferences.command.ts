@@ -34,6 +34,9 @@ const PREFERENCE_KEY_MAP = {
   description:
     'Migrate AI_MODEL_PREFERENCES config var to the four individual AI_MODELS_DEFAULT_* vars, per workspace',
 })
+// Per-workspace counterpart to the 2-9 instance-level MigrateAiModelPreferencesSlowInstanceCommand,
+// which handles the single server-level (workspaceId/userId both NULL) row; this one
+// handles each workspace's own row (workspaceId set, userId NULL).
 export class MigrateAiModelPreferencesCommand extends ProvisionedWorkspaceCommandRunner {
   constructor(
     protected readonly workspaceIteratorService: WorkspaceIteratorService,
@@ -70,6 +73,8 @@ export class MigrateAiModelPreferencesCommand extends ProvisionedWorkspaceComman
       existingPreferencesRow.value,
     );
 
+    // Logs and leaves the old row in place rather than deleting data we couldn't
+    // successfully re-shape.
     if (!parseResult.success) {
       this.logger.error(
         `Failed to parse AI_MODEL_PREFERENCES for workspace ${workspaceId}: ${parseResult.error.message}`,
@@ -110,6 +115,8 @@ export class MigrateAiModelPreferencesCommand extends ProvisionedWorkspaceComman
         },
       });
 
+      // Makes a re-run after a partial failure safe: don't re-insert (and hit a
+      // unique-key conflict on) a new-key row a prior attempt already created.
       if (existingNewKeyRow !== null) {
         continue;
       }

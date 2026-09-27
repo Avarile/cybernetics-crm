@@ -88,9 +88,7 @@ export class WorkspaceRepository<
     );
   }
 
-  /**
-   * FIND METHODS
-   */
+  // FIND METHODS
   override async find(
     options?: FindManyOptions<T>,
     entityManager?: WorkspaceEntityManager,
@@ -243,9 +241,7 @@ export class WorkspaceRepository<
     return result;
   }
 
-  /**
-   * SAVE METHODS
-   */
+  // SAVE METHODS
   override save<U extends DeepPartialWithNestedRelationFields<T>>(
     entities: U[],
     options: SaveOptions & { reload: false },
@@ -303,9 +299,7 @@ export class WorkspaceRepository<
     return result;
   }
 
-  /**
-   * REMOVE METHODS
-   */
+  // REMOVE METHODS
   override remove(
     entities: T[],
     options?: RemoveOptions,
@@ -460,9 +454,7 @@ export class WorkspaceRepository<
     );
   }
 
-  /**
-   * RECOVERY METHODS
-   */
+  // RECOVERY METHODS
   override recover<U extends DeepPartial<T>>(
     entities: U,
     options: SaveOptions & { reload: false },
@@ -552,9 +544,7 @@ export class WorkspaceRepository<
     );
   }
 
-  /**
-   * INSERT METHODS
-   */
+  // INSERT METHODS
   override async insert(
     entity:
       | QueryDeepPartialEntityWithNestedRelationFields<T>
@@ -578,9 +568,7 @@ export class WorkspaceRepository<
     );
   }
 
-  /**
-   * UPDATE METHODS
-   */
+  // UPDATE METHODS
   override async update(
     criteria:
       | string
@@ -674,9 +662,7 @@ export class WorkspaceRepository<
     };
   }
 
-  /**
-   * EXIST METHODS
-   */
+  // EXIST METHODS
   override async exists(
     options?: FindManyOptions<T>,
     entityManager?: WorkspaceEntityManager,
@@ -711,9 +697,7 @@ export class WorkspaceRepository<
     );
   }
 
-  /**
-   * COUNT METHODS
-   */
+  // COUNT METHODS
   override async count(
     options?: FindManyOptions<T>,
     entityManager?: WorkspaceEntityManager,
@@ -748,9 +732,7 @@ export class WorkspaceRepository<
     );
   }
 
-  /**
-   * MATH METHODS
-   */
+  // MATH METHODS
   override async sum(
     columnName: PickKeysByType<T, number>,
     where?: FindOptionsWhere<T> | FindOptionsWhere<T>[],
@@ -889,9 +871,7 @@ export class WorkspaceRepository<
     );
   }
 
-  /**
-   * PRELOAD METHOD
-   */
+  // PRELOAD METHOD
   override async preload<U extends DeepPartial<T>>(
     entityLike: U,
     entityManager?: WorkspaceEntityManager,
@@ -905,9 +885,7 @@ export class WorkspaceRepository<
     return manager.preload(this.target, entityLike, permissionOptions);
   }
 
-  /**
-   * CLEAR METHOD
-   */
+  // CLEAR METHOD
   override async clear(entityManager?: WorkspaceEntityManager): Promise<void> {
     const manager = entityManager || this.manager;
     const permissionOptions = {
@@ -918,9 +896,7 @@ export class WorkspaceRepository<
     return manager.clear(this.target, permissionOptions);
   }
 
-  /**
-   * DEPRECATED AND RESTRICTED METHODS
-   */
+  // DEPRECATED AND RESTRICTED METHODS
   override async query<TResult = unknown>(): Promise<TResult> {
     throw new PermissionsException(
       'Method not allowed.',
@@ -944,9 +920,7 @@ export class WorkspaceRepository<
     throw new Error('exist is deprecated. Please use exists method instead.');
   }
 
-  /**
-   * PRIVATE METHODS
-   */
+  // PRIVATE METHODS
   private async getObjectMetadataFromTarget() {
     return getObjectMetadataFromEntityTarget(this.target, this.internalContext);
   }

@@ -3,6 +3,9 @@ import { QueryRunner } from 'typeorm';
 import { RegisteredInstanceCommand } from 'src/engine/core-modules/upgrade/decorators/registered-instance-command.decorator';
 import { FastInstanceCommand } from 'src/engine/core-modules/upgrade/interfaces/fast-instance-command.interface';
 
+// Last step of the flag->permissionFlagId cutover started in 2.6 (see the 2-6
+// rename/link/backfill commands): drops the legacy "flag" varchar column and its
+// unique constraint now that every row has been backfilled with permissionFlagId.
 @RegisteredInstanceCommand('2.7.0', 1779600000000)
 export class FinalizeRolePermissionFlagCutoverFastInstanceCommand
   implements FastInstanceCommand

@@ -55,6 +55,9 @@ export class FlatPermissionFlagValidatorService {
       });
     }
 
+    // key is unique workspace-wide across ALL applications, not just within the
+    // creating application — two unrelated apps can't register the same key. Also
+    // immutable after creation (enforced in validateFlatPermissionFlagUpdate below).
     const collidingPermissionFlag = Object.values(
       optimisticFlatPermissionFlagMaps.byUniversalIdentifier,
     ).find(

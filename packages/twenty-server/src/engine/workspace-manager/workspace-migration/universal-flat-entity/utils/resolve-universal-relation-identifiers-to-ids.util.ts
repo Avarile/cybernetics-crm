@@ -68,6 +68,13 @@ type ResolvedForeignKeyIds<
     : string;
 };
 
+// Resolves every declared many-to-one relation's universalForeignKey value to a real
+// per-workspace DB id, checked in this order: the preallocated-id map first (for a
+// target entity being created earlier in this same migration, not yet persisted), then
+// an already-persisted lookup, throwing if neither resolves it. The hasOwnProperty check
+// distinguishes "this key wasn't provided at all" (skip — for a partial update, an
+// unset relation shouldn't be touched) from "provided as null/undefined" (clear it, only
+// valid when the relation is nullable).
 export const resolveUniversalRelationIdentifiersToIds = <
   T extends AllMetadataName,
   TProvidedKeys extends Extract<

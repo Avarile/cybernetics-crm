@@ -46,13 +46,6 @@ export class WorkspaceDataSourceService {
     return isNonEmptyString(workspace?.databaseSchema);
   }
 
-  /**
-   *
-   * Create a new DB schema for a workspace
-   *
-   * @param workspaceId
-   * @returns
-   */
   public async createWorkspaceDBSchema(workspaceId: string): Promise<string> {
     this.assertDDLNotLocked();
 
@@ -68,13 +61,6 @@ export class WorkspaceDataSourceService {
     }
   }
 
-  /**
-   *
-   * Delete a DB schema for a workspace
-   *
-   * @param workspaceId
-   * @returns
-   */
   public async deleteWorkspaceDBSchema(workspaceId: string): Promise<void> {
     this.assertDDLNotLocked();
 
@@ -82,6 +68,8 @@ export class WorkspaceDataSourceService {
     const queryRunner = this.coreDataSource.createQueryRunner();
 
     try {
+      // ifExist=true (no-op if already gone), isCascade=true (also drops every
+      // table/object inside the workspace schema, not just the schema itself).
       await queryRunner.dropSchema(schemaName, true, true);
     } finally {
       await queryRunner.release();

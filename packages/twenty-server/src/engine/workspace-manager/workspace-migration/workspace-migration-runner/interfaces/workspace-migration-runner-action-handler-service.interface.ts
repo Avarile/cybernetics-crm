@@ -58,6 +58,14 @@ export type ActionHandlerExecuteResult<TMetadataName extends AllMetadataName> =
     afterCommitSideEffects: AfterCommitSideEffect[];
   };
 
+// Template Method base class: one concrete handler per (action type, metadata name) pair
+// (see WorkspaceMigrationRunnerActionHandler below). `execute()` transpiles the portable
+// Universal action into a Flat action (real DB ids resolved), then runs
+// executeForMetadata (writes the core metadata row) and executeForWorkspaceSchema (runs
+// the actual DDL against the tenant's workspace schema) concurrently via
+// Promise.allSettled — both use the same queryRunner/connection, so this relies on the
+// underlying driver serializing queries on that connection rather than true parallel
+// execution; it is not two independent transactions.
 export abstract class BaseWorkspaceMigrationRunnerActionHandlerService<
   TActionType extends WorkspaceMigrationActionType,
   TMetadataName extends AllMetadataName,
@@ -99,6 +107,9 @@ export abstract class BaseWorkspaceMigrationRunnerActionHandlerService<
     await repository.insert(scalarFlatEntities);
   }
 
+  // Shared by every entity's delete handler: a universal delete action only carries a
+  // universalIdentifier, so this resolves it to the real DB id via the current
+  // (pre-delete) flat entity maps before the flat action is built.
   protected transpileUniversalDeleteActionToFlatDeleteAction(
     context: 'delete' extends TActionType
       ? WorkspaceMigrationActionRunnerArgs<
@@ -195,6 +206,12 @@ export abstract class BaseWorkspaceMigrationRunnerActionHandlerService<
     }
   }
 
+  // Default no-op: most action handlers have nothing to undo beyond the DB rows, which
+  // the SQL transaction rollback already reverts. Override this only for side effects
+  // that happen outside the transaction (e.g. deploying a logic function to an external
+  // runtime) that a DB rollback can't touch. Note `queryRunner` is deliberately excluded
+  // from this context: by the time rollback runs, the transaction has already been
+  // rolled back and the connection is being released.
   rollbackForMetadata(
     _context: Omit<
       WorkspaceMigrationActionRunnerArgs<TUniversalAction>,
@@ -204,6 +221,10 @@ export abstract class BaseWorkspaceMigrationRunnerActionHandlerService<
     return Promise.resolve();
   }
 
+  // Drops any update property that isn't in this metadata type's allowlisted
+  // "compare and stringify" set (see sanitizeUniversalFlatEntityUpdate) before the
+  // action ever reaches a handler — a stray/unexpected field in the update payload is
+  // silently dropped here rather than persisted or erroring.
   private sanitizeUniversalAction(
     universalAction: TUniversalAction,
   ): TUniversalAction {
@@ -300,6 +321,10 @@ export abstract class BaseWorkspaceMigrationRunnerActionHandlerService<
     return { partialOptimisticCache, metadataEvents, afterCommitSideEffects };
   }
 
+  // Rollback is best-effort: a failure here is logged, never thrown, so the runner's
+  // reverse-order rollback loop always finishes visiting every action instead of
+  // aborting partway and leaving later (already-committed-in-JS-land but pre-DB-rollback)
+  // external side effects untouched.
   async rollback(
     context: Omit<
       WorkspaceMigrationActionRunnerArgs<TUniversalAction>,

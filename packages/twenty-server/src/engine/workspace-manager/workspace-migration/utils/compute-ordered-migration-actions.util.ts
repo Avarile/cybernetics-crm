@@ -1,6 +1,12 @@
 import { type OrchestratorActionsReport } from 'src/engine/workspace-manager/workspace-migration/types/workspace-migration-orchestrator.type';
 import { type AllUniversalWorkspaceMigrationAction } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-builder/types/workspace-migration-action-common';
 
+// Flattens every entity kind's create/update/delete buckets into a single ordered list.
+// Order is load-bearing: deletes generally run before creates of the same kind (so a
+// rename that reuses a name doesn't collide), and each entity kind's creates must run
+// after every entity kind it can reference has already been created (e.g. objects before
+// fields, fields before indexes/views) — see aggregateNonRelationFieldsIntoObjectActions
+// for why relation fields specifically wait until every object create action has run.
 export const computeOrderedMigrationActions = (
   aggregatedOrchestratorActionsReport: OrchestratorActionsReport,
 ): AllUniversalWorkspaceMigrationAction[] => {

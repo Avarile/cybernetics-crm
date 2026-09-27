@@ -25,6 +25,11 @@ import { type FlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-m
 import { isMorphOrRelationFlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-metadata/utils/is-morph-or-relation-flat-field-metadata.util';
 import { type FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object-metadata/types/flat-object-metadata.type';
 
+// groupBy's orderBy is shaped differently from plain findMany ordering
+// (ObjectMetadataOrderByGqlInputTypeGenerator): it lets you order by an
+// aggregate value per field ("aggregate") as well as by the raw dimension
+// values themselves (which reuses the base generator with isForGroupBy=true,
+// so DATE/DATE_TIME fields order by granularity instead of plain direction).
 @Injectable()
 export class ObjectMetadataOrderByWithGroupByGqlInputTypeGenerator {
   private readonly logger = new Logger(

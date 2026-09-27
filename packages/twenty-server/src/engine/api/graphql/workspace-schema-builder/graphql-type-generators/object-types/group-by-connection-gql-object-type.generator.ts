@@ -59,6 +59,9 @@ export class GroupByConnectionGqlObjectTypeGenerator {
       );
     }
 
+    // GroupByConnection is Connection's fields (edges, pageInfo, aggregates)
+    // plus groupByDimensionValues, so its fields are cloned from the already-
+    // built Connection type rather than regenerated from scratch.
     Object.assign(fields, connection.toConfig().fields);
 
     fields.groupByDimensionValues = {

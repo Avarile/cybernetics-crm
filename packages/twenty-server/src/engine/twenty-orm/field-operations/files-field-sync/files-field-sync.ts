@@ -295,6 +295,9 @@ export class FilesFieldSync {
       fileIdToFieldUniversalIdentifier.get(fileId);
 
     if (
+      // The upload path is expected to encode which field it was uploaded for (via the
+      // field's universal identifier); a mismatch means the file was uploaded for a
+      // different field and is being attached to the wrong one.
       isDefined(expectedUniversalIdentifier) &&
       !fileEntity.path.includes(expectedUniversalIdentifier)
     ) {
@@ -482,6 +485,8 @@ export class FilesFieldSync {
       return allFileIds;
     }
 
+    // Scoped by workspaceId so a file id from another workspace can't be attached here —
+    // it simply won't be found, indistinguishable below from a nonexistent file id.
     const existingFiles = await this.fileRepository.find({
       where: {
         id: In([...allFileIdsToFetch, ...allFileIds.toRemove]),
@@ -512,6 +517,9 @@ export class FilesFieldSync {
             fileIdToFieldUniversalIdentifier,
           );
 
+          // A file starts temporary and flips to permanent the first time it's attached
+          // (see updateFileEntityRecords), so this also blocks reusing one upload across
+          // multiple records/fields — each attach needs its own upload.
           if (!fileEntity.settings?.isTemporaryFile) {
             const fileId = file.fileId;
 

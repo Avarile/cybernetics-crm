@@ -63,6 +63,10 @@ export class AddLayoutCustomizationGuardToEditCommandsCommand extends Provisione
         twentyStandardApplicationId: twentyStandardFlatApplication.id,
       });
 
+    // Two independent update sources merged by id: the 4 standard items below get their
+    // availability expression re-synced from the standard definition; the loop after
+    // scans every OTHER command menu item (including custom/app ones) for the legacy
+    // isPageInEditMode identifier and rewrites it via replaceLegacyPageEditModeIdentifier.
     const updatedAt = new Date().toISOString();
     const itemsToUpdateById: Record<string, FlatCommandMenuItem> = {};
 

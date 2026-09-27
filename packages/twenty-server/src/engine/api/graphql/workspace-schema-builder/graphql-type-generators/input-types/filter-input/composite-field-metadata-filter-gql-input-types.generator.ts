@@ -50,6 +50,8 @@ export class CompositeFieldMetadataFilterGqlInputTypeGenerator {
     const fields: GraphQLInputFieldConfigMap = {};
 
     for (const property of compositeType.properties) {
+      // A filter should never force you to filter on an otherwise-required
+      // subfield, so isRequired is overridden to false for every filter field.
       property.isRequired = false;
       // Relation fields are not supported in composite types
       if (isMorphOrRelationFieldMetadataType(property.type)) {

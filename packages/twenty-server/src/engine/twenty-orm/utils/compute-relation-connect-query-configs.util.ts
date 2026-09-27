@@ -157,6 +157,8 @@ const computeRecordToConnectCondition = (
     flatEntityMaps: flatFieldMetadataMaps,
   });
 
+  // Only the MANY_TO_ONE side owns a foreign-key column, so only it can "connect" to
+  // an existing target record by unique constraint (see entity-schema-column.factory.ts).
   if (
     !isDefined(field) ||
     (!isFieldMetadataEntityOfType(field, FieldMetadataType.RELATION) &&
@@ -283,6 +285,8 @@ const checkNoRelationFieldConflictOrThrow = (
   entity: Record<string, unknown>,
   fieldName: string,
 ) => {
+  // A nested {connect: {...}} object and a raw `fieldNameId` value are two different
+  // ways to point the same relation at a record — providing both is ambiguous.
   const hasRelationFieldConflict =
     isDefined(entity[fieldName]) && isDefined(entity[`${fieldName}Id`]);
 
@@ -324,6 +328,10 @@ const computeUniqueConstraintCondition = (
   }, []);
 };
 
+// All entities in a batch connecting the same relation field must resolve via the same
+// unique constraint — executeConnectQueries builds one shared lookup query per field
+// across the whole batch, so mixing constraints (eg: some by id, some by email) isn't
+// representable as a single query.
 const checkUniqueConstraintsAreSameOrThrow = (
   relationConnectQueryConfig: RelationConnectQueryConfig,
   uniqueConstraintFields: FlatFieldMetadata<FieldMetadataType>[],

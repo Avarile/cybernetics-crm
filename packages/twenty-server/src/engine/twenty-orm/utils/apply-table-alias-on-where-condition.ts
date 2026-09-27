@@ -10,6 +10,9 @@ type ApplyTableAliasOnWhereConditionParams = {
   aliasName: string;
 };
 
+// UPDATE/DELETE statements can't reference the query's SELECT-style alias the way a
+// SELECT can, so this rewrites raw WHERE fragments built against the alias (eg:
+// "person.id = ...") to reference the actual table name instead, before execution.
 export const applyTableAliasOnWhereCondition = ({
   condition,
   tableName,

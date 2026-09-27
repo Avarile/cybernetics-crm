@@ -1,5 +1,9 @@
 import { type AllMetadataName } from 'twenty-shared/metadata';
 
+// webhook and applicationVariable are the two metadata types with an always-encrypted
+// secret-bearing field (webhook's signing secret, applicationVariable's `value`) — kept
+// false so their create/update/delete never gets broadcast via the metadata event
+// stream, which subscribers can observe.
 export const METADATA_EVENTS_TO_EMIT = {
   frontComponent: true,
   objectMetadata: true,

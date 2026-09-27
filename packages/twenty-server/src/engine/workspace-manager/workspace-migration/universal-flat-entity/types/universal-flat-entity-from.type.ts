@@ -40,6 +40,14 @@ export type UniversalFlatEntityExtraProperties<
     >;
   };
 
+// The canonical definition of "Universal" shape for a given DB entity: strips real
+// per-workspace ids (id, applicationId, workspaceId, every relation FK/reverse-relation
+// property) and replaces them with their universalIdentifier-based equivalents (see
+// UniversalFlatEntityExtraProperties), so the result is portable across
+// workspaces/environments. Dates are cast to string since they cross a JSON boundary
+// (metadata sync payloads), and jsonb properties known to embed a relation (see
+// AllJsonbPropertiesWithSerializedPropertiesForMetadataName) get a parallel
+// `universal<Prop>` property instead of being passed through untouched.
 export type UniversalFlatEntityFrom<
   TEntity extends SyncableEntity,
   TMetadataName extends AllMetadataName =

@@ -5,6 +5,10 @@ import { type FlatEntityMaps } from 'src/engine/metadata-modules/flat-entity/typ
 import { type FlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-metadata/types/flat-field-metadata.type';
 import { type FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object-metadata/types/flat-object-metadata.type';
 
+// The 2.10 upgrade introduces a new standard CallRecording object and standard fields
+// on CalendarEvent with the same names custom objects/fields may already use. These
+// helpers detect that name collision and rename the pre-existing custom ones out of the
+// way (appending "Old"/"(Old)") so the new standard names are free.
 const CALL_RECORDING_NAME_SINGULAR = 'callRecording';
 const CALL_RECORDING_NAME_PLURAL = 'callRecordings';
 const CALL_RECORDING_OLD_NAME_SINGULAR = 'callRecordingOld';
@@ -15,6 +19,10 @@ const FIELD_OLD_NAME_SUFFIX = 'Old';
 const FIELD_OLD_LABEL_SUFFIX = ' (Old)';
 const MAX_OLD_NAME_ATTEMPTS = 100;
 
+// Universal identifier of the pre-existing standard "recordingPreference" field, later
+// dropped in 2.14 (see 2-14-...-drop-calendar-event-recording-preference.command.ts).
+// It must be excluded from collision detection since it IS a standard field, not a
+// custom one colliding with the new standard name.
 export const LEGACY_CALENDAR_EVENT_RECORDING_PREFERENCE_FIELD_UNIVERSAL_IDENTIFIER =
   '1d231e7e-9bbe-410b-8007-ea7678a83e58';
 
@@ -186,6 +194,8 @@ export const buildCalendarEventFieldRenameUpdates = ({
       originalFieldName: collidingFieldMetadata.name,
       additionalTakenNames: reservedOldFieldNames,
     });
+    // Recovers the numeric suffix (if any) that resolveAvailableOldCalendarEventFieldName
+    // appended, so the label gets the matching " (Old) 2" style suffix.
     const oldNamePrefix = `${collidingFieldMetadata.name}${FIELD_OLD_NAME_SUFFIX}`;
     const discriminator = name.slice(oldNamePrefix.length);
     const labelSuffix =

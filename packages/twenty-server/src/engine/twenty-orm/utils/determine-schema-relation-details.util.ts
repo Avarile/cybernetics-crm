@@ -77,6 +77,8 @@ export function determineSchemaRelationDetails(
     relationType,
     target: targetObjectMetadata.nameSingular,
     inverseSide: targetFieldMetadata.name,
+    // Only the MANY_TO_ONE side gets a joinColumn — the ONE_TO_MANY inverse side has no
+    // physical column of its own (see entity-schema-column.factory.ts).
     joinColumn: isManyToOne
       ? {
           name: computeMorphOrRelationFieldJoinColumnName({

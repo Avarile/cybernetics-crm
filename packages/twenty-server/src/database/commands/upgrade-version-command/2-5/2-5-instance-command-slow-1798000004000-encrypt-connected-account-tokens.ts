@@ -34,6 +34,8 @@ export class EncryptConnectedAccountTokensSlowInstanceCommand
     private readonly connectedAccountTokenEncryptionService: ConnectedAccountTokenEncryptionService,
   ) {}
 
+  // Keyset pagination (id > cursor) rather than OFFSET: stays O(1) per page as rows are
+  // encrypted out of the WHERE clause's match set, instead of re-scanning skipped rows.
   async runDataMigration(dataSource: DataSource): Promise<void> {
     let cursor = '00000000-0000-0000-0000-000000000000';
 

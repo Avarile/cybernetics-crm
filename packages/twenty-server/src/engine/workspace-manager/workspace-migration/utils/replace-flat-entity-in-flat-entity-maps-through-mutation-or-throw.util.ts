@@ -16,6 +16,8 @@ export const replaceFlatEntityInFlatEntityMapsThroughMutationOrThrow = <
   flatEntity,
   flatEntityMapsToMutate,
 }: ReplaceFlatEntityInFlatEntityMapsThroughMutationOrThrowArgs<T>): void => {
+  // Delete-then-add (not an in-place field merge) so a changed universalIdentifier
+  // is correctly re-indexed under its new key rather than left stale under the old one.
   deleteFlatEntityFromFlatEntityMapsThroughMutationOrThrow({
     flatEntityMapsToMutate,
     entityToDeleteId: flatEntity.id,

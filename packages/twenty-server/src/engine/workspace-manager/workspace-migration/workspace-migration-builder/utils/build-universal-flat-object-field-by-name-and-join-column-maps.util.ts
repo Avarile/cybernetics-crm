@@ -25,6 +25,8 @@ export const buildUniversalFlatObjectFieldByNameAndJoinColumnMaps = ({
   for (const field of objectFields) {
     fieldUniversalIdentifierByName[field.name] = field.universalIdentifier;
 
+    // Only MANY_TO_ONE owns a physical join column on this table; the ONE_TO_MANY
+    // inverse side has no column of its own, so it's excluded from this map.
     if (
       isMorphOrRelationUniversalFlatFieldMetadata(field) &&
       field.universalSettings.relationType === RelationType.MANY_TO_ONE

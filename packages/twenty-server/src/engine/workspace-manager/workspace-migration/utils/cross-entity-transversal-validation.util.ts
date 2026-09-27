@@ -12,6 +12,11 @@ import { type UniversalFlatEntityMaps } from 'src/engine/workspace-manager/works
 import { type UniversalFlatViewField } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/universal-flat-view-field.type';
 import { validateUniversalIdentifierCrossEntityUniquenessThroughReportMutation } from 'src/engine/workspace-manager/workspace-migration/utils/validate-universal-identifier-cross-entity-uniqueness-through-report-mutation.util';
 
+// Runs every validator that needs to see the *post-migration* state to check an
+// invariant that spans multiple entity types (e.g. a view field's label identifier
+// staying unique workspace-wide). optimisticUniversalFlatMaps is the flat entity state
+// as it would be if every pending action in this migration succeeded — validated
+// before anything is actually applied, so a violation here aborts the whole migration.
 export const crossEntityTransversalValidation = ({
   optimisticUniversalFlatMaps,
   orchestratorActionsReport,

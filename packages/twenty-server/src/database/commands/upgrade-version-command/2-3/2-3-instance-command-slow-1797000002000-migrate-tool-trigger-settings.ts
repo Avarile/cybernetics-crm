@@ -10,6 +10,9 @@ export class MigrateToolTriggerSettingsSlowInstanceCommand implements SlowInstan
   async runDataMigration(dataSource: DataSource): Promise<void> {
     const defaultJsonSchema = `'{"type":"object","properties":{}}'::jsonb`;
 
+    // workflowActionTriggerSettings.inputSchema is an array (one entry per step),
+    // toolTriggerSettings.inputSchema is a single object — the legacy toolInputSchema
+    // becomes that one array entry on the workflow side.
     await dataSource.query(
       `UPDATE "core"."logicFunction"
           SET "toolTriggerSettings" = jsonb_build_object(

@@ -72,6 +72,9 @@ export class EventStreamResolver {
       eventStreamChannelId,
     );
 
+    // eventStreamId is client-chosen (used to resume a stream across reconnects), so a
+    // stale entry from a dropped connection is torn down and replaced rather than
+    // rejected outright — but only once we've confirmed it's the same caller reconnecting.
     if (isDefined(existingStreamData)) {
       const isAuthorized = await this.eventStreamService.isAuthorized({
         streamData: existingStreamData,
@@ -112,6 +115,9 @@ export class EventStreamResolver {
         eventStreamChannelId,
       });
     } catch (error) {
+      // createEventStream above already wrote the cache entry — without this cleanup,
+      // a failed subscribe would leave an orphaned entry blocking future attempts
+      // for this channel until the TTL naturally expires.
       await this.eventStreamService.destroyEventStream({
         workspaceId: workspace.id,
         eventStreamChannelId,
@@ -129,6 +135,8 @@ export class EventStreamResolver {
       onHeartbeat: async () => {
         const now = Date.now();
 
+        // Refreshed at a fraction of the TTL, not every heartbeat, to avoid hitting
+        // the cache store on each keepalive tick while still renewing well before expiry.
         if (now - lastTtlRefreshAt > EVENT_STREAM_TTL_MS / 5) {
           lastTtlRefreshAt = now;
           await this.eventStreamService.refreshEventStreamTTL({

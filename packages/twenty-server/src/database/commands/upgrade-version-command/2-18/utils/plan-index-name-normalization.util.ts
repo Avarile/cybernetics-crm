@@ -25,6 +25,10 @@ export type IndexNameNormalizationOperation =
   | RenameIndexNameOperation
   | DropRedundantIndexOperation;
 
+// Legacy (pre-v2) index names weren't deterministic, so distinct index metadata rows
+// can recompute to the same expected name here. Group by expected name and keep one
+// "survivor" per group (renaming it if needed); every other row in the group is a
+// redundant duplicate and gets dropped instead of also renamed to a name already taken.
 export const planIndexNameNormalization = (
   indexStatuses: FlatIndexNameStatus[],
 ): IndexNameNormalizationOperation[] => {

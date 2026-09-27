@@ -200,6 +200,10 @@ export class UpdateFieldActionHandlerService extends WorkspaceMigrationRunnerAct
       objectMetadata: flatObjectMetadata,
     });
 
+    // Sub-update order below is load-bearing: name is renamed first so every later DDL
+    // step can address the column by its new name; default value is applied before the
+    // nullable check because making a column non-nullable needs a backfill value, which
+    // is read off optimisticFlatFieldMetadata.defaultValue after this step updates it.
     let optimisticFlatFieldMetadata = structuredClone(currentFlatFieldMetadata);
 
     let wasDefaultValueHandledByEnumUpdate = false;
@@ -677,6 +681,10 @@ export class UpdateFieldActionHandlerService extends WorkspaceMigrationRunnerAct
         .map((opt) => [opt.id, opt]),
     );
 
+    // Postgres enum labels are the string values themselves, so renaming an option's
+    // display value means renaming the underlying enum label. Options are matched by
+    // their stable id (not their old string value) to build the old-value -> new-value
+    // map alterEnumValues needs to do that rename correctly.
     const valueMapping: Record<string, string> = {};
 
     for (const toOption of toOptionsById.values()) {

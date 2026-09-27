@@ -7,6 +7,7 @@ import { SlowInstanceCommand } from 'src/engine/core-modules/upgrade/interfaces/
 export class AddCreatedWorkspaceActivationStatusSlowInstanceCommand
   implements SlowInstanceCommand
 {
+  // Purely a schema change; no data movement needed beyond the enum recast in up()/down().
   async runDataMigration(_dataSource: DataSource): Promise<void> {
   }
 
@@ -18,6 +19,8 @@ export class AddCreatedWorkspaceActivationStatusSlowInstanceCommand
     });
   }
 
+  // No CREATED value in the old enum, so rows in that new state are folded into
+  // ACTIVE (the closest prior status) rather than failing the cast.
   public async down(queryRunner: QueryRunner): Promise<void> {
     await this.swapActivationStatusEnum(queryRunner, {
       enumValues:
@@ -26,6 +29,11 @@ export class AddCreatedWorkspaceActivationStatusSlowInstanceCommand
     });
   }
 
+  // Postgres can't insert a new enum value in a specific position (between
+  // PENDING_CREATION and ACTIVE) via ALTER TYPE ... ADD VALUE, so the whole type is
+  // recreated instead: drop CHECK constraints referencing the column (they'd otherwise
+  // block or misvalidate the type change), swap the type, recast the column through
+  // text, then restore the constraints with their original definitions.
   private async swapActivationStatusEnum(
     queryRunner: QueryRunner,
     {

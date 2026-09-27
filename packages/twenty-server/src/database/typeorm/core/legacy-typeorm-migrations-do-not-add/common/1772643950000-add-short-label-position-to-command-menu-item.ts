@@ -16,6 +16,8 @@ export class AddShortLabelPositionToCommandMenuItem1772643950000 implements Migr
     await queryRunner.query(
       `ALTER TABLE "core"."commandMenuItem" ALTER COLUMN "availabilityType" TYPE character varying`,
     );
+    // SINGLE_RECORD and BULK_RECORDS are being consolidated into one RECORD_SELECTION value:
+    // nothing that reads commandMenuItem.availabilityType distinguishes the two.
     await queryRunner.query(
       `UPDATE "core"."commandMenuItem" SET "availabilityType" = CASE WHEN "availabilityType" IN ('SINGLE_RECORD', 'BULK_RECORDS') THEN 'RECORD_SELECTION' ELSE 'GLOBAL' END`,
     );

@@ -19,6 +19,8 @@ import { WorkspaceCacheStorageModule } from 'src/engine/workspace-cache-storage/
 import { WorkspaceCacheModule } from 'src/engine/workspace-cache/workspace-cache.module';
 import { WorkspaceEventEmitterModule } from 'src/engine/workspace-event-emitter/workspace-event-emitter.module';
 
+// Global: nearly every feature module needs GlobalWorkspaceOrmManager/DataSourceService
+// to reach workspace data, so this avoids importing this module everywhere.
 @Global()
 @Module({
   imports: [

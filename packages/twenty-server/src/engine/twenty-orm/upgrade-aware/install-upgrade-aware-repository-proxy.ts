@@ -56,6 +56,10 @@ export const installUpgradeAwareRepositoryProxy = (
     return wrapIfNeeded(target, originalDataSourceGetRepository(target));
   } as DataSource['getRepository'];
 
+  // EntityManager.getRepository is patched on the shared prototype (there's no
+  // per-instance method to override), so the `this.connection !== dataSource` guard
+  // below is what keeps this from wrapping repositories for every other DataSource
+  // (eg: per-workspace datasources) that happens to share this same prototype chain.
   const entityManagerPrototype = Object.getPrototypeOf(dataSource.manager) as {
     getRepository: EntityManager['getRepository'];
   };

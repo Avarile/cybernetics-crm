@@ -44,6 +44,10 @@ export class WorkspaceGraphQLSchemaGenerator {
     return new GraphQLSchema({
       query: queryType,
       mutation: mutationType,
+      // Every type the generators built gets listed explicitly, not left to
+      // graphql-js's automatic reachability walk from query/mutation — some
+      // generated types (union inputs, morph/relation variants) aren't
+      // guaranteed to be reachable through a simple field-type traversal.
       types: gqlTypesStorage.getAllGqlTypesExcept([
         GqlOperation.Query,
         GqlOperation.Mutation,

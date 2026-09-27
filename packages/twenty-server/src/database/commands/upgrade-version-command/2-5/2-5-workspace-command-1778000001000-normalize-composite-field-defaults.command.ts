@@ -51,6 +51,9 @@ export class NormalizeCompositeFieldDefaultsCommand extends ProvisionedWorkspace
         'flatObjectMetadataMaps',
       ]);
 
+    // A field is "affected" if nullifying empty-string sub-properties of its
+    // defaultValue (eg: {country: ''} -> {country: null}) actually changes any property,
+    // comparing property-by-property since composite defaultValue is a partial object.
     const affectedFields = Object.values(
       flatFieldMetadataMaps.byUniversalIdentifier,
     )
@@ -204,6 +207,9 @@ export class NormalizeCompositeFieldDefaultsCommand extends ProvisionedWorkspace
       'flatFieldMetadataMaps',
     ]);
 
+    // Raw SQL rather than the entity framework: this is a plain column-level backfill,
+    // not entity-aware data. Matches both '' (plain text/varchar column) and '""'
+    // (a jsonb column's serialized empty string) since composite sub-columns use either.
     for (const { tableName, columnName } of backfillTargets) {
       await dataSource.query(
         `UPDATE "${schemaName}"."${tableName}"

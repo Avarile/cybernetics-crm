@@ -25,9 +25,14 @@ export const resolveRolePermissionConfig = ({
     apiKeyRoleMap,
   });
 
+  // null (no resolvable role, and not system auth) is distinct from bypass: callers
+  // treat it as "no permissions" rather than "all permissions".
   if (!isDefined(roleId)) {
     return null;
   }
 
+  // Wrapped as a single-role intersection so callers that combine several roles'
+  // permissions (see computePermissionIntersection) share one code path with the
+  // common single-role case.
   return { intersectionOf: [roleId] };
 };

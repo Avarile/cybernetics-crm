@@ -9,6 +9,12 @@ type ValidateEnumValueCompatibilityArgs = {
   predicateValue: unknown;
 };
 
+// An RLS predicate can bind its comparison value to the current workspace member's own
+// SELECT/MULTI_SELECT field (eg: "records where department = current user's department").
+// The two fields' enum option sets are independently configurable and can drift apart,
+// so this confirms the member's actual value is still a valid option on the target field
+// before it's used — see build-row-level-permission-record-filter.util.ts, which drops
+// the predicate (rather than failing) when this returns false.
 export const validateEnumValueCompatibility = ({
   workspaceMemberFieldMetadata,
   targetFieldMetadata,

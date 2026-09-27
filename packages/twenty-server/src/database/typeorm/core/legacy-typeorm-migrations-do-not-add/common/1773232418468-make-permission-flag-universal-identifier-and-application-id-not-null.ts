@@ -7,6 +7,9 @@ export class MakePermissionFlagUniversalIdentifierAndApplicationIdNotNull1773232
     'MakePermissionFlagUniversalIdentifierAndApplicationIdNotNull1773232418468';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
+    // SET NOT NULL fails on rows not yet backfilled with a universalIdentifier/applicationId.
+    // The savepoint lets that failure be swallowed so this migration doesn't abort the
+    // whole transaction on installs that haven't backfilled yet.
     const savepointName =
       'sp_make_permission_flag_universal_identifier_and_application_id_not_null';
 

@@ -112,6 +112,11 @@ export class WorkspaceSoftDeleteQueryBuilder<
 
       const typeORMSoftRemoveResultWithOnlyIdColumn = await super.execute();
 
+      // computeEventSelectQueryBuilder never sets withDeleted, so this re-fetch still
+      // applies TypeORM's default deletedAt-IS-NULL filter. For a restore this correctly
+      // finds the now-undeleted rows, but for a soft-delete the just-deleted rows no
+      // longer match — afterWithAllFields (and so the DELETED event's recordsAfter) ends
+      // up empty rather than reflecting the deleted rows' post-delete state.
       const afterWithAllFields = await beforeEventSelectQueryBuilder.getMany({
         noFormatting: true,
       });
@@ -155,6 +160,8 @@ export class WorkspaceSoftDeleteQueryBuilder<
     }
   }
 
+  // Morphing into another query type is disabled on every workspace query builder (see
+  // WorkspaceInsertQueryBuilder for the full rationale).
   override select(): WorkspaceSelectQueryBuilder<T> {
     throw new TwentyORMException(
       'This builder cannot morph into a select builder',

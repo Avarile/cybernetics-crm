@@ -14,6 +14,15 @@ type CompareTwoUniversalFlatEntityArgs<T extends AllMetadataName> = FromTo<
   'universalFlatEntity'
 > & { metadataName: T };
 
+// Properties marked toStringify in ALL_ENTITY_PROPERTIES_CONFIGURATION_BY_METADATA_NAME
+// are JSON.stringified (with keys ordered for stability) before diffing, so any change
+// anywhere inside them collapses to one top-level CHANGE carrying the whole new value —
+// simpler for handlers to apply than a deep partial patch. Every compared property is
+// always present (possibly undefined) on both sides (see
+// transformUniversalFlatEntityForComparison), so a top-level CREATE/REMOVE is not
+// expected; that assumption only holds for non-stringified properties if they're plain
+// scalars, since a nested addition/removal inside an un-stringified object or array
+// would still surface as a CREATE/REMOVE and be silently dropped below.
 export const compareTwoFlatEntity = <T extends AllMetadataName>({
   fromUniversalFlatEntity,
   toUniversalFlatEntity,

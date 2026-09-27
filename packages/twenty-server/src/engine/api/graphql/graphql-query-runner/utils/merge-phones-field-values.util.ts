@@ -7,6 +7,9 @@ import {
 
 import { hasRecordFieldValue } from 'src/engine/api/graphql/graphql-query-runner/utils/has-record-field-value.util';
 
+// Same pattern as mergeEmailsFieldValues/mergeLinksFieldValues: primary phone
+// follows priority-with-fallback, additionalPhones is the union of every
+// record's primary+additional numbers (deduped), excluding the merged primary.
 export const mergePhonesFieldValues = (
   recordsWithValues: { value: PhonesMetadata; recordId: string }[],
   priorityRecordId: string,

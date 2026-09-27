@@ -10,6 +10,10 @@ type ValidateLabelIdentifierFieldMetadataIdFlatViewFieldArgs = {
   otherFlatViewFields: UniversalFlatViewField[];
   flatViewFieldToValidate: UniversalFlatViewField;
 };
+// The view field for an object's label-identifier field is the row's title/primary
+// display column, so it's required to stay first (lowest position), visible, and
+// present (not soft-deleted) — hiding or reordering it away would leave the UI with no
+// way to show what a record "is".
 export const validateLabelIdentifierFieldMetadataIdFlatViewField = ({
   otherFlatViewFields,
   flatViewFieldToValidate,

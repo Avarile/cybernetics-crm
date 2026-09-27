@@ -14,6 +14,9 @@ import {
   TwentyORMExceptionCode,
 } from 'src/engine/twenty-orm/exceptions/twenty-orm.exception';
 
+// Deliberately strict structural check (not just "has a connect key"): a field's own
+// data (eg: a RAW_JSON value) could otherwise happen to look like {connect: {where}}
+// and get misidentified as a relation-connect sentinel.
 const hasRelationConnect = (value: unknown): value is ConnectObject => {
   if (!isDefined(value) || typeof value !== 'object') {
     return false;

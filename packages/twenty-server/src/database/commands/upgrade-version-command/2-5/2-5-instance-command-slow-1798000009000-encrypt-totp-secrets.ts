@@ -29,6 +29,8 @@ export class EncryptTotpSecretsSlowInstanceCommand implements SlowInstanceComman
     private readonly simpleSecretEncryptionUtil: SimpleSecretEncryptionUtil,
   ) {}
 
+  // Keyset pagination (id > cursor) rather than OFFSET: stays O(1) per page as rows are
+  // encrypted out of the WHERE clause's match set, instead of re-scanning skipped rows.
   async runDataMigration(dataSource: DataSource): Promise<void> {
     let cursor = '00000000-0000-0000-0000-000000000000';
 
@@ -50,6 +52,8 @@ export class EncryptTotpSecretsSlowInstanceCommand implements SlowInstanceComman
       }
 
       for (const row of rows) {
+        // Context string must reproduce the original per-user/workspace key derivation
+        // (see SimpleSecretEncryptionUtil) exactly, or decryption fails silently.
         const plaintext = await this.simpleSecretEncryptionUtil.decryptSecret(
           row.secret,
           `${row.userId}${row.workspaceId}otp-secret`,
@@ -84,6 +88,9 @@ export class EncryptTotpSecretsSlowInstanceCommand implements SlowInstanceComman
     );
   }
 
+  // Deliberately do NOT decrypt rows on rollback — re-introducing plaintext TOTP
+  // secrets to the database would be a security regression. Dropping the CHECK
+  // constraint is enough.
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
       `ALTER TABLE "core"."twoFactorAuthenticationMethod"

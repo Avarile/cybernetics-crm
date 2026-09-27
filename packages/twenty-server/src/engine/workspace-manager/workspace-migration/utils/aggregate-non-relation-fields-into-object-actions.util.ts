@@ -6,6 +6,10 @@ import { type OrchestratorActionsReport } from 'src/engine/workspace-manager/wor
 import { type UniversalCreateFieldAction } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-builder/builders/field/types/workspace-migration-field-action';
 import { type UniversalCreateObjectAction } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-builder/builders/object/types/workspace-migration-object-action';
 
+// Folds newly-created non-relation fields into their parent object's create action so
+// the table is created with all its columns in one migration step. Relation/morph fields
+// are deliberately left out and returned separately: they reference another object that
+// may not exist yet, so they have to be applied only once every object create action has run.
 export const aggregateNonRelationFieldsIntoObjectActions = ({
   orchestratorActionsReport,
 }: AggregateOrchestratorActionsReportArgs): OrchestratorActionsReport => {

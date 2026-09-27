@@ -3,6 +3,9 @@ import { QueryRunner } from 'typeorm';
 import { RegisteredInstanceCommand } from 'src/engine/core-modules/upgrade/decorators/registered-instance-command.decorator';
 import { FastInstanceCommand } from 'src/engine/core-modules/upgrade/interfaces/fast-instance-command.interface';
 
+// Step 2 of the flag->permissionFlagId cutover (see the 2-7 finalize command for the
+// last step): adds the new FK column alongside the legacy "flag" varchar, which is
+// still in use until the 2-6 slow backfill and the 2-7 drop.
 @RegisteredInstanceCommand('2.6.0', 1778235340022)
 export class LinkRolePermissionFlagToPermissionFlagFastInstanceCommand implements FastInstanceCommand {
   public async up(queryRunner: QueryRunner): Promise<void> {

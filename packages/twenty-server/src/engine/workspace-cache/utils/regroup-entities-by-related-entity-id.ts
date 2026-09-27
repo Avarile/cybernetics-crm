@@ -13,6 +13,9 @@ export type RegroupEntitiesByRelatedEntityIdArgs<T extends AllMetadataName> =
         entities: MetadataEntity<T>[];
         foreignKey: MetadataManyToOneJoinColumn<T>;
       };
+// Groups child entities by their many-to-one foreign key value, so a parent entity's
+// one-to-many relation array can be looked up by the parent's own id (used when building
+// flat entities, where the one-to-many side isn't a real relation on the child row).
 export const regroupEntitiesByRelatedEntityId = <T extends AllMetadataName>({
   entities,
   foreignKey,

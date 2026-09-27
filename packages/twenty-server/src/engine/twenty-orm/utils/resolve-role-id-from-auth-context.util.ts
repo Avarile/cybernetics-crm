@@ -30,5 +30,7 @@ export const resolveRoleIdFromAuthContext = ({
     return authContext.application.defaultRoleId;
   }
 
+  // No resolvable role (unrecognized context, or a user/API key/application with none
+  // assigned) — callers treat this as "skip row-level-permission filtering", not deny-all.
   return undefined;
 };

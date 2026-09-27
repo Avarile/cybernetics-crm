@@ -47,6 +47,10 @@ export class GlobalWorkspaceDataSource extends DataSource {
     this.coreDataSource = coreDataSource;
     this._isConstructing = false;
 
+    // This datasource is a long-lived singleton shared across concurrent requests, so
+    // `.manager` can't be a cached instance property (TypeORM's default) — it has to
+    // build a fresh WorkspaceEntityManager on every access to pick up the current
+    // request's auth/permission context from AsyncLocalStorage.
     Object.defineProperty(this, 'manager', {
       get: () => this.createEntityManager(),
     });
@@ -121,6 +125,13 @@ export class GlobalWorkspaceDataSource extends DataSource {
   }
 
   // Do not use, only for specific permission-related purpose
+  //
+  // TypeORM's EntityPersistExecutor (used internally by save()/remove()/etc.) calls
+  // dataSource.createQueryBuilder() directly with no way to pass the
+  // calledByWorkspaceEntityManager flag through — this builds a datasource clone that
+  // always injects that flag, so those internal calls don't hit the throw above.
+  // Safe only because WorkspaceEntityManager's own methods run validatePermissions()
+  // separately before ever reaching EntityPersistExecutor.
   createQueryRunnerForEntityPersistExecutor(
     mode = 'master' as ReplicationMode,
   ) {
@@ -206,6 +217,10 @@ export class GlobalWorkspaceDataSource extends DataSource {
       )?.calledByWorkspaceEntityManager;
     }
 
+    // This is the actual gate that forces every query through WorkspaceEntityManager's
+    // permission-checked path: TypeORM helpers that call dataSource.createQueryBuilder()
+    // directly (eg: getExists(), executeExistsQuery()) don't set this flag and hit this
+    // throw instead of silently bypassing permission/RLS checks.
     if (!(calledByWorkspaceEntityManager === true)) {
       throw new PermissionsException(
         'Method not allowed because permissions are not implemented at datasource level.',

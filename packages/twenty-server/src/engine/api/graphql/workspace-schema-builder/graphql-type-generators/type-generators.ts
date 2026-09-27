@@ -33,6 +33,10 @@ import { RootTypeGenerator } from 'src/engine/api/graphql/workspace-schema-build
 import { TypeMapperService } from 'src/engine/api/graphql/workspace-schema-builder/services/type-mapper.service';
 import { GqlTypesStorage } from 'src/engine/api/graphql/workspace-schema-builder/storages/gql-types.storage';
 
+// Instantiated manually with `new` rather than resolved from Nest's DI
+// container, because every generator here must share the one GqlTypesStorage
+// created fresh for this particular generateSchema() call — a DI-managed
+// singleton would leak types across separate schema-generation runs.
 export const instantiateTypeGenerators = (
   gqlTypesStorage: GqlTypesStorage,
   typeMapperService: TypeMapperService,

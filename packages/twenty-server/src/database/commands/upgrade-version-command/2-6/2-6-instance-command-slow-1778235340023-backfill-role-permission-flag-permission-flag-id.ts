@@ -8,9 +8,14 @@ import { STANDARD_PERMISSION_FLAG_DEFINITIONS } from 'src/engine/metadata-module
 
 const PERMISSION_FLAG_TYPES = Object.values(PermissionFlagType) as string[];
 
+// Step 3 of the flag->permissionFlagId cutover (see the 2-6 rename/link commands and
+// the 2-7 finalize command): seeds each workspace's standard permissionFlag rows if
+// missing, then points every rolePermissionFlag at the row matching its legacy "flag".
 @RegisteredInstanceCommand('2.6.0', 1778235340023, { type: 'slow' })
 export class BackfillRolePermissionFlagPermissionFlagIdSlowInstanceCommand implements SlowInstanceCommand {
   async runDataMigration(dataSource: DataSource): Promise<void> {
+    // Fail loudly rather than silently drop rows referencing a "flag" value the
+    // standard permission-flag catalog doesn't recognize.
     const unknownFlagRows: { flag: string }[] = await dataSource.query(
       `SELECT DISTINCT "flag" FROM "core"."rolePermissionFlag"
        WHERE "flag" <> ALL($1::varchar[])`,
@@ -25,6 +30,8 @@ export class BackfillRolePermissionFlagPermissionFlagIdSlowInstanceCommand imple
       );
     }
 
+    // ON CONFLICT DO NOTHING makes this idempotent per workspace: only inserts the
+    // standard permissionFlag rows a workspace doesn't already have.
     for (const definition of STANDARD_PERMISSION_FLAG_DEFINITIONS) {
       await dataSource.query(
         `INSERT INTO "core"."permissionFlag" (

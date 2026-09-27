@@ -43,6 +43,8 @@ export const buildNavigationCommandMenuItemOperationsOrThrow = ({
       ) + 1;
 
   for (const objectMetadata of objectMetadatasForNavigation) {
+    // Deterministic (v5) rather than random (v4): re-running this command derives the
+    // same id for a given object, so it can detect an existing item and skip re-creating it.
     const commandMenuItemUniversalIdentifier = v5(
       objectMetadata.universalIdentifier,
       NAVIGATION_COMMAND_UUID_NAMESPACE,
@@ -73,6 +75,9 @@ export const buildNavigationCommandMenuItemOperationsOrThrow = ({
     );
   }
 
+  // Objects that were renamed to resolve a naming collision keep their universalIdentifier,
+  // so their nav item already exists; only its availability expression (which embeds the
+  // object's nameSingular) needs refreshing to match the new name.
   for (const renamedCollisionObjectMetadata of renamedCollisionObjectMetadatas) {
     const renamedNavigationCommandMenuItemUniversalIdentifier = v5(
       renamedCollisionObjectMetadata.universalIdentifier,

@@ -22,6 +22,10 @@ import { extractGraphQLRelationFieldNames } from 'src/engine/api/graphql/workspa
 import { findFlatEntityByIdInFlatEntityMaps } from 'src/engine/metadata-modules/flat-entity/utils/find-flat-entity-by-id-in-flat-entity-maps.util';
 import { type FlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-metadata/types/flat-field-metadata.type';
 
+// Every generate* method here returns {} early for ONE_TO_MANY relations:
+// the foreign key column lives on the *other* side of a one-to-many (e.g.
+// company.people has no FK on Company), so there's no scalar join column to
+// build a simple create/filter/orderBy/groupBy field from on this side.
 @Injectable()
 export class RelationFieldMetadataGqlInputTypeGenerator {
   private readonly logger = new Logger(

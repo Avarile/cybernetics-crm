@@ -21,6 +21,10 @@ type EnrichCommandMenuItemEventArgs = {
   i18nInstance: I18n;
 };
 
+// Navigation command menu items store label/shortLabel/icon as templates (eg: referencing
+// the target object's plural label), not resolved strings, since the referenced object
+// metadata can change independently. Interpolate them here, at broadcast time, so
+// subscribers get display-ready text rather than having to resolve templates themselves.
 export const enrichCommandMenuItemEventWithResolvedNavigation = ({
   record,
   flatObjectMetadataMaps,

@@ -29,6 +29,12 @@ export class WorkspaceMigrationRunnerActionHandlerRegistryService implements OnM
     this.discoverAndRegisterActionHandlers();
   }
 
+  // Handlers are discovered via NestJS's DiscoveryService rather than injected
+  // individually, so adding a new (action type, metadata name) handler only requires
+  // registering it in WorkspaceSchemaMigrationRunnerActionHandlersModule's providers —
+  // this registry doesn't need updating. The @SetMetadata key set by
+  // WorkspaceMigrationRunnerActionHandler() is how each provider is matched back to its
+  // action type + metadata name.
   private discoverAndRegisterActionHandlers(): void {
     const providers = this.discoveryService.getProviders({
       include: [WorkspaceSchemaMigrationRunnerActionHandlersModule],

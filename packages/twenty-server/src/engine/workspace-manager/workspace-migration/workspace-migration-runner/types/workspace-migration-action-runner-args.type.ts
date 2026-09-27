@@ -18,6 +18,9 @@ export type WorkspaceMigrationActionRunnerArgs<
   workspaceId: string;
   flatApplication: FlatApplication;
   preallocatedIdByUniversalIdentifierByMetadataName?: PreallocatedIdByUniversalIdentifierByMetadataName;
+  // Memoized lookup (built once per run, invalidated whenever a searchFieldMetadata
+  // action is processed) so repeated lookups during a migration don't each re-scan
+  // flatSearchFieldMetadataMaps — see WorkspaceMigrationRunnerService.run.
   getSearchFieldMetadatasByTsVectorFieldId?: (
     tsVectorFieldMetadataId: string,
   ) => FlatSearchFieldMetadata[];

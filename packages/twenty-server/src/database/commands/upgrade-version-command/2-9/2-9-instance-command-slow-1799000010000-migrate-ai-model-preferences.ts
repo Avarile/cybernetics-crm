@@ -25,6 +25,9 @@ const PREFERENCE_KEY_MAP = {
   AI_MODELS_DEFAULT_DISABLED: 'disabledModels',
 } as const;
 
+// Config is stored as generic key-value rows (KeyValuePairEntity), not a typed table, so
+// this is a data-shape migration rather than schema DDL — up()/down() are no-ops. Splits
+// the single combined "AI_MODEL_PREFERENCES" row into 4 individual keys, one per field.
 @RegisteredInstanceCommand('2.9.0', 1799000010000, { type: 'slow' })
 export class MigrateAiModelPreferencesSlowInstanceCommand
   implements SlowInstanceCommand
@@ -55,6 +58,8 @@ export class MigrateAiModelPreferencesSlowInstanceCommand
 
     const parseResult = aiModelPreferencesSchema.safeParse(existingRow.value);
 
+    // Logs and leaves the old row in place rather than deleting data we couldn't
+    // successfully re-shape.
     if (!parseResult.success) {
       this.logger.error(
         `Failed to parse server-level AI_MODEL_PREFERENCES: ${parseResult.error.message}`,
@@ -87,6 +92,8 @@ export class MigrateAiModelPreferencesSlowInstanceCommand
           },
         });
 
+        // Makes a re-run after a partial failure safe: don't re-insert (and hit a
+        // unique-key conflict on) a new-key row a prior attempt already created.
         if (existingNewKeyCount > 0) {
           continue;
         }

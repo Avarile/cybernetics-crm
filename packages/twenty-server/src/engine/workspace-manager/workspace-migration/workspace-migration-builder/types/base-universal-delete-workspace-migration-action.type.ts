@@ -9,5 +9,8 @@ export type BaseUniversalDeleteWorkspaceMigrationAction<
   universalIdentifier: string;
   type: typeof WORKSPACE_MIGRATION_ACTION_TYPE.delete;
   metadataName: T;
+  // The full pre-deletion entity, attached by the base builder service so cross-entity
+  // validators running later in the same build (e.g. "is this permission flag still
+  // referenced elsewhere?") can inspect what's being deleted without a separate lookup.
   flatEntity?: MetadataUniversalFlatEntity<T>;
 };

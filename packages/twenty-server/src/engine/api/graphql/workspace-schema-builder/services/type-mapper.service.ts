@@ -126,6 +126,10 @@ export class TypeMapperService {
     return this.baseTypeScalarMapping.get(fieldMetadataType);
   }
 
+  // At this layer, a RELATION/MORPH_RELATION field maps to a plain GraphQLID
+  // scalar — the actual related object type is a separate field generated
+  // elsewhere (e.g. objectMetadataWithRelationsGqlObjectTypeGenerator), not
+  // produced by this type mapper.
   private isIdOrRelationType(
     fieldMetadataType: FieldMetadataType,
     typeOptions?: TypeOptions,
@@ -137,6 +141,9 @@ export class TypeMapperService {
     );
   }
 
+  // FieldMetadataType.NUMBER covers int/float/bigint uniformly; the concrete
+  // GraphQL scalar depends on the field's `dataType` setting (defaulting to
+  // FLOAT when unset), unlike every other type which has one fixed mapping.
   private getNumberScalarTypeFromOptions(
     typeOptions?: TypeOptions,
   ): GraphQLScalarType {

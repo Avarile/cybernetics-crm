@@ -29,6 +29,11 @@ import { type UniversalFlatView } from 'src/engine/workspace-manager/workspace-m
   description:
     'Delete and recreate all record page layouts from standard config, backfill custom objects, and enable IS_RECORD_PAGE_LAYOUT_EDITING_ENABLED',
 })
+// Full delete-and-recreate rather than an incremental diff: record page layouts were
+// entirely standard/computed at this point in history, so wiping and rebuilding them
+// from the standard config is simpler and safer than reconciling per-field differences.
+// Three phases: delete every existing record-page layout/view, recreate the standard
+// ones, then generate a default layout for any custom object that still lacks one.
 export class BackfillRecordPageLayoutsCommand extends ProvisionedWorkspaceCommandRunner {
   constructor(
     protected readonly workspaceIteratorService: WorkspaceIteratorService,
@@ -46,6 +51,8 @@ export class BackfillRecordPageLayoutsCommand extends ProvisionedWorkspaceComman
   }: RunOnWorkspaceArgs): Promise<void> {
     const isDryRun = options.dryRun ?? false;
 
+    // Doubles as this command's idempotency marker: the flag is only turned on at the
+    // very end, after every phase below succeeds, so a workspace that has it is already done.
     const isAlreadyEnabled = await this.featureFlagService.isFeatureEnabled(
       'IS_RECORD_PAGE_LAYOUT_EDITING_ENABLED' as FeatureFlagKey,
       workspaceId,

@@ -4,6 +4,11 @@ import { findFlatEntityByUniversalIdentifier } from 'src/engine/metadata-modules
 import { type OrchestratorActionsReport } from 'src/engine/workspace-manager/workspace-migration/types/workspace-migration-orchestrator.type';
 import { type MetadataUniversalFlatEntityMaps } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/types/metadata-universal-flat-entity-maps.type';
 
+// Collects tsVector fields that need their data recomputed because something feeding
+// them changed this migration: the searchFieldMetadata config itself was created/
+// updated/deleted, or a field it indexes was renamed. Vector fields whose own field is
+// being created or deleted in this same migration are excluded — a new field gets its
+// data populated on create, and a deleted one has nothing left to rebuild.
 export const computeSearchVectorRebuildTargetUniversalIdentifiers = ({
   orchestratorActionsReport,
   fromFlatSearchFieldMetadataMaps,

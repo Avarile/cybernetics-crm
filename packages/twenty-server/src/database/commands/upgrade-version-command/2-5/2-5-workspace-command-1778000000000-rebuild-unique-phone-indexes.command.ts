@@ -20,6 +20,11 @@ import {
 } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-runner/action-handlers/index/utils/index-action-handler.utils';
 import { getWorkspaceSchemaName } from 'src/engine/workspace-datasource/utils/get-workspace-schema-name.util';
 
+// Matches a legacy unique phone index's partial WHERE clause (eg: "phoneNumber" != ''),
+// which some early unique indexes had to exclude empty strings from the uniqueness
+// constraint. The new index definition folds the calling-code column into the key
+// instead, so this partial clause is retired: matching rows are nullified first (so
+// they don't collide under the new plain unique index) and the clause is dropped.
 const LEGACY_NON_EMPTY_PARTIAL_INDEX_PATTERN = /^"[a-zA-Z][a-zA-Z0-9]*" != ''$/;
 
 @RegisteredWorkspaceCommand('2.5.0', 1778000000000)
@@ -137,6 +142,8 @@ export class RebuildUniquePhoneIndexesCommand extends ProvisionedWorkspaceComman
           );
         }
 
+        // Postgres has no ALTER INDEX to change its columns, so the only way to add the
+        // calling-code column to the unique key is to drop and recreate the index.
         await dropIndexFromWorkspaceSchema({
           indexName: uniquePhoneIndex.name,
           workspaceSchemaManagerService: this.workspaceSchemaManagerService,

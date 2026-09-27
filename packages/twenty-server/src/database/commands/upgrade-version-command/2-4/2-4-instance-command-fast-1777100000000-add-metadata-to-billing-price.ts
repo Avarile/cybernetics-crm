@@ -6,6 +6,8 @@ import { FastInstanceCommand } from 'src/engine/core-modules/upgrade/interfaces/
 @RegisteredInstanceCommand('2.4.0', 1777100000000)
 export class AddMetadataToBillingPriceFastInstanceCommand implements FastInstanceCommand {
   public async up(queryRunner: QueryRunner): Promise<void> {
+    // billingPrice only exists when IS_BILLING_ENABLED was ever turned on (default false),
+    // so self-hosted instances without billing may not have the table at all.
     const tableExists = await queryRunner.query(
       `SELECT 1 FROM pg_tables WHERE schemaname = 'core' AND tablename = 'billingPrice'`,
     );

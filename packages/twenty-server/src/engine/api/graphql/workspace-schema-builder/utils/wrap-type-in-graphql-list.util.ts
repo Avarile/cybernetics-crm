@@ -1,5 +1,7 @@
 import { GraphQLList, GraphQLNonNull, type GraphQLType } from 'graphql';
 
+// Recurses `depth` times to build nested lists (e.g. [[String]] for depth 2),
+// applying the same NonNull rule at every level, not just the innermost one.
 export const wrapTypeInGraphQLList = <T extends GraphQLType = GraphQLType>(
   targetType: T,
   depth: number,

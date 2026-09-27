@@ -1078,11 +1078,9 @@ export class WorkspaceEntityManager extends EntityManager {
       .getMany();
   }
 
-  /**
-   * Functions duplicated from EntityManager but with a queryRunner that will bypass permissions
-   * because permissions cannot be passed on to the call to createQueryBuilder() done in SubjectExecutor called by EntityPersistExecutor
-   * queryBuilder checks are replaced by validatePermissions()
-   */
+  // Functions duplicated from EntityManager but with a queryRunner that will bypass permissions
+  // because permissions cannot be passed on to the call to createQueryBuilder() done in SubjectExecutor called by EntityPersistExecutor
+  // queryBuilder checks are replaced by validatePermissions()
 
   override save<Entity extends ObjectLiteral>(
     entities: Entity[],
@@ -1331,6 +1329,10 @@ export class WorkspaceEntityManager extends EntityManager {
         }),
       );
 
+      // System objects' saved data is never filtered for restricted fields — unlike
+      // validateOperationIsPermittedOrThrow's write-permission check, this has no
+      // workspaceMember carve-out, so a restricted field on workspaceMember (which is
+      // system) would still come back in the save() response unfiltered.
       const permissionCheckApplies =
         permissionOptionsFromArgs?.shouldBypassPermissionChecks !== true &&
         objectMetadataItem.isSystem !== true;

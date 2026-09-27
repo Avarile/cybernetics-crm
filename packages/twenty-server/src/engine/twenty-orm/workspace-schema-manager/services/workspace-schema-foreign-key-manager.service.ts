@@ -3,6 +3,8 @@ import { type QueryRunner } from 'typeorm';
 import { type WorkspaceSchemaForeignKeyDefinition } from 'src/engine/twenty-orm/workspace-schema-manager/types/workspace-schema-foreign-key-definition.type';
 import { escapeIdentifier } from 'src/engine/workspace-manager/workspace-migration/utils/remove-sql-injection.util';
 
+// onDelete/onUpdate become raw SQL keywords below (not parameterizable), so this
+// allowlist is what keeps them from being an injection vector.
 const ALLOWED_FK_ACTIONS = new Set([
   'CASCADE',
   'SET NULL',
@@ -21,6 +23,8 @@ export class WorkspaceSchemaForeignKeyManagerService {
     schemaName: string;
     foreignKey: WorkspaceSchemaForeignKeyDefinition;
   }): Promise<void> {
+    // Reuses TypeORM's own naming strategy so the constraint name generated here matches
+    // what TypeORM would compute/expect when later reading this schema back as metadata.
     const foreignKeyName = queryRunner.connection.namingStrategy.foreignKeyName(
       foreignKey.tableName,
       [foreignKey.columnName],
@@ -63,6 +67,9 @@ export class WorkspaceSchemaForeignKeyManagerService {
     await queryRunner.query(sql);
   }
 
+  // A deferrable constraint can be checked at COMMIT instead of immediately per-statement,
+  // which is needed when a transaction inserts/updates rows in an order that would
+  // otherwise momentarily violate the FK before all the related rows are in place.
   async setForeignKeyNotDeferrable({
     queryRunner,
     schemaName,

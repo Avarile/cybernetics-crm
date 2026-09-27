@@ -45,6 +45,8 @@ export const getWorkspaceContext = (): ORMWorkspaceContext => {
   return context;
 };
 
+// Scoped: context is only visible for the duration of fn, then automatically restored
+// to whatever it was before — the normal way to enter a workspace context.
 export const withWorkspaceContext = <T>(
   context: ORMWorkspaceContext,
   fn: () => T | Promise<T>,
@@ -52,6 +54,10 @@ export const withWorkspaceContext = <T>(
   return workspaceContextStorage.run(context, fn);
 };
 
+// Unscoped: mutates the context for the rest of the current async execution with no
+// automatic restore, so it's easy to leak context into code that runs after it should
+// have ended. Currently only used in tests, to set up context without wrapping the
+// whole test body in withWorkspaceContext's callback.
 export const setWorkspaceContext = (context: ORMWorkspaceContext): void => {
   workspaceContextStorage.enterWith(context);
 };

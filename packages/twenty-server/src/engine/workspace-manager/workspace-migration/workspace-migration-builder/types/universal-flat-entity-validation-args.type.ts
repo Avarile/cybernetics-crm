@@ -11,6 +11,12 @@ export type UniversalFlatEntityValidationArgs<T extends AllMetadataName> = {
   flatEntityToValidate: MetadataUniversalFlatEntity<T>;
   optimisticFlatEntityMapsAndRelatedFlatEntityMaps: MetadataUniversalFlatEntityAndRelatedFlatEntityMapsForValidation<T>;
   workspaceId: string;
+  // The rest of this same create/delete batch not yet processed in the loop (see
+  // WorkspaceEntityMigrationBuilderService). Lets a validator confirm a forward
+  // reference (e.g. a folder that hasn't been created yet but is later in this batch)
+  // will actually be satisfied by the time the whole migration finishes, instead of
+  // failing just because optimisticFlatEntityMapsAndRelatedFlatEntityMaps doesn't have
+  // it yet.
   remainingFlatEntityMapsToValidate: MetadataUniversalFlatEntityMaps<T>;
   buildOptions: WorkspaceMigrationBuilderOptions;
 };

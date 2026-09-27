@@ -11,6 +11,10 @@ interface DuplicateKeyErrorWithMetadata extends TwentyORMException {
   conflictingObjectNameSingular?: string;
 }
 
+// Only this allowlist of error codes is converted into a GraphQL UserInputError with a
+// user-friendly message; every other TwentyORMException code is rethrown as-is and
+// handled upstream as an unexpected/internal error, since it hasn't been vetted as safe
+// to describe to the client.
 export const twentyORMGraphqlApiExceptionHandler = (
   error: TwentyORMException,
 ) => {

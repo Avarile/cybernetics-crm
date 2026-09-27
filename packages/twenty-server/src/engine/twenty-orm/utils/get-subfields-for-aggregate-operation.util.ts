@@ -2,6 +2,10 @@ import { FieldMetadataType } from 'twenty-shared/types';
 
 import { isCompositeFieldMetadataType } from 'src/engine/metadata-modules/field-metadata/utils/is-composite-field-metadata-type.util';
 
+// Deliberately a curated subset of each composite type's subfields, not the full list —
+// drives which subfields get exposed as GraphQL aggregation options (see
+// get-available-aggregations-from-object-fields.util.ts), limited to the ones where
+// aggregating makes sense (eg: LINKS exposes primaryLinkUrl but not primaryLinkLabel).
 export const getSubfieldsForAggregateOperation = (
   fieldType: FieldMetadataType,
 ): string[] | undefined => {

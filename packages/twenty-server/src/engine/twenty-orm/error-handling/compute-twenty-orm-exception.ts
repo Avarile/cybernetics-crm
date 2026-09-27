@@ -25,6 +25,10 @@ const CONSTRAINT_VIOLATION_MESSAGES: Record<string, MessageDescriptor> = {
   [POSTGRESQL_ERROR_CODES.RESTRICT_VIOLATION]: msg`This record cannot be deleted because it is still referenced by other records.`,
 };
 
+// Some branches `throw` and others `return` an Error — both work because every
+// caller wraps this call as `throw await computeTwentyORMException(...)`, so a
+// return value still ends up thrown; an unmatched QueryFailedError is thrown
+// directly here instead, to preserve its original type/stack for the caller.
 export const computeTwentyORMException = async (
   error: Error,
   objectMetadata?: FlatObjectMetadata,

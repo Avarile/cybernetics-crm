@@ -4,6 +4,10 @@ export class WorkspaceCustomApplicationIdNonNullable1763977334519 implements Mig
   name = 'WorkspaceCustomApplicationIdNonNullable1763977334519';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
+    // SET NOT NULL fails on any workspace whose workspaceCustomApplicationId hasn't been
+    // backfilled yet (see the 2-19 backfill-workspace-custom-application-registration
+    // upgrade command). A savepoint lets this migration swallow that failure and continue
+    // instead of aborting the whole migration transaction on unbackfilled instances.
     const savepointName = 'sp_workspace_custom_application_id_non_nullable';
 
     try {

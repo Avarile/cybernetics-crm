@@ -132,6 +132,8 @@ export class RenameConflictingCustomFieldsCommand extends ProvisionedWorkspaceCo
       return;
     }
 
+    // validateBuildAndRunLegacyWorkspaceMigration takes a single applicationUniversalIdentifier,
+    // so fields owned by different applications must be migrated in separate calls.
     const fieldsToRenameByApplication = fieldsToRename.reduce<
       Map<string, typeof fieldsToRename>
     >((fieldsByApplication, fieldToRename) => {

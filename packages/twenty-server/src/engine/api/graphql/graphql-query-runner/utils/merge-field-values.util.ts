@@ -13,6 +13,8 @@ import { mergePhonesFieldValues } from './merge-phones-field-values.util';
 import { mergeRelationFieldValuesForDryRunRecord } from './merge-relation-field-values-for-dry-run-record.util';
 import { defaultMergeFieldValue } from './default-merge-field-value.util';
 
+// Used when merging duplicate records into one: picks a per-field-type
+// strategy for combining each field's values across all the records being merged.
 export const mergeFieldValues = (
   fieldType: FieldMetadataType,
   recordsWithValues: { value: unknown; recordId: string }[],

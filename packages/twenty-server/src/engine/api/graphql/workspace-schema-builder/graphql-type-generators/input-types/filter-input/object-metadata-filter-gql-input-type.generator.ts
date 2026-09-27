@@ -45,6 +45,9 @@ export class ObjectMetadataFilterGqlInputTypeGenerator {
     const inputType = new GraphQLInputObjectType({
       name: `${pascalCase(flatObjectMetadata.nameSingular)}${GqlInputTypeDefinitionKind.Filter.toString()}Input`,
       description: flatObjectMetadata.description,
+      // Deferred as a thunk because and/or/not below reference this input
+      // type recursively — inputType isn't assigned yet when this closure is
+      // created, only by the time graphql-js actually calls fields().
       fields: () =>
         this.generateFields(
           flatObjectMetadata.nameSingular,

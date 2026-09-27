@@ -17,6 +17,8 @@ export class UnhandledExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
+    // response.header is undefined for non-HTTP contexts (eg: GraphQL subscriptions),
+    // and headersSent guards against writing to a response that's already been sent.
     if (!response.header || response.headersSent) {
       return;
     }

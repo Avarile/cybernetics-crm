@@ -30,6 +30,8 @@ export const applyTypeOptionsForCreateInput = <
     );
   }
 
+  // A field with a defaultValue skips the NonNull wrapper even when nullable
+  // is false, since the caller can omit it and still get a valid value.
   if (options.nullable === false && !isDefined(options.defaultValue)) {
     graphqlType = new GraphQLNonNull(graphqlType) as unknown as T;
   }

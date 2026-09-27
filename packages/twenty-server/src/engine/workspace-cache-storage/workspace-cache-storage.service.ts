@@ -200,6 +200,10 @@ export class WorkspaceCacheStorageService {
     workspaceId: string,
     metadataVersion?: number,
   ): Promise<void> {
+    // NB: when metadataVersion is omitted this builds a literal "...:*" key and passes it to
+    // del(), which deletes an exact key rather than pattern-matching (unlike flushByPattern
+    // below). Real entries are keyed by an actual version number, never the literal "*", so
+    // this branch never deletes anything — see dev-seeder.service.ts's `flush(id, undefined)` call.
     const metadataVersionSuffix = isDefined(metadataVersion)
       ? `${metadataVersion}`
       : '*';

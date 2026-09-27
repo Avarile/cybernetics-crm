@@ -137,6 +137,10 @@ export class FlatConnectionProviderValidatorService {
     return validationResult;
   }
 
+  // Unlike creation, update re-validates nothing beyond existence: no re-check of name
+  // uniqueness, required fields, or oauthConfig completeness even if the update changes
+  // them. Worth confirming this is intentional (e.g. those fields are treated as
+  // immutable elsewhere) rather than a gap.
   public validateFlatConnectionProviderUpdate({
     universalIdentifier,
     optimisticFlatEntityMapsAndRelatedFlatEntityMaps: {

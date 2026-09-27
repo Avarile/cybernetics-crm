@@ -58,6 +58,8 @@ export const handleExceptionAndConvertToGraphQLError = (
   return convertExceptionToGraphQLError(exception);
 };
 
+// 4xx-class errors are expected user/client errors (bad input, not found, forbidden...),
+// not bugs, so they're excluded from Sentry to avoid drowning real issues in noise.
 export const shouldCaptureException = (
   exception: Error,
   statusCode?: number,
@@ -138,6 +140,8 @@ const convertHttpExceptionToGraphql = (exception: HttpException) => {
     // @ts-expect-error legacy noImplicitAny
     error = new graphQLPredefinedExceptions[exception.getStatus()](message);
   } else {
+    // Unrecognized status codes get a generic message rather than the exception's own,
+    // so unhandled 5xx errors don't leak internal details to API clients.
     error = new BaseGraphQLError(
       'Internal Server Error',
       exception.getStatus().toString(),

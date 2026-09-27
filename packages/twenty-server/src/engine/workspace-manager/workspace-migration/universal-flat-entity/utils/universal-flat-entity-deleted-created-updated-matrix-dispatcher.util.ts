@@ -34,6 +34,13 @@ type FlatEntityDeletedCreatedUpdatedMatrixDispatcherArgs<
   buildOptions: WorkspaceMigrationBuilderOptions;
 };
 
+// The core classification step every entity builder runs before validating anything:
+// a universalIdentifier in `to` but not `from` is a create; present in both is a
+// potential update (compareTwoFlatEntity decides if anything actually changed); present
+// only in `from` is only classified as a delete when shouldInferDeletionFromMissingEntities
+// is true for this build/metadata type — otherwise an entity simply missing from `to`
+// is left alone entirely (not deleted), since `to` may just be a partial payload rather
+// than the full desired state.
 export const flatEntityDeletedCreatedUpdatedMatrixDispatcher = <
   T extends AllMetadataName,
 >({

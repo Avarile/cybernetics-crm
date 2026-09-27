@@ -57,6 +57,8 @@ export class MetadataEventsToDbListener {
     });
 
     if (metadataEventBatch.events.length > 0) {
+      // Attaches the current cache hash for this metadata collection so subscribers
+      // can tell whether their locally cached copy is now stale, without a round trip.
       const cacheKeyName = getMetadataFlatEntityMapsKey(
         metadataEventBatch.metadataName,
       ) as WorkspaceCacheKeyName;

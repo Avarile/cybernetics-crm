@@ -15,6 +15,9 @@ import {
 } from 'src/engine/metadata-modules/flat-field-metadata/utils/build-field-maps-from-flat-object-metadata.util';
 import { type FlatObjectMetadata } from 'src/engine/metadata-modules/flat-object-metadata/types/flat-object-metadata.type';
 
+// Converts app-facing composite field shapes (eg: `address: {...}`) into their
+// flattened DB column names (eg: `addressStreet1`, `addressCity`, ...) before a
+// write. formatResult does the reverse for read paths.
 export function formatData<T>(
   data: T,
   flatObjectMetadata: FlatObjectMetadata,

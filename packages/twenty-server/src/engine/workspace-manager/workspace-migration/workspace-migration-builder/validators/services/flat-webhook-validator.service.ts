@@ -14,6 +14,9 @@ import { type UniversalFlatEntityValidationArgs } from 'src/engine/workspace-man
 
 @Injectable()
 export class FlatWebhookValidatorService {
+  // Only checks the URL is well-formed http(s) — SSRF protection against internal/
+  // private network targets happens later, at call time, via SecureHttpClientService
+  // (see call-webhook.job.ts), not here.
   private validateTargetUrl(targetUrl: string): boolean {
     try {
       const url = new URL(targetUrl);

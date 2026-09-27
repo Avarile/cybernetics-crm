@@ -5,6 +5,8 @@ interface ApolloPlaygroundOptions {
 export const renderApolloPlayground = ({
   path = 'graphql',
 }: ApolloPlaygroundOptions = {}) => {
+  // The localhost:3000 endpoint is only a starting value in the Sandbox UI — users can
+  // change it client-side, so this works fine when served from a non-local deployment too.
   return `
     <!DOCTYPE html>
     <html lang="en">

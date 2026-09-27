@@ -29,6 +29,9 @@ export type SchemaObject = {
     | undefined;
 };
 
+// These fields are always present in API responses but are system-managed, so
+// they're excluded from request/input schemas (forResponse: false) — a caller
+// can't set them directly.
 const isFieldAvailable = (field: FieldMetadataEntity, forResponse: boolean) => {
   if (forResponse) {
     return true;
@@ -99,6 +102,7 @@ export const convertObjectMetadataToSchemaProperties = ({
       !isFieldAvailable(field, forResponse) ||
       field.type === FieldMetadataType.TS_VECTOR
     ) {
+      // TS_VECTOR backs full-text search and has no meaningful JSON representation.
       return node;
     }
 
@@ -108,6 +112,8 @@ export const convertObjectMetadataToSchemaProperties = ({
       field.settings?.relationType === RelationType.MANY_TO_ONE;
 
     if (isRelationManyToOne) {
+      // The many-to-one side owns the foreign key, so it's exposed as a settable
+      // "<field>Id" property; the one-to-many side below has no column of its own.
       const key = computeMorphOrRelationFieldJoinColumnName({
         name: field.name,
       });

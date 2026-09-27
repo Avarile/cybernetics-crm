@@ -76,6 +76,10 @@ const deriveAllMetadataEventsFromUpdateAction = ({
   allFlatEntityMaps,
 }: DeriveMetadataEventsFromUpdateActionArgs): MetadataEvent[] => {
   switch (flatAction.metadataName) {
+    // Mirrors the drop-and-recreate semantics of an index "update" (see
+    // optimistically-apply-update-action-on-all-flat-entity-maps.util.ts): subscribers
+    // see a delete of the old index followed by a create of the new one, not an
+    // "updated" event, since that's what actually happens at the DB level.
     case 'index': {
       const fromFlatEntity = findFlatEntityByIdInFlatEntityMapsOrThrow({
         flatEntityId: flatAction.entityId,

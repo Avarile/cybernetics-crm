@@ -5,6 +5,9 @@ import { SlowInstanceCommand } from 'src/engine/core-modules/upgrade/interfaces/
 
 @RegisteredInstanceCommand('2.1.0', 1795000002000, { type: 'slow' })
 export class BackfillPageLayoutWidgetPositionSlowInstanceCommand implements SlowInstanceCommand {
+  // "position" is a layoutMode-tagged union (GRID today, other layout modes later);
+  // this wraps the legacy grid-only "gridPosition" column into that shape for rows
+  // that predate it. up()/down() are no-ops: this command only backfills data.
   async runDataMigration(dataSource: DataSource): Promise<void> {
     await dataSource.query(
       `UPDATE "core"."pageLayoutWidget"

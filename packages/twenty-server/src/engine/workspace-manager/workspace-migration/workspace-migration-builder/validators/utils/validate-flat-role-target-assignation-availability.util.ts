@@ -10,6 +10,10 @@ type ValidateFlatRoleTargetAssignationAvailabilityArgs = {
   flatRole: UniversalFlatRole;
   flatRoleTarget: UniversalFlatRoleTarget;
 };
+// The if/else-if chain below assumes exactly one of agentId/userWorkspaceId/apiKeyId is
+// set — enforced separately by validateFlatRoleTargetTargetsOnlyOneEntity, which always
+// runs alongside this validator. If that invariant were ever violated, this would only
+// check the first-matching target and silently ignore the others.
 export const validateFlatRoleTargetAssignationAvailability = ({
   flatRole,
   flatRoleTarget,

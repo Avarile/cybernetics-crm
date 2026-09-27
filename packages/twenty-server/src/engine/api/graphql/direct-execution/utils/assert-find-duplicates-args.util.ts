@@ -9,6 +9,8 @@ import {
 import { STANDARD_ERROR_MESSAGE } from 'src/engine/api/common/common-query-runners/errors/standard-error-message.constant';
 import { type FindDuplicatesResolverArgs } from 'src/engine/api/graphql/workspace-resolver-builder/interfaces/workspace-resolvers-builder.interface';
 
+// Direct execution skips graphql-js's schema-based arg coercion, so each
+// resolver method needs its own manual allowlist + shape check here instead.
 export function assertFindDuplicatesArgs(
   args: unknown,
 ): asserts args is FindDuplicatesResolverArgs {

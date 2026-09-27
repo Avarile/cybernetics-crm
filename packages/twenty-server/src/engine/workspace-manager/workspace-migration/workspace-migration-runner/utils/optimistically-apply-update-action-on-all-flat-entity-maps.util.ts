@@ -19,6 +19,9 @@ export const optimisticallyApplyUpdateActionOnAllFlatEntityMaps = ({
   allFlatEntityMaps,
 }: OptimisticallyApplyUpdateActionOnAllFlatEntityMapsArgs): AllFlatEntityMaps => {
   switch (flatAction.metadataName) {
+    // Mirrors the index update action itself: since Postgres can't ALTER an index,
+    // an "update" is really a drop-and-recreate, so the optimistic cache is updated the
+    // same way (delete then add the full replacement) rather than merging fields.
     case 'index': {
       const flatIndex = findFlatEntityByIdInFlatEntityMapsOrThrow({
         flatEntityId: flatAction.entityId,

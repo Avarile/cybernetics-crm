@@ -13,6 +13,9 @@ export class ConvertEngineComponentKeyToVarchar1774363913813 implements Migratio
     await queryRunner.query(
       `DROP TYPE "core"."commandMenuItem_enginecomponentkey_enum"`,
     );
+    // Pre-existing rows had engineComponentKey = NULL whenever a workflow/front-component
+    // FK was set instead; backfill it from whichever FK is present so the NOT NULL +
+    // coherence CHECK constraint added below can hold for existing data too.
     await queryRunner.query(
       `UPDATE "core"."commandMenuItem" SET "engineComponentKey" = 'TRIGGER_WORKFLOW_VERSION' WHERE "workflowVersionId" IS NOT NULL AND "engineComponentKey" IS NULL`,
     );

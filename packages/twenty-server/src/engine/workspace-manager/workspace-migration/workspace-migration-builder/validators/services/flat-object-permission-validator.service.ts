@@ -12,6 +12,14 @@ import { FlatEntityUpdateValidationArgs } from 'src/engine/workspace-manager/wor
 import { UniversalFlatEntityValidationArgs } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-builder/types/universal-flat-entity-validation-args.type';
 import { validateRoleBelongsToCallerApplication } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-builder/validators/utils/validate-role-belongs-to-caller-application.util';
 
+// Enforces: (role, object) pairs are unique (an object can't have two conflicting
+// permission rows for the same role — checked via duplicateForSameRoleAndObject on both
+// create and update), the referenced role must belong to the caller's own application
+// (see validateRoleBelongsToCallerApplication — cross-application role reference would
+// let one application's migration alter another's permissions), and the role must be
+// editable (system roles can't have their permissions modified this way). Note update
+// re-validates the role unconditionally, but only re-validates objectMetadata when the
+// update payload actually changes it.
 @Injectable()
 export class FlatObjectPermissionValidatorService {
   validateFlatObjectPermissionCreation({

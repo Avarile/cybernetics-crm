@@ -27,6 +27,10 @@ export class GqlTypeGenerator {
     private readonly workspaceResolverBuilderService: WorkspaceResolverBuilderService,
   ) {}
 
+  // Order matters: each stage looks up types built by an earlier stage via
+  // GqlTypesStorage, so composite/enum types must exist before per-object
+  // types are built, and those must exist before the root query/mutation
+  // types (which look up each object's Connection/output type by key).
   async buildAndStore(
     context: SchemaGenerationContext,
   ): Promise<GqlTypesStorage> {
@@ -116,6 +120,8 @@ export class GqlTypeGenerator {
         context,
       );
 
+      // Skip building the "with relations" variant for objects that have no
+      // relation/morph fields — it would be identical to the plain object type.
       if (this.objectContainsRelationOrMorphField(fields)) {
         generators.objectMetadataWithRelationsGqlObjectTypeGenerator.buildAndStore(
           flatObjectMetadata,

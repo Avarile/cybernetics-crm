@@ -3,6 +3,11 @@ import { isDefined } from 'twenty-shared/utils';
 import { type PreallocatedIdByUniversalIdentifierByMetadataName } from 'src/engine/workspace-manager/workspace-migration/universal-flat-entity/utils/resolve-universal-relation-identifiers-to-ids.util';
 import { type AllUniversalWorkspaceMigrationAction } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-builder/types/workspace-migration-action-common';
 
+// Only objectMetadata/fieldMetadata create actions can carry a pre-assigned id (set
+// during the build phase — see BaseUniversalCreateWorkspaceMigrationAction's `id` and
+// aggregateRelationFieldPairs' relatedFieldId). Collecting them here lets other actions
+// in the same migration resolve a not-yet-inserted entity's universalIdentifier to its
+// final id before the create action actually runs.
 export const buildPreallocatedIdByUniversalIdentifierFromActions = (
   actions: AllUniversalWorkspaceMigrationAction[],
 ): PreallocatedIdByUniversalIdentifierByMetadataName => {

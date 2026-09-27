@@ -34,6 +34,8 @@ export const replaceLegacyPageEditModeIdentifier = (
       )
       .toString();
   } catch {
+    // Malformed/unparseable expressions are left as-is rather than failing the
+    // migration; they weren't using the legacy identifier in a way we can safely rewrite.
     return conditionalAvailabilityExpression;
   }
 };

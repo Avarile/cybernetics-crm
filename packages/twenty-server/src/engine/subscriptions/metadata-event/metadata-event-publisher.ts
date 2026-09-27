@@ -43,6 +43,9 @@ export class MetadataEventPublisher {
     });
   }
 
+  // Raw metadata events only carry IDs/normalized fields; each metadata type needs its
+  // own enrichment (resolved relations, navigation targets, user overrides, etc.) so
+  // subscribers receive display-ready data instead of having to re-resolve it themselves.
   private async enrichMetadataEventBatch(
     metadataEventBatch: MetadataEventBatch,
   ): Promise<MetadataEventBatch> {
@@ -242,6 +245,9 @@ export class MetadataEventPublisher {
     record: Record<string, unknown>,
     overridableProperties: readonly string[],
   ): Record<string, unknown> {
+    // Only properties flagged isOverridable (see ALL_OVERRIDABLE_PROPERTIES_BY_METADATA_NAME)
+    // get replaced by their override value; broadcasting the raw record would show
+    // subscribers the un-overridden default instead of what's actually configured.
     const overrides = record.overrides as
       | Record<string, unknown>
       | null

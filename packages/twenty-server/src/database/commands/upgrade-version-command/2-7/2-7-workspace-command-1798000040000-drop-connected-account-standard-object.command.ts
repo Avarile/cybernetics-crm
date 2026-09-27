@@ -61,6 +61,8 @@ export class DropConnectedAccountStandardObjectCommand extends ProvisionedWorksp
         universalIdentifier: CONNECTED_ACCOUNT_OBJECT_UNIVERSAL_IDENTIFIER,
       });
 
+    // Deleting the object doesn't cascade to relation fields on the OTHER side (on
+    // workspaceMember/messageChannel/calendarChannel), so those must be dropped explicitly.
     const relationFieldsToDelete = [
       WORKSPACE_MEMBER_CONNECTED_ACCOUNTS_FIELD_UNIVERSAL_IDENTIFIER,
       MESSAGE_CHANNEL_CONNECTED_ACCOUNT_FIELD_UNIVERSAL_IDENTIFIER,

@@ -52,6 +52,9 @@ export class WorkspaceSchemaIndexManagerService {
       indexType = `USING ${index.type}`;
     }
 
+    // index.where is a user-configurable partial-index condition (not an escapable
+    // identifier/literal), so validateAndReturnIndexWhereClause is the actual guard
+    // against arbitrary SQL being embedded in this raw DDL string.
     const validatedWhereClause = validateAndReturnIndexWhereClause(index.where);
     const whereClause = validatedWhereClause
       ? `WHERE ${validatedWhereClause}`

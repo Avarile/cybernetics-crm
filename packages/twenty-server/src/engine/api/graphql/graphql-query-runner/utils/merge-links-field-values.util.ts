@@ -5,6 +5,9 @@ import { hasRecordFieldValue } from 'src/engine/api/graphql/graphql-query-runner
 
 import { parseArrayOrJsonStringToArray } from './parse-additional-items.util';
 
+// Same pattern as mergeEmailsFieldValues: primary link follows priority-with-
+// fallback, secondaryLinks is the union of every record's primary+secondary
+// links (deduped by url), excluding whichever link became the merged primary.
 export const mergeLinksFieldValues = (
   recordsWithValues: { value: LinksMetadata; recordId: string }[],
   priorityRecordId: string,

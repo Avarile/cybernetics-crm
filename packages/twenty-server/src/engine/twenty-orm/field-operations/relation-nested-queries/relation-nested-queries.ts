@@ -164,6 +164,9 @@ export class RelationNestedQueries {
         connectQueryConfig.targetObjectName,
       );
 
+      // Reuses the caller's queryBuilder (so it keeps its permission/RLS context) but
+      // resets its alias state, since it's about to look up records on the connect
+      // target's table rather than the original mutation's entity.
       queryBuilder.expressionMap.aliases = [];
       queryBuilder.expressionMap.mainAlias = undefined;
 
@@ -208,6 +211,8 @@ export class RelationNestedQueries {
             ].every(([field, value]) => record[field] === value),
           );
 
+          // A connect condition must resolve to exactly one record — both no match and
+          // an ambiguous multi-match are treated as the same error.
           if (recordToConnect.length !== 1) {
             const { errorMessage, userFriendlyMessage } =
               formatConnectRecordNotFoundErrorMessage(
@@ -228,6 +233,8 @@ export class RelationNestedQueries {
           entity = {
             ...entity,
             [connectQueryConfig.relationFieldName]: recordToConnect[0]['id'],
+            // Clears the {connect: {...}} sentinel field now that it's been resolved
+            // into an actual foreign key id, so it isn't written to the database as-is.
             [connectQueryConfig.connectFieldName]: null,
           };
         }

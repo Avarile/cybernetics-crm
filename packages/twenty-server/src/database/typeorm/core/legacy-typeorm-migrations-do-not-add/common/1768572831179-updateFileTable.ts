@@ -6,6 +6,9 @@ export class UpdateFileTable1768572831179 implements MigrationInterface {
   name = 'UpdateFileTable1768572831179';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
+    // Some of these column changes can fail on installs with incompatible existing data.
+    // The savepoint lets that failure be swallowed so this migration doesn't abort the
+    // whole transaction on such instances.
     const savepointName = 'sp_update_file_table';
 
     try {

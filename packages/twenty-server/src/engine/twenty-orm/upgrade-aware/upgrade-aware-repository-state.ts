@@ -20,6 +20,8 @@ export class UpgradeAwareRepositoryState {
   }
 
   isEntityAvailable(entityClass: Function): boolean {
+    // No adapter wired up yet (eg: before bootstrap finishes) means "assume available"
+    // rather than blocking every repository call.
     if (!isDefined(this.metadataService)) {
       return true;
     }

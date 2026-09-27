@@ -363,6 +363,9 @@ export class FlatViewValidatorService {
       }),
     );
 
+    // Skip the "last view" guard entirely when the parent object is itself gone (being
+    // deleted in this same migration) — an object with no remaining views is fine once
+    // the object itself no longer exists to need one.
     if (parentObjectStillExists) {
       const viewsForSameObject = Object.values(
         optimisticFlatViewMaps.byUniversalIdentifier,

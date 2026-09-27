@@ -26,6 +26,8 @@ export const pushToOrchestratorFailureReport = <
     WorkspaceMigrationActionType
   >[];
 }): void => {
+  // Cast needed because TS can't prove report[metadataName]'s item type matches
+  // items' type from a value of the union type TMetadataName alone.
   (report[metadataName] as AnyFailedValidation[]).push(...items);
 };
 

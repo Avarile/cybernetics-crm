@@ -38,6 +38,9 @@ export class WorkspaceORMEntityMetadatasCacheService extends WorkspaceCacheProvi
   async computeForCache(workspaceId: string): Promise<EntityMetadata[]> {
     const [objectMetadatas, fieldMetadatas, twentyStandardApplication] =
       await Promise.all([
+        // withDeleted: true, consistent with the rest of the flat-entity-maps pattern —
+        // soft-deleted object/field metadata is modeled as still-present-but-flagged
+        // rather than excluded, so downstream code can decide how to treat it.
         this.objectMetadataRepository.find({
           where: { workspaceId },
           withDeleted: true,

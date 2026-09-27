@@ -50,6 +50,16 @@ export type ValidateAndBuildReturnType<T extends AllMetadataName> = Promise<
   SuccessfulFlatEntityValidateAndBuild<T> | FailedFlatEntityValidateAndBuild<T>
 >;
 
+// Template Method base class: one instance per metadata type (field, object, view, ...).
+// This class owns the generic from/to diffing and mutation-ordering logic; subclasses
+// only implement the three abstract validate* hooks with entity-specific rules. Delete
+// is processed before create, which is processed before update, matching the global
+// migration-action ordering in computeOrderedMigrationActions. Critically,
+// optimisticFlatEntityMapsAndRelatedFlatEntityMaps is mutated as each entity is
+// successfully validated, so later entities in the same pass (and later metadata types
+// in the same build) validate against a partially-applied view of the target state, not
+// the original "from" snapshot — this is what lets, e.g., a field validate against an
+// object created earlier in the same migration.
 export abstract class WorkspaceEntityMigrationBuilderService<
   T extends AllMetadataName,
 > {
@@ -373,6 +383,11 @@ export abstract class WorkspaceEntityMigrationBuilderService<
     };
   }
 
+  // Enforced for every metadata type regardless of what the subclass's own validation
+  // checks: universalIdentifier must be lowercase (callers elsewhere compare/store it as
+  // a plain string key without normalizing case) and a UUID of version 4 or higher —
+  // every generator in the codebase produces v4 (confirmed via generate-*/from-create-*
+  // utils), so "or higher" isn't exercised today but isn't rejected either.
   private validateUniversalIdentifier({
     flatEntityToValidate: { universalIdentifier },
   }: UniversalFlatEntityValidationArgs<T>): FlatEntityValidationError[] {

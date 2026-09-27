@@ -92,6 +92,8 @@ export class NormalizeLegacyIndexNamesCommand extends ProvisionedWorkspaceComman
       await queryRunner.startTransaction();
       isTransactionStarted = true;
 
+      // Each operation gets its own savepoint so one failing rename/drop doesn't abort
+      // the whole workspace's transaction — it's rolled back and skipped individually.
       for (const [operationIndex, operation] of operations.entries()) {
         const savepointName = `index_name_normalization_${operationIndex}`;
 

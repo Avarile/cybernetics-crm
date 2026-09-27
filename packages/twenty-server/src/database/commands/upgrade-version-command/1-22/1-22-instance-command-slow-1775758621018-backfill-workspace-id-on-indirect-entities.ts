@@ -9,7 +9,9 @@ type BackfillDefinition = {
   foreignKey: string;
 };
 
-// Order matters: parents must be backfilled before children
+// "Indirect" entities are ones without a direct workspace relation of their own; their
+// workspaceId is derived by walking up to a parent (sometimes a grandparent) that has it.
+// Order matters here: parents must be backfilled before children that read from them.
 const BACKFILL_DEFINITIONS: BackfillDefinition[] = [
   {
     table: 'twoFactorAuthenticationMethod',

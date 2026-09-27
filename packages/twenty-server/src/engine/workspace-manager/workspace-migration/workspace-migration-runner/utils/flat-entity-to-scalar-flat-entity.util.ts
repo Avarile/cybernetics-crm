@@ -5,6 +5,10 @@ import { type MetadataEntity } from 'src/engine/metadata-modules/flat-entity/typ
 import { type MetadataFlatEntity } from 'src/engine/metadata-modules/flat-entity/types/metadata-flat-entity.type';
 import { type ScalarFlatEntity } from 'src/engine/metadata-modules/flat-entity/types/scalar-flat-entity.type';
 
+// A flat entity carries derived/relational properties (foreign-key aggregator arrays,
+// nested relation objects) that aren't real columns. This projects it down to just the
+// allowlisted scalar columns (plus the always-present id/workspaceId/applicationId/
+// universalIdentifier) so it's safe to pass straight to a TypeORM insert.
 export const flatEntityToScalarFlatEntity = <T extends AllMetadataName>({
   metadataName,
   flatEntity,

@@ -2,6 +2,9 @@ import { hasRecordFieldValue } from 'src/engine/api/graphql/graphql-query-runner
 
 type RecordWithValue<T> = { value: T; recordId: string };
 
+// Unlike defaultMergeFieldValue, array fields don't pick a single winner —
+// every record's values are unioned together (deduped) since combining lists
+// makes more sense than dropping data.
 export const mergeArrayFieldValues = <T>(
   recordsWithValues: RecordWithValue<T>[],
 ): T[] | null => {

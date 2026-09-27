@@ -21,6 +21,12 @@ import { getEmptyFlatEntityValidationError } from 'src/engine/workspace-manager/
 import { FlatEntityUpdateValidationArgs } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-builder/types/universal-flat-entity-update-validation-args.type';
 import { UniversalFlatEntityValidationArgs } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-builder/types/universal-flat-entity-validation-args.type';
 
+// Key invariants enforced here (outside isSystemBuild, see WorkspaceMigrationBuilderOptions):
+// system fields only allow updating universalSettings/isActive, never deleted; the
+// object's label-identifier field can't be deactivated or deleted (repoint it first);
+// remote (external-DB-backed) objects are entirely read-only, no field creation; and a
+// relation/morph field's non-relation properties are frozen after creation (marked as
+// tech debt below — "should be moved in relation field validator").
 @Injectable()
 export class FlatFieldMetadataValidatorService {
   constructor(

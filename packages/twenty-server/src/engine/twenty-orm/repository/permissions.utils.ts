@@ -118,6 +118,8 @@ export const validateOperationIsPermittedOrThrow = ({
     objectMetadata.universalIdentifier ===
     WORKSPACE_MEMBER_OBJECT_UNIVERSAL_IDENTIFIER;
 
+  // System objects bypass permission checks entirely, except workspaceMember: it
+  // carries user-identifying fields, so it's still subject to field-level restrictions below.
   // TODO: this should be improved, we may have more complex permission configuration for is system objects
   if (objectMetadataIsSystem && !isWorkspaceMemberObject) {
     return;
@@ -165,6 +167,9 @@ export const validateOperationIsPermittedOrThrow = ({
       });
 
       if (updatedColumns.length > 0) {
+        // Fields governed by a row-level-permission predicate are exempt from the
+        // field-level write check below: validateRLSPredicatesForRecords separately
+        // rejects the insert if the written value doesn't satisfy the RLS predicate.
         const rlsFieldMetadataIds = new Set(
           permissionsForEntity.rowLevelPermissionPredicates.map(
             (predicate) => predicate.fieldMetadataId,
@@ -373,6 +378,8 @@ const validatePermissionsForJoinsAndReturnSelectsWithoutJoins = ({
     )?.metadata;
 
     if (isDefined(entity)) {
+      // TypeORM's expressionMap only exposes selects as raw SQL fragments here, so the
+      // joined table's alias has to be parsed back out of the quoted-identifier string.
       for (const [index, select] of expressionMap.selects.entries()) {
         const regex = /"(\w+)"\."(\w+)"/;
         const extractedAlias = select.selection.match(regex)?.[1]; // "person"."name" -> "person"

@@ -12,6 +12,9 @@ import { type ObjectMetadataEntity } from 'src/engine/metadata-modules/object-me
 export class WorkspaceResolverBuilderService {
   constructor() {}
 
+  // findDuplicates/mergeMany only make sense for objects with duplicateCriteria
+  // configured (it's what they search/merge on) — every other resolver is
+  // unconditional.
   shouldBuildResolver(
     objectMetadata: Pick<ObjectMetadataEntity, 'duplicateCriteria'>,
     methodName: WorkspaceResolverBuilderMethodNames,

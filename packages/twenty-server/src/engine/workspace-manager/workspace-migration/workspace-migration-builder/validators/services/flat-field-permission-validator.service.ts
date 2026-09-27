@@ -12,6 +12,11 @@ import { FlatEntityUpdateValidationArgs } from 'src/engine/workspace-manager/wor
 import { UniversalFlatEntityValidationArgs } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-builder/types/universal-flat-entity-validation-args.type';
 import { validateRoleBelongsToCallerApplication } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-builder/validators/utils/validate-role-belongs-to-caller-application.util';
 
+// Field-level counterpart of FlatObjectPermissionValidatorService — same rules, scoped to
+// a (role, object, field) triple instead of (role, object): uniqueness per triple, the
+// role must belong to the caller's application and be editable (see
+// validateRoleBelongsToCallerApplication), and only fields present in the update payload
+// get their referenced entity re-validated.
 @Injectable()
 export class FlatFieldPermissionValidatorService {
   validateFlatFieldPermissionCreation({

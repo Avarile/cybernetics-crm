@@ -7,5 +7,6 @@ export const getServerUrl = ({
   serverUrlEnv?: string;
   serverUrlFallback: string;
 }): string => {
+  // cleanServerUrl passes through undefined, so an unset env var falls back.
   return cleanServerUrl(serverUrlEnv) || serverUrlFallback;
 };

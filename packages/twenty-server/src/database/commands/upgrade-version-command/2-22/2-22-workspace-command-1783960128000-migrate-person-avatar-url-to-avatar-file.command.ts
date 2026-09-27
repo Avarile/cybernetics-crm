@@ -232,6 +232,9 @@ export class MigratePersonAvatarUrlToAvatarFileCommand extends ProvisionedWorksp
         `Failed to attach migrated avatar for person ${personId} in workspace ${workspaceId}: ${error instanceof Error ? error.message : String(error)}`,
       );
 
+      // update() may have actually persisted before throwing (eg: a timeout after
+      // commit); re-check before deleting the just-uploaded file, so a real failure
+      // doesn't get treated the same as a successful update that merely errored.
       const isFileReferencedByPerson = await this.isAvatarFileReferenced({
         personId,
         fileId: uploadedFile.id,
@@ -303,6 +306,8 @@ export class MigratePersonAvatarUrlToAvatarFileCommand extends ProvisionedWorksp
         `Failed to verify avatar file reference for person ${personId} in workspace ${workspaceId}: ${error instanceof Error ? error.message : String(error)}`,
       );
 
+      // Fail safe: assume referenced when we can't verify, so we don't delete a file
+      // that might actually be in use.
       return true;
     }
   }

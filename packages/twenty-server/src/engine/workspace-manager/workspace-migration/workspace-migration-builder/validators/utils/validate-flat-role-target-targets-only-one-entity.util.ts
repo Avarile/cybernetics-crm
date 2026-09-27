@@ -12,6 +12,10 @@ export const validateFlatRoleTargetTargetsOnlyOneEntity = ({
 }) => {
   const errors: FlatEntityValidationError[] = [];
 
+  // apiKeyId/userWorkspaceId/agentId are real per-workspace database IDs, not
+  // universalIdentifiers, even on this Universal flat entity — these targets are
+  // workspace-local runtime identities (an API key, a member, an agent), not portable
+  // application metadata, so there's no cross-environment identifier to give them.
   const definedIdentifiersCount = [
     isDefined(flatRoleTarget.apiKeyId),
     isDefined(flatRoleTarget.userWorkspaceId),

@@ -86,6 +86,9 @@ export class WorkspaceSchemaColumnManagerService {
     const tableRef = `${escapeIdentifier(schemaName)}.${escapeIdentifier(tableName)}`;
     const columnRef = escapeIdentifier(columnName);
 
+    // undefined and null are distinct here: undefined means "this column has no default
+    // at all" (DROP DEFAULT), while null means "its default value is SQL NULL" (SET
+    // DEFAULT NULL) — those are different column states, not the same thing.
     const computeDefaultValueSqlQuery = () => {
       if (defaultValue === undefined) {
         return `ALTER TABLE ${tableRef} ALTER COLUMN ${columnRef} DROP DEFAULT`;
@@ -123,6 +126,8 @@ export class WorkspaceSchemaColumnManagerService {
     const tableRef = `${escapeIdentifier(schemaName)}.${escapeIdentifier(tableName)}`;
     const columnRef = escapeIdentifier(columnName);
 
+    // Backfill runs before SET NOT NULL below: adding the constraint first would fail
+    // outright against any existing NULL rows.
     if (
       !isNullable &&
       backfillValue !== undefined &&

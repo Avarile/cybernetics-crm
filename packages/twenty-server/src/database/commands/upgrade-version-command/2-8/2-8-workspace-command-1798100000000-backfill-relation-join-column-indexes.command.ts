@@ -145,6 +145,10 @@ export class BackfillRelationJoinColumnIndexesCommand extends ProvisionedWorkspa
       return;
     }
 
+    // Physical index first, metadata second (the reverse of the usual metadata-driven
+    // flow): CREATE INDEX CONCURRENTLY can't run inside a transaction, so it's done here
+    // directly outside the migration-build pipeline's transaction, then recorded in
+    // metadata by the validateBuildAndRun call below once the physical indexes exist.
     const queryRunner = dataSource.createQueryRunner();
     let isQueryRunnerConnected = false;
 

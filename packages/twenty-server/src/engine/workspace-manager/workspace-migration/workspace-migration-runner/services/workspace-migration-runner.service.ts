@@ -174,6 +174,8 @@ export class WorkspaceMigrationRunnerService {
     );
   }
 
+  // Diagnostic snapshot taken right before rollback on a migration failure, to help
+  // distinguish "genuinely failed" from "timed out waiting on another session's lock".
   private async logBlockingDbActivity(): Promise<void> {
     try {
       // Metadata only (no query text) to avoid logging literals from other sessions.
@@ -203,6 +205,12 @@ export class WorkspaceMigrationRunnerService {
     }
   }
 
+  // Executes every action in `actions` inside a single DB transaction, in order. On any
+  // failure: rolls back the SQL transaction, then runs each handler's best-effort
+  // application-level rollback (for side effects outside the transaction), then
+  // re-throws. On success: commits, invalidates caches, then runs after-commit side
+  // effects (also best-effort). Cache invalidation failures never turn a successful
+  // migration into a reported failure, or vice versa.
   run = async ({
     workspaceMigration: { actions, applicationUniversalIdentifier },
     workspaceId,
@@ -240,6 +248,10 @@ export class WorkspaceMigrationRunnerService {
         action.rebuildSearchVector === true,
     );
 
+    // Rebuilding a search vector drops and recreates its tsvector column (see
+    // update-field-action-handler.service.ts), which drops any index defined on that
+    // column too — the handler looks up and recreates it afterward, so 'index' flat
+    // maps need to be loaded whenever this migration includes a rebuild.
     const searchVectorRebuildMetadataNames: AllMetadataName[] =
       hasSearchVectorRebuildAction ? ['index'] : [];
 
@@ -296,6 +308,11 @@ export class WorkspaceMigrationRunnerService {
       });
     }
 
+    // Only objectMetadata/fieldMetadata create actions carry a pre-assigned id (set
+    // during the build phase, e.g. for API-driven metadata or relation field pairing —
+    // see BaseUniversalCreateWorkspaceMigrationAction's `id` field). This collects those
+    // up front so other actions in the same migration that reference the
+    // not-yet-inserted entity by universalIdentifier can resolve to its final id.
     const preallocatedIdByUniversalIdentifierByMetadataName =
       buildPreallocatedIdByUniversalIdentifierFromActions(actions);
 
@@ -318,6 +335,9 @@ export class WorkspaceMigrationRunnerService {
       );
 
     try {
+      // Fails fast instead of hanging indefinitely behind another session's lock on a
+      // table this migration needs to ALTER — better to error and retry than block the
+      // whole install/upgrade pipeline.
       await queryRunner.query(`SET LOCAL lock_timeout = '8s'`);
 
       for (const action of actions) {
@@ -410,6 +430,12 @@ export class WorkspaceMigrationRunnerService {
         );
       }
 
+      // The SQL transaction rollback above already reverted every DB row this migration
+      // touched. This second, application-level rollback pass (in reverse action order)
+      // exists only for side effects handlers perform OUTSIDE that transaction — e.g. a
+      // logic function's external deployment — which a DB rollback can't undo. Each
+      // handler's rollback is independently best-effort (see rollback() on the base
+      // handler class), so one failing doesn't stop the rest from running.
       const invertedActions = [...actions].reverse();
 
       for (const invertedAction of invertedActions) {
@@ -453,6 +479,9 @@ export class WorkspaceMigrationRunnerService {
 
     const postCommitInvalidateStart = performance.now();
 
+    // Cache invalidation failing here never fails the migration itself — the DB change
+    // already committed successfully; a stale cache is recoverable, an incorrectly
+    // reported migration failure for a change that actually succeeded is worse.
     try {
       await this.invalidateCache({
         allFlatEntityMapsKeys,
@@ -473,6 +502,9 @@ export class WorkspaceMigrationRunnerService {
       'Runner',
     );
 
+    // Run only once the transaction has actually committed, and best-effort: by this
+    // point the DB change is permanent, so a side effect failing here is logged rather
+    // than surfaced as a migration failure (there's nothing left to roll back to).
     const sideEffectResults = await Promise.allSettled(
       allAfterCommitSideEffects.map((sideEffect) =>
         Promise.resolve().then(() => sideEffect.run()),
@@ -492,6 +524,10 @@ export class WorkspaceMigrationRunnerService {
       }
     });
 
+    // Note: this is true whenever object/field metadata was merely *loaded* for this
+    // migration (e.g. as a relation target), not only when it was actually created,
+    // updated, or deleted — callers using this to decide whether to regenerate the
+    // GraphQL schema may recompute more often than strictly necessary.
     const hasSchemaMetadataChanged =
       allFlatEntityMapsKeys.includes('flatObjectMetadataMaps') ||
       allFlatEntityMapsKeys.includes('flatFieldMetadataMaps');

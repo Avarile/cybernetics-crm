@@ -6,6 +6,9 @@ export class AddGlobalKeyValuePairUniqueIndex1774700000000 implements MigrationI
   name = 'AddGlobalKeyValuePairUniqueIndex1774700000000';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
+    // CREATE UNIQUE INDEX can fail on installs with pre-existing duplicate global
+    // (userId/workspaceId both NULL) key rows. The savepoint lets that failure be
+    // swallowed so this migration doesn't abort the whole transaction on such instances.
     const savepointName = 'sp_add_global_key_value_pair_unique_index';
 
     try {

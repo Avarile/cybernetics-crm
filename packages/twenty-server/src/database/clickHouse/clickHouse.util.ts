@@ -1,8 +1,6 @@
-/**
- * Formats a Date or ISO string for ClickHouse DateTime64(3) type.
- * ClickHouse expects: YYYY-MM-DD HH:mm:ss.SSS (no 'T' separator, no 'Z' suffix)
- * JavaScript toISOString() returns: YYYY-MM-DDTHH:mm:ss.SSSZ
- */
+// Formats a Date or ISO string for ClickHouse's DateTime64(3) type, which expects
+// YYYY-MM-DD HH:mm:ss.SSS (no 'T' separator, no 'Z' suffix) — unlike toISOString()'s
+// YYYY-MM-DDTHH:mm:ss.SSSZ.
 export const formatDateTimeForClickHouse = (date: Date | string): string => {
   const iso = typeof date === 'string' ? date : date.toISOString();
 

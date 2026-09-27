@@ -7,6 +7,9 @@ type AsyncFactoryCallback<T> = () => Promise<T | null>;
 
 const ONE_HOUR_IN_MS = 3600_000;
 
+// Caches factory() results by key with a TTL, and also coalesces concurrent calls for
+// the same not-yet-resolved key onto a single in-flight promise (the `pending` map)
+// so a burst of simultaneous callers doesn't invoke factory() once per caller.
 export class PromiseMemoizer<T> {
   private cache = new Map<CacheKey, { value: T; expiresAt: number }>();
   private pending = new Map<CacheKey, Promise<T | null>>();
@@ -39,6 +42,8 @@ export class PromiseMemoizer<T> {
       try {
         const value = await factory();
 
+        // A falsy result (eg: null) is never cached, so the next call retries factory()
+        // rather than memoizing a "no value" outcome.
         if (value) {
           this.cache.set(cacheKey, {
             value,
@@ -79,6 +84,8 @@ export class PromiseMemoizer<T> {
     this.cache.delete(cacheKey);
   }
 
+  // Bulk-invalidates every key sharing a prefix (eg: all keys for a given workspaceId),
+  // relying on CacheKey being a plain string that composite keys are built onto.
   async clearKeys(
     cacheKeyPrefix: CacheKey,
     onDelete?: (value: T) => Promise<void> | void,

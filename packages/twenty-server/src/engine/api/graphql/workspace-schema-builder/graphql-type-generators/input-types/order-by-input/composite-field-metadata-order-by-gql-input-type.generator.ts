@@ -45,6 +45,7 @@ export class CompositeFieldMetadataOrderByGqlInputTypeGenerator {
     const fields: GraphQLInputFieldConfigMap = {};
 
     for (const property of compositeType.properties) {
+      // Ordering shouldn't require specifying a direction for every subfield.
       property.isRequired = false;
       // Relation fields are not supported in composite types
       if (isMorphOrRelationFieldMetadataType(property.type)) {

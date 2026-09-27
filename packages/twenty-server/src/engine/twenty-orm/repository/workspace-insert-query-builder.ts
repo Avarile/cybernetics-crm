@@ -226,6 +226,8 @@ export class WorkspaceInsertQueryBuilder<
       if (isDefined(filesFieldFileIds)) {
         await this.filesFieldSync.updateFileEntityRecords(filesFieldFileIds);
       }
+      // Bypasses permission checks: this re-fetches the just-inserted rows only to build
+      // the internal CREATED/UPSERTED event payload, not to return data to the caller.
       const eventSelectQueryBuilder = (
         this.connection.manager as WorkspaceEntityManager
       ).createQueryBuilder(
@@ -358,6 +360,11 @@ export class WorkspaceInsertQueryBuilder<
     return mainAliasTarget;
   }
 
+  // TypeORM's base QueryBuilder normally lets one instance morph into another query
+  // type (select/update/delete/...), reusing its internal expressionMap. That's disabled
+  // here across all workspace query builders: morphing would carry over this builder's
+  // insert-specific state and let a caller sidestep the target operation's own
+  // permission/RLS validation path (each builder validates only its own operation type).
   override select(): WorkspaceSelectQueryBuilder<T> {
     throw new TwentyORMException(
       'This builder cannot morph into a select builder',

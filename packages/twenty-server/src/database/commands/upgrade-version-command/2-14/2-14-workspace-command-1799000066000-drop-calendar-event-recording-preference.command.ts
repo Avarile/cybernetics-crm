@@ -10,6 +10,9 @@ import { type FlatFieldMetadata } from 'src/engine/metadata-modules/flat-field-m
 import { WorkspaceCacheService } from 'src/engine/workspace-cache/services/workspace-cache.service';
 import { WorkspaceMigrationValidateBuildAndRunService } from 'src/engine/workspace-manager/workspace-migration/services/workspace-migration-validate-build-and-run-service';
 
+// Same id as LEGACY_CALENDAR_EVENT_RECORDING_PREFERENCE_FIELD_UNIVERSAL_IDENTIFIER in the
+// 2-10 call-recording-name-collision util, which excludes this field from collision
+// detection since it's a standard field, not a custom one. This command retires it.
 const CALENDAR_EVENT_RECORDING_PREFERENCE_FIELD_UNIVERSAL_IDENTIFIER =
   '1d231e7e-9bbe-410b-8007-ea7678a83e58';
 

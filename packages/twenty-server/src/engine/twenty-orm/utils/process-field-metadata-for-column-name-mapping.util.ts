@@ -50,6 +50,11 @@ export type ColumnNameProcessor = {
   }) => void;
 };
 
+// Visitor pattern shared by every "map between field metadata and column name(s)"
+// utility (see get-column-name-to-field-metadata-id.util.ts and
+// get-field-metadata-id-to-column-names-map.util.ts), so the composite/relation/simple
+// field dispatch logic — including which relation side actually owns a column — lives
+// in exactly one place.
 export function processFieldMetadataForColumnNameMapping(
   flatObjectMetadata: FlatObjectMetadata,
   flatFieldMetadataMaps: FlatEntityMaps<FlatFieldMetadata>,

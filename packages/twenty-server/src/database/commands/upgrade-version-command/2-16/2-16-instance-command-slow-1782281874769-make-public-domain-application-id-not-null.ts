@@ -7,6 +7,9 @@ import { SlowInstanceCommand } from 'src/engine/core-modules/upgrade/interfaces/
 export class MakePublicDomainApplicationIdNotNullSlowInstanceCommand
   implements SlowInstanceCommand
 {
+  // applicationId (added nullable in 2.4) was never backfilled, so any row still NULL
+  // here has no owning application and can't be attributed to one — deleted rather
+  // than backfilled, unlike most other NOT-NULL migrations in this sequence.
   async runDataMigration(dataSource: DataSource): Promise<void> {
     await dataSource.query(
       `DELETE FROM "core"."publicDomain" WHERE "applicationId" IS NULL`,

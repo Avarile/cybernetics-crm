@@ -55,6 +55,8 @@ export class EntitySchemaColumnFactory {
         const isManyToOneRelation =
           fieldMetadata.settings?.relationType === RelationType.MANY_TO_ONE;
 
+        // Only the MANY_TO_ONE side owns a physical foreign-key column; the inverse
+        // ONE_TO_MANY side is a virtual relation with no column of its own.
         if (!isManyToOneRelation) {
           continue;
         }
@@ -89,6 +91,7 @@ export class EntitySchemaColumnFactory {
       entitySchemaColumnMap[key] = {
         name: key,
         type: columnType as ColumnType,
+        // Millisecond precision to match JS Date's own resolution.
         precision:
           fieldMetadata.type === FieldMetadataType.DATE_TIME ? 3 : undefined,
         // TODO: We should double check that

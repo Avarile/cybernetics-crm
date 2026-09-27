@@ -3,6 +3,9 @@ import { type EmailsMetadata } from 'twenty-shared/types';
 import { hasRecordFieldValue } from 'src/engine/api/graphql/graphql-query-runner/utils/has-record-field-value.util';
 import { parseArrayOrJsonStringToArray } from 'src/engine/api/graphql/graphql-query-runner/utils/parse-additional-items.util';
 
+// primaryEmail follows priority-record-with-fallback like a simple field, but
+// additionalEmails is unioned across every record (including demoted primaries),
+// deduped, and never repeats whatever ended up as the merged primaryEmail.
 export const mergeEmailsFieldValues = (
   recordsWithValues: { value: EmailsMetadata; recordId: string }[],
   priorityRecordId: string,

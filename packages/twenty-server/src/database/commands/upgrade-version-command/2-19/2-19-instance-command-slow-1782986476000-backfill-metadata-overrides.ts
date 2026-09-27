@@ -9,6 +9,9 @@ const TABLES = ['objectMetadata', 'fieldMetadata'] as const;
 export class BackfillMetadataOverridesSlowInstanceCommand
   implements SlowInstanceCommand
 {
+  // The isActive count before/after has no direct relation to the "overrides" column
+  // being written; it's a sanity check that this UPDATE didn't have unintended side
+  // effects (eg: a trigger, a concurrent migration) on rows it wasn't meant to touch.
   async runDataMigration(dataSource: DataSource): Promise<void> {
     for (const table of TABLES) {
       const activeCountBefore = await this.getActiveCount(dataSource, table);

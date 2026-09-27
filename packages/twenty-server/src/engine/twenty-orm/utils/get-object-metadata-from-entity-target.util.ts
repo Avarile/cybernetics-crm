@@ -13,6 +13,9 @@ export const getObjectMetadataFromEntityTarget = <T extends ObjectLiteral>(
   entityTarget: EntityTarget<T>,
   internalContext: WorkspaceInternalContext,
 ): FlatObjectMetadata => {
+  // TypeORM's EntityTarget can be a class, an EntitySchema, or a string, but the
+  // workspace ORM always registers/targets entities by their object-metadata-name-
+  // singular string, never a class — so anything else here means malformed metadata.
   if (typeof entityTarget !== 'string') {
     throw new TwentyORMException(
       'Entity target must be a string',

@@ -22,6 +22,10 @@ const NAVIGATION_MENU_ITEM_MAX_DEPTH = 2;
 
 @Injectable()
 export class FlatNavigationMenuItemValidatorService {
+  // `type` is a discriminant: each NavigationMenuItemType requires a different
+  // companion field (folder needs a name, OBJECT needs targetObjectMetadataId, etc) —
+  // this only checks the required field is present for the given type, not that
+  // irrelevant fields for other types are absent.
   private validateNavigationMenuItemType({
     type,
     hasTargetRecordId,

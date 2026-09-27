@@ -30,6 +30,9 @@ export type ActorSourceEnumBackfillTarget = {
   expectedValues: string[];
 };
 
+// ACTOR is a composite type (source, workspaceMemberId, name, context); this finds every
+// enum sub-column (currently just "source") across all ACTOR fields in the workspace and
+// resolves each one's actual Postgres enum name, so the caller can backfill missing labels.
 export const buildActorSourceEnumBackfillTargets = ({
   flatObjectMetadataMaps,
   flatFieldMetadataMaps,
@@ -149,6 +152,9 @@ export class BackfillActorSourceEnumValuesCommand extends ProvisionedWorkspaceCo
 
       await queryRunner.startTransaction();
 
+      // Sentinel check: rather than querying every target's enum, assume the whole
+      // workspace is already migrated if company.createdBySource already has AGENT
+      // (the values are always added together, so one representative target suffices).
       const companyCreatedBySourceTarget = targets.find(
         (target) =>
           target.objectNameSingular === 'company' &&

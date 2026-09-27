@@ -7,6 +7,11 @@ import { type OrchestratorActionsReport } from 'src/engine/workspace-manager/wor
 import { WORKSPACE_MIGRATION_ACTION_TYPE } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-builder/constants/workspace-migration-action-type.constant';
 import { type UniversalUpdateFieldAction } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-builder/builders/field/types/workspace-migration-field-action';
 
+// Search-vector rebuilds are a relatively expensive backfill, so its update actions are
+// moved to the end of the fieldMetadata.update list, after every other field update has
+// applied. Also synthesizes an update action for any searchVector field that needs a
+// rebuild (e.g. because a field feeding it changed) but has no update action of its own
+// in this migration — otherwise that rebuild would never get triggered.
 export const aggregateOrchestratorActionsReportDeprioritizeSearchVectorUpdateFieldActions =
   ({
     orchestratorActionsReport,

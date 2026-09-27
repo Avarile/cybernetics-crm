@@ -5,6 +5,8 @@ export function computeCompositeFieldTypeOptions(
 ) {
   return {
     nullable: !property.isRequired,
+    // A MULTI_SELECT composite subfield is always array-shaped regardless of
+    // its own isArray flag.
     isArray:
       property.type === FieldMetadataType.MULTI_SELECT || property.isArray,
   };

@@ -128,6 +128,10 @@ export class GlobalWorkspaceOrmManager {
     };
   }
 
+  // Skips loading roles/permissions/RLS-predicate maps (only object/field metadata is
+  // fetched), returning empty maps for the rest — cheaper, but only safe for callers
+  // that don't need per-role permission enforcement. In practice this is only used by
+  // internal background jobs/system services, never in request-handling code paths.
   private async loadLiteWorkspaceContext(
     authContext: WorkspaceAuthContext,
   ): Promise<ORMWorkspaceContext> {

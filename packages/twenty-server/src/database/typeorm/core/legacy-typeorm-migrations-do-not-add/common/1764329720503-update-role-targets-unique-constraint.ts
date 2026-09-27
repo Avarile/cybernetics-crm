@@ -4,6 +4,9 @@ export class UpdateRoleTargetsUniqueConstraint1764329720503 implements Migration
   name = 'UpdateRoleTargetsUniqueConstraint1764329720503';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
+    // ADD CONSTRAINT can fail on installs with pre-existing rows that violate the new,
+    // narrower per-target-type unique constraints. The savepoint lets that failure be
+    // swallowed so this migration doesn't abort the whole transaction on such instances.
     const savepointName = 'sp_update_role_targets_unique_constraint';
 
     try {

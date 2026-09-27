@@ -14,6 +14,8 @@ import {
 
 const POSTGRES_MAX_IDENTIFIER_LENGTH = 63;
 
+// Truncates so `baseName + suffix` still fits Postgres's 63-byte identifier limit —
+// used for the "_old" temp names alterEnumValues creates during migration.
 const buildTemporaryIdentifier = (baseName: string, suffix: string): string => {
   const maxBaseLength = POSTGRES_MAX_IDENTIFIER_LENGTH - suffix.length;
 
@@ -143,6 +145,15 @@ export class WorkspaceSchemaEnumManagerService {
     await queryRunner.query(sql);
   }
 
+  // Postgres enums can't have their value set changed or renamed in bulk in a single
+  // statement, so the whole set of options is replaced instead: rename the old enum
+  // type out of the way, create a new enum type with the final value set, add a new
+  // column using it, migrate data across via a CASE mapping, then drop the old
+  // column/type. oldToNewEnumOptionMap is expected to include an identity entry for
+  // every option that still exists (even unchanged ones) — the caller (see
+  // update-field-action-handler.service.ts) builds it that way — so a value that's
+  // genuinely absent from the map means its option was removed, and rows holding that
+  // old value are intentionally left NULL on the new column rather than migrated.
   async alterEnumValues({
     queryRunner,
     schemaName,
@@ -165,6 +176,9 @@ export class WorkspaceSchemaEnumManagerService {
       );
     }
 
+    // Only starts/commits/rolls back its own transaction if the caller didn't already
+    // open one — lets this run standalone or as one step inside a larger migration
+    // transaction without double-wrapping it.
     const isTransactionAlreadyActive = queryRunner.isTransactionActive;
 
     if (!isTransactionAlreadyActive) {

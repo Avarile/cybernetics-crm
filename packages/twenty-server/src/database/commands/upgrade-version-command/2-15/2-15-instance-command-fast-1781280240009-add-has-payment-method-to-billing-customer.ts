@@ -8,6 +8,8 @@ export class AddHasPaymentMethodToBillingCustomerFastInstanceCommand
   implements FastInstanceCommand
 {
   public async up(queryRunner: QueryRunner): Promise<void> {
+    // billingCustomer only exists when IS_BILLING_ENABLED was ever turned on (default
+    // false), so self-hosted instances without billing may not have the table at all.
     const tableExists = await queryRunner.query(
       `SELECT 1 FROM pg_tables WHERE schemaname = 'core' AND tablename = 'billingCustomer'`,
     );

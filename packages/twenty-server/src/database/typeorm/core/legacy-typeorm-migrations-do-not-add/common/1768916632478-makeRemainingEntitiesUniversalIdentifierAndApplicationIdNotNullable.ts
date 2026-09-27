@@ -7,6 +7,10 @@ export class MakeRemainingEntitiesUniversalIdentifierAndApplicationIdNotNullable
     'MakeRemainingEntitiesUniversalIdentifierAndApplicationIdNotNullable1768916632478';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
+    // SET NOT NULL fails on rows not yet backfilled with a universalIdentifier/applicationId,
+    // across all the remaining tables this migration covers. The savepoint lets that
+    // failure be swallowed so this migration doesn't abort the whole transaction on
+    // installs that haven't backfilled yet.
     const savepointName =
       'sp_make_remaining_entities_universal_identifier_and_application_id_not_nullable';
 

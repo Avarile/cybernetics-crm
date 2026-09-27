@@ -138,6 +138,9 @@ export class SyncCalendarEventRecordPageCommand extends ProvisionedWorkspaceComm
       ],
     );
 
+    // Only add the CallRecordings widget if the field it displays actually exists on
+    // this workspace's calendarEvent object, or the widget would reference a field that
+    // isn't there.
     const pageLayoutWidgetUniversalIdentifiers = hasCallRecordingsField
       ? [
           ...CALENDAR_EVENT_PAGE_LAYOUT_WIDGET_UNIVERSAL_IDENTIFIERS,

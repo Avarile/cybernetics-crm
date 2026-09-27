@@ -3,6 +3,8 @@ import { type IntValueNode, Kind } from 'graphql/language';
 
 import { ValidationError } from 'src/engine/core-modules/graphql/utils/graphql-errors.util';
 
+// Registered in the schema's scalar list but no FieldMetadataType currently
+// maps to it (see TypeMapperService) — unused as of this writing.
 export const TimeScalarType = new GraphQLScalarType({
   name: 'Time',
   description: 'Time custom scalar type',

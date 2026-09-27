@@ -67,6 +67,10 @@ export const buildRowLevelPermissionRecordFilter = ({
     return null;
   }
 
+  // A predicate that can't be resolved (eg: the bound workspace-member field is empty,
+  // or its value is enum-incompatible with the target field) is dropped via `return null`
+  // below rather than treated as deny-all. If every predicate for this role/object drops
+  // out this way, recordFilters ends up empty and no row-level restriction is applied at all.
   const recordFilters = predicates
     .map((predicate) => {
       const fieldMetadata = findFlatEntityByIdInFlatEntityMaps({

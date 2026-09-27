@@ -83,6 +83,9 @@ export class ObjectMetadataGroupByGqlInputTypeGenerator {
     return allGeneratedFields;
   }
 
+  // Most fields are just toggled on/off as a group-by dimension (GraphQLBoolean);
+  // DATE/DATE_TIME fields instead take a granularity config object, since
+  // "group by date" needs to say by what unit (day, month, etc).
   private generateField(fieldMetadata: FlatFieldMetadata) {
     if (isCompositeFieldMetadataType(fieldMetadata.type))
       return this.generateCompositeFieldGroupByInputType(fieldMetadata);

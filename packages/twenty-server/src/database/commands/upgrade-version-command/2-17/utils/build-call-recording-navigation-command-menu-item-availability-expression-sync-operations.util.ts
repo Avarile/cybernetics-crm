@@ -41,6 +41,8 @@ export const buildCallRecordingNavigationCommandMenuItemAvailabilityExpressionSy
         CALL_RECORDING_NAVIGATION_COMMAND_MENU_ITEM_UNIVERSAL_IDENTIFIER
       ];
 
+    // Only rewrite if the expression is still exactly the legacy one: this avoids
+    // clobbering an expression a workspace admin may have since customized.
     if (
       !isDefined(existingCallRecordingObjectMetadata) ||
       !isDefined(existingCallRecordingNavigationCommandMenuItem) ||

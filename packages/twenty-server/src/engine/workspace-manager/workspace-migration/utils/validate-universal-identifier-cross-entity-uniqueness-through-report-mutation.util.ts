@@ -39,6 +39,10 @@ export const validateUniversalIdentifierCrossEntityUniquenessThroughReportMutati
         const existingOwner =
           allUniversalIdentifierMap.get(universalIdentifier);
 
+        // optimisticUniversalFlatMaps already reflects this create action, so when
+        // checking a create action's own identifier the "existing owner" found is
+        // itself — same metadataName means it's a self-match, not a real collision.
+        // Only a different metadataName owning the identifier is an actual conflict.
         if (!existingOwner || existingOwner.metadataName === metadataName) {
           continue;
         }

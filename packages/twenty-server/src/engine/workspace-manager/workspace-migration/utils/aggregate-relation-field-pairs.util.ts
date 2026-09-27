@@ -4,6 +4,11 @@ import { type AggregateOrchestratorActionsReportArgs } from 'src/engine/workspac
 import { type OrchestratorActionsReport } from 'src/engine/workspace-manager/workspace-migration/types/workspace-migration-orchestrator.type';
 import { type UniversalCreateFieldAction } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-builder/builders/field/types/workspace-migration-field-action';
 
+// When both sides of a relation are being created in the same migration, merges them
+// into a single create action carrying both sides' info, so the handler can wire up the
+// FK/join column in one step instead of two uncoordinated actions racing each other.
+// A field whose relation counterpart isn't in this batch (already exists, or not being
+// created here) is left as a standalone action and resolved against the existing side.
 export const aggregateRelationFieldPairs = ({
   orchestratorActionsReport,
 }: AggregateOrchestratorActionsReportArgs): OrchestratorActionsReport => {

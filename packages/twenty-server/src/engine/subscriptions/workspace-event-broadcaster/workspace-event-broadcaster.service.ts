@@ -42,6 +42,8 @@ export class WorkspaceEventBroadcaster {
     const streamIdsToRemove: string[] = [];
 
     for (const [streamChannelId, streamData] of streamsData) {
+      // Stream was in the active-streams set but its cache entry already expired/was
+      // destroyed — lazily drop it from the set instead of leaving a dangling reference.
       if (!isDefined(streamData)) {
         streamIdsToRemove.push(streamChannelId);
         continue;

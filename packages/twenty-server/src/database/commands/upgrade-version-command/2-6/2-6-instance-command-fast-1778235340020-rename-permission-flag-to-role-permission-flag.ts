@@ -3,6 +3,10 @@ import { QueryRunner } from 'typeorm';
 import { RegisteredInstanceCommand } from 'src/engine/core-modules/upgrade/decorators/registered-instance-command.decorator';
 import { FastInstanceCommand } from 'src/engine/core-modules/upgrade/interfaces/fast-instance-command.interface';
 
+// Step 1 of the permissionFlag->rolePermissionFlag cutover (see the 2-6 link/backfill
+// and 2-7 finalize commands for the rest): renames the table and re-derives every
+// constraint/index name TypeORM would generate for the new table name, since a plain
+// RENAME TABLE doesn't rename the constraints/indexes that embed the old name.
 @RegisteredInstanceCommand('2.6.0', 1778235340020)
 export class RenamePermissionFlagToRolePermissionFlagFastInstanceCommand implements FastInstanceCommand {
   public async up(queryRunner: QueryRunner): Promise<void> {

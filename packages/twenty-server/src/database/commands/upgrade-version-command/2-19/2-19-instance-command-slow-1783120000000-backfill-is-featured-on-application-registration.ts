@@ -3,6 +3,9 @@ import { DataSource, QueryRunner } from 'typeorm';
 import { RegisteredInstanceCommand } from 'src/engine/core-modules/upgrade/decorators/registered-instance-command.decorator';
 import { SlowInstanceCommand } from 'src/engine/core-modules/upgrade/interfaces/slow-instance-command.interface';
 
+// Call Recorder, People Data Labs, and Twenty Last Contact — the marketplace-vetted
+// apps (see marketplace-vetted-applications.constant.ts) editorially chosen to be
+// featured, not derived from any data property.
 const FEATURED_UNIVERSAL_IDENTIFIERS = [
   '8da4b8b5-5edf-4880-b51f-ab6e679ec617',
   '4a1178c1-3535-4a47-b592-231d3216b36f',

@@ -49,6 +49,9 @@ export const validateAgentResponseFormat = ({
     }
   }
 
+  // Cast needed to read `.schema` off a value the type system narrows to the
+  // schema-less 'text' variant — this guards against a caller passing both
+  // type: 'text' and a leftover/mistaken schema.
   if (
     type === 'text' &&
     isDefined((responseFormat as unknown as AgentJsonResponseFormat).schema)

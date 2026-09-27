@@ -44,6 +44,8 @@ export class WorkspaceMigrationObjectActionsBuilderService extends WorkspaceEnti
       action: {
         type: 'create',
         metadataName: 'objectMetadata',
+        // Populated later by aggregateNonRelationFieldsIntoObjectActions, which folds
+        // this object's newly-created non-relation fields into this same action.
         universalFlatFieldMetadatas: [],
         flatEntity: flatObjectMetadataToValidate,
       },

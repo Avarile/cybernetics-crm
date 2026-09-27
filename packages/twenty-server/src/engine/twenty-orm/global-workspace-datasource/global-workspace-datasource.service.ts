@@ -105,6 +105,8 @@ export class GlobalWorkspaceDataSourceService
   }
 
   public getGlobalWorkspaceDataSourceReplica(): GlobalWorkspaceDataSource {
+    // No PG_DATABASE_REPLICA_URL configured: transparently fall back to the primary so
+    // read-only callers don't need their own "is there a replica" branching.
     if (!isDefined(this.globalWorkspaceDataSourceReplica)) {
       return this.getGlobalWorkspaceDataSource();
     }

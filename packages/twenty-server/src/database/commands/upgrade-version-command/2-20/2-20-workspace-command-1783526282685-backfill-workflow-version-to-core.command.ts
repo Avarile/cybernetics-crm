@@ -47,6 +47,8 @@ export class BackfillWorkflowVersionToCoreCommand extends ProvisionedWorkspaceCo
           buildSystemAuthContext(workspaceId),
         );
     } catch (error) {
+      // Some workspaces (eg: never provisioned the workflow feature, or mid-upgrade)
+      // have no workflowVersion object in their metadata yet; nothing to backfill.
       if (error instanceof EntityMetadataNotFoundError) {
         this.logger.log(
           `workflowVersion object does not exist for workspace ${workspaceId}, skipping`,

@@ -4,6 +4,9 @@ import { type WorkspaceSchemaColumnDefinition } from 'src/engine/twenty-orm/work
 import { buildSqlColumnDefinition } from 'src/engine/twenty-orm/workspace-schema-manager/utils/build-sql-column-definition.util';
 import { escapeIdentifier } from 'src/engine/workspace-manager/workspace-migration/utils/remove-sql-injection.util';
 
+// schemaName/tableName ultimately trace back to workspace/custom-object names, so every
+// identifier here MUST go through escapeIdentifier — these build raw DDL strings, and
+// values are never parameterizable the way query values are.
 export class WorkspaceSchemaTableManagerService {
   async createTable({
     queryRunner,
@@ -21,6 +24,8 @@ export class WorkspaceSchemaTableManagerService {
         buildSqlColumnDefinition(columnDefinition),
       ) || [];
 
+    // A CREATE TABLE with an empty column list is invalid SQL, so a table created with
+    // no explicit columns still gets a minimal primary key.
     if (sqlColumnDefinitions.length === 0) {
       sqlColumnDefinitions.push(
         '"id" uuid PRIMARY KEY DEFAULT gen_random_uuid()',

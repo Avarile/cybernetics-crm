@@ -49,6 +49,8 @@ export class EventStreamService implements OnModuleInit {
       now - this.activeStreamCountRefreshedAt >= ACTIVE_STREAM_COUNT_REFRESH_MS;
 
     if (isStale) {
+      // Cached rather than computed on every gauge scrape: this SCANs every
+      // workspace's active-streams set across the whole Redis keyspace.
       this.activeStreamCount =
         await this.cacheStorageService.scanAndCountSetMembers(
           'workspace:*:activeStreams',
@@ -72,6 +74,8 @@ export class EventStreamService implements OnModuleInit {
 
     const existing = await this.cacheStorageService.get<EventStreamData>(key);
 
+    // One event stream per (workspace, channel): a stale/duplicate create attempt
+    // for a channel that's already registered is rejected rather than overwritten.
     if (isDefined(existing)) {
       throw new EventStreamException(
         'Event stream already exists',
@@ -154,6 +158,9 @@ export class EventStreamService implements OnModuleInit {
     return result;
   }
 
+  // Stream channel IDs are otherwise guessable/enumerable, so re-checking the
+  // caller's identity against the identity the stream was created under is what
+  // actually stops one session from reading another session's event stream.
   async isAuthorized({
     authContext,
     streamData,

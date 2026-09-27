@@ -8,6 +8,9 @@ import {
 
 import { type DeepPartialWithNestedRelationFields } from 'src/engine/twenty-orm/entity-manager/types/deep-partial-entity-with-nested-relation-fields.type';
 
+// TypeORM's EntityManager methods are overloaded as either save(entity) or
+// save(target, entity) — this disambiguates the two call shapes to recover the
+// entity class/target either way, falling back to the entity's own constructor.
 export const getEntityTarget = <
   Entity extends ObjectLiteral,
   T extends DeepPartialWithNestedRelationFields<Entity>,

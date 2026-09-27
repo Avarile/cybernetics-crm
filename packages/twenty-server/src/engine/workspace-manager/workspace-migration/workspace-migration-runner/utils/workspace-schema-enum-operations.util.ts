@@ -217,6 +217,10 @@ export const executeBatchEnumOperations = async ({
   }
 
   try {
+    // These all run against the same queryRunner/connection — Promise.all here starts
+    // them concurrently from JS's perspective, but the actual DDL statements still rely
+    // on the underlying driver to serialize them on that one connection rather than
+    // true parallel execution.
     const enumPromises = enumOperations.map((enumOp) => {
       switch (enumOp.operation) {
         case EnumOperation.CREATE:

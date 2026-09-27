@@ -18,6 +18,9 @@ const VIEW_OVERRIDES_UNIVERSAL_FIELD_METADATA_PROPERTIES = [
 type ViewOverridesUniversalFieldMetadataProperty =
   (typeof VIEW_OVERRIDES_UNIVERSAL_FIELD_METADATA_PROPERTIES)[number];
 
+// Relies on the naming convention that every universal FK property is the scalar
+// property name with "Id" swapped for "UniversalIdentifier" (e.g.
+// calendarFieldMetadataId -> calendarFieldMetadataUniversalIdentifier).
 const toForeignKeyProperty = (
   universalProperty: ViewOverridesUniversalFieldMetadataProperty,
 ) =>

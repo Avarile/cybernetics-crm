@@ -114,6 +114,9 @@ export class TrashCleanupService {
         while (deleted < remainingQuota) {
           const take = Math.min(this.batchSize, remainingQuota - deleted);
 
+          // withDeleted: default TypeORM queries exclude soft-deleted rows; this job's
+          // whole job is to find them. Oldest-trashed-first so a quota cutoff (maxRecordsPerWorkspace)
+          // purges the longest-overdue records rather than an arbitrary subset.
           const recordsToDelete = await repository.find({
             withDeleted: true,
             select: ['id'],
@@ -129,6 +132,7 @@ export class TrashCleanupService {
             break;
           }
 
+          // Hard delete: permanently removes rows past their retention window, no undo.
           await repository.delete({
             id: In(recordsToDelete.map((record) => record.id)),
           });
@@ -146,6 +150,8 @@ export class TrashCleanupService {
     const cutoffDate = new Date();
 
     cutoffDate.setUTCHours(0, 0, 0, 0);
+    // +1 makes retention inclusive of today: trashRetentionDays=7 keeps records trashed
+    // today through 6 days ago (7 full days), purging anything trashed before that.
     cutoffDate.setDate(cutoffDate.getDate() - trashRetentionDays + 1);
 
     return cutoffDate;

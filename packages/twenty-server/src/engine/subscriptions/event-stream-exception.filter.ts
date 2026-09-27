@@ -13,6 +13,10 @@ import {
 export class EventStreamExceptionFilter implements GqlExceptionFilter {
   catch(exception: EventStreamException) {
     switch (exception.code) {
+      // ALREADY_EXISTS is thrown both when a reconnect's isAuthorized() check fails
+      // (EventStreamResolver) and as a race-condition guard in EventStreamService — in
+      // the caller-relevant case it's really an authz failure, hence sharing Forbidden
+      // with NOT_AUTHORIZED rather than mapping to a Conflict-style error.
       case EventStreamExceptionCode.EVENT_STREAM_ALREADY_EXISTS:
       case EventStreamExceptionCode.NOT_AUTHORIZED:
         throw new ForbiddenError(exception.message, {

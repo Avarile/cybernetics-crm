@@ -144,6 +144,9 @@ export const getAvailableAggregationsFromObjectFields = (
             aggregateOperation: AggregateOperations.SUM,
           };
           break;
+        // CURRENCY stores its numeric value in a composite `amountMicros`
+        // subfield, so its numeric aggregates target that subfield explicitly
+        // rather than the field itself.
         case FieldMetadataType.CURRENCY:
           acc[`min${capitalize(field.name)}AmountMicros`] = {
             type: GraphQLFloat,

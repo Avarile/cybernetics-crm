@@ -6,7 +6,10 @@ import { type WorkspaceMigrationActionType } from 'src/engine/workspace-manager/
 
 export type FlatEntityValidationError<TCode extends string = string> = {
   code: TCode;
+  // Developer-facing: logged, used in API/internal error responses.
   message: string;
+  // End-user-facing i18n message shown in the UI when set; falls back to a generic
+  // message derived from `code` otherwise (see getMetadataValidationUserFriendlyMessage).
   userFriendlyMessage?: MessageDescriptor;
   value?: unknown;
 };

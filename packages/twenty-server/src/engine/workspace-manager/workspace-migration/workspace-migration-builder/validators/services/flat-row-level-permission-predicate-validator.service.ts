@@ -13,6 +13,16 @@ import { getEmptyFlatEntityValidationError } from 'src/engine/workspace-manager/
 import { FlatEntityUpdateValidationArgs } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-builder/types/universal-flat-entity-update-validation-args.type';
 import { UniversalFlatEntityValidationArgs } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-builder/types/universal-flat-entity-validation-args.type';
 
+// Note the `xMaps ? find(...) : undefined` pattern used throughout below: if a related
+// map wasn't even loaded into optimisticFlatEntityMapsAndRelatedFlatEntityMaps for this
+// validation call, that's treated the same as the referenced entity not existing (fails
+// closed rather than silently skipping the check).
+//
+// On update, roleUniversalIdentifier and objectMetadataUniversalIdentifier are
+// deliberately immutable (checked explicitly below) since repointing an existing
+// predicate to a different role or object would be a privilege-escalation vector.
+// fieldMetadataUniversalIdentifier has no such restriction — a predicate can be
+// repointed to a different field on the same object/role.
 @Injectable()
 export class FlatRowLevelPermissionPredicateValidatorService {
   validateFlatRowLevelPermissionPredicateCreation({

@@ -107,6 +107,8 @@ export class BackfillSystemFieldIsSystemSideEffectCommand extends ProvisionedWor
         name: flatFieldMetadata.name,
       });
 
+      // Confirms this row is genuinely the system field, not merely a same-named field
+      // (eg: a custom field a user happened to call "position") that shouldn't be flagged.
       if (
         systemFieldUniversalIdentifier !== flatFieldMetadata.universalIdentifier
       ) {

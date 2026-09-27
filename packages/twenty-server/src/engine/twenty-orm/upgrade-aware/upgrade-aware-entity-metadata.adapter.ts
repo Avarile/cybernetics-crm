@@ -30,6 +30,13 @@ type EntityMetadataSnapshot = {
   columnUpdateByPropertyName: ReadonlyMap<string, boolean>;
 };
 
+// A self-hosted server can run code that's ahead of the migrations actually applied
+// to its database (eg: mid-rollout, or an operator who hasn't run the latest instance
+// command yet). This adapter rewrites TypeORM's live EntityMetadata to match the schema
+// as it existed at the last *applied* migration ("the cursor") rather than the schema
+// the current code was written against — renaming tables/columns back to their pre-rename
+// names, and hiding columns/marking entities unavailable when they don't exist yet — so
+// ordinary repository calls don't fail against a database that hasn't caught up.
 @Injectable()
 export class UpgradeAwareEntityMetadataAdapter implements OnModuleInit {
   private readonly logger = new Logger(UpgradeAwareEntityMetadataAdapter.name);
@@ -88,6 +95,7 @@ export class UpgradeAwareEntityMetadataAdapter implements OnModuleInit {
     let nextCursor: number;
 
     if (!isDefined(lastAttempted)) {
+      // Nothing recorded yet: treat the database as being at the very start of the sequence.
       nextCursor = 0;
     } else {
       const index = this.stepNameToIndex.get(lastAttempted.name);
@@ -95,6 +103,9 @@ export class UpgradeAwareEntityMetadataAdapter implements OnModuleInit {
       if (!isDefined(index)) {
         nextCursor = 0;
       } else {
+        // A completed step's schema changes are live, so the cursor moves past it;
+        // an incomplete/failed one means its changes may be partially applied, so the
+        // cursor stays at that step (its schema is treated as not yet available).
         nextCursor = lastAttempted.status === 'completed' ? index + 1 : index;
       }
     }

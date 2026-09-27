@@ -10,6 +10,9 @@ export class AddPayloadToCommandMenuItem1775129635528 implements MigrationInterf
       `ALTER TABLE "core"."commandMenuItem" ADD "payload" jsonb`,
     );
 
+    // Adding the CHECK constraint can fail on installs with pre-existing rows that
+    // violate it. The savepoint lets that failure be swallowed so this migration
+    // doesn't abort the whole transaction on such instances.
     const savepointName =
       'sp_add_payload_check_constraint_to_command_menu_item';
 

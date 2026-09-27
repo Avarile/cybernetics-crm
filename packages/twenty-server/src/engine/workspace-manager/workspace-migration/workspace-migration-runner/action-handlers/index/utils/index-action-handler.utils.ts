@@ -138,6 +138,10 @@ export const createIndexInWorkspaceSchema = async ({
   workspaceSchemaManagerService: WorkspaceSchemaManagerService;
   queryRunner: QueryRunner;
   workspaceId: string;
+  // Postgres refuses CREATE INDEX CONCURRENTLY inside a transaction block. Every caller
+  // today runs inside the runner's (or an upgrade command's) transaction and passes
+  // false/omits this, so it's effectively unused — passing true here would fail at
+  // execution time, not at call time.
   concurrently?: boolean;
 }): Promise<void> => {
   const { schemaName, tableName } = getWorkspaceSchemaContextForMigration({

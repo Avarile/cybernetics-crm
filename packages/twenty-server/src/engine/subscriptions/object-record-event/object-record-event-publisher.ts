@@ -85,11 +85,15 @@ export class ObjectRecordEventPublisher {
     const streamIdsToRemove: string[] = [];
 
     for (const [streamChannelId, streamData] of streamsData) {
+      // Stream was in the active-streams set but its cache entry already expired/was
+      // destroyed — lazily drop it from the set instead of leaving a dangling reference.
       if (!isDefined(streamData)) {
         streamIdsToRemove.push(streamChannelId);
         continue;
       }
 
+      // No GraphQL queries registered yet for this stream (client hasn't called
+      // addQueryToEventStream) — nothing to match against.
       if (Object.keys(streamData.queries).length === 0) {
         continue;
       }
@@ -140,6 +144,8 @@ export class ObjectRecordEventPublisher {
   }): Promise<void> {
     const { userWorkspaceId } = streamData.authContext;
 
+    // API-key-authenticated streams have no userWorkspaceId/role, so they never
+    // receive object-record events here — only user sessions do.
     if (!isDefined(userWorkspaceId)) {
       return;
     }
@@ -150,6 +156,9 @@ export class ObjectRecordEventPublisher {
       return;
     }
 
+    // Permissions are re-checked per event against the subscriber's *current* role,
+    // not the role they had when they subscribed — a permission change takes effect
+    // on the next event rather than requiring the client to reconnect.
     const objectPermissions =
       permissionsContext.rolesPermissions[roleId]?.[
         workspaceEventBatch.objectMetadata.id
@@ -195,6 +204,9 @@ export class ObjectRecordEventPublisher {
         updatedFields?: string[];
       };
 
+      // After restricted-field filtering, an update where every changed field was
+      // restricted looks like a no-op update — drop it rather than notifying the
+      // subscriber that "something changed" on a record they can't see the diff of.
       if (
         isDefined(filteredProperties.updatedFields) &&
         filteredProperties.updatedFields.length === 0
@@ -221,6 +233,8 @@ export class ObjectRecordEventPublisher {
     }
 
     if (matchedEvents.length > 0) {
+      // Best-effort: a failure resolving nested relations shouldn't drop the whole
+      // event, so it's logged and the event is still broadcast without the relations.
       try {
         await this.enrichEventBatchWithNestedRelations({
           objectMetadata: workspaceEventBatch.objectMetadata,
@@ -505,6 +519,9 @@ export class ObjectRecordEventPublisher {
       return true;
     }
 
+    // Queries implicitly filter out soft-deleted records by default, but a DELETED event's
+    // record *is* soft-deleted by the time it's published (and a RESTORED one just was) —
+    // applying that default filter here would make the query never match its own delete/restore.
     const shouldIgnoreSoftDeleteDefaultFilter =
       event.action === DatabaseEventAction.DELETED ||
       event.action === DatabaseEventAction.RESTORED;

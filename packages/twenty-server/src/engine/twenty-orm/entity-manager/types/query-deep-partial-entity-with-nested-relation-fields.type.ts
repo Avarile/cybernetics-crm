@@ -25,6 +25,8 @@ export type EntityRelationFields<T> = {
     : never;
 }[keyof T];
 
+// Query-builder counterpart to DeepPartialWithNestedRelationFields: same connect/
+// disconnect-sentinel-or-nested-value shape, for QueryDeepPartialEntity instead of DeepPartial.
 export type QueryDeepPartialEntityWithNestedRelationFields<T> = Omit<
   QueryDeepPartialEntity<T>,
   EntityRelationFields<T>

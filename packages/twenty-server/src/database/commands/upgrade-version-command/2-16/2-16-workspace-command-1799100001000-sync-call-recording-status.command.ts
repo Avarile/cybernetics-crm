@@ -80,6 +80,8 @@ export class SyncCallRecordingStatusCommand extends ProvisionedWorkspaceCommandR
       );
     }
 
+    // Renames the SELECT option's value in field metadata only; existing callRecording
+    // rows already storing the raw "FAILED_UNKNOWN" string are not backfilled here.
     const selectStatusField =
       statusField as FlatFieldMetadata<FieldMetadataType.SELECT>;
     const optionsWithFailedStatus = (selectStatusField.options ?? []).map(

@@ -14,6 +14,8 @@ export class AddStatusToAgentMessage1775001600000 implements MigrationInterface 
     await queryRunner.query(
       `ALTER TABLE "core"."agentMessage" ADD COLUMN "processedAt" TIMESTAMPTZ`,
     );
+    // All pre-existing rows default to 'sent' (there was no "queued" concept before this
+    // column existed), so backfill their processedAt from createdAt as a reasonable stand-in.
     await queryRunner.query(
       `UPDATE "core"."agentMessage" SET "processedAt" = "createdAt" WHERE "status" = 'sent'`,
     );

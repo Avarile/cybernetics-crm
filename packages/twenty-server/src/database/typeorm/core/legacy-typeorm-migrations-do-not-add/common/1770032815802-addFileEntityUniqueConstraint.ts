@@ -4,6 +4,9 @@ export class AddFileEntityUniqueConstraint1770032815802 implements MigrationInte
   name = 'AddFileEntityUniqueConstraint1770032815802';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
+    // ADD CONSTRAINT can fail on installs with pre-existing duplicate (workspaceId,
+    // applicationId, path) rows. The savepoint lets that failure be swallowed so this
+    // migration doesn't abort the whole transaction on such instances.
     const savepointName = 'sp_add_file_entity_unique_constraint';
 
     try {

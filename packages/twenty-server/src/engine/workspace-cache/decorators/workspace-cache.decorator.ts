@@ -3,6 +3,10 @@ import { SetMetadata } from '@nestjs/common';
 import { type WorkspaceCacheKeyName } from 'src/engine/workspace-cache/types/workspace-cache-key.type';
 
 export type WorkspaceCacheOptions = {
+  // When true, the computed data is kept only in each pod's local in-memory cache
+  // and never written to Redis (only its version hash is), so every pod recomputes
+  // independently on a miss instead of sharing the value across the cluster. Use
+  // this for data too large/cheap-to-recompute to be worth replicating via Redis.
   localDataOnly?: boolean;
 };
 

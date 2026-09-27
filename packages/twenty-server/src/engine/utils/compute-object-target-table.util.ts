@@ -9,6 +9,8 @@ export const computeObjectTargetTable = (
     'nameSingular' | 'applicationUniversalIdentifier'
   >,
 ) => {
+  // Anything not owned by the standard application (ie: a custom app's object) is
+  // treated as custom and gets the underscore-prefixed table name.
   return computeTableName(
     objectMetadata.nameSingular,
     objectMetadata.applicationUniversalIdentifier !==

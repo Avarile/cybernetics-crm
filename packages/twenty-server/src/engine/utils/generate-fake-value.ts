@@ -1,5 +1,9 @@
 import { FieldMetadataType } from 'twenty-shared/types';
 
+// Generates placeholder sample values (eg: for the workflow builder's schema preview),
+// not real data. `valueType` for 'Primitive' is a lightweight TS-like type string
+// (eg: "string[]", "{name:string;age:number}") that this file parses itself, not an
+// actual TS type.
 export type FakeValueTypes =
   | string
   | number

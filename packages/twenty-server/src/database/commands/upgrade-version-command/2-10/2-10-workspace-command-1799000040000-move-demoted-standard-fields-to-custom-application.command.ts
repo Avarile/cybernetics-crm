@@ -55,6 +55,11 @@ const DEMOTED_STANDARD_FIELDS: {
   description:
     'Re-own the demoted Company ARR / ICP / Employees, Company/Person X (Twitter) and Person City standard fields to the workspace custom application, preserving their data and keeping them active',
 })
+// Updates fieldMetadata rows directly with the repository, instead of going through
+// WorkspaceMigrationValidateBuildAndRunService like most other commands: this only
+// re-owns existing rows (no physical schema change needed), so the full flat-entity
+// diff/validate/migration-build pipeline isn't necessary — the cache flush and metadata
+// version bump below stand in for what that service would otherwise do automatically.
 export class MoveDemotedStandardFieldsToCustomApplicationCommand extends ProvisionedWorkspaceCommandRunner {
   constructor(
     protected readonly workspaceIteratorService: WorkspaceIteratorService,
@@ -126,6 +131,9 @@ export class MoveDemotedStandardFieldsToCustomApplicationCommand extends Provisi
       return;
     }
 
+    // A fresh random id, not a deterministic v5 one: once owned by the custom
+    // application, this field is no longer derived from a fixed
+    // application/object/field triple in the standard namespace.
     for (const { id } of fieldsToReown) {
       await this.fieldMetadataRepository.update(
         { id },

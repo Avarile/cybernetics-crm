@@ -1,3 +1,6 @@
+// "Has a value" for merge purposes excludes empty string, NaN, empty arrays,
+// and objects whose values are all themselves empty (recursively) — these are
+// treated the same as null/undefined so merging doesn't prefer a blank field.
 export const hasRecordFieldValue = (value: unknown): boolean => {
   if (value === null || value === undefined) {
     return false;

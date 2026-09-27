@@ -5,6 +5,9 @@ import { SlowInstanceCommand } from 'src/engine/core-modules/upgrade/interfaces/
 
 @RegisteredInstanceCommand('2.14.0', 1781515653781, { type: 'slow' })
 export class SetTableWidgetViewsVisibilityToWorkspaceSlowInstanceCommand implements SlowInstanceCommand {
+  // A dashboard widget's backing view must be WORKSPACE-visible; an UNLISTED one (owned
+  // by a single user) renders blank for everyone else. This fixes TABLE_WIDGET views
+  // that were created UNLISTED before that constraint was enforced.
   async runDataMigration(dataSource: DataSource): Promise<void> {
     await dataSource.query(
       `UPDATE "core"."view"

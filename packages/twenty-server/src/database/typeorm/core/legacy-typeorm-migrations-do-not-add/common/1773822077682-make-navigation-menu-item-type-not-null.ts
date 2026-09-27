@@ -6,6 +6,9 @@ export class MakeNavigationMenuItemTypeNotNull1773822077682 implements Migration
   name = 'MakeNavigationMenuItemTypeNotNull1773822077682';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
+    // SET NOT NULL fails on rows not yet backfilled with a type. The savepoint lets that
+    // failure be swallowed so this migration doesn't abort the whole transaction on
+    // installs that haven't backfilled yet.
     const savepointName = 'sp_make_navigation_menu_item_type_not_null';
 
     try {

@@ -6,9 +6,13 @@ import { SlowInstanceCommand } from 'src/engine/core-modules/upgrade/interfaces/
 @RegisteredInstanceCommand('2.3.0', 1777966965588, { type: 'slow' })
 export class BackfillApplicationVariableUniversalIdentifierSlowInstanceCommand implements SlowInstanceCommand {
   async runDataMigration(dataSource: DataSource): Promise<void> {
+    // applicationId was never backfilled for pre-existing rows, so any row still NULL
+    // here has no owning application and is deleted rather than backfilled.
     await dataSource.query(
       'DELETE FROM "core"."applicationVariable" WHERE "applicationId" IS NULL',
     );
+    // Random, not derived: unlike object/field metadata, application variables have no
+    // other stable natural key to deterministically derive a universalIdentifier from.
     await dataSource.query(
       'UPDATE "core"."applicationVariable" SET "universalIdentifier" = gen_random_uuid() WHERE "universalIdentifier" IS NULL',
     );

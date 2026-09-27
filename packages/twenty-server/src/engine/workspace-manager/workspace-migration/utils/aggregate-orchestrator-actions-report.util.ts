@@ -8,6 +8,8 @@ export const aggregateOrchestratorActionsReport = ({
   flatFieldMetadataMaps,
   searchVectorUniversalIdentifiersToRebuild,
 }: AggregateOrchestratorActionsReportArgs) => {
+  // Order matters: each step consumes the previous step's output, so re-ordering
+  // changes which actions are eligible to be folded/deprioritized by later steps.
   const aggregatedOrchestratorActionsReport = [
     aggregateNonRelationFieldsIntoObjectActions,
     aggregateRelationFieldPairs,

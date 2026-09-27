@@ -26,6 +26,14 @@ type AddUniversalFlatEntityToUniversalFlatEntityAndRelatedEntityMapsThroughMutat
   skipMissingRelatedEntities?: boolean;
 };
 
+// Beyond adding the entity itself, this is what actually maintains the derived
+// "foreign-key aggregator" reverse-side lists (e.g. an object's list of its fields'
+// universalIdentifiers, see all-universal-flat-entity-foreign-key-aggregator-properties.constant.ts):
+// for each many-to-one relation this entity has, it finds the referenced parent entity
+// and appends this entity's universalIdentifier onto the parent's aggregator array.
+// skipMissingRelatedEntities exists for cases like searchFieldMetadata, which can be
+// added before its parent object/fields are in the maps yet — there's nothing to
+// back-link to in that case, so it's silently skipped rather than throwing.
 export const addUniversalFlatEntityToUniversalFlatEntityAndRelatedEntityMapsThroughMutationOrThrow =
   <T extends AllMetadataName>({
     metadataName,

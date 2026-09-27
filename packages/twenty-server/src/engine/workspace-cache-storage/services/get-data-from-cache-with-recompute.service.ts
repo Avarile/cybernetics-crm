@@ -15,6 +15,9 @@ type CacheResult<T, U> = {
 
 @Injectable()
 export class GetDataFromCacheWithRecomputeService<T, U> {
+  // Singleton-scoped, process-lifetime in-memory cache. Keying by `${workspaceId}-${version}`
+  // means a version bump naturally invalidates the old entry without explicit eviction, but
+  // stale (workspaceId, version) entries are never removed, so this grows unbounded over time.
   private cache = new Map<string, CacheResult<T, U>>();
 
   logger = new Logger(GetDataFromCacheWithRecomputeService.name);

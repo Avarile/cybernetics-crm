@@ -13,6 +13,15 @@ import { getEmptyFlatEntityValidationError } from 'src/engine/workspace-manager/
 import { FlatEntityUpdateValidationArgs } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-builder/types/universal-flat-entity-update-validation-args.type';
 import { UniversalFlatEntityValidationArgs } from 'src/engine/workspace-manager/workspace-migration/workspace-migration-builder/types/universal-flat-entity-validation-args.type';
 
+// Same conventions as the sibling FlatRowLevelPermissionPredicateValidatorService:
+// an unloaded related map (`xMaps ? find(...) : undefined`) fails closed like a missing
+// reference would, and roleUniversalIdentifier/objectMetadataUniversalIdentifier are
+// immutable post-creation to prevent repointing a predicate group as a privilege
+// escalation. Note there's no circular-dependency check on
+// parentRowLevelPermissionPredicateGroupUniversalIdentifier here, unlike the structurally
+// identical parent-chain validation in flat-navigation-menu-item-validator.service.ts and
+// flat-view-filter-group-validator.service.ts (both call
+// validateFlatEntityCircularDependency) — worth confirming that's intentional.
 @Injectable()
 export class FlatRowLevelPermissionPredicateGroupValidatorService {
   validateFlatRowLevelPermissionPredicateGroupCreation({

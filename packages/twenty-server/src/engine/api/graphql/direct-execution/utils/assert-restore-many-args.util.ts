@@ -7,6 +7,8 @@ import {
 } from 'src/engine/api/graphql/direct-execution/errors/graphql-direct-execution.exception';
 import { type RestoreManyResolverArgs } from 'src/engine/api/graphql/workspace-resolver-builder/interfaces/workspace-resolvers-builder.interface';
 
+// Direct execution skips graphql-js's schema-based arg coercion, so each
+// resolver method needs its own manual allowlist + shape check here instead.
 export function assertRestoreManyArgs(
   args: unknown,
 ): asserts args is RestoreManyResolverArgs {

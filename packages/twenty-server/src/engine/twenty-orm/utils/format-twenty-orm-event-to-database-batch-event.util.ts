@@ -137,6 +137,8 @@ export const formatTwentyOrmEventToDatabaseBatchEvent = <
             flatFieldMetadataMaps,
           );
 
+          // A write that changed nothing (eg: a no-op update) produces no event for
+          // that record — filtered out below via .filter(isDefined).
           if (updatedFields.length === 0) {
             return;
           }
@@ -219,6 +221,8 @@ export const formatTwentyOrmEventToDatabaseBatchEvent = <
         event.workspaceMemberId = authContext?.workspaceMemberId;
         event.recordId = recordAfter.id;
 
+        // Unlike UPDATED/DELETED/RESTORED, recordsBefore is optional here: an upsert
+        // that inserted a new row (no conflict) never had a "before" state.
         const correspondingRecordBefore = recordsBefore?.find(
           (recordBeforeToFind) => recordBeforeToFind.id === recordAfter.id,
         );

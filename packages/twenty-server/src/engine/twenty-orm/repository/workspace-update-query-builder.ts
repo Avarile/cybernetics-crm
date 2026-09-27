@@ -137,6 +137,9 @@ export class WorkspaceUpdateQueryBuilder<
         noFormatting: true,
       });
 
+      // Bulk updates go through this single query builder rather than a dedicated batch
+      // API, so this is the only guard against an unbounded UPDATE ... WHERE matching
+      // far more rows than intended.
       if (before.length > QUERY_MAX_RECORDS) {
         throw new TwentyORMException(
           `Cannot update more than ${QUERY_MAX_RECORDS} records at once`,
@@ -421,6 +424,9 @@ export class WorkspaceUpdateQueryBuilder<
         }
       }
 
+      // Executed one at a time rather than as a single batched statement: each input can
+      // carry different values, and RLS validation needs the specific before/after record
+      // pairing for its own criteria, not a merged view across the whole batch.
       for (const input of this.manyInputs) {
         this.expressionMap.valuesSet = input.partialEntity;
         this.where({ id: input.criteria });
@@ -553,6 +559,9 @@ export class WorkspaceUpdateQueryBuilder<
     return super.set(formattedUpdateSet as QueryDeepPartialEntity<T>);
   }
 
+  // Morphing into another query type is disabled on every workspace query builder: it
+  // would carry over this builder's state and skip the target operation's own
+  // permission/RLS validation (see WorkspaceInsertQueryBuilder for the full rationale).
   override select(): WorkspaceSelectQueryBuilder<T> {
     throw new TwentyORMException(
       'This builder cannot morph into a select builder',

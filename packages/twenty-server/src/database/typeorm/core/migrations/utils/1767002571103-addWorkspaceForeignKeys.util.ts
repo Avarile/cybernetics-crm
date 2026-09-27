@@ -1,5 +1,7 @@
 import { type QueryRunner } from 'typeorm';
 
+// DROP CONSTRAINT IF EXISTS before each ADD makes this safe to re-run (eg: after a
+// partial failure that the caller's savepoint swallowed on a prior deploy attempt).
 export const addWorkspaceForeignKeysQueries = async (
   queryRunner: QueryRunner,
 ): Promise<void> => {

@@ -49,6 +49,10 @@ type GraphQLFormatContext = GraphQLFormatInput & {
   fieldMetadataByNameCache: Map<string, Map<string, FlatFieldMetadata>>;
 };
 
+// Since direct execution bypasses graphql-js's executor, none of the usual
+// null-filling, __typename resolution, or scalar coercion happens automatically —
+// this reimplements just enough of that behavior for the shapes CRUD resolvers
+// actually return (a record, a list, a connection, or a group-by connection).
 export const graphQLFormatResultFromSelectedFields = (
   result: ResolverOutput,
   selectedFields: Record<string, object>,
@@ -185,6 +189,8 @@ const backfillNullValuesAndComputeTypeNameForObjectRecord = (
       continue;
     }
 
+    // NUMBER fields can come back from the DB layer as numeric strings (precision-
+    // preserving), but the GraphQL Float/Int scalars expect an actual number.
     if (
       isDefined(fieldMetadata) &&
       fieldMetadata.type === FieldMetadataType.NUMBER &&
@@ -289,6 +295,7 @@ const backfillNullValuesAndComputeTypeNameForConnection = (
       continue;
     }
 
+    // Aggregate values (count, sum, etc.) are also numeric strings coming out of the DB layer.
     const rawAggregateValue =
       (connection as unknown as Record<string, unknown>)[key] ?? null;
 

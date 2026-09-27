@@ -1,3 +1,6 @@
+// Builds the `restoreMany` GraphQL mutation resolver for an object:
+// delegates to CommonRestoreManyQueryRunnerService and formats the
+// un-soft-deleted records back into GraphQL shape.
 import { Injectable } from '@nestjs/common';
 
 import graphqlFields from 'graphql-fields';

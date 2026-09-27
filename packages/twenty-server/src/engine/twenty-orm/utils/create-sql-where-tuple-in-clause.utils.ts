@@ -1,3 +1,7 @@
+// Builds a parameterized `(a, b) IN ((:v1,:v2), (:v3,:v4), ...)` clause. Field names are
+// taken only from the first condition and every other condition is assumed to supply
+// values in that same field order — callers (see checkUniqueConstraintsAreSameOrThrow)
+// must guarantee every tuple uses the same fields, since this doesn't re-validate that.
 export const createSqlWhereTupleInClause = (
   conditions: [string, string][][],
   tableName: string,

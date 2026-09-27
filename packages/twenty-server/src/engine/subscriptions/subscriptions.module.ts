@@ -22,6 +22,9 @@ import { SubscriptionService } from 'src/engine/subscriptions/subscription.servi
 import { WorkspaceEventBroadcaster } from 'src/engine/subscriptions/workspace-event-broadcaster/workspace-event-broadcaster.service';
 import { WorkspaceCacheModule } from 'src/engine/workspace-cache/workspace-cache.module';
 
+// @Global: MetadataEventEmitter and WorkspaceEventBroadcaster are called from deep inside
+// metadata/data mutation code across many feature modules, so every module would otherwise
+// need to import this one just to emit an event.
 @Global()
 @Module({
   imports: [

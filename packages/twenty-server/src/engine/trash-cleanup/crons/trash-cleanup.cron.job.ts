@@ -47,6 +47,7 @@ export class TrashCleanupCronJob {
     );
 
     for (const workspace of workspaces) {
+      // Isolate failures per workspace so one bad enqueue doesn't stop the rest from being scheduled.
       try {
         await this.messageQueueService.add<TrashCleanupJobData>(
           TrashCleanupJob.name,

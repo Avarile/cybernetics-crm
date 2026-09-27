@@ -30,6 +30,9 @@ import {
 } from 'src/engine/workspace-cache/types/workspace-cache-key.type';
 import { type WorkspaceLocalCacheEntry } from 'src/engine/workspace-cache/types/workspace-local-cache-entry.type';
 
+// Short on purpose: within this window a burst of calls for the same key reuses the
+// local copy with zero Redis round-trips, but any real invalidation is picked up almost
+// immediately afterwards via the hash check below.
 const LOCAL_TTL_MS = 100; // 100ms
 const LOCAL_ENTRY_TTL_MS = 30 * 60 * 1000; // 30 minutes
 const MEMOIZER_TTL_MS = 10_000; // 10 seconds
@@ -269,6 +272,8 @@ export class WorkspaceCacheService implements OnModuleInit {
         localEntry.lastHashCheckedAt = Date.now();
         validKeys.push(keyName);
       } else if (this.localDataOnlyKeys.has(keyName)) {
+        // localDataOnly keys never had their :data written to Redis, so a hash
+        // mismatch (or no local entry at all) can only be resolved by recomputing.
         keysNeedingRecompute.push(keyName);
       } else {
         keysNeedingDataFromRedis.push(keyName);
@@ -331,6 +336,9 @@ export class WorkspaceCacheService implements OnModuleInit {
     const computePromises = cacheKeyNames.map(async (keyName) => {
       const provider = this.getProviderOrThrow(keyName);
       const data = await provider.computeForCache(workspaceId);
+      // Not a content hash: a fresh random token per recompute, used purely as a
+      // version marker so other pods can detect "the data changed" via the cheap
+      // :hash key without needing to compare or transfer the actual :data payload.
       const hash = crypto.randomUUID();
 
       return { keyName, data, hash };
@@ -391,6 +399,9 @@ export class WorkspaceCacheService implements OnModuleInit {
       const entry = this.localCache.get(localKey);
 
       if (isDefined(entry)) {
+        // Force the next read past the local TTL rather than deleting the entry
+        // outright, so a concurrent reader still gets a (soon-to-be-revalidated)
+        // value instead of a cold miss during the flush.
         entry.lastHashCheckedAt = 0;
       }
     }
